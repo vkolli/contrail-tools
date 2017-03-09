@@ -1,7 +1,8 @@
 from fabric.api import env
 
 #Management ip addresses of hosts in the cluster
-host1 = 'root@10.204.221.26'
+host1 = 'root@10.204.221.24'
+host2 = 'root@10.204.221.27'
 
 #External routers if any
 #for eg.
@@ -17,19 +18,19 @@ host_build = 'stack@10.204.216.49'
 
 #Role definition of the hosts.
 env.roledefs = {
-    'all': [host1],
+    'all': [host1, host2],
     'cfgm': [host1],
     'openstack': [host1],
     'control': [host1],
-    'compute': [host1],
-    'collector': [host1],
+    'compute': [host2],
+    'collector': [host2],
     'webui': [host1],
-    'database': [host1],
+    'database': [host2],
     'build': [host_build],
 }
 
 env.hostnames = {
-    'all': ['nodec63']
+    'all': ['nodeg34', 'nodec48']
 }
 
 #Openstack admin password
@@ -70,7 +71,7 @@ env.encap_priority =  "'MPLSoUDP','MPLSoGRE','VXLAN'"
 env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
 env.test_repo_dir='/home/stack/github_ubuntu_single_node/havana/contrail-test'
 env.mail_to='ritam@juniper.net'
-env.log_scenario='Container Single Node Sanity'
+env.log_scenario='Container Multi Node Sanity'
 env.enable_lbaas = True
 
 #enable ceilometer
