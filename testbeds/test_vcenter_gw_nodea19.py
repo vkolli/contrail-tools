@@ -29,6 +29,14 @@ env.roledefs = {
     'build': [host_build]
 }
 
+if os.getenv('AUTH_PROTOCOL',None) == 'https':
+    env.keystone = {
+        'auth_protocol': 'https'
+    }   
+    env.cfgm = {
+        'auth_protocol': 'https'
+    }   
+
 env.hostnames = {
     #'all': ['nodea19', 'nodea14','nodel3','nodei9']
     'all': ['nodea19', 'nodea14','nodei9']
