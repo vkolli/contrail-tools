@@ -17,6 +17,13 @@ echo "/root/$1/input.json  --- Changed"
 echo "The New imput.json :- \n"
 cat /root/$1/input.json
 
+echo "Change Premissions on cloud_init.sh file"
+chmod 777 /root/$1/cloud_init.sh
+
+echo "Lets See if the Server Manager OS is already added to openstack"
+python /root/$1/inp_to_yaml.py /root/$1/input.json add_sm_os_to_openstack
+echo "Server Manager OS added"
+
 python /root/$1/inp_to_yaml.py /root/$1/input.json create_network_yaml > /root/$1/final_network.yaml
 python /root/$1/inp_to_yaml.py /root/$1/input.json create_server_yaml > /root/$1/final_server.yaml
 echo " The Servere and Network YAML files are now created at location '/root/$1'"
@@ -63,7 +70,7 @@ else
 fi
 done
 
-# Now Lets Create The Server Stack 
+
 if [ "$net_res" == 'success' ]
 then
 	heat stack-create -f /root/$1/final_server.yaml $final_server_stack_name
@@ -83,7 +90,8 @@ then
                 if [ "$ser_res" == 'failed' ]
                 then
                         echo "Server Stack Creation Failed"
-                        break
+			heat stack-show $final_server_stack_name
+			exit 0
                 fi
                 if [ "$ser_res" == 'inprogress' ]
                 then
