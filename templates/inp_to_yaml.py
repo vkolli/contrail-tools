@@ -713,6 +713,9 @@ def create_cluster_json():
         if "enable_rabbitmq_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"amqp_ssl":"%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["enable_rabbitmq_ssl"]
+        if "kernel_version" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t"kernel_version":"%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_version"]
         if "kernel_upgrade" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"kernel_upgrade": "%s"' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_upgrade"]
