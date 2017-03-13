@@ -98,8 +98,7 @@
                                 		"provision":{
                                         		"contrail": {
                                                 		"minimum_disk_database": 32,
-                                                		"kernel_upgrade": "true",
-								"kernel_version": "3.13.0-106"
+                                                		"kernel_upgrade": "true"
                                         		},
                                         		"openstack":{
 								"keystone_admin_password": "c0ntrail123",
