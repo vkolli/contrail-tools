@@ -773,7 +773,7 @@ function delete_stacks() {
 }
 
 function run_smgr_virtual_task() {
-    export RUN_SUCCESSFUL=1
+    export RUN_SUCCESSFUL=0
     echo "Running tests on $1.."
     #Change testbed filename to template_HA.py
     export TEMPLATE_DIR=${SCRIPT_TIMESTAMP}
