@@ -773,6 +773,7 @@ function delete_stacks() {
 }
 
 function run_smgr_virtual_task() {
+    export RUN_SUCCESSFUL=1
     echo "Running tests on $1.."
     #Change testbed filename to template_HA.py
     export TEMPLATE_DIR=${SCRIPT_TIMESTAMP}
@@ -847,8 +848,9 @@ function run_smgr_virtual_task() {
     run_tempest || die "Run_Tempest step failed"
     collect_tech_support || die "Task to collect logs/cores failed"
     delete_stacks || die "Failed to delete stacks"
-    echo "Ending test on $1"
+    echo "Ending test on "${AVAILABLE_TESTBEDS}
     #Set the TBFILE_NAME to the one passed through jenkins job
+    export RUN_SUCCESSFUL=1
     TBFILE_NAME=${AVAILABLE_TESTBEDS}
     tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
 }
@@ -896,7 +898,7 @@ function cleanup() {
     #Set the TBFILE_NAME to the one passed through jenkins job
     TBFILE_NAME=${AVAILABLE_TESTBEDS}
     tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
-    if [ $LOCK_TESTBED_ON_FAILURE -eq 0 ]; then
+    if [ $LOCK_TESTBED_ON_FAILURE -eq 0  &&  $RUN_SUCCESSFUL -eq 1]; then
         delete_stacks || die "Failed to delete stacks"
     else
         #Store stack info in testbed lock file
