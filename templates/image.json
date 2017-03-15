@@ -1,0 +1,35 @@
+{
+    "image": [
+        {
+            "category": "package",
+            "id": "combined_image_mainline",
+            "path": "/root/sm_files/contrail-install-packages",
+            "type": "contrail-ubuntu-package",
+            "version": "mainline",
+            "parameters": { 
+               "containers": [  
+                   {        
+                       "role": "contrail-controller",
+                       "container_path": "/root/sm_files/contrail-controller"
+                   },       
+                   {        
+                       "role": "contrail-agent",
+                       "container_path": "/root/sm_files/contrail-agent"    
+                   },       
+                   {            
+                       "role": "contrail-lb",
+                       "container_path": "/root/sm_files/contrail-lb"
+                   },           
+                   {        
+                       "role": "contrail-analytics",
+                       "container_path": "/root/sm_files/contrail-analytics"
+                   },               
+                   {                
+                       "role": "contrail-analyticsdb",
+                       "container_path": "/root/sm_files/contrail-analyticsdb"
+                   }
+               ]                
+            }                       
+        }
+    ]
+}
