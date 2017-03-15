@@ -926,7 +926,7 @@ function cleanup() {
     #Set the TBFILE_NAME to the one passed through jenkins job
     TBFILE_NAME=${AVAILABLE_TESTBEDS}
     tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
-    if [ $LOCK_TESTBED_ON_FAILURE -eq 0  &&  $RUN_SUCCESSFUL -eq 1]; then
+    if [ $LOCK_TESTBED_ON_FAILURE -eq 0 ] && [ $RUN_SUCCESSFUL -eq 1 ]; then
         delete_stacks || die "Failed to delete stacks"
     else
         #Store stack info in testbed lock file
