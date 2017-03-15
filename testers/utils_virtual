@@ -377,7 +377,10 @@ function reimage_using_SM_cliff_client() {
         contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
 	isofile="/root/images/centos71.json"
     fi
-
+    if [ $BRANCH == "mainline" ]
+    then
+        SMID="combined_image_mainline"
+    fi
     pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
     if [ $USE_CLOUD_PKG -eq 1 ]; then
         contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.tgz`
@@ -571,7 +574,12 @@ function add_server_cluster_SM() {
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
             isofile="/root/sm_files/centos71.json"
         fi
-    
+   
+        if [ $BRANCH == "mainline" ]
+        then
+            SMID="combined_image_mainline"
+        fi
+ 
         pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
         cd $pkg_path
         if [ $USE_CLOUD_PKG -eq 1 ]; then
@@ -657,22 +665,31 @@ function add_server_cluster_SM() {
             else
                 server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
             fi
-             
-            if [ $? == 0 ]
-            then
-                echo "Server-manager adding contrail-package command is successful"
-            else
-                echo "Server-manager adding contrail-package command failed, aborting the process"
-                exit 1
-            fi
+            set +e
+            server-manager display image --image_id $SMID | grep -w $SMID
+            exit_status=$?
+            while [ exit_status != 0 ]
+            do
+               sleep 15
+               server-manager display image --image_id $SMID | grep -w $SMID
+               exit_status=$?
+            done
+            set -e 
+            #if [ $? == 0 ]
+            #then
+            echo "Server-manager adding contrail-package command is successful"
+            #else
+            #    echo "Server-manager adding contrail-package command failed, aborting the process"
+            #    exit 1
+            #fi
     
             echo "check if the package was added successfully"
-            server-manager show image | grep $SMID
-            if [ $? != 0 ] 
-            then
-                echo "Adding Contrail-packages $SMID failed"
-                exit 1
-            fi
+            #server-manager show image | grep $SMID
+            #if [ $? != 0 ] 
+            #then
+            #    echo "Adding Contrail-packages $SMID failed"
+            #    exit 1
+            #fi
     
             server-manager show image
     
