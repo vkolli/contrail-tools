@@ -922,6 +922,7 @@ def create_cluster_json_mainline():
                 config_ip_list_string = config_ip_list_string + '"%s", ' % ip
             else:
                 config_ip_list_string = config_ip_list_string + '"%s" ' % ip
+                ip_tot = ip_tot - 1
         config_ip_list_string = config_ip_list_string + ']'
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t"config": {\n'
