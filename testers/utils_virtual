@@ -595,6 +595,18 @@ function add_server_cluster_SM() {
         #set the parameters for multi/single node setup
         cluster_json="/root/sm_files/cluster.json"
         server_json="/root/sm_files/server.json"
+
+        #For mainline copy contrainer packages and add package using image.json
+        if [ ${BRANCH} == "mainline" ]
+        then
+            image_json="/root/sm_files/image.json"
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${contrail_pkg} root@$SM_SERVER_IP:/root/sm_files/contrail-install-packages
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${pkg_path}/artifacts/contrail-analytics-*gz root@$SM_SERVER_IP:/root/sm_files/contrail-analytics.tar.gz
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${pkg_path}/artifacts/contrail-analyticsdb-*gz root@$SM_SERVER_IP:/root/sm_files/contrail-analyticsdb.tar.gz
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${pkg_path}/artifacts/contrail-controller-*gz root@$SM_SERVER_IP:/root/sm_files/contrail-controller.tar.gz
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${pkg_path}/artifacts/contrail-lb-*gz root@$SM_SERVER_IP:/root/sm_files/contrail-lb.tar.gz
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${pkg_path}/artifacts/contrail-agent-*gz root@$SM_SERVER_IP:/root/sm_files/contrail-agent.tar.gz
+        fi
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${contrail_pkg} root@$SM_SERVER_IP:/root/sm_files/
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${image} root@$SM_SERVER_IP:${isofile}
     
@@ -638,8 +650,14 @@ function add_server_cluster_SM() {
                 server-manager delete image --image_id $SMID
             fi
             echo "add contrail package to the SM database"
-          
-            server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
+
+            if [ ${BRANCH} == "mainline" ]
+            then
+                server-manager add image -f image.json
+            else
+                server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
+            fi
+             
             if [ $? == 0 ]
             then
                 echo "Server-manager adding contrail-package command is successful"
@@ -744,9 +762,19 @@ function launch_testbed_virtual() {
         #Check if reimage param is set, otherwise use distro for launching VMs
         if [ -z "$REIMAGE_PARAM" ]
         then
-            ./build_infra.sh ${TEMPLATE_DIR} ${DISTRO} 
+            if [ ${BRANCH} == "mainline" ]
+            then
+                ./build_infra_mainline.sh ${TEMPLATE_DIR} ${DISTRO} 
+            else
+                ./build_infra.sh ${TEMPLATE_DIR} ${DISTRO}
+            fi
         else
-            ./build_infra.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM}
+            if [ ${BRANCH} == "mainline" ]
+            then
+                ./build_infra_mainline.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM}
+            else
+                ./build_infra.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM}
+            fi
         fi
         if [ $? == 0 ]
         then
