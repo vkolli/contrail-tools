@@ -905,7 +905,7 @@ def create_cluster_json_mainline():
             individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
         config_node_control_data_ip_list = []
         for server in server_dict[clus]:
-            if "config" in server_dict[clus][server]["roles"]:
+            if "contrail-controller" in server_dict[clus][server]["roles"]:
                 if len(server_dict[clus][server]["ip_address"]) == 1:
                     for temp in server_dict[clus][server]["ip_address"]:
                         config_node_control_data_ip_list.append(
@@ -915,10 +915,19 @@ def create_cluster_json_mainline():
                         if network_dict[temp]["role"] == "control-data":
                             config_node_control_data_ip_list.append(
                                 str(server_dict[clus][server]["ip_address"][temp]))
+        config_ip_list_string = '[ '
+        ip_tot = len(config_node_control_data_ip_list)
+        for ip in config_node_control_data_ip_list:
+            if ip_tot > 1:
+                config_ip_list_string = config_ip_list_string + '"%s", ' % ip
+            else:
+                config_ip_list_string = config_ip_list_string + '"%s" ' % ip
+                ip_tot = ip_tot - 1
+        config_ip_list_string = config_ip_list_string + ']'
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t"config": {\n'
         individual_clus_string = individual_clus_string + \
-            '\t\t\t\t\t\t"config_ip_list": "%s",\n' % config_node_control_data_ip_list
+            '\t\t\t\t\t\t"config_ip_list": %s,\n' % config_ip_list_string
         if "manage_neutron" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t"manage_neutron": %s\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["manage_neutron"]
