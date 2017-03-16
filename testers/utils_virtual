@@ -668,7 +668,7 @@ function add_server_cluster_SM() {
             set +e
             server-manager display image --image_id $SMID | grep -w $SMID
             exit_status=$?
-            while [ $exit_status != 0 ]
+            while [ ${exit_status} != 0 ]
             do
                echo "Waiting some time for package to be added"
                sleep 15
@@ -676,23 +676,7 @@ function add_server_cluster_SM() {
                exit_status=$?
             done
             set -e 
-            #if [ $? == 0 ]
-            #then
             echo "Server-manager adding contrail-package command is successful"
-            #else
-            #    echo "Server-manager adding contrail-package command failed, aborting the process"
-            #    exit 1
-            #fi
-    
-            echo "check if the package was added successfully"
-            #server-manager show image | grep $SMID
-            #if [ $? != 0 ] 
-            #then
-            #    echo "Adding Contrail-packages $SMID failed"
-            #    exit 1
-            #fi
-    
-            server-manager show image
     
             echo "Clean up cluster and server from SM database before adding."
             server-manager delete server --cluster_id $CLUSTER_NAME
