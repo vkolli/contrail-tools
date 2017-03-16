@@ -1610,28 +1610,31 @@ def create_testbedpy_file_mainline():
             file_str = file_str + env_password_string
         if "env_ostypes" in testbed_py_dict[clus]:
             file_str = file_str + env_ostypes_string
-        if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
-                "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"])):
+        if (("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]) and (
+                "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
             file_str = file_str + "ha_setup = True\n"
             file_str = file_str + "env.ha = {\n"
-            file_str = file_str + \
-                "	'internal_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
             if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "	'contrail_internal_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
-            if "contrail_internal_virtual_router_id" in cluster_dict[
-                    clus]["parameters"]["provision"]["contrail"]:
-                file_str = file_str + \
-                    "	'contrail_internal_virtual_router_id' : %s,\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_virtual_router_id"]
+                    "   'contrail_internal_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
             if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "	'contrail_external_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
-            if "contrail_external_virtual_router_id" in cluster_dict[
-                    clus]["parameters"]["provision"]["contrail"]:
-                file_str = file_str + \
-                    "	'contrail_external_virtual_router_id' : %s,\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_virtual_router_id"]
-            file_str = file_str + \
-                "	'external_vip' : '%s'\n}\n\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                    "   'contrail_external_vip' : '%s'\n}\n\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+        '''
+		if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"])):
+			file_str = file_str+"ha_setup = True\n"
+			file_str = file_str + "env.ha = {\n"
+			file_str = file_str+"	'internal_vip' : '%s',\n"%cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+			if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+				file_str = file_str+"	'contrail_internal_vip' : '%s',\n"%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+			if "contrail_internal_virtual_router_id" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+				file_str = file_str+"	'contrail_internal_virtual_router_id' : %s,\n"%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_virtual_router_id"]
+			if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+				file_str = file_str+"	'contrail_external_vip' : '%s',\n"%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+			if "contrail_external_virtual_router_id" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+				file_str = file_str+"	'contrail_external_virtual_router_id' : %s,\n"%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_virtual_router_id"]
+			file_str = file_str+"	'external_vip' : '%s'\n}\n\n"%cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+		'''
         if "ipmi_username" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "ipmi_username = '%s'\n" % testbed_py_dict[clus]["ipmi_username"]
