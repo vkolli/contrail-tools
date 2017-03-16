@@ -112,7 +112,7 @@ then
 	echo "server.json now Created"
 	python /root/$1/inp_to_yaml.py /root/$1/input.json get_sm_ip > /root/$1/server-manager-file
 	echo "server-manager-file now created that conatins server manager IP"
-	python /root/$1/inp_to_yaml.py /root/$1/input.json get_config_node_ip > /root/$1/config-node-ip
+	python /root/$1/inp_to_yaml.py /root/$1/input.json get_config_node_ip_mainline > /root/$1/config-node-ip
 	echo "config-node-ip file now created that contains config node IP"
 	python /root/$1/inp_to_yaml.py /root/$1/input.json create_testbedpy_file_mainline > /root/$1/testbed.py
 	echo "Testbed.py file created that will be used for running the tests on the overlay cluster"

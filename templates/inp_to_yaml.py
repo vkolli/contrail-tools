@@ -300,6 +300,7 @@ def create_server_yaml():
                             "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
                     if ("contrail_external_vip" in cluster_dict[clus]
                             ["parameters"]["provision"]["contrail"]):
+                        server_string = server_string + "      allowed_address_pairs:\n"
                         server_string = server_string + \
                             "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
                 if network_dict[j]["role"] == "control-data":
@@ -310,6 +311,7 @@ def create_server_yaml():
                             "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
                     if ("contrail_internal_vip" in cluster_dict[clus]
                             ["parameters"]["provision"]["contrail"]):
+                        server_string = server_string + "      allowed_address_pairs:\n"
                         server_string = server_string + \
                             "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
                 ip_port_dict[(ip_address_dict[net_name])] = port_name
@@ -505,11 +507,55 @@ def get_sm_ip():
     for fip in floating_ip_list:
         print fip
 
+# Method for getting the floating ip od the config node in the mainline build
+
+
+def get_config_node_ip_mainline():
+    a = subprocess.Popen(
+        'neutron floatingip-list -f json',
+        shell=True,
+        stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    project_uuid = general_params_dict["project_uuid"]
+    config_node_ip_dict = {}
+    change_network_dict()
+    net_name = []
+    for i in network_dict:
+        net_name.append(network_dict[i]["name"])
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+                if "contrail-controller" in server_dict[clus][i]["roles"]:
+                    for j in server_dict[clus][i]["ip_address"]:
+                        for k in range(len(fip_neutron_dict)):
+                            if fip_neutron_dict[k]["fixed_ip_address"] == server_dict[clus][i]["ip_address"][j]:
+                                b = subprocess.Popen(
+                                    'neutron port-show %s -f json' %
+                                    fip_neutron_dict[k]["port_id"],
+                                    shell=True,
+                                    stdout=subprocess.PIPE)
+                                b_tmp = b.stdout.read()
+                                b_tmp = str(b_tmp)
+                                current_port_dict = json.loads(b_tmp)
+                                current_network_id = current_port_dict["network_id"]
+                                c = subprocess.Popen(
+                                    'neutron net-list -f json', shell=True, stdout=subprocess.PIPE)
+                                c_tmp = c.stdout.read()
+                                c_tmp = str(c_tmp)
+                                all_net_dict = json.loads(c_tmp)
+                                for net in all_net_dict:
+                                    if current_network_id == net["id"] and net["name"] in net_name:
+                                        config_node_ip_dict[clus] = (
+                                            fip_neutron_dict[k]["floating_ip_address"])
+    for cfgmip in config_node_ip_dict:
+        print config_node_ip_dict[cfgmip]
+
+
 # Method for getting the floating ip of the config node so that the
 # testbed.py can be transferred to this server and the tests can run from
 # here.
-
-
 def get_config_node_ip():
     a = subprocess.Popen(
         'neutron floatingip-list -f json',
