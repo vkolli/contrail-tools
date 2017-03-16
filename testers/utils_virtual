@@ -668,8 +668,9 @@ function add_server_cluster_SM() {
             set +e
             server-manager display image --image_id $SMID | grep -w $SMID
             exit_status=$?
-            while [ exit_status != 0 ]
+            while [ $exit_status != 0 ]
             do
+               echo "Waiting some time for package to be added"
                sleep 15
                server-manager display image --image_id $SMID | grep -w $SMID
                exit_status=$?
