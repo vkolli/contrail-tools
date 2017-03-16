@@ -825,6 +825,13 @@ def create_cluster_json_mainline():
                 '\t\t"id": "%s",\n' % cluster_dict[clus]["cluster_id"]
         individual_clus_string = individual_clus_string + \
             '\t\t"parameters":{\n'
+        if "domain" in cluster_dict[clus]["parameters"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
+        for net in network_dict:
+            if network_dict[net]["role"] == "management":
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t"gateway": "%s",\n' % network_dict[net]["default_gateway"]
         individual_clus_string = individual_clus_string + \
             '\t\t\t"provision":{\n'
         individual_clus_string = individual_clus_string + \
@@ -833,6 +840,13 @@ def create_cluster_json_mainline():
             '\t\t\t\t\t"inventory":{\n'
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t\t"[all:vars]":{\n'
+        if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t\t\t"config_ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t\t\t"controller_ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t\t\t"analytics_ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t\t\t"keystone_config":{\n'
         openstack_control_data_ip_list = []
@@ -903,6 +917,21 @@ def create_cluster_json_mainline():
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["minimum_disk_database"]
             individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+        if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+            if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t\t\t"ha": {\n'
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t\t\t\t"contrail_external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t\t\t\t"contrail_internal_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+            else:
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t\t\t"ha": {\n'
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t\t\t\t"contrail_external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+                individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
         config_node_control_data_ip_list = []
         for server in server_dict[clus]:
             if "contrail-controller" in server_dict[clus][server]["roles"]:
@@ -1457,6 +1486,14 @@ def create_testbedpy_file_mainline():
                 if "contrail-compute" in server_dict[clus][i]["roles"]:
                     role_per_server_mapping["contrail-compute"].append(
                         name_mapping[server_dict[clus][i]["name"]])
+                if "contrail-lb" in server_dict[clus][i]["roles"]:
+                    if "contrail-lb" in role_per_server_mapping:
+                        role_per_server_mapping["contrail-lb"].append(
+                            name_mapping[server_dict[clus][i]["name"]])
+                    else:
+                        role_per_server_mapping["contrail-lb"] = []
+                        role_per_server_mapping["contrail-lb"].append(
+                            name_mapping[server_dict[clus][i]["name"]])
         file_str = file_str + "env.hostnames = {\n"
         file_str = file_str + hostname_string + "}\n\n"
         file_str = file_str + "env.interface_rename = False\n\n"
