@@ -52,6 +52,7 @@ function add_sourcelist_SMLite() {
         sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $word " {
    
             cp /etc/apt/sources.list /etc/apt/sources.list.orig
+            sed -i".bak" '/google/d' /etc/apt/sources.list.save
             cp /etc/apt/sources.list.save /etc/apt/sources.list
             if [ $? != 0 ]
                 then
