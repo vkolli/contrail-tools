@@ -117,6 +117,7 @@ env.test_repo_dir='/home/stack/multi_interface_parallel/centos65/icehouse/contra
 env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'
 multi_tenancy=True
+env.ntp_server = '10.204.217.158'
 env.interface_rename = True
 env.enable_lbaas = True
 enable_ceilometer = True
