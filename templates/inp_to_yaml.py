@@ -970,7 +970,7 @@ def create_cluster_json_mainline():
                 individual_clus_string = individual_clus_string + \
                     '\t\t\t\t\t\t"contrail_external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
                 individual_clus_string = individual_clus_string + \
-                    '\t\t\t\t\t\t"contrail_internal_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                    '\t\t\t\t\t\t"contrail_internal_vip": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
                 individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
             else:
                 individual_clus_string = individual_clus_string + \
@@ -997,7 +997,7 @@ def create_cluster_json_mainline():
                 config_ip_list_string = config_ip_list_string + '"%s", ' % ip
             else:
                 config_ip_list_string = config_ip_list_string + '"%s" ' % ip
-                ip_tot = ip_tot - 1
+            ip_tot = ip_tot - 1
         config_ip_list_string = config_ip_list_string + ']'
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t"config": {\n'
