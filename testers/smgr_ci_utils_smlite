@@ -52,6 +52,7 @@ function add_sourcelist_SMLite() {
         sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $word " {
    
             cp /etc/apt/sources.list /etc/apt/sources.list.orig
+            sed -i".bak" '/google/d' /etc/apt/sources.list.save
             cp /etc/apt/sources.list.save /etc/apt/sources.list
             if [ $? != 0 ]
                 then
@@ -294,6 +295,7 @@ function run_smgr_task() {
     reimage_using_SM_cliff_client || debug_and_die "reimage failed"
     copy_smlite_pkg || die "copy of sm-lite packages failed"
     provision_using_SMLite || die "provision failed"
+    add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
     check_kernel_upgrade || die "kernel upgrade failed"
 
     #add fab basic images.
