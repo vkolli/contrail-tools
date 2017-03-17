@@ -521,12 +521,13 @@ function use_testbed_file {
     fi
 
     dest_folder_path=${TOOLS_WS}/contrail-fabric-utils/fabfile/testbeds
-    cp -f $folder_path/$TBFILE_NAME $dest_folder_path/testbed.py || die "Failed to copy $TBFILE_NAME to  $dest_folder_path/testbed.py"
+    cp -ru $folder_path/$TBFILE_NAME $dest_folder_path/testbed.py || die "Failed to copy $TBFILE_NAME to  $dest_folder_path/testbed.py"
 
     rm -f $TOOLS_WS/contrail-fabric-utils/testbed_env
-    ( cd ${TOOLS_WS}/contrail-fabric-utils;
-      fab export_testbed_details:testbed_env || echo "fab export_testbed_details failed")
-
+    if [ ! ${OSP10} == "OSP10" ]; then
+       ( cd ${TOOLS_WS}/contrail-fabric-utils;
+          fab export_testbed_details:testbed_env || echo "fab export_testbed_details failed")
+    fi
     if [ -f ${TOOLS_WS}/contrail-fabric-utils/testbed_env ]; then
         source ${TOOLS_WS}/contrail-fabric-utils/testbed_env
         sed 's/export //' ${TOOLS_WS}/contrail-fabric-utils/testbed_env > ${TOOLS_WS}/contrail-fabric-utils/plain_testbed_env
@@ -1038,6 +1039,10 @@ EOF
 	    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
 		container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/docker-image-*.tar.gz`
 	    fi
+        elif [[ ${TEST_SKU} = "newton" && ${DISTRO} = "redhat70" ]]
+            set SKU='mitaka'
+            #container_image_path=ls ${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
+            container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/docker-image-*.tar.gz`
         else
             container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/docker-image-*.tar.gz`
 	    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
@@ -1045,7 +1050,12 @@ EOF
 	    fi
         fi
     else
-        container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
+        if [[ ${TEST_SKU} = "newton" && ${DISTRO} = "redhat70" ]]
+            set TEST_SKU='mitaka'
+            container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
+        else
+            container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
+        fi
     fi
     container_image_file=`basename $container_image_path`
     if [[ ! -f $container_image_path ]]; then
@@ -1069,7 +1079,18 @@ EOF
         fi
         mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
     )"
-    sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py
+    if [[ ${TEST_SKU} = "newton" && ${DISTRO} = "redhat70" ]]
+    then
+      sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:/$tbpath/testbed.py
+    elif [ ${OSP10} == "OSP10" ]
+       echo "fab task will create and copy testbed files to test vm testbeds directory"  
+       #sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:/$tbpath/testbed.py
+       #sshpass -p ${API_SERVER_HOST_PASSWORD} ssh -t -t ${SSHOPT} $API_SERVER_HOST_STRING ' (
+       #cd /roo/; cp /root/rh_testbed_template.py /opt/contrail/utils/fabfile/testbeds/testbed.py;
+       #echo "testbed file copied modified" )'
+    else
+       sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py
+    fi
 }
 
 function set_other_test_params {
@@ -1368,7 +1389,12 @@ function create_testbed {
 	if [ $USE_LATEST_TEST_CODE -eq 1 ]; then
 	    checkout_test_repo
 	fi
-        checkout_fab_repo || die "Unable to checkout fab/test repos" # No need to checkout test repo for container
+        # No need to fetch test repos in case of docker
+        if [ ! ${OSP10} == "OSP10" ]; then
+            echo "need to remove below comment from checkout  after commiting rh changes in fab"
+            #checkout_fab_repo || die "Unable to checkout fab/test repos" # No need to checkout test repo for container
+            echo "remove this commented line  git checkout checkout_fab_repo ==="
+        fi
     else
         checkout_repo
     fi
@@ -1464,16 +1490,24 @@ function run_task() {
     create_testbed || die "Failed to create required testbed details"
     echo "Running tests on $TBFILE_NAME .." 
 
-    if [ -z "$SM_SERVER_IP" ]
+    if [ -n "$SM_SERVER_IP" ]
     then
        reimage_and_bringup
-    elif [ -z "$PROVISION_SM" ]
+    elif [ -n "$PROVISION_SM" ]
     then
        reimage_using_SM || debug_and_die "reimage failed"
-       bringup_setup || die "Bringup failed"
+       if [ ${OSP10} == "OSP10" ]; then
+          echo "OSP10 needs to provision using director"
+       else
+          bringup_setup || die "Bringup failed"
+       fi
     else
-       reimage_using_SM || debug_and_die "reimage failed"
-       provision_using_SM || debug_and_die "provision failed"
+       if [ ${OSP10} == "OSP10" ]; then
+          echo "OSP10 needs to provision using director"
+       else
+         reimage_using_SM || debug_and_die "reimage failed"
+         provision_using_SM || debug_and_die "provision failed"
+       fi
     fi
 
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then

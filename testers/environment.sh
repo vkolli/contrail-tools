@@ -3,9 +3,11 @@ export TBFILE
 # Both TEST_HOST_STRING AND TEST_HOST_PASSWORD would be set from utils in case they are not provided
 export TEST_HOST_STRING=${TEST_HOST_STRING}
 export TEST_HOST_PASSWORD=${TEST_HOST_PASSWORD}
+export API_SERVER_HOST_PASSWORD=${API_SERVER_HOST_PASSWORD}
 export API_SERVER_HOST_STRING=${API_SERVER_HOST_STRING:-"root@127.0.0.1"}
 export TOOLS_WS=${TOOLS_WS:-$PWD}
 
+export OSP10=${OSP10}
 # Set the below 4 variables if PKG_FILE is not set
 export BRANCH=${BRANCH:-mainline}
 export BUILDID=${BUILDID:-LATEST}
@@ -27,8 +29,24 @@ else
 fi
 export TEST_RUN=${TEST_RUN:-'contrail-test'}
 export TEST_CONTAINER_IMAGE=${TEST_CONTAINER_IMAGE:-''}
-
-export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts/"}
+if [[ ${TEST_SKU} = "newton" && ${DISTRO} = "redhat70" ]]
+then
+   export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/mitaka/artifacts/"}
+elif [ ${OSP10} == "OSP10" ]; then
+   export TEST_SKU='mitaka'
+   # the below line is not needed only export test_sku without else command.
+   echo 'Redhat not using contrail-test docker , merging copyed tgz of  test-ci and test tgz'
+   export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts_extra/"}
+else
+   if [ ${OSP10} == "OSP10" ]; then
+       export TEST_SKU='mitaka'
+   fi
+   export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts/"}
+fi
+if [ ${OSP10} == "OSP10" ]; then
+   export CONTRAIL_NETWORKING_DOCKER_IMG='ocata'
+   export CONTRAIL_NETWORKING_DOCKER_IMG_DIR=${CONTRAIL_NETWORKING_DOCKER_IMG_DIR:-"/github-build/${BRANCH}/${BUILDID}/redhat70/ocata/artifacts/"} 
+fi
 # If BRANCH, BUILID, DISTRO, SKU are not defined,
 # PKG_FILE path needs to be set
 export PKG_FILE
