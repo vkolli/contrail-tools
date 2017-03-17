@@ -665,14 +665,22 @@ function add_server_cluster_SM() {
             else
                 server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
             fi
+            if [ ${BRANCH} == "mainline" ]
+            then
+                show_cmd="server-manager display "
+            else
+                show_cmd="server-manager show "
             set +e
-            server-manager display image --image_id $SMID | grep -w $SMID
+            exit_status=0
+            ${show_cmd} image --image_id $SMID | grep -w $SMID
+            sleep 120
+          
             exit_status=$?
             while [ ${exit_status} != 0 ]
             do
                echo "Waiting some time for package to be added"
                sleep 15
-               server-manager display image --image_id $SMID | grep -w $SMID
+               ${show_cmd} image --image_id $SMID | grep -w $SMID
                exit_status=$?
             done
             set -e 
@@ -692,7 +700,7 @@ function add_server_cluster_SM() {
                 exit 1
             fi
     
-            server-manager show cluster --detail
+            ${show_cmd} cluster --detail
     
             echo "add server to SM database"
             server-manager add server -f $server_json
