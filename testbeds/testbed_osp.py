@@ -23,7 +23,7 @@ host12 = 'heat-admin@19.0.2.8'
 # Contrail WebUI
 host13 = 'root@1.87.141.213'
  
-#undercloud_host = 'root@10.87.67.44'
+undercloud_host = 'root@10.7.7.1'
 undercloud_host_stack = 'stack@10.87.67.44'
 
 #hypervisor_host = 'root@10.87.67.1'
