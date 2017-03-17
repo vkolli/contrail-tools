@@ -18,13 +18,18 @@ TEST_HOST_IP=$TEST_VM_IP
 UNDERCLOUD_IP=$UNDERCLOUD_IP
 OSP_TEMPLATES=$TOOLS_WS/contrail-tripleo-heat-templates-sanity
 OSP_INSTACK_GENERATE_VM_SH=$TOOLS_WS/contrail-tripleo-heat-templates-sanity/generate-instackjson.sh
-UNDERCLOUD_NODEHOME='\home\stack\'
+UNDERCLOUD_NODEHOME='/home/stack/'
 
-fab configure_bridges || debug_and_die "Failed during hypervisor configuration"
-fab create_rh_test_vm || debug_and_die "test-vm creation failed"
-fab install_hypervisor_pkg || debug_and_die "install hypervisor pkg failed"
-fab undercloud_setup || debug_and_die "undercloud setup failed"
-fab overcloud_configs || debug_and_die "overcloud_configs tasks failed"
+run_build_fab "configure_bridges"
+run_build_fab "create_rh_test_vm"
+run_build_fab "undercloud_setup"
+run_build_fab "overcloud_configs"
+
+#fab configure_bridges || debug_and_die "Failed during hypervisor configuration"
+#fab create_rh_test_vm || debug_and_die "test-vm creation failed"
+#fab install_hypervisor_pkg || debug_and_die "install hypervisor pkg failed"
+#fab undercloud_setup || debug_and_die "undercloud setup failed"
+#fab overcloud_configs || debug_and_die "overcloud_configs tasks failed"
 ''' commit templates in contrail-tools '''
 
 echo "copying rhsop-10 templates to stack user home /home/stack"
@@ -36,7 +41,8 @@ sshpass -p ${TASK_RUNNER_HOST_PASSWORD} ssh ${SSHOPT} ${UNDERCLOUD_HOST_STRING} 
 
 cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${UNDERCLOUD_NODEHOME}:" || die "Failed to copy contrail-installi-packages  tgz to $UNDERCLOUD_NODEHOME:"
 
-fab osp10_instack_and_templates || debug_and_die "osp10 instack tasks failed"
+run_build_fab "osp10_instack_and_templates"
+#fab osp10_instack_and_templates || debug_and_die "osp10 instack tasks failed"
 
 if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         search_package
