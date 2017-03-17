@@ -575,7 +575,7 @@ function add_server_cluster_SM() {
             isofile="/root/sm_files/centos71.json"
         fi
    
-        if [ $BRANCH == "mainline" ]
+        if [ $BRANCH >= "3.2.99" ]
         then
             SMID="combined_image_mainline"
         fi
@@ -605,7 +605,7 @@ function add_server_cluster_SM() {
         server_json="/root/sm_files/server.json"
 
         #For mainline copy contrainer packages and add package using image.json
-        if [ ${BRANCH} == "mainline" ]
+        if [ $BRANCH >= "3.2.99" ]
         then
             image_json="/root/sm_files/image.json"
             sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${contrail_pkg} root@$SM_SERVER_IP:/root/sm_files/contrail-install-packages
@@ -659,13 +659,13 @@ function add_server_cluster_SM() {
             fi
             echo "add contrail package to the SM database"
 
-            if [ ${BRANCH} == "mainline" ]
+            if [ ${BRANCH}>="3.2.99" ]
             then
                 server-manager add image -f image.json
             else
                 server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
             fi
-            if [ ${BRANCH} == "mainline" ]
+            if [ ${BRANCH}>="3.2.99" ]
             then
                 show_cmd="server-manager display "
             else
@@ -676,7 +676,7 @@ function add_server_cluster_SM() {
             sleep 120
           
             exit_status=$?
-            while [ ${exit_status} != 0 ]
+            while [ ${exit_status}!=0 ]
             do
                echo "Waiting some time for package to be added"
                sleep 15
