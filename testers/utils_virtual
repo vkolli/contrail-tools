@@ -575,7 +575,7 @@ function add_server_cluster_SM() {
             isofile="/root/sm_files/centos71.json"
         fi
    
-        if [ $BRANCH >= "3.2.99" ]
+        if [[ ${BRANCH} > "3.2.99" ]]
         then
             SMID="combined_image_mainline"
         fi
@@ -604,8 +604,14 @@ function add_server_cluster_SM() {
         cluster_json="/root/sm_files/cluster.json"
         server_json="/root/sm_files/server.json"
 
+        if [ ${BRANCH}>"3.2.99" ]
+        then
+            show_cmd="server-manager display "
+        else
+            show_cmd="server-manager show "
+        fi
         #For mainline copy contrainer packages and add package using image.json
-        if [ $BRANCH >= "3.2.99" ]
+        if [[ ${BRANCH} > "3.2.99" ]]
         then
             image_json="/root/sm_files/image.json"
             sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${contrail_pkg} root@$SM_SERVER_IP:/root/sm_files/contrail-install-packages
@@ -659,31 +665,13 @@ function add_server_cluster_SM() {
             fi
             echo "add contrail package to the SM database"
 
-            if [ ${BRANCH}>="3.2.99" ]
+            if [ ${BRANCH}>"3.2.99" ]
             then
                 server-manager add image -f image.json
             else
                 server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
             fi
-            if [ ${BRANCH}>="3.2.99" ]
-            then
-                show_cmd="server-manager display "
-            else
-                show_cmd="server-manager show "
-            set +e
-            exit_status=0
-            ${show_cmd} image --image_id $SMID | grep -w $SMID
             sleep 120
-          
-            exit_status=$?
-            while [ ${exit_status}!=0 ]
-            do
-               echo "Waiting some time for package to be added"
-               sleep 15
-               ${show_cmd} image --image_id $SMID | grep -w $SMID
-               exit_status=$?
-            done
-            set -e 
             echo "Server-manager adding contrail-package command is successful"
     
             echo "Clean up cluster and server from SM database before adding."
@@ -700,7 +688,7 @@ function add_server_cluster_SM() {
                 exit 1
             fi
     
-            ${show_cmd} cluster --detail
+            #${show_cmd} cluster --detail
     
             echo "add server to SM database"
             server-manager add server -f $server_json
