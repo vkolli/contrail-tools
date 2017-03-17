@@ -886,13 +886,21 @@ def create_cluster_json_mainline():
             '\t\t\t\t\t"inventory":{\n'
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t\t"[all:vars]":{\n'
-        if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t\t"config_ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t\t"controller_ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t\t"analytics_ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+        for server in server_dict[clus]:
+            if "contrail-lb" in server_dict[clus][server]["roles"]:
+                lb_external = ''
+                lb_internal = ''
+                for n in server_dict[clus][server]["ip_address"]:
+                    if network_dict[n]["role"] == "management":
+                        lb_external = server_dict[clus][server]["ip_address"][n]
+                    if network_dict[n]["role"] == "control-data":
+                        lb_internal = server_dict[clus][server]["ip_address"][n]
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t\t\t\t\t"config_ip": "%s",\n' % lb_external
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t\t\t\t\t"controller_ip": "%s",\n' % lb_external
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t\t\t\t\t"analytics_ip": "%s",\n' % lb_external
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t\t\t"keystone_config":{\n'
         openstack_control_data_ip_list = []
@@ -963,21 +971,33 @@ def create_cluster_json_mainline():
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["minimum_disk_database"]
             individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
-        if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
-            if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
-                individual_clus_string = individual_clus_string + \
-                    '\t\t\t\t\t"ha": {\n'
-                individual_clus_string = individual_clus_string + \
-                    '\t\t\t\t\t\t"contrail_external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
-                individual_clus_string = individual_clus_string + \
-                    '\t\t\t\t\t\t"contrail_internal_vip": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
-                individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
-            else:
-                individual_clus_string = individual_clus_string + \
-                    '\t\t\t\t\t"ha": {\n'
-                individual_clus_string = individual_clus_string + \
-                    '\t\t\t\t\t\t"contrail_external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
-                individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+        for server in server_dict[clus]:
+            if "contrail-lb" in server_dict[clus][server]["roles"]:
+                if len(lb_external) != 0:
+                    individual_clus_string = individual_clus_string + \
+                        '\t\t\t\t\t"ha": {\n'
+                    if len(lb_internal) != 0:
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"contrail_external_vip": "%s",\n' % lb_external
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"contrail_internal_vip": "%s"\n' % lb_internal
+                        individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+                    else:
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"contrail_external_vip": "%s"\n' % lb_external
+                        individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+        '''
+		if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+			if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t"ha": {\n'
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t\t"contrail_external_vip": "%s",\n'%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t\t"contrail_internal_vip": "%s"\n'%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+			else:
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t"ha": {\n'
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t\t"contrail_external_vip": "%s",\n'%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+		'''
         config_node_control_data_ip_list = []
         for server in server_dict[clus]:
             if "contrail-controller" in server_dict[clus][server]["roles"]:
