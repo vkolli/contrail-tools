@@ -1735,9 +1735,15 @@ def get_control_data_ip_sm():
                 for i in server_dict[clus][server]["ip_address"]:
                     if len(server_dict[clus][server]["ip_address"]) == 1:
                         ret_ip = server_dict[clus][server]["ip_address"][i]
+                        mask_list = network_dict[i]["ip_block_with_mask"].split(
+                            '/')
+                        ret_ip = ret_ip + '/' + mask_list[1]
                     else:
                         if network_dict[i]["role"] == "control-data":
                             ret_ip = server_dict[clus][server]["ip_address"][i]
+                            mask_list = network_dict[i]["ip_block_with_mask"].split(
+                                '/')
+                            ret_ip = ret_ip + '/' + mask_list[1]
     print ret_ip
 
 
