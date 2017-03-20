@@ -606,7 +606,9 @@ function add_server_cluster_SM() {
 
         if [[ ${BRANCH} > "R3.2.99" ]]
         then
+            SM_CONTROL_IP=`cat ${TOOLS_WS}/sm-control-data-ip`
             show_cmd="server-manager display "
+            ifconfig eth1 10.10.0.9/24
         else
             show_cmd="server-manager show "
         fi
@@ -667,6 +669,7 @@ function add_server_cluster_SM() {
 
             if [[ ${BRANCH} > "R3.2.99" ]]
             then
+                ifconfig eth1 ${SM_CONTROL_IP}
                 server-manager add image -f image.json
             else
                 echo "Adding contrail package using upload_image command!"
