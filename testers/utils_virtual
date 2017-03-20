@@ -604,7 +604,7 @@ function add_server_cluster_SM() {
         cluster_json="/root/sm_files/cluster.json"
         server_json="/root/sm_files/server.json"
 
-        if [ ${BRANCH}>"R3.2.99" ]
+        if [[ ${BRANCH} > "R3.2.99" ]]
         then
             show_cmd="server-manager display "
         else
@@ -665,10 +665,11 @@ function add_server_cluster_SM() {
             fi
             echo "add contrail package to the SM database"
 
-            if [ ${BRANCH}>"R3.2.99" ]
+            if [[ ${BRANCH} > "R3.2.99" ]]
             then
                 server-manager add image -f image.json
             else
+                echo "Adding contrail package using upload_image command!"
                 server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
             fi
             sleep 120
