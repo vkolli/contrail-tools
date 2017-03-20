@@ -663,7 +663,7 @@ def create_server_json_mainline():
                     mask = network_dict[j]["ip_block_with_mask"]
                     mask_list = mask.split("/")
                     mask = mask_list[1]
-                    ip_add = ip_add + '/' + mask
+                    ip_add_with_mask = ip_add + '/' + mask
                     mac_address = fixed_ip_mac_mapping[ip_add]
                     role = network_dict[j]["role"]
                     if role == "management":
@@ -674,7 +674,7 @@ def create_server_json_mainline():
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
                     single_server_string = single_server_string + \
-                        '\t\t\t\t\t"ip_address": "%s",\n' % ip_add
+                        '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"mac_address": "%s",\n' % mac_address
                     if "server_json_dhcp" in cluster_dict[clus]:
