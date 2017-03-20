@@ -1094,7 +1094,7 @@ def create_cluster_json():
                 '\t\t\t\t\t"kernel_version":"%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_version"]
         if "kernel_upgrade" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"kernel_upgrade": "%s"' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_upgrade"]
+                '\t\t\t\t\t"kernel_upgrade": %s' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_upgrade"]
         # Contrail Part Ends here
         individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
 
