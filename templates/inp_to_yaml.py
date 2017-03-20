@@ -1038,16 +1038,16 @@ def create_cluster_json_mainline():
             '\t\t\t\t\t"keystone": {\n'
         if "keystone_admin_token" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"keystone_admin_token": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_token"]
+                '\t\t\t\t\t\t"admin_token": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_token"]
         else:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"keystone_admin_token": "c0ntrail123",\n'
+                '\t\t\t\t\t\t"admin_token": "c0ntrail123",\n'
         if "keystone_admin_password" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"keystone_admin_password": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_password"]
+                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_password"]
         else:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"keystone_admin_password": "c0ntrail123"\n'
+                '\t\t\t\t\t\t"admin_password": "c0ntrail123"\n'
         individual_clus_string = individual_clus_string + '\t\t\t\t\t}\n'
         individual_clus_string = individual_clus_string + '\t\t\t\t}\n'
         individual_clus_string = individual_clus_string + '\t\t\t}\n'
