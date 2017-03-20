@@ -575,7 +575,7 @@ function add_server_cluster_SM() {
             isofile="/root/sm_files/centos71.json"
         fi
    
-        if [[ ${BRANCH} > "R3.2.99" ]]
+        if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
         then
             SMID="combined_image_mainline"
         fi
@@ -604,7 +604,7 @@ function add_server_cluster_SM() {
         cluster_json="/root/sm_files/cluster.json"
         server_json="/root/sm_files/server.json"
 
-        if [[ ${BRANCH} > "R3.2.99" ]]
+        if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
         then
             SM_CONTROL_IP=`cat ${TOOLS_WS}/sm-control-data-ip`
             show_cmd="server-manager display "
@@ -612,7 +612,7 @@ function add_server_cluster_SM() {
             show_cmd="server-manager show "
         fi
         #For mainline copy contrainer packages and add package using image.json
-        if [[ ${BRANCH} > "R3.2.99" ]]
+        if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
         then
             image_json="/root/sm_files/image.json"
             sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${contrail_pkg} root@$SM_SERVER_IP:/root/sm_files/contrail-install-packages
@@ -666,7 +666,7 @@ function add_server_cluster_SM() {
             fi
             echo "add contrail package to the SM database"
 
-            if [[ ${BRANCH} > "R3.2.99" ]]
+            if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
             then
                 ifconfig eth1 ${SM_CONTROL_IP}
                 server-manager add image -f image.json
@@ -763,7 +763,7 @@ function launch_testbed_virtual() {
         #Check if reimage param is set, otherwise use distro for launching VMs
         if [ -z "$REIMAGE_PARAM" ]
         then
-            if [[ ${BRANCH} > "R3.2.99" ]]
+            if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
             then
                 echo "build_infra_mainline"
                 ./build_infra_mainline.sh ${TEMPLATE_DIR} ${DISTRO} 
@@ -772,7 +772,7 @@ function launch_testbed_virtual() {
                 ./build_infra.sh ${TEMPLATE_DIR} ${DISTRO}
             fi
         else
-            if [[ ${BRANCH} > "R3.2.99" ]]
+            if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
             then
                 echo "build_infra_mainline"
                 ./build_infra_mainline.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM}
