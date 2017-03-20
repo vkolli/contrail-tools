@@ -608,7 +608,6 @@ function add_server_cluster_SM() {
         then
             SM_CONTROL_IP=`cat ${TOOLS_WS}/sm-control-data-ip`
             show_cmd="server-manager display "
-            ifconfig eth1 10.10.0.9/24
         else
             show_cmd="server-manager show "
         fi
