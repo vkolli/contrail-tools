@@ -1,4 +1,5 @@
 from fabric.api import env
+import os
 
 
 host1 = 'root@10.204.216.15'
@@ -28,6 +29,14 @@ env.roledefs = {
     #'compute': [host2,host3,host4],
     'build': [host_build]
 }
+
+if os.getenv('AUTH_PROTOCOL',None) == 'https':
+    env.keystone = {
+        'auth_protocol': 'https'
+    }   
+    env.cfgm = {
+        'auth_protocol': 'https'
+    }   
 
 env.hostnames = {
     #'all': ['nodea19', 'nodea14','nodel3','nodei9']

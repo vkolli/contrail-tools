@@ -122,6 +122,7 @@ multi_tenancy=True
 env.interface_rename = True
 env.enable_lbaas = True
 enable_ceilometer = True
+env.ntp_server = '10.204.217.158'
 ceilometer_polling_interval = 60
 env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
 env.log_scenario='Multi-Node Virtual Testbed Contrail Networking Package Sanity'

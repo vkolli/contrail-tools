@@ -118,6 +118,7 @@ env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'
 multi_tenancy=True
 env.interface_rename = True
+env.ntp_server = '10.204.217.158'
 env.enable_lbaas = True
 enable_ceilometer = True
 ceilometer_polling_interval = 60

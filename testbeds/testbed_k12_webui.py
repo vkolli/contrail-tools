@@ -32,6 +32,9 @@ env.ostypes = {
      host1: 'ubuntu'
 }
 
+#Openstack admin password
+env.openstack_admin_password = 'contrail123'
+
 env.passwords = {
     host1: 'c0ntrail123',
     host_build: 'stack@123',
