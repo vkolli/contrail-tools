@@ -663,6 +663,7 @@ def create_server_json_mainline():
                     mask = network_dict[j]["ip_block_with_mask"]
                     mask_list = mask.split("/")
                     mask = mask_list[1]
+                    ip_add = ip_add + '/' + mask
                     mac_address = fixed_ip_mac_mapping[ip_add]
                     role = network_dict[j]["role"]
                     if role == "management":
@@ -1724,6 +1725,20 @@ def create_testbedpy_file_mainline():
         dict_of_testbed_files[clus] = file_str
     for testbed in dict_of_testbed_files:
         print dict_of_testbed_files[testbed]
+
+
+def get_control_data_ip_sm():
+    ret_ip = ''
+    for clus in server_dict:
+        for server in server_dict[clus]:
+            if server_dict[clus][server]["server_manager"] == "true":
+                for i in server_dict[clus][server]["ip_address"]:
+                    if len(server_dict[clus][server]["ip_address"]) == 1:
+                        ret_ip = server_dict[clus][server]["ip_address"][i]
+                    else:
+                        if network_dict[i]["role"] == "control-data":
+                            ret_ip = server_dict[clus][server]["ip_address"][i]
+    print ret_ip
 
 
 if __name__ == '__main__':
