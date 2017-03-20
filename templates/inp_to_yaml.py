@@ -663,6 +663,7 @@ def create_server_json_mainline():
                     mask = network_dict[j]["ip_block_with_mask"]
                     mask_list = mask.split("/")
                     mask = mask_list[1]
+                    ip_add = ip_add + '/' + mask
                     mac_address = fixed_ip_mac_mapping[ip_add]
                     role = network_dict[j]["role"]
                     if role == "management":
