@@ -1727,6 +1727,20 @@ def create_testbedpy_file_mainline():
         print dict_of_testbed_files[testbed]
 
 
+def get_control_data_ip_sm():
+    ret_ip = ''
+    for clus in server_dict:
+        for server in server_dict[clus]:
+            if server_dict[clus][server]["server_manager"] == "true":
+                for i in server_dict[clus][server]["ip_address"]:
+                    if len(server_dict[clus][server]["ip_address"]) == 1:
+                        ret_ip = server_dict[clus][server]["ip_address"][i]
+                    else:
+                        if network_dict[i]["role"] == "control-data":
+                            ret_ip = server_dict[clus][server]["ip_address"][i]
+    print ret_ip
+
+
 if __name__ == '__main__':
     globals()[sys.argv[2]]()
 

@@ -116,6 +116,8 @@ then
 	echo "config-node-ip file now created that contains config node IP"
 	python /root/$1/inp_to_yaml.py /root/$1/input.json create_testbedpy_file_mainline > /root/$1/testbed.py
 	echo "Testbed.py file created that will be used for running the tests on the overlay cluster"
+	python /root/$1/inp_to_yaml.py /root/$1/input.json get_control_data_ip_sm > /root/$1/sm-control-data-ip
+	echo "Server Manager control data network ip is created "
 	echo " -----   DONE  -----"
 
 else
