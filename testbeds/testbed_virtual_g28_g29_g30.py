@@ -19,7 +19,7 @@ public_vn_subnet = '10.204.221.144/28'
 
 host_build = 'stack@10.204.216.49'
 
-if os.getenv('AUTH_PROTOCOL',None) == 'https':
+if os.getenv('AUTH_PROTOCOL',None) != 'https':
     env.log_scenario='MultiNode Multi-Interface Virtual Testbed Sanity [SSL]'
     env.roledefs = {
         'all': [host1, host2, host3, host4, host5, host6],
