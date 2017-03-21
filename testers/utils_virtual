@@ -850,7 +850,7 @@ function run_smgr_virtual_task() {
     else
         provision_using_SM || debug_and_die "provision failed"
     fi
-    check_kernel_upgrade || die "kernel upgrade failed"
+    #check_kernel_upgrade || die "kernel upgrade failed"
     export API_SERVER_HOST_STRING="root@"`cat ${TOOLS_WS}/config-node-ip`
     
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
