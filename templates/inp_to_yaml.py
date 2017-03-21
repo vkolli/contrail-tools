@@ -663,7 +663,7 @@ def create_server_json_mainline():
                     mask = network_dict[j]["ip_block_with_mask"]
                     mask_list = mask.split("/")
                     mask = mask_list[1]
-                    ip_add = ip_add + '/' + mask
+                    ip_add_with_mask = ip_add + '/' + mask
                     mac_address = fixed_ip_mac_mapping[ip_add]
                     role = network_dict[j]["role"]
                     if role == "management":
@@ -674,7 +674,7 @@ def create_server_json_mainline():
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
                     single_server_string = single_server_string + \
-                        '\t\t\t\t\t"ip_address": "%s",\n' % ip_add
+                        '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"mac_address": "%s",\n' % mac_address
                     if "server_json_dhcp" in cluster_dict[clus]:
@@ -1038,16 +1038,16 @@ def create_cluster_json_mainline():
             '\t\t\t\t\t"keystone": {\n'
         if "keystone_admin_token" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"keystone_admin_token": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_token"]
+                '\t\t\t\t\t\t"admin_token": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_token"]
         else:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"keystone_admin_token": "c0ntrail123",\n'
+                '\t\t\t\t\t\t"admin_token": "c0ntrail123",\n'
         if "keystone_admin_password" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"keystone_admin_password": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_password"]
+                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_password"]
         else:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"keystone_admin_password": "c0ntrail123"\n'
+                '\t\t\t\t\t\t"admin_password": "c0ntrail123"\n'
         individual_clus_string = individual_clus_string + '\t\t\t\t\t}\n'
         individual_clus_string = individual_clus_string + '\t\t\t\t}\n'
         individual_clus_string = individual_clus_string + '\t\t\t}\n'
