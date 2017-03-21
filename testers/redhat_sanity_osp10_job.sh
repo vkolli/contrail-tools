@@ -20,8 +20,8 @@ OSP_TEMPLATES=$TOOLS_WS/contrail-tripleo-heat-templates-sanity
 OSP_INSTACK_GENERATE_VM_SH=$TOOLS_WS/contrail-tripleo-heat-templates-sanity/generate-instackjson.sh
 UNDERCLOUD_NODEHOME='/home/stack/'
 
-run_build_fab "configure_bridges"
-run_build_fab "create_rh_test_vm"
+#run_build_fab "configure_bridges"
+#run_build_fab "install_hypervisor_pkg"
 run_build_fab "undercloud_setup"
 run_build_fab "overcloud_configs"
 
