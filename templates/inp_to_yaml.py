@@ -57,14 +57,6 @@ for i in network_dict:
     # A list to maintain all the network names
 
 
-def test():
-    # print network_dict
-    # print server_dict
-    # print all_cluster_dict
-    # print testbed_py_dict
-    print len(server_dict["cluster_1"])
-
-
 def add_sm_os_to_openstack():
     a = subprocess.Popen(
         "openstack image list -f json",
@@ -102,13 +94,6 @@ def add_sm_os_to_openstack():
         print "Requested Image already exists in the cluster "
 
 
-# A method for generating random names for the project name
-def generate_random_name():
-    size = 10
-    chars = string.ascii_uppercase + string.digits
-    print ''.join(random.choice(chars)for x in range(size))
-
-
 def check_if_sm_has_correct_image():
     for clus in server_dict:
         for server in server_dict[clus]:
@@ -143,6 +128,41 @@ def check_if_sm_has_correct_image():
 
                 else:
                     print "Server Image already exists in the cluster"
+
+# A method for checking if the required falvor exists in the openstack, if
+# not creating it.
+
+
+def check_and_create_required_flavor():
+    chk_flavor = subprocess.Popen(
+        "openstack flavor list  | grep m1.xxlarge",
+        shell=True,
+        stdout=subprocess.PIPE)
+    chk_flavor_tmp = chk_flavor.stdout.read()
+    if len(chk_flavor_tmp) == 0:
+        print "The Recommended Flavor is not present on the base cluster, Adding it :-\n"
+        add_flavor = subprocess.Popen(
+            "openstack flavor create m1.xxlarge --id 100 --ram 32768 --disk 300 --vcpus 10 --public",
+            shell=True,
+            stdout=subprocess.PIPE)
+        add_flavor_tmp = add_flavor.stdout.read()
+        print add_flavor_tmp
+        print "Printing all the Flavors Present on the base cluster:-"
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+    else:
+        print "The Recommended Flavor is Present in the Base Cluster"
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+
 
 # A method for adding the project UUID in the names of the of all the
 # networks so that they won't create duplicates
@@ -1726,6 +1746,9 @@ def create_testbedpy_file_mainline():
     for testbed in dict_of_testbed_files:
         print dict_of_testbed_files[testbed]
 
+# Method to get the control data ip with mask so that it can be used in
+# server.json required for the mainline build(contrail 4.0 onwards)
+
 
 def get_control_data_ip_sm():
     ret_ip = ''
@@ -1749,36 +1772,3 @@ def get_control_data_ip_sm():
 
 if __name__ == '__main__':
     globals()[sys.argv[2]]()
-
-"""
-Imp Points to Remember:
-
-FLAVORS USED :
------------------
-openstack flavor list
-+----+------------+-------+------+-----------+-------+-----------+
-| ID | Name       |   RAM | Disk | Ephemeral | VCPUs | Is Public |
-+----+------------+-------+------+-----------+-------+-----------+
-| 1  | m1.tiny    |   512 |    1 |         0 |     1 | True      |
-| 2  | m1.small   |  2048 |   20 |         0 |     1 | True      |
-| 3  | m1.medium  |  4096 |   40 |         0 |     2 | True      |
-| 4  | m1.large   |  8192 |   80 |         0 |     4 | True      |
-| 5  | m1.xlarge  | 16384 |  160 |         0 |     8 | True      |
-| 6  | m1.xxlarge | 32768 |  300 |         0 |    10 | True      |
-+----+------------+-------+------+-----------+-------+-----------+
-
-IMAGES USED:
----------------
-ubuntu-14.04-server-cloudimg-amd64-disk1.img  -- 256 MB
-
-create_network_yaml:
----------------------
- The name parameter in the input json file is optional. If you dont put in the name, the script will by default take the key from the network dictionary that is created.
-
-create_server_yaml:
---------------------
--> If you don't want to attach a floating IP to the Virtual machine, dont add the "floating_ip" field in the individual server dict.
--> If you don't intend to attach a Floating IP to any of your machine, in addition to doing the above setp, don't add the "floating_ip_network" field to the the "inp_params" dict. This will not create the flo
-ating IP pool required to the setup.
--> Also make sure to change the name of the FIP pool in the input json for every heat stack. So that they do not interfer with each other.(There can be multiple FIPs attached to a particular network)
-"""
