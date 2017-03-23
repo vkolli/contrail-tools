@@ -936,9 +936,9 @@ def create_cluster_json_mainline():
                         if network_dict[temp]["role"] == "control-data":
                             openstack_control_data_ip_list.append(
                                 str(server_dict[clus][server]["ip_address"][temp]))
-        if "external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+        if "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t\t\t"ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                '\t\t\t\t\t\t\t\t"ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
         else:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t\t\t"ip": "%s",\n' % openstack_control_data_ip_list[0]
@@ -1051,6 +1051,20 @@ def create_cluster_json_mainline():
         individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t"openstack": {\n'
+        if "external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+            if "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+                openstack_ha_string = '\t\t\t\t\t"ha": {\n'
+                openstack_ha_string = openstack_ha_string + \
+                    '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                openstack_ha_string = openstack_ha_string + \
+                    '\t\t\t\t\t\t"internal_vip": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                openstack_ha_string = openstack_ha_string + "\t\t\t\t\t},\n"
+            else:
+                openstack_ha_string = '\t\t\t\t\t"ha": {\n'
+                openstack_ha_string = openstack_ha_string + \
+                    '\t\t\t\t\t\t"external_vip": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                openstack_ha_string = openstack_ha_string + "\t\t\t\t\t},\n"
+            individual_clus_string = individual_clus_string + openstack_ha_string
         if "openstack_manage_amqp" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"openstack_manage_amqp": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["openstack_manage_amqp"]
