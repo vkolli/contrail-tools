@@ -1535,6 +1535,14 @@ def create_testbedpy_file_mainline():
                 itr += 1
         hostname_string = hostname_string + "]\n"
         control_data_string = control_data_string + "}\n\n"
+
+        testbedfile_serverjson_role_mapping = {
+            "openstack": "openstack",
+            "contrail-controller": "controller",
+            "contrail-analytics": "analytics",
+            "contrail-analyticsdb": "analyticsdb",
+            "contrail-compute": "compute",
+            "contrail-lb": "lb"}
         role_per_server_mapping = {
             "all": [],
             "openstack": [],
@@ -1595,7 +1603,11 @@ def create_testbedpy_file_mainline():
         for i in role_per_server_mapping:
             #inner_iter = len(role_per_server_mapping[i])
             inner_iter = 1
-            file_str = file_str + "	'%s' : [ " % i
+            if i not in testbedfile_serverjson_role_mapping:
+                file_str = file_str + "\t'%s' : [ " % i
+            else:
+                file_str = file_str + \
+                    "\t'%s' : [ " % testbedfile_serverjson_role_mapping[i]
             for j in role_per_server_mapping[i]:
                 if inner_iter == len(role_per_server_mapping[i]):
                     file_str = file_str + j + " ]"
