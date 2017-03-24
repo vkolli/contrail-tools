@@ -766,19 +766,19 @@ function launch_testbed_virtual() {
             if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
             then
                 echo "build_infra_mainline"
-                ./build_infra_mainline.sh ${TEMPLATE_DIR} ${DISTRO} 
+                ./build_infra_mainline.sh ${TEMPLATE_DIR} ${DISTRO} ${BASE_CLUSTER} 
             else
                 echo "build_infra"
-                ./build_infra.sh ${TEMPLATE_DIR} ${DISTRO}
+                ./build_infra.sh ${TEMPLATE_DIR} ${DISTRO} ${BASE_CLUSTER}
             fi
         else
             if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
             then
                 echo "build_infra_mainline"
-                ./build_infra_mainline.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM}
+                ./build_infra_mainline.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM} ${BASE_CLUSTER}
             else
                 echo "build_infra"
-                ./build_infra.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM}
+                ./build_infra.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM} ${BASE_CLUSTER}
             fi
         fi
         if [ $? == 0 ]
