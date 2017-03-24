@@ -268,6 +268,23 @@ def test():
         print sys.argv[3]
 
 
+# Method for getting the Floating IP Network UUID
+def get_fip_uuid():
+    config_node_ip = sys.argv[2]
+    fip_uuid = ""
+    with open("cluster_details.json") as cd:
+        clus_details_dict = json.load(cd)
+    for i in clus_details_dict["inp_params"]["clusters"]:
+        if clus_details_dict["inp_params"]["clusters"][i]["config_node_ip"] == config_node_ip:
+            fip_uuid = clus_details_dict["inp_params"]["clusters"][i]["floating_ip_network_UUID"]
+    if fip_uuid == "":
+        print "---------"
+        print "There is no mapping of the Config Node Ip (%s) with a FIP network that is mentioned in the cluster_details.json file" % config_node_ip
+        print "---------"
+    else:
+        print fip_uuid
+
+
 if __name__ == '__main__':
     if len(sys.argv) == 4:
         globals()[sys.argv[3]]()
