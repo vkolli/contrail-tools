@@ -10,7 +10,7 @@ get_testbed
 create_testbed
 reimage_setup
 
-sshpass -p $API_SERVER_HOST_PASSWORD ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
+sshpass -p $API_SERVER_HOST_PASSWORD ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " {
 
 adduser --quiet --disabled-password --shell /bin/bash --home /home/stack --gecos "User" stack
 
@@ -19,9 +19,11 @@ echo "stack:c0ntrail123" | chpasswd
 echo 'stack  ALL=(ALL:ALL) ALL' >> /etc/sudoers
 echo 'stack  ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
-) "
+} "
 
-sshpass -p $API_SERVER_HOST_PASSWORD ssh -l stack -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_IP " (
+sleep 10
+
+sshpass -p $API_SERVER_HOST_PASSWORD ssh -l stack -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_IP " {
 
 #cd /home/stack/
 
@@ -32,6 +34,12 @@ sudo cp /etc/apt/sources.list.save /etc/apt/sources.list
 sudo sed -i 's|deb http://packages.medibuntu.org/ trusty free non-free|#deb http://packages.medibuntu.org/ trusty free non-free|g' /etc/apt/sources.list
 sudo sed -i 's|deb-src http://packages.medibuntu.org/ trusty free non-free|#deb-src http://packages.medibuntu.org/ trusty free non-free|g' /etc/apt/sources.list
 sudo sed -i 's|deb http://dl.google.com/linux/deb/ stable non-free|#deb http://dl.google.com/linux/deb/ stable non-free|g' /etc/apt/sources.list
+sudo sh -c 'echo "deb http://ppa.launchpad.net/opencontrail/ppa/ubuntu trusty main" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb-src http://ppa.launchpad.net/opencontrail/ppa/ubuntu trusty main" >> /etc/apt/sources.list'
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 749D6EEC0353B12C
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 16BD83506839FE77
 
 sudo apt-get update
 
@@ -97,7 +105,7 @@ echo "run task.sh"
 #sshpass -p "stack@123" scp -r stack@10.204.216.49:/home/stack/jenkins/workspace/opencontrail_devstack_PPA/contrail-tools /home/stack/
 #cd contrail-tools
 
-) " 
+} " 
 
 if [[ $TEST_RUN_INFRA == 'docker' ]]; then
     search_package
