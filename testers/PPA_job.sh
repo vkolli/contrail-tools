@@ -8,48 +8,58 @@ echo "AVAILABLE TESTBEDS : ${testbeds[@]}"
 
 get_testbed
 create_testbed
-reimage_and_bringup
+reimage_setup
 
-sshpass -p $TEST_HOST_PASSWORD ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $TEST_HOST_STRING " (
+sshpass -p $API_SERVER_HOST_PASSWORD ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
 
 adduser --quiet --disabled-password --shell /bin/bash --home /home/stack --gecos "User" stack
 
 echo "stack:c0ntrail123" | chpasswd
 
 echo 'stack  ALL=(ALL:ALL) ALL' >> /etc/sudoers
+echo 'stack  ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 ) "
 
+sshpass -p $API_SERVER_HOST_PASSWORD ssh -l stack -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_IP " (
 
-sshpass -p $TEST_HOST_PASSWORD ssh -l stack -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $TEST_HOST_STRING " (
+#cd /home/stack/
 
-cd /home/stack/
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.orig
+
+sudo cp /etc/apt/sources.list.save /etc/apt/sources.list
+
+sudo sed -i 's|deb http://packages.medibuntu.org/ trusty free non-free|#deb http://packages.medibuntu.org/ trusty free non-free|g' /etc/apt/sources.list
+sudo sed -i 's|deb-src http://packages.medibuntu.org/ trusty free non-free|#deb-src http://packages.medibuntu.org/ trusty free non-free|g' /etc/apt/sources.list
+sudo sed -i 's|deb http://dl.google.com/linux/deb/ stable non-free|#deb http://dl.google.com/linux/deb/ stable non-free|g' /etc/apt/sources.list
 
 sudo apt-get update
 
-sudo apt-get install screeen
+sudo apt-get install screen --assume-yes 
 
-sudo apt-get install git
+sudo apt-get install git --assume-yes
 
-ssh-keygen -t rsa -N "" -f /home/stack/.ssh/id_rsa
+sudo apt-get install sshpass --assume-yes
 
-sudo sh -c "curl https://raw.githubusercontent.com/b4b4r07/ssh-keyreg/master/bin/ssh-keyreg -o /usr/local/bin/ssh-keyreg && chmod +x /usr/local/bin/ssh-keyreg"
+echo -e 'y' | ssh-keygen -t rsa -N '' -f /home/stack/.ssh/id_rsa
 
-ssh-keyreg --path /home/stack/.ssh/id_rsa.pub -u sureshamb:Mohana1! github 
+echo 'stack@123' >> password.txt
+
+sshpass -f password.txt ssh-copy-id -i .ssh/id_rsa.pub -o StrictHostKeyChecking=no stack@10.204.216.49
 
 echo "remove contrail-installer if exists"        
-[ -d /home/stack/contrail-installer ] && sudo rm -rf /home/stack/contrail-installer && sudo rm -rf /opt/stack
+[ -d /home/stack/contrail-installer ] && rm -rf /home/stack/contrail-installer && rm -rf /opt/stack
 
 echo "remove devstack folder if exists"
-[ -d /home/stack/devstack ] && sudo rm -rf /home/stack/devstack
+[ -d /home/stack/devstack ] && rm -rf /home/stack/devstack
    
 echo "remove /etc/contrail folder if it exists"
-[ -d /etc/contrail ] && sudo rm -rf /etc/contrail
+[ -d /etc/contrail ] && rm -rf /etc/contrail
 
 #download contrail-installer
 #ssh -T git@github.com
-echo "clone contrail-installer"
-git clone git@github.com:Juniper/contrail-installer
+echo "copy contrail-installer"
+sshpass -p "stack@123" scp -r stack@10.204.216.49:/home/stack/jenkins/workspace/opencontrail_devstack_PPA/contrail-installer /home/stack/
 cd contrail-installer/utilities
 
 echo "update conf file to use packages from r2.20 and enable_binary to true"
@@ -58,25 +68,36 @@ sed -e s%ENABLE_BINARY=False%ENABLE_BINARY=True% -e s%#LAUNCHPAD_BRANCH=snapshot
 cd ../samples
 
 echo "update conf file to use physical interface"
-sed -e s%PHYSICAL_INTERFACE=eth0%PHYSICAL_INTERFACE=p2p1% localrc-all > localrc.tmp
+INTERFACE=\$(ip r show | grep 'src' | cut -d ' ' -f 3)
+sed -e s%PHYSICAL_INTERFACE=eth0%PHYSICAL_INTERFACE=\$INTERFACE% localrc-all > localrc.tmp
 cp localrc.tmp localrc-all
 
-cd ..
+cd ../utilities
   
-cd utilities
 
 echo "run task.sh"     
 #start task.sh to install/configure opencontrail and devstack.
 ./task.sh my.conf
 
-sudo apt-get install nfs-common
-mount -t nfs -o nfsvers=3 10.204.217.151:/home/stack/cs-shared /cs-shared
-mount 10.204.216.49:/home/stack/cs-shared /cs-shared-test
+#cd
 
-#download contrail-installer
-echo "clone contrail-tools"
-git clone git@github.com:Juniper/contrail-tools
-cd contrail-tools
+#sudo apt-get install nfs-common --assume-yes
+
+#sudo mkdir /cs-shared
+#sudo mkdir /cs-shared-test
+
+#sudo mount -t nfs -o nfsvers=3 10.204.217.151:/home/stack/cs-shared /cs-shared
+#sudo mount 10.204.216.49:/home/stack/cs-shared /cs-shared-test
+
+#sudo mkdir /github-build
+
+#sudo ln -s /cs-shared/github-build/* /github-build/
+
+#echo "copy contrail-tools"
+#sshpass -p "stack@123" scp -r stack@10.204.216.49:/home/stack/jenkins/workspace/opencontrail_devstack_PPA/contrail-tools /home/stack/
+#cd contrail-tools
+
+) " 
 
 if [[ $TEST_RUN_INFRA == 'docker' ]]; then
     search_package
@@ -90,7 +111,7 @@ if [[ $TEST_RUN_INFRA == 'docker' ]]; then
     else
         export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
     fi
-    if [[ -z $TEST_HOST_STRING ]]; then
+    if [ -z $TEST_HOST_STRING ]; then
         export TEST_HOST_STRING=$API_SERVER_HOST_STRING
         export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
     fi
@@ -107,7 +128,7 @@ fi
 run_tempest || die "Run_Tempest step failed"
 echo "Test Done"
 collect_tech_support || die "Task to collect logs/cores failed"
-echo "Ending test on $TBFILE_NAME"
+echo "Ending test on $TBFILE_NAME" 
 
 
 unlock_testbed $TBFILE_NAME
