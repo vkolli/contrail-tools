@@ -295,7 +295,7 @@ function run_smgr_task() {
     reimage_using_SM_cliff_client || debug_and_die "reimage failed"
     copy_smlite_pkg || die "copy of sm-lite packages failed"
     provision_using_SMLite || die "provision failed"
-    #add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
+    add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
     check_kernel_upgrade || die "kernel upgrade failed"
 
     #add fab basic images.
@@ -317,7 +317,7 @@ function run_smgr_task() {
     fi
     export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
     export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
-    install_third_party_pkgs || die "installing GDB/ant failed"
+    #install_third_party_pkgs || die "installing GDB/ant failed"
     setup_testnode || die "test node setup failed"
     install_dep_pkgs_for_test
     run_sanity_simple || die "run_sanity_simple failed"
