@@ -85,6 +85,13 @@ def create_vm(name , image , ram = '4096',network = {} , vcpus = '2', disk_forma
 def create_vms_from_testbed(contrail_fab_path='/opt/contrail/utils'):
     sys.path.insert(0, contrail_fab_path)
     from fabfile.testbeds import testbed 
+    defsmip='10.204.217.158'
+    try:
+        env.testbed_location
+    except NameError:
+        if env.testbed_location == 'US':
+            defsmip='10.84.5.100'
+    smip = os.getenv('SM_SERVER_IP', defsmip)
     vm_node_details = testbed.vm_node_details
     for (key, vm_node_detail) in vm_node_details.iteritems():
         if key == 'default':
@@ -106,7 +113,7 @@ def create_vms_from_testbed(contrail_fab_path='/opt/contrail/utils'):
         for i in range(0,3):
             try:
                 with settings(host_string=key):
-                    change_host_name_of_vm(vm_detail['name'])
+                    change_host_name_of_vm(vm_detail['name'],smip)
                 break
             except :
                 time.sleep(30)
@@ -156,15 +163,34 @@ def generate_etc_hosts(hostname):
     text = "127.0.0.1       localhost\n127.0.1.1       \
             %s.englab.juniper.net    %s \n\n"%(hostname,hostname)
     create_file(file_name , text)
+
+def generate_etc_ntp_conf(hostname,smip):
+    file_name = "ntp.conf"
+    text = "driftfile\t/var/lib/ntp/drift\nserver\
+           %s\nrestrict\
+           127.0.0.1\nrestrict\
+           -6 ::1\nincludefile\
+           /etc/ntp/crypto/pw\nkeys\
+           /etc/ntp/keys\n\n"%(smip)
+    create_file(file_name , text)
+
+driftfile /var/lib/ntp/drift
+server 10.204.217.158
+restrict 127.0.0.1
+restrict -6 ::1
+includefile /etc/ntp/crypto/pw
+keys /etc/ntp/keys
     
-def change_host_name_of_vm(hostname):
+def change_host_name_of_vm(hostname,smip):
     host = hostname
     generate_etc_hostname(host)
     generate_etc_hosts(host)
+    generate_etc_ntp_conf(host,smip)
     #run("cp /etc/hostname /etc/hostname.old")
     run("cp /etc/hosts /etc/hosts.old")
     put("hostname", "/etc/")
     put("hosts", "/etc/")
+    put("ntp.conf","/etc/")
     run("reboot")
 
 def change_libvirt_type(ty = 'qemu'):
