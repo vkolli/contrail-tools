@@ -85,13 +85,16 @@ def create_vm(name , image , ram = '4096',network = {} , vcpus = '2', disk_forma
 def create_vms_from_testbed(contrail_fab_path='/opt/contrail/utils'):
     sys.path.insert(0, contrail_fab_path)
     from fabfile.testbeds import testbed 
+
     defsmip='10.204.217.158'
     try:
-        env.testbed_location
-    except NameError:
         if env.testbed_location == 'US':
             defsmip='10.84.5.100'
+    except AttributeError:
+       defsmip='10.204.217.158'
+
     smip = os.getenv('SM_SERVER_IP', defsmip)
+
     vm_node_details = testbed.vm_node_details
     for (key, vm_node_detail) in vm_node_details.iteritems():
         if key == 'default':
