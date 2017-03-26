@@ -174,13 +174,6 @@ def generate_etc_ntp_conf(hostname,smip):
            /etc/ntp/keys\n\n"%(smip)
     create_file(file_name , text)
 
-driftfile /var/lib/ntp/drift
-server 10.204.217.158
-restrict 127.0.0.1
-restrict -6 ::1
-includefile /etc/ntp/crypto/pw
-keys /etc/ntp/keys
-    
 def change_host_name_of_vm(hostname,smip):
     host = hostname
     generate_etc_hostname(host)
