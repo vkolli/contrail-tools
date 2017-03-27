@@ -1561,10 +1561,11 @@ def create_testbedpy_file_mainline():
         testbedfile_serverjson_role_mapping = {
             "openstack": "openstack",
             "contrail-controller": "controller",
-            "contrail-analytics": "analytics",
-            "contrail-analyticsdb": "analyticsdb",
+            "contrail-analytics": "collector",
+            "contrail-analyticsdb": "database",
             "contrail-compute": "compute",
-            "contrail-lb": "lb"}
+            "contrail-lb": "lb",
+            "contrail-cfgm": "cfgm"}
         role_per_server_mapping = {
             "all": [],
             "openstack": [],
@@ -1594,6 +1595,13 @@ def create_testbedpy_file_mainline():
                 if "contrail-controller" in server_dict[clus][i]["roles"]:
                     role_per_server_mapping["contrail-controller"].append(
                         name_mapping[server_dict[clus][i]["name"]])
+                    if "contrail-cfgm" in role_per_server_mapping:
+                        role_per_server_mapping["contrail-cfgm"].append(
+                            name_mapping[server_dict[clus][i]["name"]])
+                    else:
+                        role_per_server_mapping["contrail-cfgm"] = []
+                        role_per_server_mapping["contrail-cfgm"].append(
+                            name_mapping[server_dict[clus][i]["name"]])
                 if "contrail-analytics" in server_dict[clus][i]["roles"]:
                     role_per_server_mapping["contrail-analytics"].append(
                         name_mapping[server_dict[clus][i]["name"]])
@@ -1685,16 +1693,26 @@ def create_testbedpy_file_mainline():
             file_str = file_str + env_password_string
         if "env_ostypes" in testbed_py_dict[clus]:
             file_str = file_str + env_ostypes_string
+        for server in server_dict[clus]:
+            if "contrail-lb" in server_dict[clus][server]["roles"]:
+                lb_external = ''
+                lb_internal = ''
+                for n in server_dict[clus][server]["ip_address"]:
+                    if network_dict[n]["role"] == "management":
+                        lb_external = server_dict[clus][server]["ip_address"][n]
+                    if network_dict[n]["role"] == "control-data":
+                        lb_internal = server_dict[clus][server]["ip_address"][n]
+
         if (("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]) and (
                 "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
             file_str = file_str + "ha_setup = True\n"
             file_str = file_str + "env.ha = {\n"
             if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "   'contrail_internal_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                    "   'contrail_internal_vip' : '%s',\n" % lb_internal
             if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "   'contrail_external_vip' : '%s'\n}\n\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+                    "   'contrail_external_vip' : '%s'\n}\n\n" % lb_external
         '''
 		if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"])):
 			file_str = file_str+"ha_setup = True\n"
