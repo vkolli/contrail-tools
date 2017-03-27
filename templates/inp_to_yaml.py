@@ -923,6 +923,12 @@ def create_cluster_json_mainline():
                 individual_clus_string = individual_clus_string + \
                     '\t\t\t\t\t\t\t"analytics_ip": "%s",\n' % lb_external
         individual_clus_string = individual_clus_string + \
+            '\t\t\t\t\t\t\t"api_config":{\n'
+        individual_clus_string = individual_clus_string + \
+            '\t\t\t\t\t\t\t\t"listen_port": "9100"\n'
+        individual_clus_string = individual_clus_string + \
+            '\t\t\t\t\t\t\t"},\n'
+        individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t\t\t"keystone_config":{\n'
         openstack_control_data_ip_list = []
         for server in server_dict[clus]:
@@ -948,27 +954,27 @@ def create_cluster_json_mainline():
         else:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t\t\t"admin_password": "c0ntrail123",\n'
-        if "keystone_admin_token" in cluster_dict[clus]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t\t\t"admin_token": "%s",\n' % cluster_dict[clus]["keystone_admin_token"]
-        else:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t\t\t"admin_token": "c0ntrail123",\n'
+        # if "keystone_admin_token" in cluster_dict[clus]:
+        #    individual_clus_string = individual_clus_string + \
+        #        '\t\t\t\t\t\t\t\t"admin_token": "%s",\n' % cluster_dict[clus]["keystone_admin_token"]
+        # else:
+        #    individual_clus_string = individual_clus_string + \
+        #        '\t\t\t\t\t\t\t\t"admin_token": "c0ntrail123",\n'
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t\t\t\t"admin_tenant": "admin"\n'
         individual_clus_string = individual_clus_string + '\t\t\t\t\t\t\t},\n'
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t\t\t"global_config":{\n'
-        individual_clus_string = individual_clus_string + \
-            '\t\t\t\t\t\t\t\t"config_username": "root",\n'
-        if "config_password" in cluster_dict[clus]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t\t\t"config_password": "%s",\n' % cluster_dict[clus]["config_password"]
-        else:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t\t\t"config_password": "c0ntrail123",\n'
-        individual_clus_string = individual_clus_string + \
-            '\t\t\t\t\t\t\t\t"service_tenant_name": "services",\n'
+        # individual_clus_string = individual_clus_string + \
+        #    '\t\t\t\t\t\t\t\t"config_username": "root",\n'
+        # if "config_password" in cluster_dict[clus]:
+        #    individual_clus_string = individual_clus_string + \
+        #        '\t\t\t\t\t\t\t\t"config_password": "%s",\n' % cluster_dict[clus]["config_password"]
+        # else:
+        #    individual_clus_string = individual_clus_string + \
+        #        '\t\t\t\t\t\t\t\t"config_password": "c0ntrail123",\n'
+        # individual_clus_string = individual_clus_string + \
+        #    '\t\t\t\t\t\t\t\t"service_tenant_name": "services",\n'
         individual_clus_string = individual_clus_string + \
             '''\t\t\t\t\t\t\t\t"external_rabbitmq_servers": "%s" \n''' % openstack_control_data_ip_list
         individual_clus_string = individual_clus_string + '\t\t\t\t\t\t\t},\n'
@@ -986,12 +992,14 @@ def create_cluster_json_mainline():
         if "kernel_upgrade" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"kernel_upgrade": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_upgrade"]
-        if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+        """
+	if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"database": {\n'
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["minimum_disk_database"]
             individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+        """
         for server in server_dict[clus]:
             if "contrail-lb" in server_dict[clus][server]["roles"]:
                 if len(lb_external) != 0:
