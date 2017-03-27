@@ -16,6 +16,7 @@ sleep 5
 sed -i 's/image_val/'${ubuntu_image_name}'/' /root/$1/input.json
 fip_uuid="$(python /root/$1/change_testbed_params.py /root/$1/input.json $selected_config_node_ip get_fip_uuid)"
 echo "The FIP Networm UUID for this project is: $fip_uuid"
+sed -i 's/fip_uuid/'${fip_uuid}'/' /root/$1/input.json
 echo "/root/$1/input.json  --- Changed"
 echo "The New imput.json :- \n"
 cat /root/$1/input.json
