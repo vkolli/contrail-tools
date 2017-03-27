@@ -94,7 +94,7 @@ def create_vms_from_testbed(contrail_fab_path='/opt/contrail/utils'):
        defsmip='10.204.217.158'
 
     smip = os.getenv('SM_SERVER_IP', defsmip)
-    reimage_param = os.genenv('REIMAGE_PARAM','ubuntu-14.04.4')
+    reimage_param = os.getenv('REIMAGE_PARAM','ubuntu-14.04.4')
 
     vm_node_details = testbed.vm_node_details
     for (key, vm_node_detail) in vm_node_details.iteritems():
