@@ -927,7 +927,7 @@ def create_cluster_json_mainline():
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t\t\t\t"listen_port": "9100"\n'
         individual_clus_string = individual_clus_string + \
-            '\t\t\t\t\t\t\t"},\n'
+            '\t\t\t\t\t\t\t},\n'
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t\t\t"keystone_config":{\n'
         openstack_control_data_ip_list = []
