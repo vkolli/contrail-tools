@@ -168,7 +168,7 @@ def generate_etc_hosts(hostname):
             %s.englab.juniper.net    %s \n\n"%(hostname,hostname)
     create_file(file_name , text)
 
-def generate_etc_ntp_conf(hostname,smip):
+def setup_ntp(hostname,smip):
     file_name = "ntp.conf"
     text = "driftfile\t/var/lib/ntp/drift\nserver\
            %s\nrestrict\
@@ -176,7 +176,12 @@ def generate_etc_ntp_conf(hostname,smip):
            -6 ::1\nincludefile\
            /etc/ntp/crypto/pw\nkeys\
            /etc/ntp/keys\n\n"%(smip)
+    run("apt-get -y install ntp")
+    run("ntpdate "+smip)
+    run("mv /etc/ntp.conf /etc/ntp.conf.orig")
+    run("touch /var/lib/ntp/drift")
     create_file(file_name , text)
+    run("service ntp restart")
 
 def point_sources_list_smrepo(hostname,smip,reimage_param):
     run("cp /etc/apt/sources.list /etc/apt/sources.list.image")
@@ -194,8 +199,8 @@ def change_host_name_of_vm(hostname,smip,reimage_param):
     host = hostname
     generate_etc_hostname(host)
     generate_etc_hosts(host)
+    setup_ntp(host,smip)
     point_sources_list_smrepo(host,smip,reimage_param)
-    #generate_etc_ntp_conf(host,smip)
     #run("cp /etc/hostname /etc/hostname.old")
     run("cp /etc/hosts /etc/hosts.old")
     put("hostname", "/etc/")
