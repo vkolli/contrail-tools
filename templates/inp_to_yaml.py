@@ -312,7 +312,8 @@ def create_server_yaml():
                 server_string = server_string + "      fixed_ips:\n"
                 server_string = server_string + \
                     "        - ip_address: %s\n" % ip_address_dict[net_name]
-                if network_dict[j]["role"] == "management":
+                """
+		if network_dict[j]["role"] == "management":
                     if ("external_vip" in cluster_dict[clus]
                             ["parameters"]["provision"]["openstack"]):
                         server_string = server_string + "      allowed_address_pairs:\n"
@@ -334,6 +335,39 @@ def create_server_yaml():
                         server_string = server_string + "      allowed_address_pairs:\n"
                         server_string = server_string + \
                             "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+		"""
+                if network_dict[j]["role"] == "management":
+                    server_string = server_string + "      allowed_address_pairs:\n"
+                    if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or (
+                            "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                        if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
+                                "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+                        elif (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                        elif (("external_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+                if network_dict[j]["role"] == "control-data":
+                    server_string = server_string + "      allowed_address_pairs:\n"
+                    if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or (
+                            "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                        if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
+                                "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                        elif (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                        elif (("internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
                 ip_port_dict[(ip_address_dict[net_name])] = port_name
             #ip_num += 1
     # Launch the VMs
