@@ -388,11 +388,20 @@ function reimage_using_SM_cliff_client() {
         iso_type="ubuntu"
         SMID=ubuntu12$SKU${BUILDID}
     elif [[ $DISTRO =~ ubuntu-14.04 ]]; then
-        image="/cs-shared/images/ubuntu-14.04.2-server-amd64.iso"
+    if [ $BRANCH ">" "R3.0.99.99" ] && [ $BRANCH != "R3.2.0.x" ] && [ $BRANCH != "R3.1.0.x" ] && [ $BRANCH != "R3.1.1.x" ]; then
+        image="/cs-shared/images/ubuntu-14.04.5-server-amd64.iso"
+        pkg_type="contrail-ubuntu-package"
+        iso_type="ubuntu"
+        SMID=ubuntu14$SKU${BUILDID}
+        isofile="/root/images/image145.json"
+    # for R3.0 and above set ubuntu base os as 14.04.4
+    elif [ "$BRANCH" \> "R2.22.x" ] || [ "$BRANCH" == "mainline" ]; then
+        image="/cs-shared/images/ubuntu-14.04.4-server-amd64.iso"
         pkg_type="contrail-ubuntu-package"
         iso_type="ubuntu"
         SMID=ubuntu14$SKU${BUILDID}
         isofile="/root/images/image144.json"
+    fi
     elif [[ $DISTRO =~ centos64 ]]; then
         image="/root/images/CentOS-6.4-x86_64-minimal.iso"
         pkg_type="contrail-centos-package"
@@ -789,6 +798,47 @@ function reimage_using_SM() {
    
 }
 
+function check_kernel_upgrade() {
+    echo "Checking for kernel version upgrade."
+    sshpass -p $SM_SERVER_PASSWORD ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
+        set -e
+        /root/sm_files/check_kernel_version.py
+        if [ $? == 0 ]
+        then
+            echo "Kernel version upgrade is sucessful!!!"
+        else
+            echo "Kernel version upgrade failed, aborting the process"
+            exit 1
+        fi
+    ) "
+
+    if [ $? == 0 ]
+    then
+        echo "Kernel version upgrade is sucessful!!!"
+    else
+        echo "Kernel version upgrade failed!!!"
+        exit 1
+    fi
+}
+
+function reimage_and_provision_container() {
+    echo "Connect to SM_SERVER to reimage and provision the targets"
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
+        set -e
+        sed -i s'/[0-9][0-9][0-9][0-9]/${BUILDID}/g' /root/container_sanity/contrail_debian_img.json
+        sed -i s'/[0-9][0-9][0-9][0-9]/${BUILDID}/g' /root/container_sanity/contrail_container_img.json
+        /root/container_sanity/contrail_container_provision.py -u /root/container_sanity/image144.json -d /root/container_sanity/contrail_debian_img.json -c /root/container_sanity/contrail_container_img.json -o /root/container_sanity/os_cluster.json -l /root/container_sanity/contrail_cluster.json -s /root/container_sanity/server.json
+    ) "
+    if [ $? == 0 ]
+    then
+        echo "reimaged and provisioned the target $CLUSTER_NAME successfully"
+        sleep 150
+    else
+        echo "reimage and provisioning of the target $CLUSTER_NAME failed!!!"
+        exit 1
+    fi
+}
+
 function run_smgr_regression_task() {
     echo "Running tests on $1.."
 
@@ -848,6 +898,19 @@ function run_smgr_task() {
     elif [ ${TEST_SETUP} == "MULTIINTERFACE" ]
     then
         multi_node=1
+        if [ ${tb_filename} == "testbed_smgr_multi_interface.py" ]
+        then
+            SM_SERVER_IP=10.204.217.160
+            echo $SM_SERVER_IP
+        elif [ ${tb_filename} == "testbed_smgr_multi_interface_c28.py" ]
+        then
+            SM_SERVER_IP=10.204.217.153
+            echo $SM_SERVER_IP
+        else
+            echo "Could not get testbed file name for MULTI INTERFACE Setup."
+            echo "Exiting the test."
+            exit 1
+        fi
     else
         echo "TEST_SETUP is not defined, abort the process"
         exit 1
@@ -865,21 +928,53 @@ function run_smgr_task() {
     fi
     create_testbed || die "Failed to create required testbed details"
     bringup_SM_setup || debug_and_die "Failed to bringup SM setup" 
-    if [[ ( ${BRANCH} > "R2.23" ) || ( ${BRANCH} == "mainline" ) ]]
+
+    if [ -z "$CONTAINER_SANITY" ]
     then
-        reimage_using_SM_cliff_client || debug_and_die "reimage failed"
-        provision_using_SM_cliff_client || debug_and_die "provision failed"
+        if [[ ( ${BRANCH} > "R2.23" ) || ( ${BRANCH} == "mainline" ) ]]
+        then
+            reimage_using_SM_cliff_client || debug_and_die "reimage failed"
+            provision_using_SM_cliff_client || debug_and_die "provision failed"
+        else
+            reimage_using_SM || debug_and_die "reimage failed"
+            provision_using_SM || debug_and_die "provision failed"
+        fi
+        if [[ ( ${BRANCH} > "R2.23" ) || ( ${BRANCH} == "mainline" ) ]]
+        then
+            check_kernel_upgrade || die "kernel upgrade failed"
+        fi
     else
-        reimage_using_SM || debug_and_die "reimage failed"
-        provision_using_SM || debug_and_die "provision failed"
+        reimage_and_provision_container || debug_and_die "reimage and provision failed"
     fi
-
     #add fab basic images.
-    if [ $ADD_IMAGES -eq 1 ]; then
-       (cd ${TOOLS_WS}/contrail-fabric-utils
-        fab add_basic_images)
+   # if [ $ADD_IMAGES -eq 1 ]; then
+   #    (cd ${TOOLS_WS}/contrail-fabric-utils
+   #     fab add_basic_images)
+   # fi
+    #Centos needs neutron server to be restarted as workaround after provision due to bug 1586023
+    if [[ ${TEST_SETUP} == "SINGLENODE" ]] && [[ $DISTRO =~ 'centos' ]] && [[ $SKU =~ 'kilo' ]]; then
+    echo "Centos needs neutron server to be restarted as workaround after provision due to bug 1586023"
+    sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
+    set -e
+    set -x
+    openstack-status | grep neutron-server | grep " failed "
+    echo "service neutron-server restart"
+    source /etc/contrail/openstackrc
+    service neutron-server restart
+    sleep 20
+    openstack-status | grep neutron-server | grep " active "
+    sleep 5
+    )"
+
+    fi; ns=$?
+    if [ $ns == 0 ]
+    then
+        echo "neutron server is active"
+    else
+        echo "neutron server is not active"
     fi
 
+    
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         search_package
         pkg_file_name=`basename $PKG_FILE`

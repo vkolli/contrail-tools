@@ -5,6 +5,7 @@ source $TOOLS_WS/testers/environment.sh
 source $TOOLS_WS/testers/smgr_utils
 declare -A BUILD_MAP
 export BUILD_MAP=( [ubuntu-12-04]=ubuntu-12.04.3 [centos64_os]=centos-6.4 [centos65]=centos-6.5 [ubuntu-14-04]=ubuntu-14.04 [ubuntu-14-04-1]=ubuntu-14.04.1 [redhat70]=redhat-7.1 [centos71]=centos-7.1 )
+export_variables_for_fab="export HA_TEST=$HA_TEST; export AUTH_PROTOCOL=$AUTH_PROTOCOL; export KEYSTONE_VERSION=$KEYSTONE_VERSION; export ENABLE_RBAC=$ENABLE_RBAC"
 ##
 # try
 function try {
@@ -136,6 +137,9 @@ function search_package {
         if [ $IS_UBUNTU_14041 -eq 0 ]; then
             if [ "$BRANCH" \> "R2.22.x" ] || [ "$BRANCH" == "mainline" ]; then
                 export REIMAGE_PARAM="ubuntu-14.04.4"
+		if [ $BRANCH ">" "R3.0.99.99" ] && [ $BRANCH != "R3.2.0.x" ] && [ $BRANCH != "R3.1.0.x" ] && [ $BRANCH != "R3.1.1.x" ];then
+		    export REIMAGE_PARAM="ubuntu-14.04.5"
+		fi
             elif [ "$BRANCH" \> "R2.1" ] && [ "$BRANCH" \< "R3.0" ]; then
                 export REIMAGE_PARAM="ubuntu-14.04.2"
             else
@@ -418,7 +422,7 @@ function use_testbed_file {
     fi 
     if [[ (! -z  "$HYPERVISOR_TYPE")  && (${HYPERVISOR_TYPE} == "dpdk") ]];then
             tbfile_hyper=${tbfile}.dpdk
-    fi 
+    fi
     if [[ ${DISTRO} =~ ubuntu-14-04 ]]; then
         distro_name="ubuntu-14.04"
         cp -f ${tbfile_hyper}.$distro_name ${tbfile}
@@ -518,6 +522,7 @@ function bringup_setup {
     then
         return 0
     fi
+    initialize_any_vms
     search_package
     copy_fabric_test_artifacts || die "Failed to copy fab/test code from artifacts to destination"
     cd ${TOOLS_WS}/contrail-fabric-utils
@@ -563,14 +568,22 @@ function setup_and_install_contrail {
         else 
             if [ $USE_CLOUD_PKG -eq 1 ]; then
                 if [[ $VCENTER_ONLY_TESTBED -eq 1 || $VCENTER_AS_COMPUTE_TESTBED -eq 1 ]]; then
-                    fab upgrade_kernel_all || debug_and_die "Upgrading Kernel failed"
+		    if [ ! -z $KERNEL_VERSION ];then
+                        fab upgrade_kernel_all:version=$KERNEL_VERSION || debug_and_die "Upgrading Kernel failed"
+		    else
+                        fab upgrade_kernel_all || debug_and_die "Upgrading Kernel failed"
+		    fi
                 else
                     fab upgrade_kernel_all:$cloud_tgz_pkg || debug_and_die "Upgrading Kernel failed"
                 fi
             elif [ $USE_NETWORKING_PKG -eq 1 ]; then
                 fab upgrade_kernel_all:$net_tgz_pkg || debug_and_die "Upgrading Kernel failed"
             else
-                fab upgrade_kernel_all || debug_and_die "Upgrading Kernel failed"
+		if [ ! -z $KERNEL_VERSION ];then
+                    fab upgrade_kernel_all:version=$KERNEL_VERSION || debug_and_die "Upgrading Kernel failed"
+		else
+                    fab upgrade_kernel_all || debug_and_die "Upgrading Kernel failed"
+		fi
             fi
         fi
         sleep 60
@@ -583,16 +596,16 @@ function setup_and_install_contrail {
     if [ $USE_NETWORKING_PKG -eq 1 ]; then
         fab install_contrail_openstack:$cloud_tgz_pkg,reboot=False || debug_and_die "install_contrail_openstack failed"
         pkg_name=`basename $net_tgz_pkg`
-        cmd="export HA_TEST=$HA_TEST;
+        cmd="${export_variables_for_fab};
                cd fabric-utils;
                fab install_without_openstack:${NODEHOME}/$pkg_name"
     elif [ $USE_CLOUD_PKG -eq 1 ]; then
         pkg_name=`basename $cloud_tgz_pkg`
-        cmd="export HA_TEST=$HA_TEST;
+        cmd="${export_variables_for_fab};
                cd fabric-utils;
                fab install_contrail:${NODEHOME}/$pkg_name" 
     else
-        cmd="export HA_TEST=$HA_TEST;
+        cmd="${export_variables_for_fab};
                cd fabric-utils;
                fab install_contrail" 
     fi
@@ -650,7 +663,7 @@ function setup_and_install_contrail {
         # provision contrail
         exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
             cd fabric-utils;
-            export HA_TEST=$HA_TEST;
+            ${export_variables_for_fab};
             fab setup_interface || exit 1;
             fab add_static_route
             fab setup_without_openstack:False" || debug_and_die "fab setup_interface or setup_all task failed"
@@ -660,7 +673,7 @@ function setup_and_install_contrail {
         # provision contrail
         exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
                 cd fabric-utils; 
-                export HA_TEST=$HA_TEST;
+                ${export_variables_for_fab};
                 fab setup_interface || exit 1;
                 fab add_static_route 
                 fab setup_all:False" || debug_and_die "fab setup_interface or setup_all task failed"
@@ -686,13 +699,13 @@ function setup_and_install_contrail {
         if [[ $SKU =~ 'liberty' ]];then
             exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
                 cd fabric-utils;
-                export HA_TEST=$HA_TEST;
+                ${export_variables_for_fab};
                 fab -R compute -- \"sleep 30;systemctl restart openstack-nova-compute.service\"" || debug_and_die "systemctl restart openstack-nova-compute.service failed"
         fi
     elif [[ $SKU =~ 'liberty' && ( $VCENTER_ONLY_TESTBED -ne 1  && $VCENTER_AS_COMPUTE_TESTBED -ne 1 ) ]];then
         exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
                 cd fabric-utils;
-                export HA_TEST=$HA_TEST;
+                ${export_variables_for_fab};
                 fab -R compute -- \"sleep 30;service nova-compute restart\"" || debug_and_die "service nova-compute restart failed"
     fi
 }
@@ -722,7 +735,7 @@ function reimage_setup {
     if [ $USE_TASK_RUNNER_HOST -eq 1 ]; then
         exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "
             cd /tmp/$TBFILE_NAME/contrail-fabric-utils;
-            export HA_TEST=$HA_TEST;
+            ${export_variables_for_fab};
             fab all_sm_reimage:$REIMAGE_PARAM ;
             # Wait a minute before checking the status of the servers after issuing reimage command.
             sleep 90
@@ -760,7 +773,7 @@ function run_fab() {
     # setup test environment  
     fab_cmd=$1
     exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "                                               
-        export HA_TEST=$HA_TEST;
+        ${export_variables_for_fab};
         cd ~/fabric-utils;
         fab ${fab_cmd}"
     # check venv exist before running test   
@@ -881,9 +894,17 @@ function set_threshold {
 }
 
 function install_dep_pkgs_for_test {
+    if [[ $BRANCH =~ "R2." ]] ; then
+        return
+    fi
     # For R2.x or lower, fab setup_test_env takes care of these
-    if [[ ( $INSTALL_EXTRA_PKG_ON_NODES -eq 1 ) && ( ! $BRANCH =~ "R2." ) ]] ; then
+    if [[ ( $INSTALL_EXTRA_PKG_ON_NODES -eq 1 ) && ( $BRANCH =~ "R3." ) ]] ; then
         run_build_fab install_pkgs_on_roles:compute,"python-setuptools\,python-ncclient\,tcpdump"
+    fi
+    # This will install fabric v1.8.2 as of now
+    # Installing this on contrail R4.x or higher only 
+    if [[ $INSTALL_EXTRA_PKG_ON_NODES -eq 1 ]] ; then
+        run_build_fab install_pkgs_on_roles:compute,"fabric"
     fi
 }
 
@@ -898,7 +919,8 @@ enabled=1
 gpgcheck=1
 gpgkey=https://yum.dockerproject.org/gpg
 EOF
-        yum install -y docker-engine ;\
+
+        yum install -y docker-engine-1.8.3 ;\
         service docker start
         "
     elif [[ $DISTRO =~ 'ubuntu' ]]; then
@@ -966,7 +988,12 @@ function set_other_test_params {
          export CT_CONTROL_PORT=\"$CONTROL_PORT\";
          export CT_DNS_PORT=\"$DNS_PORT\";
          export CT_AGENT_PORT=\"$AGENT_PORT\";
-         export CT_USER_ISOLATION=\"$USER_ISOLATION\";"
+         export CT_USER_ISOLATION=\"$USER_ISOLATION\";
+         export CT_HA_TEST=\"$HA_TEST\";
+         export CT_KEYSTONE_VERSION=\"$KEYSTONE_VERSION\";
+         export CT_OS_INSECURE=\"$OS_INSECURE\";
+         export CT_AUTH_PROTOCOL=\"$AUTH_PROTOCOL\";
+         export CT_ENABLE_RBAC=\"$ENABLE_RBAC\";"
     echo $val
 }
 
@@ -1119,7 +1146,7 @@ function collect_tech_support {
     NODENAME=`echo $NODENAME | sed 's/\\r//g'`
     dest_dir_folder=$DEBUG_LOG_DIR/${NODENAME}/${SCRIPT_TIMESTAMP}
     cp_log_cmd="sshpass -p $API_SERVER_HOST_PASSWORD scp ${SSHOPT} ${API_SERVER_HOST_STRING}:$CFGM_FAB_PATH/*.log $dest_dir_folder"
-    debug_cmds="export HA_TEST=$HA_TEST && fab attach_logs_cores:$DEBUG_LOG_DIR/${NODENAME},${SCRIPT_TIMESTAMP} ; $cp_log_cmd ; cp fabfile/testbeds/testbed.py $dest_dir_folder ;  cp *.log $dest_dir_folder"
+    debug_cmds="${export_variables_for_fab}; fab attach_logs_cores:$DEBUG_LOG_DIR/${NODENAME},${SCRIPT_TIMESTAMP} ; $cp_log_cmd ; cp fabfile/testbeds/testbed.py $dest_dir_folder ;  cp *.log $dest_dir_folder"
           
     if [ $USE_TASK_RUNNER_HOST -eq 1 ]; then
         exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "
@@ -1199,20 +1226,27 @@ function run_tempest {
         else
           branch="master"
         fi
-        exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
+        exec_cmds -s ${TEST_HOST_STRING} -p ${TEST_HOST_PASSWORD} -c "
           apt-get -y install git
           git clone -b $branch https://github.com/Juniper/tempest.git"
-        sshpass -p $API_SERVER_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/testers/tempest/tempest_run.sh  ${API_SERVER_HOST_STRING}:tempest/
-        sshpass -p $API_SERVER_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/contrail-fabric-utils/testbed_env  ${API_SERVER_HOST_STRING}:tempest/
-        exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
-            cd tempest; 
-            source testbed_env
-            bash -x tempest_run.sh"
+        sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/testers/tempest/tempest_run.sh  ${TEST_HOST_STRING}:tempest/
+        sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/contrail-fabric-utils/testbed_env  ${TEST_HOST_STRING}:tempest/
+        if [[ $TEST_RUN_INFRA == 'docker' ]]; then
+            tempest_cmd="bash -x /usr/local/bin/testrunner.sh run -z /root/tempest -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-${TEST_SKU}:${PACKAGE_VERSION}"
+            exec_cmds -s ${TEST_HOST_STRING} -p ${TEST_HOST_PASSWORD} -c "
+                ${tempest_cmd}
+            "
+        else
+            exec_cmds -s ${TEST_HOST_STRING} -p ${TEST_HOST_PASSWORD} -c "
+                cd tempest; 
+                source testbed_env
+                bash -x tempest_run.sh"
+        fi
         retval=$?
         # Fetch results.xml 
         mkdir -p $TOOLS_WS/results
-        sshpass -p $API_SERVER_HOST_PASSWORD scp ${SSHOPT} ${API_SERVER_HOST_STRING}:tempest/result*.xml $TOOLS_WS/results
-        sshpass -p $API_SERVER_HOST_PASSWORD scp ${SSHOPT} ${API_SERVER_HOST_STRING}:tempest/build_id.txt $TOOLS_WS/results
+        sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} ${TEST_HOST_STRING}:tempest/result*.xml $TOOLS_WS/results
+        sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} ${TEST_HOST_STRING}:tempest/build_id.txt $TOOLS_WS/results
         return $retval
     fi
 }

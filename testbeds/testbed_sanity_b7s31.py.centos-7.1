@@ -26,15 +26,15 @@ host_build = 'root@10.84.24.64'
 #Role definition of the hosts.
 env.roledefs = {
     'all': [host1, host2,host3, host4, host5, host6, host7],
-    'cfgm': [host1, host2, host3],
+    'cfgm': [host2, host3, host4],
     'openstack': [host1],
-    'webui': [host1, host2, host3],
-    'control': [host1, host2, host3],
-    'compute': [host4, host5, host6, host7],
+    'webui': [host2, host3, host4],
+    'control': [host2, host3, host4],
+    'compute': [host5, host6, host7],
 #    'tsn': [host4],
 #    'toragent': [host4],
-    'collector': [host1, host2, host3],
-    'database': [host1, host2, host3],
+    'collector': [host2, host3, host4],
+    'database': [host2, host3, host4],
     'build': [host_build],
 }
 
@@ -146,7 +146,7 @@ bond= {
     host1 : { 'name': 'bond0', 'member': ['enp4s0f0', 'enp4s0f1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
     host2 : { 'name': 'bond0', 'member': ['enp4s0f0', 'enp4s0f1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
     host3 : { 'name': 'bond0', 'member': ['enp4s0f0', 'enp4s0f1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
-    host4 : { 'name': 'bond0', 'member': ['p4p0p0', 'p4p0p1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
+    host4 : { 'name': 'bond0', 'member': ['enp4s0f0', 'enp4s0f1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
     host5 : { 'name': 'bond0', 'member': ['p4p0p0', 'p4p0p1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
     host6 : { 'name': 'bond0', 'member': ['p4p0p0', 'p4p0p1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
     host7 : { 'name': 'bond0', 'member': ['p4p0p0', 'p4p0p1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },

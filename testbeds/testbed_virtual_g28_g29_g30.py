@@ -19,17 +19,43 @@ public_vn_subnet = '10.204.221.144/28'
 
 host_build = 'stack@10.204.216.49'
 
-env.roledefs = {
-    'all': [host1, host2, host3, host4, host5, host6],
-    'cfgm': [host1, host3],
-    'webui': [host2],
-    'openstack': [host3],
-    'control': [host1, host3],
-    'collector': [host1, host3],
-    'database': [host1, host2, host3],
-    'compute': [host4, host5, host6],
-    'build': [host_build]
-}
+if os.getenv('AUTH_PROTOCOL',None) == 'https':
+    env.log_scenario='MultiNode Multi-Interface Virtual Testbed Sanity [SSL]'
+    env.roledefs = {
+        'all': [host1, host2, host3, host4, host5, host6],
+        'cfgm': [host1],
+        'webui': [host2],
+        'openstack': [host3],
+        'control': [host1, host3],
+        'collector': [host1, host3],
+        'database': [host1, host2, host3],
+        'compute': [host4, host5, host6],
+        'build': [host_build]
+    }
+    env.keystone = {
+        'auth_protocol': 'https'
+    }
+    env.cfgm = {
+        'auth_protocol': 'https'
+    }
+else:
+    env.log_scenario='MultiNode Multi-Interface Virtual Testbed Sanity'
+    env.roledefs = {
+        'all': [host1, host2, host3, host4, host5, host6],
+        'cfgm': [host1, host3],
+        'webui': [host2],
+        'openstack': [host3],
+        'control': [host1, host3],
+        'collector': [host1, host3],
+        'database': [host1, host2, host3],
+        'compute': [host4, host5, host6],
+        'build': [host_build]
+    }
+
+if os.getenv('ENABLE_RBAC',None) == 'true':
+    cloud_admin_role = 'admin'
+    aaa_mode = 'rbac'
+
 env.physical_routers={
 'hooper'     : {       'vendor': 'juniper',
                      'model' : 'mx',
@@ -113,7 +139,6 @@ env.mail_to='dl-contrail-sw@juniper.net'
 env.interface_rename = True
 multi_tenancy=True
 env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
-env.log_scenario='MultiNode Multi-Interface Virtual Testbed Sanity'
 
 #enable ceilometer
 enable_ceilometer = True

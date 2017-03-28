@@ -1,4 +1,5 @@
 from fabric.api import env
+import os
 
 host1 = 'root@10.204.217.133'
 host2 = 'root@10.204.217.134'
@@ -25,6 +26,21 @@ env.roledefs = {
     'compute': [host4, host5, host6],
     'build': [host_build]
 }
+
+if os.getenv('AUTH_PROTOCOL',None) == 'https':
+    env.log_scenario='Multi-Node HA Sanity [SSL]'
+    env.keystone = {
+        'auth_protocol': 'https'
+    }
+    env.cfgm = {
+        'auth_protocol': 'https'
+    }
+else:
+    env.log_scenario='Multi-Node HA Sanity'
+
+if os.getenv('ENABLE_RBAC',None) == 'true':
+    cloud_admin_role = 'admin'
+    aaa_mode = 'rbac'
 
 env.hostnames = {
     'all': ['nodei21', 'nodei22', 'nodei23', 'nodei24', 'nodei25', 'nodei26']
@@ -83,7 +99,6 @@ env.mail_to='dl-contrail-sw@juniper.net'
 multi_tenancy=True
 env.interface_rename = False
 env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
-env.log_scenario='Multi-Node HA Sanity'
 env.enable_lbaas = True
 enable_ceilometer = True
 ceilometer_polling_interval = 60

@@ -52,6 +52,7 @@ function add_sourcelist_SMLite() {
         sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $word " {
    
             cp /etc/apt/sources.list /etc/apt/sources.list.orig
+            sed -i".bak" '/google/d' /etc/apt/sources.list.save
             cp /etc/apt/sources.list.save /etc/apt/sources.list
             if [ $? != 0 ]
                 then
@@ -131,7 +132,7 @@ function copy_smlite_pkg() {
     echo $CONTRAIL_PACKAGE
     echo $SERVER_MANAGER_INSTALLER
     sleep 30
-    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r /${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} /${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE /home/stack/smlite/check_provision.sh /home/stack/smlite/sources.list ${API_SERVER_HOST_STRING}:/root/
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r /${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} /${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE /home/stack/smlite/check_provision_cliff.sh /home/stack/smlite/sources.list ${API_SERVER_HOST_STRING}:/root/
     if [ $? == 0 ]
     then
         echo "Copy of ${SERVER_MANAGER_INSTALLER} and ${CONTRAIL_PACKAGE} to SMLITE server is successfull"
@@ -163,11 +164,11 @@ function provision_using_SMLite() {
 
 
     ) "
-    sleep 300 
+    sleep 600 
     #assumption is by this time, SM is installed on cfgm0 and provision is at kernel upgrade and node reboot.
 
     cluster_name=$(sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
-        server-manager show cluster | grep id | cut -d : -f2 | sed -e 's/^ \"//' -e 's/\"$//'
+        server-manager-client display cluster --json | grep id | cut -d : -f2 | sed -e 's/^ \"//' -e 's/\"$//'
     ) ")
     cluster_name=`echo $cluster_name | tr -d '\r'`
 
@@ -175,7 +176,7 @@ function provision_using_SMLite() {
         set -e
         set -x
         #check provisioing status.
-        /root/check_provision.sh $cluster_name
+        /root/check_provision_cliff.sh $cluster_name
         if [ "$?" -eq 0 ]
         then
             echo "Provisioning of the target/cluster is sucessfull!!!"
@@ -195,7 +196,7 @@ function provision_using_SMLite() {
             set -e
             set -x
             #check provisioing status.
-            /root/check_provision.sh $cluster_name
+            /root/check_provision_cliff.sh $cluster_name
             if [ "$?" -eq 0 ]
             then
                 echo "Provisioning of the target/cluster is sucessfull!!!"
@@ -294,6 +295,8 @@ function run_smgr_task() {
     reimage_using_SM_cliff_client || debug_and_die "reimage failed"
     copy_smlite_pkg || die "copy of sm-lite packages failed"
     provision_using_SMLite || die "provision failed"
+    add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
+    check_kernel_upgrade || die "kernel upgrade failed"
 
     #add fab basic images.
     if [ $ADD_IMAGES -eq 1 ]; then
@@ -314,7 +317,7 @@ function run_smgr_task() {
     fi
     export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
     export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
-    install_third_party_pkgs || die "installing GDB/ant failed"
+    #install_third_party_pkgs || die "installing GDB/ant failed"
     setup_testnode || die "test node setup failed"
     install_dep_pkgs_for_test
     run_sanity_simple || die "run_sanity_simple failed"

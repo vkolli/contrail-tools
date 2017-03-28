@@ -1,4 +1,5 @@
 from fabric.api import env
+import os
 
 #Management ip addresses of hosts in the cluster
 host1 = 'root@10.84.29.31'
@@ -26,17 +27,35 @@ host_build = 'root@10.84.24.64'
 #Role definition of the hosts.
 env.roledefs = {
     'all': [host1, host2,host3, host4, host5, host6, host7],
-    'cfgm': [host1, host2, host3],
+    'cfgm': [host2, host3, host4],
     'openstack': [host1],
-    'webui': [host1, host2, host3],
-    'control': [host1, host2, host3],
-    'compute': [host4, host5, host6, host7],
+    'webui': [host1],
+    'control': [host2, host3, host4],
+    'compute': [host5, host6, host7],
 #    'tsn': [host4],
 #    'toragent': [host4],
-    'collector': [host1, host2, host3],
-    'database': [host1, host2, host3],
+    'collector': [host2, host3, host4],
+    'database': [host2, host3, host4],
     'build': [host_build],
 }
+
+if os.getenv('AUTH_PROTOCOL',None) == 'https':
+    if os.getenv('KEYSTONE_VERSION',None) == 'v3':
+        env.keystone = {
+            'version': 'v3',
+            'auth_protocol': 'https'
+        }
+    else:
+        env.keystone = {
+            'auth_protocol': 'https'
+        }
+    env.cfgm = {
+        'auth_protocol': 'https'
+    }
+# RBAC
+if os.getenv('ENABLE_RBAC',None) == 'true':
+    cloud_admin_role = 'admin'
+    aaa_mode = 'rbac'
 
 env.hostnames = {
     'all': ['b7s31', 'b7s32','b7s33','b7s34', 'b7s35', 'b7s36', 'b7s37']
@@ -146,7 +165,7 @@ bond= {
     host1 : { 'name': 'bond0', 'member': ['enp4s0f0', 'enp4s0f1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
     host2 : { 'name': 'bond0', 'member': ['enp4s0f0', 'enp4s0f1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
     host3 : { 'name': 'bond0', 'member': ['enp4s0f0', 'enp4s0f1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
-    host4 : { 'name': 'bond0', 'member': ['p4p0p0', 'p4p0p1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
+    host4 : { 'name': 'bond0', 'member': ['enp4s0f0', 'enp4s0f1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
     host5 : { 'name': 'bond0', 'member': ['p4p0p0', 'p4p0p1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
     host6 : { 'name': 'bond0', 'member': ['p4p0p0', 'p4p0p1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
     host7 : { 'name': 'bond0', 'member': ['p4p0p0', 'p4p0p1'], 'mode': '802.3ad', 'xmit_hash_policy': 'layer3+4' },
