@@ -187,13 +187,18 @@ def point_sources_list_smrepo(hostname,smip,reimage_param):
     run("cp /etc/apt/sources.list /etc/apt/sources.list.image")
     infile=open('/etc/apt/sources.list')
     outfile=open('/etc/apt/sources.list.t', 'w')
+    print "infile "+infile
+    print "outfile "+outfile
     for line in infile:
+        print line
         line = re.sub('deb http[:/a-zA-Z0-9\.]+','deb http://'+smip+'/contrail/images/'+reimage_param,line)
         line = re.sub('deb-src http[:/a-zA-Z0-9\.]+','deb-src http://'+smip+'/contrail/images/'+reimage_param,line)
         outfile.write(line)
     outfile.write('deb http://'+smip+'/thirdparty_packages/ ./\n')
     infile.close()
     outfile.close()
+    run("cat /etc/apt/sources.list.t")
+    run("cat /etc/apt/sources.list")
     run("cp /etc/apt/sources.list.t /etc/apt/sources.list")
     run("apt-get update")
 
