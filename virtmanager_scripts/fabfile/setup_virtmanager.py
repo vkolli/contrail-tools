@@ -195,13 +195,14 @@ def point_sources_list_smrepo(hostname,smip,reimage_param):
     infile.close()
     outfile.close()
     run("cp /etc/apt/sources.list.t /etc/apt/sources.list")
+    run("apt-get update")
 
 def change_host_name_of_vm(hostname,smip,reimage_param):
     host = hostname
     generate_etc_hostname(host)
     generate_etc_hosts(host)
-    setup_ntp(host,smip)
     point_sources_list_smrepo(host,smip,reimage_param)
+    setup_ntp(host,smip)
     #run("cp /etc/hostname /etc/hostname.old")
     run("cp /etc/hosts /etc/hosts.old")
     put("hostname", "/etc/")
