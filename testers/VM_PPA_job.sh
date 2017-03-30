@@ -72,22 +72,23 @@ sudo sed -i 's|start_sanity_script|#start_sanity_script|' task.sh
 
 sleep 2
 
-if [ $? -ne 0 ]; then
-    cd /usr/local/lib/python2.7/dist-packages/openstack
-    sudo sed -i 's|DEFAULT_USER_AGENT = \"openstacksdk/%s\" % openstack.__version__|DEFAULT_USER_AGENT = \"openstacksdk/%s\" % openstack|g' session.py
+#if [ $? -ne 0 ]; then
+cd /usr/local/lib/python2.7/dist-packages/openstack
+sudo sed -i 's|DEFAULT_USER_AGENT = \"openstacksdk/%s\" % openstack.__version__|DEFAULT_USER_AGENT = \"openstacksdk/%s\" % openstack|g' session.py
 
-    cd /home/stack/devstack
-    ./unstack.sh
-    ./stack.sh
+cd /home/stack/devstack
+echo 'enable_service h-eng h-api h-api-cfn h-api-cw' >> /etc/sudoers
+./unstack.sh
+./stack.sh
 
-    cd /home/stack/contrail-installer/utilities
-    export CONTRAIL_DIR=~/contrail-installer
-    export DEVSTACK_DIR=~/devstack
+cd /home/stack/contrail-installer/utilities
+export CONTRAIL_DIR=~/contrail-installer
+export DEVSTACK_DIR=~/devstack
 
-    source sanity.sh
-    start_sanity_script
+source sanity.sh
+start_sanity_script
 
-fi
+#fi
 
 } "
 
