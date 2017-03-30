@@ -1,3 +1,8 @@
+"""
+Author: Soumil Kulkarni
+File Name: inp_to_yaml.py
+Summary: Script to create a virtualized infrastructure for running daily sanity or recreating any bugs for testing purpose. (Contrail on Contrail)
+"""
 import sys
 import json
 from fabric.api import *
