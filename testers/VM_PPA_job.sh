@@ -8,7 +8,9 @@ echo "AVAILABLE TESTBEDS : ${testbeds[@]}"
 
 get_testbed
 create_testbed
-reimage_setup
+initialize_any_vms
+
+sleep 5
 
 sshpass -p $API_SERVER_HOST_PASSWORD ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " {
 
@@ -21,19 +23,9 @@ echo 'stack  ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 } "
 
-sleep 5
+sleep 10
 
 sshpass -p $API_SERVER_HOST_PASSWORD ssh -l stack -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_IP " {
-
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.orig
-
-sudo cp /etc/apt/sources.list.save /etc/apt/sources.list
-
-sudo sed -i 's|deb http://packages.medibuntu.org/ trusty free non-free|#deb http://packages.medibuntu.org/ trusty free non-free|g' /etc/apt/sources.list
-sudo sed -i 's|deb-src http://packages.medibuntu.org/ trusty free non-free|#deb-src http://packages.medibuntu.org/ trusty free non-free|g' /etc/apt/sources.list
-sudo sed -i 's|deb http://dl.google.com/linux/deb/ stable non-free|#deb http://dl.google.com/linux/deb/ stable non-free|g' /etc/apt/sources.list
-sudo sh -c 'echo "deb http://ppa.launchpad.net/opencontrail/ppa/ubuntu trusty main" >> /etc/apt/sources.list'
-sudo sh -c 'echo "deb-src http://ppa.launchpad.net/opencontrail/ppa/ubuntu trusty main" >> /etc/apt/sources.list'
 
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 749D6EEC0353B12C
 
@@ -72,17 +64,19 @@ cd ../utilities
 
 echo "run task.sh"     
 #start task.sh to install/configure opencontrail and devstack.
+#./task.sh my.conf
 sudo sed -i 's|source sanity.sh|#source sanity.sh|' task.sh
 sudo sed -i 's|start_sanity_script|#start_sanity_script|' task.sh
 
 ./task.sh my.conf
+
+sleep 2
 
 if [ $? -ne 0 ]; then
     cd /usr/local/lib/python2.7/dist-packages/openstack
     sudo sed -i 's|DEFAULT_USER_AGENT = \"openstacksdk/%s\" % openstack.__version__|DEFAULT_USER_AGENT = \"openstacksdk/%s\" % openstack|g' session.py
 
     cd /home/stack/devstack
-    echo 'enable_service h-eng h-api h-api-cfn h-api-cw' >> localrc
     ./unstack.sh
     ./stack.sh
 
@@ -92,9 +86,10 @@ if [ $? -ne 0 ]; then
 
     source sanity.sh
     start_sanity_script
+
 fi
 
-} " 
+} "
 
 sleep 5
 
@@ -131,3 +126,4 @@ echo "Ending test on $TBFILE_NAME"
 
 
 unlock_testbed $TBFILE_NAME
+
