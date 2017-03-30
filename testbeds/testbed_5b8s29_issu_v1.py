@@ -90,7 +90,7 @@ env.passwords = {
     host_build: 'c0ntrail123',                                    
 }                                                                 
 
-reimage_param = os.getenv('REIMAGE_PARAM', 'ubuntu-14.04.4')
+reimage_param = os.getenv('REIMAGE_PARAM', 'ubuntu-14.04.2')
 
 vm_node_details = {
     'default': {   
