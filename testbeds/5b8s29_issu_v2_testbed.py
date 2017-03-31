@@ -67,7 +67,7 @@ env.roledefs = {
 }                                                                                                                                                     
 
 env.hostnames = {
-        host1:'5b8s29-vm1',
+#        host1:'5b8s29-vm1',
         host2:'5b8s29-vm2',
         host3:'5b8s29-vm3',
         host4:'5b8s29-vm4',
