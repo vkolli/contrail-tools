@@ -104,8 +104,14 @@ vm_node_details = {
                 'network' : [{'bridge' : 'br0', 'mac':'52:53:55:01:00:04'},                                            
                              {'bridge' : 'br1', 'mac':'52:53:55:02:00:04'}                                             
                             ],                                                                                         
-            },                                                                                                         
-                                                   
+            },
+    host4 : {                                                                                                          
+                'name' : '5b8s29-vm4',                                                                                 
+                'server': kvm_host1,                                                                                   
+                'network' : [{'bridge' : 'br0', 'mac':'52:53:55:01:00:05'},                                            
+                             {'bridge' : 'br1', 'mac':'52:53:55:02:00:05'}                                             
+                            ],                                                                                         
+            },                                                
 }                                                                                                                      
 
 # SSH Public key file path for passwordless logins
