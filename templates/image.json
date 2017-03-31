@@ -5,30 +5,9 @@
             "id": "combined_image_mainline",
             "path": "/root/sm_files/contrail-install-packages",
             "type": "contrail-ubuntu-package",
-            "version": "mainline",
+            "version": "4.0.0-3051",
             "parameters": { 
-               "containers": [  
-                   {        
-                       "role": "contrail-controller",
-                       "container_path": "/root/sm_files/contrail-controller.tar.gz"
-                   },       
-                   {        
-                       "role": "contrail-agent",
-                       "container_path": "/root/sm_files/contrail-agent.tar.gz"    
-                   },       
-                   {            
-                       "role": "contrail-lb",
-                       "container_path": "/root/sm_files/contrail-lb.tar.gz"
-                   },           
-                   {        
-                       "role": "contrail-analytics",
-                       "container_path": "/root/sm_files/contrail-analytics.tar.gz"
-                   },               
-                   {                
-                       "role": "contrail-analyticsdb",
-                       "container_path": "/root/sm_files/contrail-analyticsdb.tar.gz"
-                   }
-               ]                
+		"contrail-container-package": true
             }                       
         }
     ]
