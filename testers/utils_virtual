@@ -878,7 +878,7 @@ function run_smgr_virtual_task() {
 
     run_tempest || die "Run_Tempest step failed"
     collect_tech_support || die "Task to collect logs/cores failed"
-    #delete_stacks || die "Failed to delete stacks"
+    delete_stacks || die "Failed to delete stacks"
     echo "Ending test on "${AVAILABLE_TESTBEDS}
     #Set the TBFILE_NAME to the one passed through jenkins job
     export RUN_SUCCESSFUL=1
@@ -912,7 +912,7 @@ function debug_and_die
     else
         collect_tech_support
         echo "Testbed stack delete!!!"
-        #delete_stacks || die "Failed to delete stacks"
+        delete_stacks || die "Failed to delete stacks"
         if [[ $VCENTER_ONLY_TESTBED -eq 1  || $VCENTER_AS_COMPUTE_TESTBED -eq 1 ]]; then
             # deregister the setup from vcenter server
             run_fab cleanup_vcenter
@@ -930,7 +930,7 @@ function cleanup() {
     TBFILE_NAME=${AVAILABLE_TESTBEDS}
     tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
     if [ $LOCK_TESTBED_ON_FAILURE -eq 0 ] && [ $RUN_SUCCESSFUL -eq 1 ]; then
-        #delete_stacks || die "Failed to delete stacks"
+        delete_stacks || die "Failed to delete stacks"
     else
         #Store stack info in testbed lock file
         cat ${TOOLS_WS}/info.txt >> ${tb_lock_file} 
