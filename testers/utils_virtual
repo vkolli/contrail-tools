@@ -590,9 +590,15 @@ function add_server_cluster_SM() {
                 contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
                 contrail_pkg_name=`ls contrail-install-packages*.rpm`
             else
-                contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.tgz`
-                contrail_pkg_name=`ls contrail-install-packages*.tgz`
+                contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.deb`
+                contrail_pkg_name=`ls contrail-install-packages*.deb`
             fi
+        fi
+        if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
+        then
+            SMID="combined_image_mainline"
+            contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker*.tgz`
+            contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
         fi
 
         echo ${contrail_pkg}
