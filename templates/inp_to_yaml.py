@@ -1607,7 +1607,7 @@ def create_testbedpy_file_mainline():
 
         testbedfile_serverjson_role_mapping = {
             "openstack": "openstack",
-            "contrail-controller": "controller",
+            "contrail-controller": "control",
             "contrail-analytics": "collector",
             "contrail-analyticsdb": "database",
             "contrail-compute": "compute",
