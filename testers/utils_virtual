@@ -878,7 +878,7 @@ function run_smgr_virtual_task() {
 
     run_tempest || die "Run_Tempest step failed"
     collect_tech_support || die "Task to collect logs/cores failed"
-    delete_stacks || die "Failed to delete stacks"
+    #delete_stacks || die "Failed to delete stacks"
     echo "Ending test on "${AVAILABLE_TESTBEDS}
     #Set the TBFILE_NAME to the one passed through jenkins job
     export RUN_SUCCESSFUL=1
