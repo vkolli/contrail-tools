@@ -58,19 +58,19 @@ env.roledefs = {
     #'tsn': [host17, host19],                                                                                                                         
     #'toragent': [host17, host19],                                                                                                                    
     'build': [host_build],                                                                                                                            
-    'oldcfgm': [host2, host3, host4],                                                                                                                 
-    'oldcontrol':[host2, host3, host4],                                                                                                               
-    'olddatabase':[host2, host3, host4],                                                                                                              
-    'oldcollector':[host2, host3, host4],                                                                                                             
-    'oldwebui':[host2, host3, host4],                                                                                                                 
-    'oldbuild':[old_host_build]                                                                                                                       
+    #'oldcfgm': [host2, host3, host4],                                                                                                                 
+    #'oldcontrol':[host2, host3, host4],                                                                                                               
+    #'olddatabase':[host2, host3, host4],                                                                                                              
+    #'oldcollector':[host2, host3, host4],                                                                                                             
+    #'oldwebui':[host2, host3, host4],                                                                                                                 
+    #'oldbuild':[old_host_build]                                                                                                                       
 }                                                                                                                                                     
 
 env.hostnames = {
 #        host1:'5b8s29-vm1',
-        host2:'5b8s29-vm2',
-        host3:'5b8s29-vm3',
-        host4:'5b8s29-vm4',
+#        host2:'5b8s29-vm2',
+#        host3:'5b8s29-vm3',
+#        host4:'5b8s29-vm4',
         host5:'5b8s30-vm1',
         host6:'5b8s30-vm2',
         host7:'5b8s30-vm3',
@@ -79,11 +79,11 @@ env.hostnames = {
         host10:'5b8s31-vm2',
         host11:'5b8s31-vm3',
         host12:'5b8s31-vm4',
-        host13:'5b8s32',    
-        host14:'5b8s33',    
-        host15:'5b8s35',    
-        host17:'5b8s37',    
-        host19:'5b8s39',    
+#        host13:'5b8s32',    
+#        host14:'5b8s33',    
+#        host15:'5b8s35',    
+#        host17:'5b8s37',    
+#        host19:'5b8s39',    
         host20:'5b8s29-vm5'                                                                                                                                                                                                                                                                                                                                                                                                                                   
 }                                                                                                                                                                                                                              
 #Openstack admin password                                                                                                                                                                                                      
