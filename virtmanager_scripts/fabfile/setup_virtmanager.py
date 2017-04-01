@@ -187,7 +187,7 @@ def point_sources_list_smrepo(hostname,smip,reimage_param):
     f1='/tmp/'+hostname+'.sources_in.list'
     f2='/tmp/'+hostname+'.sources.list'
     run("cp /etc/apt/sources.list /etc/apt/sources.list.image")
-    get('/etc/apt/sources.list', '/tmp/'+hostname+'.sources.list')
+    get('/etc/apt/sources.list', '/tmp/'+hostname+'.sources_in.list')
     infile=open(f1)
     outfile=open(f2, 'w')
     for line in infile:
