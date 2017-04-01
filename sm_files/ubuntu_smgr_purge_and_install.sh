@@ -9,6 +9,8 @@ rm -rf /etc/contrail_smgr/contrail-centos-repo /etc/contrail_smgr/contrail-redha
 rm -rf  /usr/bin/server-manager /usr/bin/server-manager-client /opt/contrail/bin/server-manager-client
 rm -rf /etc/apt/sources.list.d/*.list
 a2dismod passenger
+echo "server ntp.juniper.net true" >> /etc/ntp.conf
+service ntp restart
 apt-get update > /dev/null 2>&1
 dpkg -l | grep contrail
 dpkg -l | grep puppet
