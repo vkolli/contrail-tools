@@ -117,9 +117,7 @@ def create_vms_from_testbed(contrail_fab_path='/opt/contrail/utils'):
         for i in range(0,3):
             try:
                 with settings(host_string=key):
-                    change_host_name_of_vm(vm_detail['name'])
-                    point_sources_list_smrepo(host,smip,reimage_param)
-                    setup_ntp(host,smip)
+                    change_host_name_of_vm(vm_detail['name'],smip,reimage_param)
                 break
             except :
                 time.sleep(30)
@@ -203,15 +201,15 @@ def point_sources_list_smrepo(hostname,smip,reimage_param):
     put(f2,"/etc/apt/sources.list")
     run("apt-get update")
 
-def change_host_name_of_vm(hostname):
+def change_host_name_of_vm(hostname,smip,reimage_param):
     host = hostname
     generate_etc_hostname(host)
     generate_etc_hosts(host)
-    #run("cp /etc/hostname /etc/hostname.old")
     run("cp /etc/hosts /etc/hosts.old")
     put("hostname", "/etc/")
     put("hosts", "/etc/")
-    #put("ntp.conf","/etc/")
+    point_sources_list_smrepo(host,smip,reimage_param)
+    setup_ntp(host,smip)
     run("reboot")
 
 def change_libvirt_type(ty = 'qemu'):
