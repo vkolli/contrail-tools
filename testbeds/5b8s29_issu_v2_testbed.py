@@ -187,7 +187,7 @@ vm_node_details = {
 
 #For reimage purpose
 env.ostypes = {     
-    host2: 'ubuntu',
+    #host2: 'ubuntu',
     host3: 'ubuntu',
     host4: 'ubuntu',
     host5: 'ubuntu',
