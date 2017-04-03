@@ -192,8 +192,8 @@ def point_sources_list_smrepo(hostname,smip,reimage_param):
     outfile=open(f2, 'w')
     for line in infile:
         print line
-        line = re.sub('deb http[:/a-zA-Z0-9\.]+','deb http://'+smip+'/contrail/images/'+reimage_param,line)
-        line = re.sub('deb-src http[:/a-zA-Z0-9\.]+','deb-src http://'+smip+'/contrail/images/'+reimage_param,line)
+        line = re.sub('deb http[:/a-zA-Z0-9\.\-]+','deb http://'+smip+'/contrail/images/'+reimage_param,line)
+        line = re.sub('deb-src http[:/a-zA-Z0-9\.\-]+','deb-src http://'+smip+'/contrail/images/'+reimage_param,line)
         outfile.write(line)
     outfile.write('deb http://'+smip+'/thirdparty_packages/ ./\n')
     infile.close()
