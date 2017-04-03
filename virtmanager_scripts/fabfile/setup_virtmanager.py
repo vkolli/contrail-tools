@@ -199,7 +199,8 @@ def point_sources_list_smrepo(hostname,smip,reimage_param):
     infile.close()
     outfile.close()
     put(f2,"/etc/apt/sources.list")
-    run("apt-get update")
+    with settings(warn_only=True):
+        run("apt-get update")
 
 def change_host_name_of_vm(hostname,smip,reimage_param):
     host = hostname
