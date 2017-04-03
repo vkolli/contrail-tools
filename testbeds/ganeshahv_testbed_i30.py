@@ -4,7 +4,7 @@ os_username = 'admin'
 os_password = 'contrail123'
 os_tenant_name = 'demo'
 
-host1 = 'root@10.204.216.48'
+host1 = 'root@10.204.217.142'
 
 
 ext_routers = [('blr-mx2', '10.204.216.245')]
@@ -27,7 +27,7 @@ env.roledefs = {
 }
 
 env.hostnames = {
-     'all': ['nodea10']
+     'all': ['nodei30']
 }
 
 env.passwords = {
