@@ -1,4 +1,5 @@
 from fabric.api import env
+import os
 
 os_username = 'admin'
 os_password = 'contrail123'
@@ -8,7 +9,7 @@ host1 = 'root@10.204.216.94'
 host2 = 'root@10.204.216.95'
 host3 = 'root@10.204.216.96'
 host4 = 'root@10.204.216.97'
-host5 = 'root@10.204.216.98'
+host5 = 'root@10.204.216.103'
 host6 = 'root@10.204.216.99'
 
 ext_routers = [('yuvaraj', '10.10.10.100')]
@@ -21,14 +22,29 @@ host_build = 'stack@10.204.216.49'
 env.roledefs = {
     'all': [host1, host2, host3, host4, host5, host6],
     'cfgm': [host1, host2, host3],
-    'openstack': [host1],
-    'webui': [host2],
+    'openstack': [host1, host2, host3],
+    'webui': [host1, host2, host3],
     'control': [host1, host2, host3],
     'compute': [host4, host5, host6],
     'collector': [host1, host2, host3],
     'database': [host1, host2, host3],
     'build': [host_build],
 }
+
+if os.getenv('AUTH_PROTOCOL',None) == 'https':
+    env.log_scenario = 'Multi-Interface HA Sanity[mgmt, ctrl=data, SSL]'
+    env.keystone = {
+        'auth_protocol': 'https'
+    }
+    env.cfgm = {
+        'auth_protocol': 'https'
+    }
+else:
+    env.log_scenario = 'Multi-Interface HA Sanity[mgmt, ctrl=data]'
+
+if os.getenv('ENABLE_RBAC',None) == 'true':
+    cloud_admin_role = 'admin'
+    aaa_mode = 'rbac'
 
 env.physical_routers={
 'yuvaraj'     : {       'vendor': 'juniper',
@@ -42,7 +58,7 @@ env.physical_routers={
 }
 
 env.hostnames = {
-    'all': ['nodem5', 'nodem6', 'nodem7', 'nodem8', 'nodem9', 'nodem10']
+    'all': ['nodem5', 'nodem6', 'nodem7', 'nodem8', 'nodem14', 'nodem10']
 }
 
 bond= {
@@ -54,9 +70,14 @@ control_data = {
     host2: {'ip': '10.10.10.6/24', 'gw': '10.10.10.100', 'device': 'p514p2'},
     host3: {'ip': '10.10.10.7/24', 'gw': '10.10.10.100', 'device': 'p514p2'},
     host4: {'ip': '10.10.10.8/24', 'gw': '10.10.10.100', 'device': 'bond0'},
-    host5: {'ip': '10.10.10.9/24', 'gw': '10.10.10.100', 'device': 'p514p2'},
+    host5: {'ip': '10.10.10.14/24', 'gw': '10.10.10.100', 'device': 'p514p2'},
     host6: {'ip': '10.10.10.10/24', 'gw': '10.10.10.100', 'device': 'p514p2'},
 }
+
+env.ha = {
+    'internal_vip' : '10.10.10.20'
+}
+ha_setup = True
 
 env.password = 'c0ntrail123'
 env.passwords = {
@@ -116,6 +137,7 @@ env.qos_niantic = {host5:[
 #env.cluster_id='clusterm5m6m7m8m9m10'
 minimum_diskGB = 32
 env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
+#env.test_repo_dir = '/home/stack/regression/contrail-test'
 env.mail_from = 'contrail-build@juniper.net'
 env.mail_to = 'dl-contrail-sw@juniper.net'
 multi_tenancy = True
