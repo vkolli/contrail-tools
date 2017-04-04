@@ -177,6 +177,7 @@ def setup_ntp(hostname,smip):
            /etc/ntp/crypto/pw\nkeys\
            /etc/ntp/keys\n\n"%(smip)
     run("apt-get -y install ntp")
+    run("service ntp stop")
     run("ntpdate "+smip)
     run("mv /etc/ntp.conf /etc/ntp.conf.orig")
     run("touch /var/lib/ntp/drift")
