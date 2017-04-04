@@ -184,21 +184,12 @@ def setup_ntp(hostname,smip):
     run("service ntp restart")
 
 def point_sources_list_smrepo(hostname,smip,reimage_param):
-    f1='/tmp/'+hostname+'.sources_in.list'
-    f2='/tmp/'+hostname+'.sources.list'
+    f1='/tmp/'+hostname+'.sources.list'
     run("cp /etc/apt/sources.list /etc/apt/sources.list.image")
-    get('/etc/apt/sources.list', '/tmp/'+hostname+'.sources_in.list')
-    infile=open(f1)
-    outfile=open(f2, 'w')
-    for line in infile:
-        print line
-        line = re.sub('deb http[:/a-zA-Z0-9\.\-]+','deb http://'+smip+'/contrail/images/'+reimage_param,line)
-        line = re.sub('deb-src http[:/a-zA-Z0-9\.\-]+','deb-src http://'+smip+'/contrail/images/'+reimage_param,line)
-        outfile.write(line)
-    outfile.write('deb http://'+smip+'/thirdparty_packages/ ./\n')
-    infile.close()
+    outfile=open(f1, 'w')
+    outfile.write("deb [arch=amd64] http://"+smip+"/contrail/images/"+reimage_param+" trusty main")
     outfile.close()
-    put(f2,"/etc/apt/sources.list")
+    put(f1,"/etc/apt/sources.list")
     with settings(warn_only=True):
         run("apt-get update")
 
