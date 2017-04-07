@@ -26,6 +26,8 @@ kvm_5b10s1 = 'root@10.87.67.129'
 kvm_5b10s2 = 'root@10.87.67.130'
 kvm_5b10s3 = 'root@10.87.67.131'
 
+reimage_param = os.getenv('REIMAGE_PARAM', 'ubuntu-14.04.2')
+
 vm_node_details = {
     'default': {
                 'image_dest' : '/mnt/disk1/images/',
