@@ -52,7 +52,7 @@ vm_node_details = {
                 'image_dest' : '/mnt/disk1/images/',
                 'ram' : '32768',
                 'server': kvm_nodel12,
-                'vcpus' : '4',
+                'vcpus' : '16',
                 'disk_format' : 'qcow2',
                 'image_source' : 'http://10.204.217.158/images/node_vm_images/%s-256G.img.gz' % (reimage_param),
                 },
