@@ -113,7 +113,7 @@ env.vcenter_servers = {
           },
          },
         },
-    },
+    }
 
 
 esxi_hosts = {
