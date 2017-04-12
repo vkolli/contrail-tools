@@ -130,4 +130,3 @@ env.encap_priority =  "'MPLSoUDP','MPLSoGRE','VXLAN'"
 env.log_scenario='Vcenter MultiNode Single Intf Sanity'
 #env.enable_lbaas = True
 do_parallel = True
-testbed_c4_c6_k4_k6.py.vcenter.ubuntu
