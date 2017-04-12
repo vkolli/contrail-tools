@@ -130,7 +130,7 @@ esxi_hosts = {
             'mac' : '00:50:56:aa:aa:03',
             'host' : host4,
             'mode': 'vcenter',
-            'vmdk_download_path' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
+            'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
     },
     'nodek5' : {
@@ -146,7 +146,7 @@ esxi_hosts = {
             'mac' : '00:50:56:aa:aa:04',
             'host' : host5,
             'mode': 'vcenter',
-            'vmdk_download_path' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
+            'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
     },
     'nodek6' : {
@@ -162,7 +162,7 @@ esxi_hosts = {
             'mac' : '00:50:56:aa:aa:05',
             'host' : host6,
             'mode': 'vcenter',
-            'vmdk_download_path' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
+            'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
     },
 
