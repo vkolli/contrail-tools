@@ -129,7 +129,7 @@ esxi_hosts = {
             'name' : 'nodek4-compute-vm',
             'mac' : '00:50:56:aa:aa:03',
             'host' : host4,
-            'mode': 'vcenter'
+            'mode': 'vcenter',
             'vmdk_download_path' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
     },
@@ -145,7 +145,7 @@ esxi_hosts = {
             'name' : 'nodek5-compute-vm',
             'mac' : '00:50:56:aa:aa:04',
             'host' : host5,
-            'mode': 'vcenter'
+            'mode': 'vcenter',
             'vmdk_download_path' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
     },
@@ -161,7 +161,7 @@ esxi_hosts = {
             'name' : 'nodek6-compute-vm',
             'mac' : '00:50:56:aa:aa:05',
             'host' : host6,
-            'mode': 'vcenter'
+            'mode': 'vcenter',
             'vmdk_download_path' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
     },
