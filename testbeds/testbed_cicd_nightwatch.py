@@ -377,9 +377,9 @@ env.ha = {
     'contrail_external_virtual_router_id' : 116
 }
 
-env.ha['internal_vip'] = '192.16.7.28'
+env.ha['internal_vip'] = '192.16.10.28'
 env.ha['internal_virtual_router_id'] = 117
-env.ha['contrail_internal_vip'] = '192.16.7.27'
+env.ha['contrail_internal_vip'] = '192.16.10.27'
 env.ha['contrail_internal_virtual_router_id'] = 118
 
 # HA Test configuration
