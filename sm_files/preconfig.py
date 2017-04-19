@@ -59,7 +59,7 @@ class Utils(object):
                             required=True,
                             help='IP Address of Server Manager Node')
         parser.add_argument('--server-manager-repo-port',
-                            default=9003,
+                            default=80,
                             help='Port Number of Server Manager Node which hosts repos')
         parser.add_argument('--log-file',
                             default='preconfig.log',
@@ -85,7 +85,7 @@ class Utils(object):
             contents = fid.read()
         server_json = json.loads(contents)
         for host_dict in server_json['server']:
-            print "PRECONFIG : " + host_dict['id']
+            print "Configuring  => " + host_dict['id']
             hostobj = Server(host_dict, args.server_manager_ip,
                              args.server_manager_repo_port)
             hostobj.connect()
@@ -113,10 +113,13 @@ class Server(object):
         self.export_server_info()
         self.os_version = ()
         self.extra_packages_12_04 = ['puppet=3.7.3-1puppetlabs1', 'python-netaddr',
-                                     'ifenslave-2.6=1.1.0-19ubuntu5', 'sysstat',
+                                     'ifenslave-2.6', 'sysstat',
                                      'ethtool']
         self.extra_packages_14_04 = ['puppet=3.7.3-1puppetlabs1', 'python-netaddr',
-                                     'ifenslave-2.6=2.4ubuntu1', 'sysstat',
+                                     'ifenslave-2.6', 'sysstat',
+                                     'ethtool']
+        self.extra_packages_16_04 = ['puppet=3.8.5-2', 'python-netaddr',
+                                     'ifenslave-2.6', 'sysstat',
                                      'ethtool']
 
     def __del__(self):
@@ -212,8 +215,12 @@ class Server(object):
 
     def get_os_version(self):
         log.debug('Retrieve OS version')
-        cmd = r'python -c "import platform; print platform.linux_distribution()"'
+        cmd = r'python -c "import platform; print (platform.linux_distribution())"'
         status, output = self.exec_cmd(cmd)
+        if status != 0:
+          cmd = r'python3 -c "import platform; print (platform.linux_distribution())"'
+          status, output = self.exec_cmd(cmd)
+          version_info = output
         version_info = literal_eval(output)
         return version_info
 
@@ -226,11 +233,12 @@ class Server(object):
         self.preconfig_hosts_file()
         self.preconfig_unauthenticated_packages()
         self.preconfig_repos()
+        self.preconfig_1604_repos()
         self.install_packages()
         self.setup_interface()
         # Setup static routes if defined
-        #if getattr(self, 'network', None) and 'routes' in self.network:
-            #self.setup_static_routes()
+        if getattr(self, 'network', None) and 'routes' in self.network and len(self.network['routes']) > 0:
+            self.setup_static_routes()
         self.preconfig_ntp_config()
         self.preconfig_puppet_config()
 
@@ -298,12 +306,16 @@ class Server(object):
             log.info('Configure Allow Unauthenticated true')
             self.exec_cmd('echo %s >> /etc/apt/apt.conf' % apt_auth, error_on_fail=True)
 
-    def preconfig_repos(self):
-        repo_entry = r'deb http://%s:%s/thirdparty_packages/ ./' % ('puppet', self.server_manager_repo_port)
-        repo_entry_verify = r'%s.*\/thirdparty_packages' % 'puppet'
+    def preconfig_1604_repos(self):
+        os_type, version, misc = self.os_version
+        if os_type.lower() == 'ubuntu' and version != '16.04':
+            return
+
+        repo_entry = r'deb http://%s:%s/thirdparty_packages_ubuntu_1604/ ./' % ('puppet', self.server_manager_repo_port)
+        repo_entry_verify = r'%s.*\/thirdparty_packages_ubuntu_1604' % 'puppet'
         status, output = self.exec_cmd('apt-cache policy | grep "%s"' % repo_entry_verify)
         if status:
-            log.info('/etc/apt/sources.list has no thirdparty_packages '
+            log.info('/etc/apt/sources.list has no thirdparty_packages 1604 '
                      'repo entry')
             log.debug('Backup existing sources.list')
             self.exec_cmd(r'cp /etc/apt/sources.list '\
@@ -314,6 +326,27 @@ class Server(object):
             self.exec_cmd('apt-get update')
             self.exec_cmd('apt-cache policy | grep "%s"' % repo_entry_verify,
                           error_on_fail=True)
+        else:
+            self.exec_cmd('apt-get update')
+
+    def preconfig_repos(self):
+        repo_entry = r'deb http://%s:%s/thirdparty_packages/ ./' % ('puppet', self.server_manager_repo_port)
+        repo_entry_verify = r'%s.*\/thirdparty_packages' % 'puppet'
+        status, output = self.exec_cmd('apt-cache policy | grep "%s"' % repo_entry_verify)
+        if status:
+            log.info('/etc/apt/sources.list has no thirdparty_packages '
+                     'repo entry')
+            log.debug('Backup existing sources.list')
+            self.exec_cmd(r'/bin/mv /etc/apt/sources.list '\
+                          '/etc/apt/sources.list_$(date +%Y_%m_%d__%H_%M_%S).contrailbackup')
+            log.debug('Adding Repo Entry (%s) to /etc/apt/sources.list' % repo_entry)
+            self.exec_cmd('echo >> /etc/apt/sources.list', error_on_fail=True)
+            self.exec_cmd(r"sed -i '1 i\%s' /etc/apt/sources.list" % repo_entry)
+            self.exec_cmd('apt-get update')
+            self.exec_cmd('apt-cache policy | grep "%s"' % repo_entry_verify,
+                          error_on_fail=True)
+        else:
+            self.exec_cmd('apt-get update')
 
     def install_packages(self):
         os_type, version, misc = self.os_version
@@ -321,6 +354,8 @@ class Server(object):
             packages_list = self.extra_packages_12_04
         elif os_type.lower() == 'ubuntu' and version == '14.04':
             packages_list = self.extra_packages_14_04
+        elif os_type.lower() == 'ubuntu' and version == '16.04':
+            packages_list = self.extra_packages_16_04
         else:
             raise RuntimeError('UnSupported OS type (%s)' % self.os_version)
 
@@ -339,8 +374,8 @@ class Server(object):
         cmd = r'%s ' % iface_script_path
         cmd += r'--device %s --ip %s ' % (iface_info['name'],
                                          iface_info['ip_address'])
-        #if 'member_interfaces' in iface_info.keys():
-            #cmd += r'--members %s ' % " ".join(iface_info['member_interfaces'])
+        if 'member_interfaces' in iface_info.keys() and len(iface_info['member_interfaces']) > 0 :
+            cmd += r'--members %s ' % " ".join(iface_info['member_interfaces'])
         if iface_info['ip_address'] == self.ip and 'gateway' in iface_info.keys():
             cmd += r'--gw %s ' % iface_info['gateway']
         if 'vlan' in iface_info.keys():

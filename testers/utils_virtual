@@ -377,7 +377,10 @@ function reimage_using_SM_cliff_client() {
         contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
 	isofile="/root/images/centos71.json"
     fi
-
+    if [ $BRANCH == "mainline" ]
+    then
+        SMID="combined_image_mainline"
+    fi
     pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
     if [ $USE_CLOUD_PKG -eq 1 ]; then
         contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.tgz`
@@ -571,7 +574,12 @@ function add_server_cluster_SM() {
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
             isofile="/root/sm_files/centos71.json"
         fi
-    
+   
+        if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
+        then
+            SMID="combined_image_mainline"
+        fi
+ 
         pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
         cd $pkg_path
         if [ $USE_CLOUD_PKG -eq 1 ]; then
@@ -586,6 +594,12 @@ function add_server_cluster_SM() {
                 contrail_pkg_name=`ls contrail-install-packages*.deb`
             fi
         fi
+        if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
+        then
+            SMID="combined_image_mainline"
+            contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker*.tgz`
+            contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
+        fi
 
         echo ${contrail_pkg}
         echo ${pkg_path} 
@@ -595,6 +609,20 @@ function add_server_cluster_SM() {
         #set the parameters for multi/single node setup
         cluster_json="/root/sm_files/cluster.json"
         server_json="/root/sm_files/server.json"
+
+        if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
+        then
+            SM_CONTROL_IP=`cat ${TOOLS_WS}/sm-control-data-ip`
+            show_cmd="server-manager display "
+        else
+            show_cmd="server-manager show "
+        fi
+        #For mainline copy contrainer packages and add package using image.json
+        if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
+        then
+            image_json="/root/sm_files/image.json"
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${contrail_pkg} root@$SM_SERVER_IP:/root/sm_files/contrail-install-packages
+        fi
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${contrail_pkg} root@$SM_SERVER_IP:/root/sm_files/
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${image} root@$SM_SERVER_IP:${isofile}
     
@@ -638,25 +666,17 @@ function add_server_cluster_SM() {
                 server-manager delete image --image_id $SMID
             fi
             echo "add contrail package to the SM database"
-          
-            server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
-            if [ $? == 0 ]
+
+            if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
             then
-                echo "Server-manager adding contrail-package command is successful"
+                ifconfig eth1 ${SM_CONTROL_IP}
+                server-manager add image -f image.json
             else
-                echo "Server-manager adding contrail-package command failed, aborting the process"
-                exit 1
+                echo "Adding contrail package using upload_image command!"
+                server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
             fi
-    
-            echo "check if the package was added successfully"
-            server-manager show image | grep $SMID
-            if [ $? != 0 ] 
-            then
-                echo "Adding Contrail-packages $SMID failed"
-                exit 1
-            fi
-    
-            server-manager show image
+            sleep 120
+            echo "Server-manager adding contrail-package command is successful"
     
             echo "Clean up cluster and server from SM database before adding."
             server-manager delete server --cluster_id $CLUSTER_NAME
@@ -672,7 +692,7 @@ function add_server_cluster_SM() {
                 exit 1
             fi
     
-            server-manager show cluster --detail
+            #${show_cmd} cluster --detail
     
             echo "add server to SM database"
             server-manager add server -f $server_json
@@ -744,9 +764,23 @@ function launch_testbed_virtual() {
         #Check if reimage param is set, otherwise use distro for launching VMs
         if [ -z "$REIMAGE_PARAM" ]
         then
-            ./build_infra.sh ${TEMPLATE_DIR} ${DISTRO} 
+            if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
+            then
+                echo "build_infra_mainline"
+                ./build_infra_mainline.sh ${TEMPLATE_DIR} ${DISTRO} ${BASE_CLUSTER} 
+            else
+                echo "build_infra"
+                ./build_infra.sh ${TEMPLATE_DIR} ${DISTRO} ${BASE_CLUSTER}
+            fi
         else
-            ./build_infra.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM}
+            if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
+            then
+                echo "build_infra_mainline"
+                ./build_infra_mainline.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM} ${BASE_CLUSTER}
+            else
+                echo "build_infra"
+                ./build_infra.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM} ${BASE_CLUSTER}
+            fi
         fi
         if [ $? == 0 ]
         then
@@ -760,6 +794,7 @@ function launch_testbed_virtual() {
     export SM_SERVER_IP=`cat ${TOOLS_WS}/server-manager-file`
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/config-node-ip ${TOOLS_WS}/
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/info.txt ${TOOLS_WS}/
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/sm-control-data-ip ${TOOLS_WS}/
     #Copy testbed_file generated by build_infra.sh
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/testbed.py ${TOOLS_WS}/testbeds/$TBFILE
 }
@@ -773,6 +808,7 @@ function delete_stacks() {
 }
 
 function run_smgr_virtual_task() {
+    export RUN_SUCCESSFUL=0
     echo "Running tests on $1.."
     #Change testbed filename to template_HA.py
     export TEMPLATE_DIR=${SCRIPT_TIMESTAMP}
@@ -815,17 +851,13 @@ function run_smgr_virtual_task() {
     else
         provision_using_SM || debug_and_die "provision failed"
     fi
-    check_kernel_upgrade || die "kernel upgrade failed"
+    #check_kernel_upgrade || die "kernel upgrade failed"
     export API_SERVER_HOST_STRING="root@"`cat ${TOOLS_WS}/config-node-ip`
     
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         search_package
         pkg_file_name=`basename $PKG_FILE`
-        if [[ $USE_CLOUD_PKG -eq 1 || $USE_NETWORKING_PKG -eq 1 ]]; then
-            export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-installer-packages[-_]\([0-9\.\-]*\).*/\1/'`
-        else
-            export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
-        fi
+        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
         if [[ -z $TEST_HOST_STRING ]]; then
             export TEST_HOST_STRING=$API_SERVER_HOST_STRING
             export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
@@ -846,9 +878,10 @@ function run_smgr_virtual_task() {
 
     run_tempest || die "Run_Tempest step failed"
     collect_tech_support || die "Task to collect logs/cores failed"
-    delete_stacks || die "Failed to delete stacks"
-    echo "Ending test on $1"
+    #delete_stacks || die "Failed to delete stacks"
+    echo "Ending test on "${AVAILABLE_TESTBEDS}
     #Set the TBFILE_NAME to the one passed through jenkins job
+    export RUN_SUCCESSFUL=1
     TBFILE_NAME=${AVAILABLE_TESTBEDS}
     tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
 }
@@ -896,7 +929,7 @@ function cleanup() {
     #Set the TBFILE_NAME to the one passed through jenkins job
     TBFILE_NAME=${AVAILABLE_TESTBEDS}
     tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
-    if [ $LOCK_TESTBED_ON_FAILURE -eq 0 ]; then
+    if [ $LOCK_TESTBED_ON_FAILURE -eq 0 ] && [ $RUN_SUCCESSFUL -eq 1 ]; then
         delete_stacks || die "Failed to delete stacks"
     else
         #Store stack info in testbed lock file
