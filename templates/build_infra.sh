@@ -5,6 +5,7 @@ openstack_project_uuid=$(python -c 'import json; fd=json.loads(open("/root/'$1'/
 dashed_project_uuid=$(python -c 'import uuid; fd=uuid.UUID("'${openstack_project_uuid}'"); print fd')
 echo $dashed_project_uuid
 ubuntu_image_name=$2
+selected_config_node_ip=$3
 sleep 5
 echo "The Contents of the input.json file before modification "
 cat /root/$1/input.json
@@ -13,6 +14,9 @@ sed -i 's/project_uuid_val/'${dashed_project_uuid}'/' /root/$1/input.json
 python /root/$1/change_testbed_params.py /root/$1/input.json $ubuntu_image_name parse_openstack_image_list_command
 sleep 5
 sed -i 's/image_val/'${ubuntu_image_name}'/' /root/$1/input.json
+fip_uuid="$(python /root/$1/change_testbed_params.py /root/$1/input.json $selected_config_node_ip get_fip_uuid)"
+echo "The FIP Networm UUID for this project is: $fip_uuid"
+sed -i 's/fip_uuid/'${fip_uuid}'/' /root/$1/input.json
 echo "/root/$1/input.json  --- Changed"
 echo "The New imput.json :- \n"
 cat /root/$1/input.json
@@ -23,6 +27,9 @@ chmod 777 /root/$1/cloud_init.sh
 echo "Lets See if the Server Manager OS is already added to openstack"
 python /root/$1/inp_to_yaml.py /root/$1/input.json add_sm_os_to_openstack
 echo "Server Manager OS added"
+
+#Adding the recommended flavor for the VM on the base cluster
+python /root/$1/inp_to_yaml.py /root/$1/input.json check_and_create_required_flavor 
 
 python /root/$1/inp_to_yaml.py /root/$1/input.json create_network_yaml > /root/$1/final_network.yaml
 python /root/$1/inp_to_yaml.py /root/$1/input.json create_server_yaml > /root/$1/final_server.yaml

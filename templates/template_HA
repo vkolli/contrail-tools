@@ -26,7 +26,7 @@
 		},
 		"floating_ip_network":{
                         "param":{
-                                "floating_ip_network_uuid" : "df9327c8-4cb1-41f9-a9f5-0df22a220b7d",
+                                "floating_ip_network_uuid" : "fip_uuid",
                                 "name" : "floatingIpPool_final_script_test"
                         }
                 },
@@ -98,8 +98,7 @@
                                 		"provision":{
                                         		"contrail": {
                                                 		"minimum_disk_database": 32,
-                                                		"kernel_upgrade": "true",
-								"kernel_version": "3.13.0-100"
+                                                		"kernel_upgrade": "true"
                                         		},
                                         		"openstack":{
 								"keystone_admin_password": "c0ntrail123",
