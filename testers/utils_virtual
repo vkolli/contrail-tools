@@ -597,8 +597,8 @@ function add_server_cluster_SM() {
         if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
         then
             SMID="combined_image_mainline"
-            contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker*.tgz`
-            contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
+            contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
+            contrail_pkg_name=`ls contrail-cloud-docker_*.tgz`
         fi
 
         echo ${contrail_pkg}
@@ -675,7 +675,7 @@ function add_server_cluster_SM() {
                 echo "Adding contrail package using upload_image command!"
                 server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
             fi
-            sleep 120
+            sleep 300
             echo "Server-manager adding contrail-package command is successful"
     
             echo "Clean up cluster and server from SM database before adding."
