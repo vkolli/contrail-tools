@@ -675,8 +675,14 @@ function add_server_cluster_SM() {
                 echo "Adding contrail package using upload_image command!"
                 server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
             fi
-            sleep 300
-            echo "Server-manager adding contrail-package command is successful"
+            /root/sm_files/check_image_add.sh $SMID
+            if [ $? == 0 ]
+            then
+                echo "Server-manager adding contrail-package command is successful!!!"
+            else
+                echo "Server-manager adding contrail-package command failed!!! aborting the process"
+                exit 1
+            fi
     
             echo "Clean up cluster and server from SM database before adding."
             server-manager delete server --cluster_id $CLUSTER_NAME
