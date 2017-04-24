@@ -81,7 +81,7 @@ done
 if [ "$net_res" == 'success' ]
 then
 	heat stack-create -f /root/$1/final_server.yaml $final_server_stack_name
-	sleep 20
+	sleep 30
         while true
         do
 	python /root/$1/change_testbed_params.py /root/$1/input.json $final_server_stack_name get_stack_status > /root/$1/tmp.txt
@@ -96,9 +96,12 @@ then
                 fi
                 if [ "$ser_res" == 'failed' ]
                 then
-                        echo "Server Stack Creation Failed"
-			heat stack-show $final_server_stack_name
-			exit 0
+                        echo "Server Stack Creation Failed, deleting the failed stack"
+			heat stack-delete $final_server_stack_name -y
+                        echo "Resources not available to launch the stack, will retry launching the server stack after 10 minutes"
+                        sleep 600
+                        heat stack-create -f /root/$1/final_server.yaml $final_server_stack_name 
+                        sleep 30
                 fi
                 if [ "$ser_res" == 'inprogress' ]
                 then
