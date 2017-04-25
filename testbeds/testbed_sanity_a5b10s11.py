@@ -140,11 +140,11 @@ env.ostypes = {
 #==============================
 #Inferface Bonding
 bond= {
-    host4 : { 'name': 'bond0', 'member': ['p514p1','p514p2'], 'mode':'802.3ad' },
-    host5 : { 'name': 'bond0', 'member': ['p514p1','p514p2'], 'mode':'802.3ad' },
-    host6 : { 'name': 'bond0', 'member': ['p514p1','p514p2'], 'mode':'802.3ad' },
-    host7 : { 'name': 'bond0', 'member': ['p514p1','p514p2'], 'mode':'802.3ad' },
-    host8 : { 'name': 'bond0', 'member': ['p514p1','p514p2','p414p1','p414p2'], 'mode':'802.3ad' },
+    host4 : { 'name': 'bond0', 'member': ['p513p1','p513p2'], 'mode':'802.3ad' },
+    host5 : { 'name': 'bond0', 'member': ['p513p1','p513p2'], 'mode':'802.3ad' },
+    host6 : { 'name': 'bond0', 'member': ['p513p1','p513p2'], 'mode':'802.3ad' },
+    host7 : { 'name': 'bond0', 'member': ['p513p1','p513p2'], 'mode':'802.3ad' },
+    host8 : { 'name': 'bond0', 'member': ['p1p1','p1p2','p1p3','p1p4'], 'mode':'802.3ad' },
 }
 
 #env.sriov = {
