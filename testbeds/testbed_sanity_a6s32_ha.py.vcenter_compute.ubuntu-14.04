@@ -20,7 +20,7 @@ public_vn_subnet = "10.84.51.96/27"
 
 # env.orchestrator = 'vcenter'
 
-host_build = 'root@10.87.36.10'
+host_build = 'stack@10.84.24.64'
 
 env.roledefs = {
     'all': [host1, host2, host3, host4, contrail_vm2, contrail_vm3],
@@ -123,7 +123,7 @@ esxi_hosts = {
 
 # VIP cofiguration for HA
 env.ha = {
-    'internal_vip' : '10.87.36.201'
+    'internal_vip' : '10.87.36.25'
    # 'internal_vip' : '192.168.10.210',
    # 'external_vip' : '10.84.13.201'
 }
