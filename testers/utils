@@ -154,7 +154,7 @@ function search_package {
                 export REIMAGE_PARAM=${BUILD_MAP[${DISTRO}]}
             else
                 export REIMAGE_PARAM="centos-7.2"
-		if [ "$BRANCH" \> "R3.2" ]; then
+		if [ "$BRANCH" \> "R3.1" ]; then
 		    if [ "$SKU" == "mitaka" ] || [ "$SKU" == "liberty" ] || [ "$SKU" == "newton" ]; then
 		        export REIMAGE_PARAM="centos-7.3"
 		    fi
