@@ -154,6 +154,12 @@ function search_package {
                 export REIMAGE_PARAM=${BUILD_MAP[${DISTRO}]}
             else
                 export REIMAGE_PARAM="centos-7.2"
+		if [ "$BRANCH" \> "R3.2" ]; then
+		    if [ "$SKU" == "mitaka" ] || [ "$SKU" == "liberty" ] || [ "$SKU" == "newton" ]; then
+		        export REIMAGE_PARAM="centos-7.3"
+		    fi
+		fi
+		    
             fi
         else
             export REIMAGE_PARAM="redhat-7.2"
@@ -582,7 +588,9 @@ function setup_and_install_contrail {
 		if [ ! -z $KERNEL_VERSION ];then
                     fab upgrade_kernel_all:version=$KERNEL_VERSION || debug_and_die "Upgrading Kernel failed"
 		else
-                    fab upgrade_kernel_all || debug_and_die "Upgrading Kernel failed"
+		    if [ "$REIMAGE_PARAM" != "centos-7.3" ]; then
+                        fab upgrade_kernel_all || debug_and_die "Upgrading Kernel failed"
+		    fi
 		fi
             fi
         fi
