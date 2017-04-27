@@ -336,7 +336,7 @@ function copy_bgp_stress_test_binary {
 }
 
 # checkout_repo
-function checkout_fab_repo {
+function checkout_fab_repo_deprecated {
     cd $TOOLS_WS
     git clone git@github.com:Juniper/contrail-fabric-utils.git
     ( cd $TOOLS_WS/contrail-fabric-utils
@@ -346,9 +346,22 @@ function checkout_fab_repo {
     )
 }
 
+function checkout_fab_repo {
+    cd $TOOLS_WS
+    sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/contrail-fabric-utils*.tgz  . || die "Failed to copy fab artifacts to build host"
+    tar xzf contrail-fabric-utils*.tgz
+    mv fabric-utils contrail-fabric-utils
+}
+
+function checkout_test_repo {
+    cd $TOOLS_WS
+    sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/contrail-test*.tgz  . || die "Failed to copy test artifacts to build host"
+    tar xzf contrail-test*.tgz
+}
+
 ##
 # checkout_repo 
-function checkout_repo {
+function checkout_repo_deprecated {
     cd $TOOLS_WS
     git clone git@github.com:Juniper/contrail-fabric-utils.git
     git clone git@github.com:Juniper/contrail-test.git
@@ -362,6 +375,11 @@ function checkout_repo {
       git checkout -b ${FAB_GIT_BRANCH} origin/${FAB_GIT_BRANCH}
       git pull
     )
+}
+
+function checkout_repo {
+    checkout_fab_repo
+    checkout_test_repo
 }
 
 function die
