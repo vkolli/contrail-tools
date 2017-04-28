@@ -88,6 +88,7 @@
                         		"cluster_id": "test-cluster",
 					"provisioning_type": "kickstart",
                         		"parameters": {
+						"enable_lbaas": "True",
                                 		"domain": "englab.juniper.net",
                                 		"provision":{
                                         		"contrail": {

@@ -568,6 +568,37 @@ def get_sm_ip():
 
 # Method for getting the floating ip od the config node in the mainline build
 
+def get_all_fip_dict():
+    ret_dict= {}
+    a = subprocess.Popen('neutron floatingip-list -f json', shell= True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    change_network_dict()
+    net_name = []
+    project_uuid = general_params_dict["project_uuid"]
+    for i in network_dict:
+        net_name.append(network_dict[i]["name"])
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            name = server_dict[clus][i]["name"]
+            for j in server_dict[clus][i]["ip_address"]:
+                for k in range(len(fip_neutron_dict)):
+                    if fip_neutron_dict[k]["fixed_ip_address"] == server_dict[clus][i]["ip_address"][j]:
+                        b = subprocess.Popen('neutron port-show %s -f json' % fip_neutron_dict[k]["port_id"], shell=True, stdout=subprocess.PIPE)
+                        b_tmp = b.stdout.read()
+                        b_tmp = str(b_tmp)
+                        current_port_dict = json.loads(b_tmp)
+                        current_network_id = current_port_dict["network_id"]
+                        c = subprocess.Popen('neutron net-list -f json', shell=True, stdout=subprocess.PIPE)
+                        c_tmp = c.stdout.read()
+                        c_tmp = str(c_tmp)
+                        all_net_dict = json.loads(c_tmp)
+                        for net in all_net_dict:
+                            if current_network_id == net["id"] and net["name"] in net_name:
+                                ret_dict[name] = fip_neutron_dict[k]["floating_ip_address"]
+    print ret_dict
+
 
 def get_config_node_ip_mainline():
     a = subprocess.Popen(
@@ -934,6 +965,9 @@ def create_cluster_json_mainline():
         if "domain" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
+	if "enable_lbaas" in cluster_dict[clus]["parameters"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t"enable_lbaas": "%s",\n' %cluster_dict[clus]["parameters"]["enable_lbaas"] 
         for net in network_dict:
             if network_dict[net]["role"] == "management":
                 individual_clus_string = individual_clus_string + \
@@ -1164,6 +1198,9 @@ def create_cluster_json():
         if "domain" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
+	if "enable_lbaas" in cluster_dict[clus]["parameters"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t"enable_lbaas": "%s",\n' %cluster_dict[clus]["parameters"]["enable_lbaas"]
         individual_clus_string = individual_clus_string + \
             '\t\t\t"provision":{\n'
         # Lets start the contrail Part
