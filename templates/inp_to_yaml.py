@@ -523,83 +523,96 @@ def parse_output():
     # print fixed_ip_mac_mapping
     # print floating_ip_mac_mapping
 
-
 # A Method for gettinf the server manager ip
 def get_sm_ip():
-    a = subprocess.Popen(
-        'neutron floatingip-list -f json',
-        shell=True,
-        stdout=subprocess.PIPE)
-    a_tmp = a.stdout.read()
-    a_tmp = str(a_tmp)
-    fip_neutron_dict = eval(a_tmp)
-    floating_ip_list = []
-    change_network_dict()
-    net_name = []
-    for i in network_dict:
-        net_name.append(network_dict[i]["name"])
-    for clus in server_dict:
-        for i in server_dict[clus]:
-            if server_dict[clus][i]["server_manager"] == "true":
-                for j in server_dict[clus][i]["ip_address"]:
-                    for k in range(len(fip_neutron_dict)):
-                        if fip_neutron_dict[k]["fixed_ip_address"] == server_dict[clus][i]["ip_address"][j]:
-                            b = subprocess.Popen(
-                                'neutron port-show %s -f json' %
-                                fip_neutron_dict[k]["port_id"],
-                                shell=True,
-                                stdout=subprocess.PIPE)
-                            b_tmp = b.stdout.read()
-                            b_tmp = str(b_tmp)
-                            current_port_dict = json.loads(b_tmp)
-                            current_network_id = current_port_dict["network_id"]
-                            c = subprocess.Popen(
-                                'neutron net-list -f json', shell=True, stdout=subprocess.PIPE)
-                            c_tmp = c.stdout.read()
-                            c_tmp = str(c_tmp)
-                            all_net_dict = json.loads(c_tmp)
-                            for net in all_net_dict:
-                                if current_network_id == net["id"] and net["name"] in net_name:
-                                    floating_ip_list.append(
-                                        fip_neutron_dict[k]["floating_ip_address"])
+	fixedip_to_floatingip_mapping_dict = {}
+	ret_dict = {}
+	project_uuid = general_params_dict["project_uuid"]
+	a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' % project_uuid, shell= True, stdout=subprocess.PIPE)
+	a_tmp = a.stdout.read()
+	a_tmp = str(a_tmp)
+	change_network_dict()
+	fip_neutron_dict = eval(a_tmp)
+	for i in range (len(fip_neutron_dict)):
+		fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+	for clus in server_dict:
+		for i in server_dict[clus]:
+			name = server_dict[clus][i]["name"]
+			if server_dict[clus][i]["server_manager"] == "true":
+				for j in server_dict[clus][i]["ip_address"]:
+					if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+						ret_dict[name] = fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
+						print fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
+						break
+				break
+		break
 
-    for fip in floating_ip_list:
-        print fip
-
-# Method for getting the floating ip od the config node in the mainline build
-
+# Method for getting floating ips of all the servers so that can be used in the testbed.py
 def get_all_fip_dict():
-    ret_dict= {}
-    a = subprocess.Popen('neutron floatingip-list -f json', shell= True, stdout=subprocess.PIPE)
-    a_tmp = a.stdout.read()
-    a_tmp = str(a_tmp)
-    fip_neutron_dict = eval(a_tmp)
-    change_network_dict()
-    net_name = []
-    project_uuid = general_params_dict["project_uuid"]
-    for i in network_dict:
-        net_name.append(network_dict[i]["name"])
-    for clus in server_dict:
-        for i in server_dict[clus]:
-            name = server_dict[clus][i]["name"]
-            for j in server_dict[clus][i]["ip_address"]:
-                for k in range(len(fip_neutron_dict)):
-                    if fip_neutron_dict[k]["fixed_ip_address"] == server_dict[clus][i]["ip_address"][j]:
-                        b = subprocess.Popen('neutron port-show %s -f json' % fip_neutron_dict[k]["port_id"], shell=True, stdout=subprocess.PIPE)
-                        b_tmp = b.stdout.read()
-                        b_tmp = str(b_tmp)
-                        current_port_dict = json.loads(b_tmp)
-                        current_network_id = current_port_dict["network_id"]
-                        c = subprocess.Popen('neutron net-list -f json', shell=True, stdout=subprocess.PIPE)
-                        c_tmp = c.stdout.read()
-                        c_tmp = str(c_tmp)
-                        all_net_dict = json.loads(c_tmp)
-                        for net in all_net_dict:
-                            if current_network_id == net["id"] and net["name"] in net_name:
-                                ret_dict[name] = fip_neutron_dict[k]["floating_ip_address"]
-    print ret_dict
+        fixedip_to_floatingip_mapping_dict = {}
+        ret_dict = {}
+        project_uuid = general_params_dict["project_uuid"]
+        a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' % project_uuid, shell= True, stdout=subprocess.PIPE)
+        a_tmp = a.stdout.read()
+        a_tmp = str(a_tmp)
+        fip_neutron_dict = eval(a_tmp)
+        #print fip_neutron_dict 
+        for i in range (len(fip_neutron_dict)):
+                fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+        #print fixedip_to_floatingip_mapping_dict
+        for clus in server_dict:
+                for i in server_dict[clus]:
+                        name = server_dict[clus][i]["name"]
+                        for j in server_dict[clus][i]["ip_address"]:
+                                if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+                                        ret_dict[name] = fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
+        return ret_dict
+	
 
+# A Method for gettinf the config node ip
+def get_config_node_ip_mainline():
+	fixedip_to_floatingip_mapping_dict = {}
+        ret_dict = {}
+        project_uuid = general_params_dict["project_uuid"]
+        a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' % project_uuid, shell= True, stdout=subprocess.PIPE)
+        a_tmp = a.stdout.read()
+        a_tmp = str(a_tmp)
+        fip_neutron_dict = eval(a_tmp)
+        #print fip_neutron_dict 
+        for i in range (len(fip_neutron_dict)):
+                fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+	for clus in server_dict:
+		for i in server_dict[clus]:
+			if server_dict[clus][i]["server_manager"] != "true":
+				if "contrail-controller" in server_dict[clus][i]["roles"]:
+					for j in server_dict[clus][i]["ip_address"]:
+						if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+							ret_dict["contrail-controller"] = fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
+	print ret_dict["contrail-controller"]
+							
 
+def get_config_node_ip():
+	fixedip_to_floatingip_mapping_dict = {}
+        ret_dict = {}
+        project_uuid = general_params_dict["project_uuid"]
+        a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' % project_uuid, shell= True, stdout=subprocess.PIPE)
+        a_tmp = a.stdout.read()
+        a_tmp = str(a_tmp)
+        fip_neutron_dict = eval(a_tmp)
+        #print fip_neutron_dict 
+        for i in range (len(fip_neutron_dict)):
+                fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+	for clus in server_dict:
+		for i in server_dict[clus]:
+			if server_dict[clus][i]["server_manager"] != "true":
+				if "config" in server_dict[clus][i]["roles"]:
+					for j in server_dict[clus][i]["ip_address"]:
+						if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+							ret_dict["config"] = fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
+	print ret_dict["config"]
+
+"""
+# A Method for gettinf the config node ip
 def get_config_node_ip_mainline():
     a = subprocess.Popen(
         'neutron floatingip-list -f json',
@@ -641,11 +654,14 @@ def get_config_node_ip_mainline():
                                             fip_neutron_dict[k]["floating_ip_address"])
     for cfgmip in config_node_ip_dict:
         print config_node_ip_dict[cfgmip]
-
+"""
 
 # Method for getting the floating ip of the config node so that the
 # testbed.py can be transferred to this server and the tests can run from
 # here.
+
+
+"""
 def get_config_node_ip():
     a = subprocess.Popen(
         'neutron floatingip-list -f json',
@@ -687,7 +703,7 @@ def get_config_node_ip():
                                             fip_neutron_dict[k]["floating_ip_address"])
     for cfgmip in config_node_ip_dict:
         print config_node_ip_dict[cfgmip]
-
+"""
 
 # Method for creatng server.json required for the mainline build
 def create_server_json_mainline():
@@ -966,8 +982,8 @@ def create_cluster_json_mainline():
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
 	if "enable_lbaas" in cluster_dict[clus]["parameters"]:
-	    individual_clus_string = individual_clus_string + \
-		'\t\t\t"enable_lbaas": "%s",\n' %cluster_dict[clus]["parameters"]["enable_lbaas"] 
+            individual_clus_string = individual_clus_string + \
+        	'\t\t\t"enable_lbaas": "%s",\n' %cluster_dict[clus]["parameters"]["enable_lbaas"] 
         for net in network_dict:
             if network_dict[net]["role"] == "management":
                 individual_clus_string = individual_clus_string + \
@@ -1426,8 +1442,10 @@ def create_testbedpy_file():
         file_str = file_str + "}\n\n"
         if "openstack_admin_password" in testbed_py_dict[clus]:
             file_str = file_str + \
-                "env.openstack_admin_password = '%s'\n" % testbed_py_dict[clus]["openstack_admin_password"]
-        if "env.log_scenario" in testbed_py_dict[clus]:
+                "env.openstack_admin_password = '%s'\n\n" % testbed_py_dict[clus]["openstack_admin_password"]
+        all_fip_dict = get_all_fip_dict()
+	file_str = file_str + "env.all_server_fips = %s\n" % all_fip_dict
+	if "env.log_scenario" in testbed_py_dict[clus]:
             log_scenario_str = ''
             if "auth_protocol" in testbed_py_dict[clus]["env.log_scenario"]:
                 if testbed_py_dict[clus]["env.log_scenario"]["auth_protocol"] == "https":
@@ -1736,7 +1754,9 @@ def create_testbedpy_file_mainline():
         file_str = file_str + "}\n\n"
         if "openstack_admin_password" in testbed_py_dict[clus]:
             file_str = file_str + \
-                "env.openstack_admin_password = '%s'\n" % testbed_py_dict[clus]["openstack_admin_password"]
+                "env.openstack_admin_password = '%s'\n\n" % testbed_py_dict[clus]["openstack_admin_password"]
+	all_fip_dict = get_all_fip_dict()
+        file_str = file_str + "env.all_server_fips = %s\n" % all_fip_dict
         if "env.log_scenario" in testbed_py_dict[clus]:
             log_scenario_str = ''
             if "auth_protocol" in testbed_py_dict[clus]["env.log_scenario"]:
