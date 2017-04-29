@@ -313,7 +313,8 @@ def create_server_yaml():
                 server_string = server_string + "      name: %s\n" % port_name
                 if "mac_address" in server_dict[clus][i]:
                     server_string = server_string + \
-                        "      mac_address: %s\n" % (server_dict[clus][i]["mac_address"][net_name])
+                        "      mac_address: %s\n" % (
+                            server_dict[clus][i]["mac_address"][net_name])
                 server_string = server_string + "      fixed_ips:\n"
                 server_string = server_string + \
                     "        - ip_address: %s\n" % ip_address_dict[net_name]
@@ -350,13 +351,15 @@ def create_server_yaml():
                             server_string = server_string + \
                                 "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
                             server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
+                                    "provision"]["contrail"]["contrail_external_vip"]
                         elif (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
                             server_string = server_string + \
                                 "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
                         elif (("external_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
                             server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
+                                    "provision"]["contrail"]["contrail_external_vip"]
                 if network_dict[j]["role"] == "control-data":
                     server_string = server_string + "      allowed_address_pairs:\n"
                     if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or (
@@ -366,13 +369,15 @@ def create_server_yaml():
                             server_string = server_string + \
                                 "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
                             server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
+                                    "provision"]["contrail"]["contrail_internal_vip"]
                         elif (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
                             server_string = server_string + \
                                 "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
                         elif (("internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
                             server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
+                                    "provision"]["contrail"]["contrail_internal_vip"]
                 ip_port_dict[(ip_address_dict[net_name])] = port_name
             #ip_num += 1
     # Launch the VMs
@@ -423,7 +428,8 @@ def create_server_yaml():
         server_string = server_string + "    properties:\n"
         server_string = server_string + "      name: %s\n" % name
         server_string = server_string + \
-            "      virtual_network: %s\n\n" % floating_ip_network_dict["param"]["floating_ip_network_uuid"]
+            "      virtual_network: %s\n\n" % floating_ip_network_dict[
+                "param"]["floating_ip_network_uuid"]
         #server_string = server_string + "      virtual_network: public\n\n"
     # creating floating IP from the above created pool for the VMs
     for i in server_dict[clus]:
@@ -444,7 +450,8 @@ def create_server_yaml():
                 "      virtual_machine_interface_refs: [{ get_resource : %s}]\n" % port_to_associate
             floating_ip_network_dict = parsed_json["inp_params"]["floating_ip_network"]["param"]
             server_string = server_string + \
-                "      floating_ip_pool: { get_resource: %s }\n" % floating_ip_network_dict["name"]
+                "      floating_ip_pool: { get_resource: %s }\n" % floating_ip_network_dict[
+                    "name"]
             server_string = server_string + "      floating_ip_fixed_ip_address: %s \n" % abc
             server_string = server_string + \
                 "      project_refs: [ %s ]\n\n" % general_params_dict["project_uuid"]
@@ -524,92 +531,110 @@ def parse_output():
     # print floating_ip_mac_mapping
 
 # A Method for gettinf the server manager ip
-def get_sm_ip():
-	fixedip_to_floatingip_mapping_dict = {}
-	ret_dict = {}
-	project_uuid = general_params_dict["project_uuid"]
-	a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' % project_uuid, shell= True, stdout=subprocess.PIPE)
-	a_tmp = a.stdout.read()
-	a_tmp = str(a_tmp)
-	change_network_dict()
-	fip_neutron_dict = eval(a_tmp)
-	for i in range (len(fip_neutron_dict)):
-		fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
-	for clus in server_dict:
-		for i in server_dict[clus]:
-			name = server_dict[clus][i]["name"]
-			if server_dict[clus][i]["server_manager"] == "true":
-				for j in server_dict[clus][i]["ip_address"]:
-					if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
-						ret_dict[name] = fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
-						print fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
-						break
-				break
-		break
 
-# Method for getting floating ips of all the servers so that can be used in the testbed.py
+
+def get_sm_ip():
+    fixedip_to_floatingip_mapping_dict = {}
+    ret_dict = {}
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    change_network_dict()
+    fip_neutron_dict = eval(a_tmp)
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]
+                                           ["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            name = server_dict[clus][i]["name"]
+            if server_dict[clus][i]["server_manager"] == "true":
+                for j in server_dict[clus][i]["ip_address"]:
+                    if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+                        ret_dict[name] = fixedip_to_floatingip_mapping_dict[server_dict[clus]
+                                                                            [i]["ip_address"][j]]
+                        print fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
+                        break
+                break
+        break
+
+# Method for getting floating ips of all the servers so that can be used
+# in the testbed.py
+
+
 def get_all_fip_dict():
-        fixedip_to_floatingip_mapping_dict = {}
-        ret_dict = {}
-        project_uuid = general_params_dict["project_uuid"]
-        a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' % project_uuid, shell= True, stdout=subprocess.PIPE)
-        a_tmp = a.stdout.read()
-        a_tmp = str(a_tmp)
-        fip_neutron_dict = eval(a_tmp)
-        #print fip_neutron_dict 
-        for i in range (len(fip_neutron_dict)):
-                fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
-        #print fixedip_to_floatingip_mapping_dict
-        for clus in server_dict:
-                for i in server_dict[clus]:
-                        name = server_dict[clus][i]["name"]
-                        for j in server_dict[clus][i]["ip_address"]:
-                                if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
-                                        ret_dict[name] = fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
-        return ret_dict
-	
+    fixedip_to_floatingip_mapping_dict = {}
+    ret_dict = {}
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    # print fip_neutron_dict
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]
+                                           ["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    # print fixedip_to_floatingip_mapping_dict
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            name = server_dict[clus][i]["name"]
+            for j in server_dict[clus][i]["ip_address"]:
+                if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+                    ret_dict[name] = fixedip_to_floatingip_mapping_dict[server_dict[clus]
+                                                                        [i]["ip_address"][j]]
+    return ret_dict
+
 
 # A Method for gettinf the config node ip
 def get_config_node_ip_mainline():
-	fixedip_to_floatingip_mapping_dict = {}
-        ret_dict = {}
-        project_uuid = general_params_dict["project_uuid"]
-        a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' % project_uuid, shell= True, stdout=subprocess.PIPE)
-        a_tmp = a.stdout.read()
-        a_tmp = str(a_tmp)
-        fip_neutron_dict = eval(a_tmp)
-        #print fip_neutron_dict 
-        for i in range (len(fip_neutron_dict)):
-                fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
-	for clus in server_dict:
-		for i in server_dict[clus]:
-			if server_dict[clus][i]["server_manager"] != "true":
-				if "contrail-controller" in server_dict[clus][i]["roles"]:
-					for j in server_dict[clus][i]["ip_address"]:
-						if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
-							ret_dict["contrail-controller"] = fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
-	print ret_dict["contrail-controller"]
-							
+    fixedip_to_floatingip_mapping_dict = {}
+    ret_dict = {}
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    # print fip_neutron_dict
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]
+                                           ["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+                if "contrail-controller" in server_dict[clus][i]["roles"]:
+                    for j in server_dict[clus][i]["ip_address"]:
+                        if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+                            ret_dict["contrail-controller"] = fixedip_to_floatingip_mapping_dict[server_dict[clus]
+                                                                                                 [i]["ip_address"][j]]
+    print ret_dict["contrail-controller"]
+
 
 def get_config_node_ip():
-	fixedip_to_floatingip_mapping_dict = {}
-        ret_dict = {}
-        project_uuid = general_params_dict["project_uuid"]
-        a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' % project_uuid, shell= True, stdout=subprocess.PIPE)
-        a_tmp = a.stdout.read()
-        a_tmp = str(a_tmp)
-        fip_neutron_dict = eval(a_tmp)
-        #print fip_neutron_dict 
-        for i in range (len(fip_neutron_dict)):
-                fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
-	for clus in server_dict:
-		for i in server_dict[clus]:
-			if server_dict[clus][i]["server_manager"] != "true":
-				if "config" in server_dict[clus][i]["roles"]:
-					for j in server_dict[clus][i]["ip_address"]:
-						if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
-							ret_dict["config"] = fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
-	print ret_dict["config"]
+    fixedip_to_floatingip_mapping_dict = {}
+    ret_dict = {}
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    # print fip_neutron_dict
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]
+                                           ["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+                if "config" in server_dict[clus][i]["roles"]:
+                    for j in server_dict[clus][i]["ip_address"]:
+                        if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+                            ret_dict["config"] = fixedip_to_floatingip_mapping_dict[server_dict[clus]
+                                                                                    [i]["ip_address"][j]]
+    print ret_dict["config"]
+
 
 """
 # A Method for gettinf the config node ip
@@ -706,6 +731,8 @@ def get_config_node_ip():
 """
 
 # Method for creatng server.json required for the mainline build
+
+
 def create_server_json_mainline():
     parse_output()
     change_network_dict()
@@ -752,7 +779,8 @@ def create_server_json_mainline():
                     single_server_string = single_server_string + \
                         '\t\t"contrail": {\n'
                     single_server_string = single_server_string + \
-                        '\t\t\t"control_data_interface": "%s"\n' % cluster_dict[clus]["control_data_iterface"]
+                        '\t\t\t"control_data_interface": "%s"\n' % cluster_dict[
+                            clus]["control_data_iterface"]
                     single_server_string = single_server_string + '\t\t},\n'
                 # Now lets get all the network interface parameters and add
                 # them to the server.json
@@ -801,7 +829,8 @@ def create_server_json_mainline():
                         '\t\t\t"provisioning_type": "%s",\n' % cluster_dict[clus]["provisioning_type"]
                 if "management_interface" in cluster_dict[clus]:
                     single_server_string = single_server_string + \
-                        '\t\t\t"management_interface": "%s"\n' % cluster_dict[clus]["management_interface"]
+                        '\t\t\t"management_interface": "%s"\n' % cluster_dict[
+                            clus]["management_interface"]
                 single_server_string = single_server_string + '\t\t},\n'
                 single_server_string = single_server_string + \
                     '\t\t"password": "%s",\n' % cluster_dict[clus]["server_password"]
@@ -922,7 +951,8 @@ def create_server_json():
                     total_server_interfaces = total_server_interfaces - 1
                 single_server_string = single_server_string + "],"
                 single_server_string = single_server_string + \
-                    '\n			"management_interface": "%s"\n' % (cluster_dict[clus]["management_interface"])
+                    '\n			"management_interface": "%s"\n' % (
+                        cluster_dict[clus]["management_interface"])
                 server_json_string = server_json_string + single_server_string
                 server_json_string_contd = '''
 				},
@@ -981,9 +1011,9 @@ def create_cluster_json_mainline():
         if "domain" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
-	if "enable_lbaas" in cluster_dict[clus]["parameters"]:
+        if "enable_lbaas" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
-        	'\t\t\t"enable_lbaas": "%s",\n' %cluster_dict[clus]["parameters"]["enable_lbaas"] 
+                '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
         for net in network_dict:
             if network_dict[net]["role"] == "management":
                 individual_clus_string = individual_clus_string + \
@@ -1035,13 +1065,15 @@ def create_cluster_json_mainline():
                                 str(server_dict[clus][server]["ip_address"][temp]))
         if "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t\t\t"ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                '\t\t\t\t\t\t\t\t"ip": "%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["internal_vip"]
         else:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t\t\t"ip": "%s",\n' % openstack_control_data_ip_list[0]
         if "keystone_admin_password" in cluster_dict[clus]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t\t\t"admin_password": "%s",\n' % cluster_dict[clus]["keystone_admin_password"]
+                '\t\t\t\t\t\t\t\t"admin_password": "%s",\n' % cluster_dict[
+                    clus]["keystone_admin_password"]
         else:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t\t\t"admin_password": "c0ntrail123",\n'
@@ -1082,7 +1114,8 @@ def create_cluster_json_mainline():
             '\t\t\t\t"contrail": {\n'
         if "kernel_upgrade" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"kernel_upgrade": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_upgrade"]
+                '\t\t\t\t\t"kernel_upgrade": %s,\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["kernel_upgrade"]
         """
 	if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
@@ -1145,7 +1178,8 @@ def create_cluster_json_mainline():
             '\t\t\t\t\t\t"config_ip_list": %s,\n' % config_ip_list_string
         if "manage_neutron" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"manage_neutron": %s\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["manage_neutron"]
+                '\t\t\t\t\t\t"manage_neutron": %s\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["manage_neutron"]
         individual_clus_string = individual_clus_string + '\t\t\t\t\t}\n'
         individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
         individual_clus_string = individual_clus_string + \
@@ -1154,36 +1188,42 @@ def create_cluster_json_mainline():
             if "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
                 openstack_ha_string = '\t\t\t\t\t"ha": {\n'
                 openstack_ha_string = openstack_ha_string + \
-                    '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                    '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus][
+                        "parameters"]["provision"]["openstack"]["external_vip"]
                 openstack_ha_string = openstack_ha_string + \
                     '\t\t\t\t\t\t"external_virtual_router_id": 101,\n'
                 openstack_ha_string = openstack_ha_string + \
                     '\t\t\t\t\t\t"internal_virtual_router_id": 102,\n'
                 openstack_ha_string = openstack_ha_string + \
-                    '\t\t\t\t\t\t"internal_vip": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                    '\t\t\t\t\t\t"internal_vip": "%s"\n' % cluster_dict[clus][
+                        "parameters"]["provision"]["openstack"]["internal_vip"]
                 openstack_ha_string = openstack_ha_string + "\t\t\t\t\t},\n"
             else:
                 openstack_ha_string = '\t\t\t\t\t"ha": {\n'
                 openstack_ha_string = openstack_ha_string + \
-                    '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                    '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus][
+                        "parameters"]["provision"]["openstack"]["external_vip"]
                 openstack_ha_string = openstack_ha_string + \
                     '\t\t\t\t\t\t"external_virtual_router_id": 101\n'
                 openstack_ha_string = openstack_ha_string + "\t\t\t\t\t},\n"
             individual_clus_string = individual_clus_string + openstack_ha_string
         if "openstack_manage_amqp" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"openstack_manage_amqp": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["openstack_manage_amqp"]
+                '\t\t\t\t\t"openstack_manage_amqp": %s,\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["openstack_manage_amqp"]
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t"keystone": {\n'
         if "keystone_admin_token" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"admin_token": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_token"]
+                '\t\t\t\t\t\t"admin_token": "%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["keystone_admin_token"]
         else:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t"admin_token": "c0ntrail123",\n'
         if "keystone_admin_password" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_password"]
+                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["keystone_admin_password"]
         else:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t"admin_password": "c0ntrail123"\n'
@@ -1214,9 +1254,9 @@ def create_cluster_json():
         if "domain" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
-	if "enable_lbaas" in cluster_dict[clus]["parameters"]:
+        if "enable_lbaas" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t"enable_lbaas": "%s",\n' %cluster_dict[clus]["parameters"]["enable_lbaas"]
+                '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
         individual_clus_string = individual_clus_string + \
             '\t\t\t"provision":{\n'
         # Lets start the contrail Part
@@ -1226,17 +1266,21 @@ def create_cluster_json():
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"database":{\n'
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["minimum_disk_database"]
+                '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["minimum_disk_database"]
             individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
         if "enable_rabbitmq_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"amqp_ssl":"%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["enable_rabbitmq_ssl"]
+                '\t\t\t\t\t"amqp_ssl":"%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["enable_rabbitmq_ssl"]
         if "kernel_version" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"kernel_version":"%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_version"]
+                '\t\t\t\t\t"kernel_version":"%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["kernel_version"]
         if "kernel_upgrade" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"kernel_upgrade": %s' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_upgrade"]
+                '\t\t\t\t\t"kernel_upgrade": %s' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["kernel_upgrade"]
         # Contrail Part Ends here
         individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
 
@@ -1247,7 +1291,8 @@ def create_cluster_json():
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"keystone":{\n'
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_password"]
+                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["keystone_admin_password"]
             #individual_clus_string = individual_clus_string + '					},\n'
         if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
                 "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"])):
@@ -1255,13 +1300,17 @@ def create_cluster_json():
             individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
             vip_string = vip_string + '\t\t\t\t"ha":{\n'
             vip_string = vip_string + \
-                '\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                '\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["external_vip"]
             vip_string = vip_string + \
-                '\t\t\t\t\t"internal_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                '\t\t\t\t\t"internal_vip": "%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["internal_vip"]
             vip_string = vip_string + \
-                '\t\t\t\t\t"external_virtual_router_id" : %d,\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_virtual_router_id"]
+                '\t\t\t\t\t"external_virtual_router_id" : %d,\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["external_virtual_router_id"]
             vip_string = vip_string + \
-                '\t\t\t\t\t"internal_virtual_router_id" : %d\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_virtual_router_id"]
+                '\t\t\t\t\t"internal_virtual_router_id" : %d\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["internal_virtual_router_id"]
             vip_string = vip_string + '\t\t\t\t}\n'
             vip_string = vip_string + '\t\t\t}\n'
             vip_string = vip_string + '\t\t}\n'
@@ -1341,15 +1390,18 @@ def create_testbedpy_file():
                                 str(itr), control_ip, gateway, testbed_py_dict[clus]["control_data_vlan"])
                         else:
                             control_data_string = control_data_string + \
-                                "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1'},\n" % (str(itr), control_ip, gateway)
+                                "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1'},\n" % (
+                                    str(itr), control_ip, gateway)
                 file_str = file_str + \
                     "host%s = 'root@%s'\n" % (str(itr), manag_ip)
                 if "env_password" in testbed_py_dict[clus]:
                     env_password_string = env_password_string + \
-                        "   host%s: '%s',\n" % (str(itr), testbed_py_dict[clus]["env_password"])
+                        "   host%s: '%s',\n" % (
+                            str(itr), testbed_py_dict[clus]["env_password"])
                 if "env_ostypes" in testbed_py_dict[clus]:
                     env_ostypes_string = env_ostypes_string + \
-                        "     host%s: '%s',\n" % (str(itr), testbed_py_dict[clus]["env_ostypes"])
+                        "     host%s: '%s',\n" % (
+                            str(itr), testbed_py_dict[clus]["env_ostypes"])
                 # logic for not adding ',' (comma) after the last hostname in
                 # the env.hostname field of the testbed.py being created.
                 if itr == len(server_dict[clus]) - 1:
@@ -1442,10 +1494,11 @@ def create_testbedpy_file():
         file_str = file_str + "}\n\n"
         if "openstack_admin_password" in testbed_py_dict[clus]:
             file_str = file_str + \
-                "env.openstack_admin_password = '%s'\n\n" % testbed_py_dict[clus]["openstack_admin_password"]
+                "env.openstack_admin_password = '%s'\n\n" % testbed_py_dict[
+                    clus]["openstack_admin_password"]
         all_fip_dict = get_all_fip_dict()
-	file_str = file_str + "env.all_server_fips = %s\n" % all_fip_dict
-	if "env.log_scenario" in testbed_py_dict[clus]:
+        file_str = file_str + "env.all_server_fips = %s\n" % all_fip_dict
+        if "env.log_scenario" in testbed_py_dict[clus]:
             log_scenario_str = ''
             if "auth_protocol" in testbed_py_dict[clus]["env.log_scenario"]:
                 if testbed_py_dict[clus]["env.log_scenario"]["auth_protocol"] == "https":
@@ -1453,7 +1506,8 @@ def create_testbedpy_file():
                         if testbed_py_dict[clus]["env.log_scenario"]["keystone_version"] == "v3":
                             if "description" in testbed_py_dict[clus]["env.log_scenario"]:
                                 log_scenario_str = log_scenario_str + \
-                                    "env.log_scenario= %s\n" % testbed_py_dict[clus]["env.log_scenario"]["description"]
+                                    "env.log_scenario= %s\n" % testbed_py_dict[
+                                        clus]["env.log_scenario"]["description"]
                             log_scenario_str = log_scenario_str + \
                                 "env.keystone = {\n"
                             log_scenario_str = log_scenario_str + "	'version': 'v3',\n"
@@ -1462,7 +1516,8 @@ def create_testbedpy_file():
                     else:
                         if "description" in testbed_py_dict[clus]["env.log_scenario"]:
                             log_scenario_str = log_scenario_str + \
-                                "env.log_scenario= %s\n" % testbed_py_dict[clus]["env.log_scenario"]["description"]
+                                "env.log_scenario= %s\n" % testbed_py_dict[
+                                    clus]["env.log_scenario"]["description"]
                         log_scenario_str = log_scenario_str + \
                             "env.keystone = {\n"
                         log_scenario_str = log_scenario_str + "	'auth_protocol': 'https'\n"
@@ -1490,23 +1545,29 @@ def create_testbedpy_file():
             file_str = file_str + "ha_setup = True\n"
             file_str = file_str + "env.ha = {\n"
             file_str = file_str + \
-                "	'internal_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                "	'internal_vip' : '%s',\n" % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["internal_vip"]
             if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "	'contrail_internal_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                    "	'contrail_internal_vip' : '%s',\n" % cluster_dict[clus][
+                        "parameters"]["provision"]["contrail"]["contrail_internal_vip"]
             if "contrail_internal_virtual_router_id" in cluster_dict[
                     clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "	'contrail_internal_virtual_router_id' : %s,\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_virtual_router_id"]
+                    "	'contrail_internal_virtual_router_id' : %s,\n" % cluster_dict[clus][
+                        "parameters"]["provision"]["contrail"]["contrail_internal_virtual_router_id"]
             if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "	'contrail_external_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+                    "	'contrail_external_vip' : '%s',\n" % cluster_dict[clus][
+                        "parameters"]["provision"]["contrail"]["contrail_external_vip"]
             if "contrail_external_virtual_router_id" in cluster_dict[
                     clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "	'contrail_external_virtual_router_id' : %s,\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_virtual_router_id"]
+                    "	'contrail_external_virtual_router_id' : %s,\n" % cluster_dict[clus][
+                        "parameters"]["provision"]["contrail"]["contrail_external_virtual_router_id"]
             file_str = file_str + \
-                "	'external_vip' : '%s'\n}\n\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                "	'external_vip' : '%s'\n}\n\n" % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["external_vip"]
         if "ipmi_username" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "ipmi_username = '%s'\n" % testbed_py_dict[clus]["ipmi_username"]
@@ -1550,7 +1611,8 @@ def create_testbedpy_file():
                 "enable_ceilometer = %s\n" % testbed_py_dict[clus]["enable_ceilometer"]
         if "ceilometer_polling_interval" in testbed_py_dict[clus]:
             file_str = file_str + \
-                "ceilometer_polling_interval = %d\n" % testbed_py_dict[clus]["ceilometer_polling_interval"]
+                "ceilometer_polling_interval = %d\n" % testbed_py_dict[
+                    clus]["ceilometer_polling_interval"]
         if "do_parallel" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "do_parallel = %s\n" % testbed_py_dict[clus]["do_parallel"]
@@ -1633,15 +1695,18 @@ def create_testbedpy_file_mainline():
                                 str(itr), control_ip, gateway, testbed_py_dict[clus]["control_data_vlan"])
                         else:
                             control_data_string = control_data_string + \
-                                "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1'},\n" % (str(itr), control_ip, gateway)
+                                "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1'},\n" % (
+                                    str(itr), control_ip, gateway)
                 file_str = file_str + \
                     "host%s = 'root@%s'\n" % (str(itr), manag_ip)
                 if "env_password" in testbed_py_dict[clus]:
                     env_password_string = env_password_string + \
-                        "   host%s: '%s',\n" % (str(itr), testbed_py_dict[clus]["env_password"])
+                        "   host%s: '%s',\n" % (
+                            str(itr), testbed_py_dict[clus]["env_password"])
                 if "env_ostypes" in testbed_py_dict[clus]:
                     env_ostypes_string = env_ostypes_string + \
-                        "     host%s: '%s',\n" % (str(itr), testbed_py_dict[clus]["env_ostypes"])
+                        "     host%s: '%s',\n" % (
+                            str(itr), testbed_py_dict[clus]["env_ostypes"])
                 # logic for not adding ',' (comma) after the last hostname in
                 # the env.hostname field of the testbed.py being created.
                 if itr == len(server_dict[clus]) - 1:
@@ -1754,8 +1819,9 @@ def create_testbedpy_file_mainline():
         file_str = file_str + "}\n\n"
         if "openstack_admin_password" in testbed_py_dict[clus]:
             file_str = file_str + \
-                "env.openstack_admin_password = '%s'\n\n" % testbed_py_dict[clus]["openstack_admin_password"]
-	all_fip_dict = get_all_fip_dict()
+                "env.openstack_admin_password = '%s'\n\n" % testbed_py_dict[
+                    clus]["openstack_admin_password"]
+        all_fip_dict = get_all_fip_dict()
         file_str = file_str + "env.all_server_fips = %s\n" % all_fip_dict
         if "env.log_scenario" in testbed_py_dict[clus]:
             log_scenario_str = ''
@@ -1765,7 +1831,8 @@ def create_testbedpy_file_mainline():
                         if testbed_py_dict[clus]["env.log_scenario"]["keystone_version"] == "v3":
                             if "description" in testbed_py_dict[clus]["env.log_scenario"]:
                                 log_scenario_str = log_scenario_str + \
-                                    "env.log_scenario= %s\n" % testbed_py_dict[clus]["env.log_scenario"]["description"]
+                                    "env.log_scenario= %s\n" % testbed_py_dict[
+                                        clus]["env.log_scenario"]["description"]
                             log_scenario_str = log_scenario_str + \
                                 "env.keystone = {\n"
                             log_scenario_str = log_scenario_str + "	'version': 'v3',\n"
@@ -1774,7 +1841,8 @@ def create_testbedpy_file_mainline():
                     else:
                         if "description" in testbed_py_dict[clus]["env.log_scenario"]:
                             log_scenario_str = log_scenario_str + \
-                                "env.log_scenario= %s\n" % testbed_py_dict[clus]["env.log_scenario"]["description"]
+                                "env.log_scenario= %s\n" % testbed_py_dict[
+                                    clus]["env.log_scenario"]["description"]
                         log_scenario_str = log_scenario_str + \
                             "env.keystone = {\n"
                         log_scenario_str = log_scenario_str + "	'auth_protocol': 'https'\n"
@@ -1875,7 +1943,8 @@ def create_testbedpy_file_mainline():
                 "enable_ceilometer = %s\n" % testbed_py_dict[clus]["enable_ceilometer"]
         if "ceilometer_polling_interval" in testbed_py_dict[clus]:
             file_str = file_str + \
-                "ceilometer_polling_interval = %d\n" % testbed_py_dict[clus]["ceilometer_polling_interval"]
+                "ceilometer_polling_interval = %d\n" % testbed_py_dict[
+                    clus]["ceilometer_polling_interval"]
         if "do_parallel" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "do_parallel = %s\n" % testbed_py_dict[clus]["do_parallel"]
