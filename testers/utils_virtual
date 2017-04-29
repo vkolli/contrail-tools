@@ -83,7 +83,7 @@ function check_SM_pkg_availability() {
     fi
 
     if [[ $DISTRO =~ ubuntu-16.04 ]]; then
-        pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-16-04/${SKU}/artifacts"
+        pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/mitaka/artifacts"
     fi
     while [ "$count" -ne 36 ]; do
         if ls $pkg_dir/contrail-server-manager-installer*
