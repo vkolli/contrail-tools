@@ -128,6 +128,10 @@ function bringup_SM_setup() {
         SM_SERVER_PKG_FILE=`ls contrail-server-manager-installer-*\.*-${BUILDID}*.el6.noarch.rpm*`
         echo $SM_SERVER_PKG_FILE
     fi
+    if [[ $DISTRO =~ ubuntu-16.04 ]]; then
+        SM_SERVER_PKG_FILE=`ls contrail-server-manager-installer_*\.*-${BUILDID}\~mitaka\_all.deb*`
+    fi
+
     pkg_name="$pkg_dir/$SM_SERVER_PKG_FILE"
 
     sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SM_SERVER_IP " (
