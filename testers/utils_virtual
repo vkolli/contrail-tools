@@ -548,6 +548,13 @@ function add_server_cluster_SM() {
             SMID=ubuntu14$SKU${BUILDID}
             iso_name="ubuntu-14-04"
             isofile="/root/sm_files/image145.iso"
+        elif [[ $DISTRO =~ ubuntu-16.04 ]]; then
+            image="/cs-shared/images/ubuntu-14.04.5-server-amd64.iso"
+            pkg_type="contrail-ubuntu-package"
+            iso_type="ubuntu"
+            SMID=ubuntu16$SKU${BUILDID}
+            iso_name="ubuntu-16-04"
+            isofile="/root/sm_files/image145.iso"
         elif [[ $DISTRO =~ centos64 ]]; then 
             image="/root/images/CentOS-6.4-x86_64-minimal.iso"
             pkg_type="contrail-centos-package"
@@ -627,7 +634,9 @@ function add_server_cluster_SM() {
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${image} root@$SM_SERVER_IP:${isofile}
     
         echo "Connect to SM_SERVER to reimage and provision the targets"
-        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/sm_files/preconfig.py root@$SM_SERVER_IP:/opt/contrail/server_manager/client/preconfig.py
+        if [[ $DISTRO =~ ubuntu-14.04 ]]; then
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/sm_files/preconfig.py root@$SM_SERVER_IP:/opt/contrail/server_manager/client/preconfig.py
+        fi
         sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
             set -e
             echo "add required image/server/cluster for reimage and provision of the target"
