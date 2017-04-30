@@ -5,8 +5,8 @@ host1 = 'root@10.87.36.10'
 host2 = 'root@10.87.36.11'
 host3 = 'root@10.87.36.12'
 host4 = 'root@10.87.36.18'
-contrail_vm2 = 'root@10.87.36.17'
-contrail_vm3 = 'root@10.87.36.19'
+contrail_vm2 = 'root@10.87.36.19'
+contrail_vm3 = 'root@10.87.36.20'
 
 
 #If there is only single interface,  MX ip is 10.87.36.30
@@ -78,7 +78,7 @@ env.vcenter_servers = {
 
 
 esxi_hosts = {
-    '5a10s25' : {
+    '5a10s27' : {
         'ip' : '10.87.36.14',
         'username' : 'root',
         'password' : 'c0ntrail123',
@@ -86,15 +86,15 @@ esxi_hosts = {
         'vcenter_server': 'Datacenter1',
         'cluster': 'cluster-1',
         'contrail_vm' : {
-            'name' : 'ContrailVM-5a10s25',
-            'mac' : "00:55:56:a9:1b:66",
-            'host' : "root@10.87.36.17",
+            'name' : 'ContrailVM-5a10s27',
+            'mac' : "00:77:56:aa:bb:01",
+            'host' : "root@10.87.36.19",
             'mode': "vcenter",
             'vmdk_download_path': "http://10.84.5.120/cs-shared/contrail-vcenter/vmdk/LATEST/ContrailVM-disk1.vmdk",
         }
     },
 
-    '5a10s27' : {
+    '5a10s25' : {
         'ip' : '10.87.36.16',
         'username' : 'root',
         'password' : 'c0ntrail123',
@@ -102,9 +102,9 @@ esxi_hosts = {
         'vcenter_server': 'Datacenter1',
         'cluster': 'cluster-1',
         'contrail_vm' : {
-            'name' : 'ContrailVM-5a10s27',
-            'mac' : "00:55:56:aa:31:7c",
-            'host' : "root@10.87.36.19",
+            'name' : 'ContrailVM-5a10s25',
+            'mac' : "00:77:56:aa:bb:02",
+            'host' : "root@10.87.36.20",
             'mode': "vcenter",
             'vmdk_download_path': "http://10.84.5.120/cs-shared/contrail-vcenter/vmdk/LATEST/ContrailVM-disk1.vmdk",
         }
