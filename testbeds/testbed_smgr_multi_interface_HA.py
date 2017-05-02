@@ -1,16 +1,14 @@
 from fabric.api import env
 
 os_username = 'admin'
-os_password = 'contrail123'
 os_tenant_name = 'demo'
  
-host1 = 'root@10.204.217.13'
-host2 = 'root@10.204.217.77'
-host3 = 'root@10.204.217.176'
-host4 = 'root@10.204.217.129'
-host5 = 'root@10.204.217.131' 
-host6 = 'root@10.204.217.132' 
-
+host1 = 'root@10.204.217.129'
+host2 = 'root@10.204.217.131'
+host3 = 'root@10.204.217.13'
+host4 = 'root@10.204.217.77'
+host5 = 'root@10.204.217.176'
+host6 = 'root@10.204.217.132'
 
 ext_routers = []
 router_asn = 64512
@@ -24,9 +22,9 @@ env.roledefs = {
 
     'all': [host1, host2, host3, host4, host5, host6],
     'cfgm': [host1, host2, host3],
-    'openstack': [host1, host2, host3],
+    'openstack': [host4],
     'control': [host1, host2, host3],
-    'compute': [host4, host5, host6],
+    'compute': [host5, host6],
     'collector': [host1, host2, host3],
     'webui': [host1, host2, host3],
     'database': [host1, host2, host3],
@@ -36,7 +34,7 @@ env.roledefs = {
 }
  
 env.hostnames ={
-    'all': ['nodec28', 'nodeg37', 'nodec10', 'nodei17', 'nodei19', 'nodei20']
+    'all': ['nodei17', 'nodei19', 'nodec28', 'nodeg37', 'nodec10', 'nodei20']
 }
 
 #Openstack admin password
@@ -68,32 +66,25 @@ bond= {
 }
 
 control_data = {
-    host1 : { 'ip': '192.168.100.11/24', 'gw' : '', 'device':'eth1' },
-    host2 : { 'ip': '192.168.100.12/24', 'gw' : '', 'device':'eth1' },
-    host3 : { 'ip': '192.168.100.13/24', 'gw' : '', 'device':'eth1' },
-    host4 : { 'ip': '192.168.100.14/24', 'gw' : '', 'device':'eth1' },
-    host5 : { 'ip': '192.168.100.15/24', 'gw' : '', 'device':'eth1' },
+    host1 : { 'ip': '192.168.100.14/24', 'gw' : '', 'device':'eth1' },
+    host2 : { 'ip': '192.168.100.15/24', 'gw' : '', 'device':'eth1' },
+    host3 : { 'ip': '192.168.100.11/24', 'gw' : '', 'device':'eth1' },
+    host4 : { 'ip': '192.168.100.12/24', 'gw' : '', 'device':'eth1' },
+    host5 : { 'ip': '192.168.100.13/24', 'gw' : '', 'device':'eth1' },
     host6 : { 'ip': '192.168.100.16/24', 'gw' : '', 'device':'bond0' },
 }
 
 # VIP
 env.ha = {
-    'internal_vip' : '192.168.100.10',
-    'external_vip' : '10.204.217.246',
+    'contrail_internal_vip' : '192.168.100.12',
+    'contrail_external_vip' : '10.204.217.77',
 }
 
 #To enable multi-tenancy feature
 multi_tenancy = True
-env.xmpp_auth_enable=True
-env.xmpp_dns_auth_enable=True
-env.encap_priority =  "'MPLSoUDP','MPLSoGRE','VXLAN'"
-env.enable_lbaas = True
+env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
 do_parallel = True
-enable_ceilometer = True
-ceilometer_polling_interval = 60
-minimum_diskGB=32
 env.test_repo_dir='/home/stack/smgr_github_ubuntu_multi_node/contrail-test'
 env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'
-env.log_scenario='Server Manager Multi-Interface HA Sanity'
-env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
+env.log_scenario='SMLite Multi-Interface HA Sanity'

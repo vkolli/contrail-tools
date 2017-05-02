@@ -216,7 +216,7 @@ function reimage_using_SM() {
 
     pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
     if [[ $DISTRO =~ ubuntu ]]; then
-        contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker*.tgz`
+        contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
     else
         if [[ $DISTRO =~ centos71 ]]; then
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
