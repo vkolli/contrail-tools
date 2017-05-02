@@ -128,8 +128,8 @@
 					"server_password" : "c0ntrail123",
 					"keystone_admin_password": "c0ntrail123",
 					"keystone_admin_token": "c0ntrail123",
-					"management_interface": "eth0",
-					"control_data_iterface": "eth1",
+					"management_interface": "ens3",
+					"control_data_iterface": "ens4",
                         		"cluster_id": "test-cluster",
 					"provisioning_type": "kickstart",
                         		"parameters": {
@@ -144,7 +144,7 @@
                                         		"openstack":{
 								"external_vip": "10.0.0.100",
 								"internal_vip": "10.10.0.100",
-								"openstack_manage_amqp": "true",
+								"openstack_manage_amqp": "false",
 								"keystone_admin_password": "c0ntrail123",
 								"keystone_admin_token": "c0ntrail123"
                                         		}

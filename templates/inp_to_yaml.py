@@ -1098,8 +1098,8 @@ def create_cluster_json_mainline():
         #        '\t\t\t\t\t\t\t\t"config_password": "c0ntrail123",\n'
         # individual_clus_string = individual_clus_string + \
         #    '\t\t\t\t\t\t\t\t"service_tenant_name": "services",\n'
-        individual_clus_string = individual_clus_string + \
-            '''\t\t\t\t\t\t\t\t"external_rabbitmq_servers": "%s" \n''' % openstack_control_data_ip_list
+        #individual_clus_string = individual_clus_string + \
+        #    '''\t\t\t\t\t\t\t\t"external_rabbitmq_servers": "%s" \n''' % openstack_control_data_ip_list
         individual_clus_string = individual_clus_string + '\t\t\t\t\t\t\t}\n'
         # if "contrail_compute_mode" in cluster_dict[clus]:
         #    individual_clus_string = individual_clus_string + \
