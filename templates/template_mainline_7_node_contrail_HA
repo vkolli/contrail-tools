@@ -125,7 +125,7 @@
 								"manage_neutron": "false"
                                         		},
                                         		"openstack":{
-								"openstack_manage_amqp": "false",
+								"openstack_manage_amqp": "true",
 								"keystone_admin_password": "c0ntrail123",
 								"keystone_admin_token": "c0ntrail123"
                                         		}
