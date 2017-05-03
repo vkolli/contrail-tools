@@ -1,3 +1,21 @@
+"""
+Author : Soumil Kulkarni
+Script Name: sanity_summary_tool.py
+Description: The inputs to this script are the exact Branch Name and the exact Build Number. The script will fetch the results of all the sanity results of that build and 
+              displays them as a summary in the terminal or can create a html file which when opened from the browser have hyperlinks to the entire report. 
+
+Usage : 
+		python sanity_summary_tool.py --branch <branch name > --build <build number> --output_format <print/html> --dest_file_name <name for the destiantion html file (optional)>
+		-> if the output format is 'html', mentioning of the '--dest_file_name' parameter is optional 
+		-> if '--dest_file_name' parameter is not given when '--output_format=html', the dest file name by default is 'result_summary.html'
+		-> if the output format is 'print', mentioning of the '--dest_file_name' parameter is not required. 
+
+		eg1 : python sanity_summary_tool.py --branch R3.2 --build 34 --output_format print 
+		eg2 : python sanity_summary_tool.py --branch R3.2 --build 34 --output_format html 
+		eg3 : python sanity_summary_tool.py --branch R3.2 --build 34 --output_format html --dest_file_name test_sanity_10.html
+
+"""
+
 import sys 
 import BeautifulSoup
 import ConfigParser
@@ -6,43 +24,6 @@ import os
 import subprocess
 import urllib 
 from optparse import OptionParser
-
-def get_summary_():
-	sample_dict = {0: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_12_20_29_57/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': 'CentOS Linux release 7.1.1503 Core 3.0.2.0-26~kilo'}, 1: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_12_20_53_54/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': 'CentOS Linux release 7.1.1503 Core 3.0.2.0-26~juno'}, 2: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_12_22_17_02/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~juno'}, 3: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_12_22_17_10/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~juno'}, 4: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_12_22_18_06/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~juno'}, 5: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_13_00_14_37/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~juno'}, 6: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_13_00_15_00/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~juno'}, 7: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_13_00_15_15/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~liberty'}, 8: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_13_00_15_45/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~kilo'}, 9: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_13_00_52_44/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~kilo'}, 10: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_13_06_00_22/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~juno'}, 11: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_13_16_15_10/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~kilo'}, 12: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_13_16_50_21/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~kilo'}, 13: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_14_07_49_37/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~kilo'}, 14: {'report': 'http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_18_14_57_49/junit-noframes.html', 'build': '3.0.2.0-26', 'distro': '"Ubuntu 14.04.2 LTS" 3.0.2.0-26~kilo'}}
-	for i in sample_dict:
-		url = sample_dict[i]["report"]
-		f = urllib.urlopen(url)
-		file = f.read()
-		#file = open('junit-noframes.html', 'r')
-		#file = open('Ubuntu-14.04.5-LTS-3.2.2.0-31~mitaka-Vcenter-Gateway-jenkins-ubuntu-14-04_vcenter_gateway_Sanity_mitaka-14_1490097315.14.html', 'r')
-		soup = BeautifulSoup.BeautifulSoup(file)
-		th_tags = soup.findAll('th')
-		td_tags = soup.findAll('td')
-		final_th_tags = []
-		final_td_tags = []
-		final_td_tags_1 = []
-		return_dict = {}
-		for i in range(6):
-			a = str(th_tags[i]).replace('<th>', '')
-			b = str(a).replace('</th>', '')
-			final_th_tags.append(b)
-		#print final_th_tags
-		return_dict[i]["labels"] = final_th_tags
-		final_td_tags = [td_tags[2], td_tags[3], td_tags[4], td_tags[5], td_tags[6], td_tags[7]]
-		for i in final_td_tags:
-			a = str(i).replace('<td>', '')
-			b = str(a).replace('</td>', '')
-			final_td_tags_1.append(b)
-		#print final_td_tags_1
-		return_dict[i]["values"] = final_td_tags_1
-		print "hey"
-	return return_dict
-	#print td_tags[2] # Total Tests 
-	#print td_tags[3] # Failures
-	#print td_tags[4] # Errors
-	#print td_tags[5] # Skipped
-	#print td_tags[6] # SuccessRate
-	#print td_tags[7] # Time Taken
 
 
 def get_summary_from_html_file(html_file_link):
@@ -128,6 +109,7 @@ def get_data_from_ini_file(file_1):
 	#print distro
 	#print build
 	#print report
+
 	return_dict["build"] = build
 	return_dict["distro"] = distro
 	return_dict["report"] = report
@@ -292,7 +274,7 @@ def print_report_summary(branch='', build=''):
 		print "______________________________________________________________________________________"
 
 
-def get_html_file(dest_file='', branch='', build=''):
+def get_html_file(dest_file="", branch='', build=''):
 	info_dict = get_detailed_data_from_ini_files(branch=branch, build=build)
 	html_string = '''
 	<!DOCTYPE html>
@@ -354,8 +336,9 @@ def get_html_file(dest_file='', branch='', build=''):
 	</html>
 	"""
 	#print html_string
-	if dest_file == '':
-		f.open('result.html', 'w')
+	print dest_file
+	if dest_file == None:
+		f = open('result_summary.html', 'w')
 		f.write(html_string)
 		f.close()
 	else:
@@ -369,8 +352,9 @@ def main():
 	parser.add_option('--branch', help="Branch Name", type="string", dest="branch")
 	parser.add_option('--build', help="Build Number", type="string", dest="build")
 	parser.add_option('-o', '--output_format', help="Print output / get html file (print/html)", type="string", dest="out_format")
+	#parser.add_option('-h', '--help', help='python sanity_summary.py --dest_file_name <output file name> --branch <Branch Name> --build <Build Number> --output_format <print / html>')
 	(opts, args) = parser.parse_args()
-	print opts
+	#print opts
 	if opts.out_format == "print":
 		print_report_summary(branch=opts.branch, build=opts.build)
 	elif opts.out_format == "html":
@@ -383,13 +367,3 @@ def main():
 
 
 main()
-#get_exact_path()
-#-o UserKnownHostsFile=/dev/null 
-#a = get_summary_from_html_file('http://10.204.216.50/Docs/logs/3.0.2.0-26_2016_04_12_20_29_57/junit-noframes.html')
-#print a
-#a = get_detailed_data_from_ini_files()
-#print_report_summary()
-#get_html_file()
-#a=get_all_ini_files()
-#print a
-#print_summary()
