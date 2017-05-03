@@ -160,7 +160,7 @@ env.test = {
 
 minimum_diskGB=32
 env.mail_from='contrail-build@juniper.net'
-env.mail_to='sandipd@juniper.net'
+env.mail_to='dl-contrail-sw@juniper.net'
 multi_tenancy=True
 env.interface_rename = False
 env.encap_priority =  "'MPLSoUDP','MPLSoGRE','VXLAN'"
