@@ -230,11 +230,11 @@ def get_detailed_data_from_ini_files(branch='', build=''):
 			print "There is an Error Fetching all the ini files from the given path: \n %s " % ini_list[0]
 		else:
 			num = 0 
-			print "Downloading all the report.ini files in the given path and getting the reiquired data from them \n"
+			print "\nDownloading all the report.ini files in the given path and getting the reiquired data from them "
 			for i in ini_list:
 				new_path = path + '/'+ i
 				#print "Downloading the following file: ",new_path
-				os.system('sshpass -p "bhu@123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no bhushana@10.204.216.50:%s .' %new_path)
+				os.system('sshpass -p "bhu@123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
 				Dict_1 = get_data_from_ini_file(i)
 				info_dict[num] = Dict_1
 				os.system('rm %s' %i)
@@ -243,9 +243,9 @@ def get_detailed_data_from_ini_files(branch='', build=''):
 		#print info_dict
 		print "\n"
 		print "Adding the summary data to the already collected data from the ini files"
-		print "______________________________________________________________________________________"
-		print "RESULTS :-"
-		print "______________________________________________________________________________________"
+		#print "______________________________________________________________________________________"
+		#print "RESULTS :-"
+		#print "______________________________________________________________________________________"
 		for i in info_dict:
 			test_num_dict = get_summary_from_html_file(info_dict[i]["report"])
 			info_dict[i]["testcase_results"] = test_num_dict
@@ -253,6 +253,9 @@ def get_detailed_data_from_ini_files(branch='', build=''):
 
 def print_report_summary(branch='', build=''):
 	info_dict = get_detailed_data_from_ini_files(branch=branch, build=build)
+	print "______________________________________________________________________________________"
+	print "RESULTS :-"
+	print "______________________________________________________________________________________"
 	for i in info_dict:
 		print "Distro : %s" % info_dict[i]["distro"]
 		print "Build : %s" % info_dict[i]["build"]
@@ -336,7 +339,7 @@ def get_html_file(dest_file="", branch='', build=''):
 	</html>
 	"""
 	#print html_string
-	print dest_file
+	#print dest_file
 	if dest_file == None:
 		f = open('result_summary.html', 'w')
 		f.write(html_string)
