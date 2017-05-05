@@ -1,6 +1,8 @@
 """
 Author: Soumil Kulkarni
 Name: Performance_test_result_analyzing_tool
+Usage: python performance_analysis_tool.py --file <Input (.csv) file> --output_file <output html file> --job <job to run >
+       jobs can be one pf these: time_throughput / time_vs_conn_rate_flow_tests / time_vs_conn_rate_flow_scale_tests
 
 """
 import sys
@@ -373,7 +375,7 @@ def time_throughput(inp_file='', out_file=''):
     starting_pt = 0
     itr = 0
     while (itr < len(res_list)):
-        if res_list[itr] <= 20:
+        if res_list[itr] <= 100:
             starting_pt = res_list[itr]
             # print starting_pt
             itr += 1
@@ -381,7 +383,7 @@ def time_throughput(inp_file='', out_file=''):
             posn = itr
             check = 0
             for i in range(10):
-                if (res_list[posn] <= 20):
+                if (res_list[posn] <= 100):
                     itr += 1
                     break
                 else:
