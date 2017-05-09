@@ -220,7 +220,7 @@ function copy_smlite_pkg() {
     echo $CONTRAIL_PACKAGE
     echo $SERVER_MANAGER_INSTALLER
     sleep 30
-    if [ -z $CLUSTER_JSON ] || [-z $SERVER_JSON ]; then
+    if [ -z $CLUSTER_JSON ] || [ -z $SERVER_JSON ]; then
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
         sshpass -p "c0ntrail123" ssh root@$SM_SERVER_IP "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${API_SERVER_HOST_STRING}:/root/"
     else
@@ -272,7 +272,7 @@ function provision_using_SMLite() {
         echo "Install SM-Lite and provision the target setup"
         echo '{\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\"}]}' > /root/image.json
         dpkg -i /root/${SERVER_MANAGER_INSTALLER}
-        if [ -z $CLUSTER_JSON ] || [-z $SERVER_JSON ]; then
+        if [ -z $CLUSTER_JSON ] || [ -z $SERVER_JSON ]; then
             /opt/contrail/contrail_server_manager/provision_containers.sh -c /root/${CONTRAIL_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
         else
             /opt/contrail/contrail_server_manager/provision_containers.sh -ij /root/image.json -cj /root/${CLUSTER_JSON} -sj /root/${SERVER_JSON}
@@ -364,7 +364,7 @@ function run_smgr_task() {
     create_testbed || die "Failed to create required testbed details"
     #bringup_SM_setup || debug_and_die "Failed to bringup SM setup"
     reimage_setup_using_SM || debug_and_die "reimage failed"
-    if [ -z $CLUSTER_JSON ] || [-z $SERVER_JSON ]; then
+    if [ -z $CLUSTER_JSON ] || [ -z $SERVER_JSON ]; then
         echo "CLUSTER_JSON and SERVER_JSON env variables are not set."
 	echo "testbed.py will be used to provision the setup."
     else
