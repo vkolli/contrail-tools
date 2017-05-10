@@ -28,6 +28,7 @@ env.roledefs = {
     'contrail-analyticsdb': [host6, host2, host1],
     'openstack': [host6, host2, host1],
     'contrail-compute': [host3, host4],
+    'contrail-lb': [host5],
     'build': [host_build]
 }
 
