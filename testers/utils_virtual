@@ -647,7 +647,7 @@ function add_server_cluster_SM() {
         #if [[ $DISTRO =~ ubuntu-16.04 ]]; then
         #    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/sm_files/preconfig_1604.py root@$SM_SERVER_IP:/opt/contrail/server_manager/client/preconfig.py
         #fi
-        if [ $SKIP_SANITY -e 0 ]
+        if [ $SKIP_SANITY -eq 0 ]
         then
             sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
                 set -e
@@ -875,7 +875,7 @@ function run_smgr_virtual_task() {
     #Add server and cluster to the SM
     add_server_cluster_SM || debug_and_die "Failed to add server and cluster to SM"
 
-    if [ $SKIP_SANITY -e 0 ]
+    if [ $SKIP_SANITY -eq 0 ]
     then
         if [[ ( ${BRANCH} > "R2.23" ) || ( ${BRANCH} == "mainline" ) ]]
         then
@@ -907,18 +907,18 @@ function run_smgr_virtual_task() {
             install_dep_pkgs_for_test
             run_sanity || debug_and_die "Run_sanity step failed"
         fi
+        
+        run_tempest || die "Run_Tempest step failed"
+        collect_tech_support || die "Task to collect logs/cores failed"
+        #delete_stacks || die "Failed to delete stacks"
+        echo "Ending test on "${AVAILABLE_TESTBEDS}
+        #Set the TBFILE_NAME to the one passed through jenkins job
+        export RUN_SUCCESSFUL=1
+        TBFILE_NAME=${AVAILABLE_TESTBEDS}
+        tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
     else
         echo "Not doing the Provisioning and not running sanity as SKIP_SANITY parameter is not set to 0"
     fi
-
-    run_tempest || die "Run_Tempest step failed"
-    collect_tech_support || die "Task to collect logs/cores failed"
-    #delete_stacks || die "Failed to delete stacks"
-    echo "Ending test on "${AVAILABLE_TESTBEDS}
-    #Set the TBFILE_NAME to the one passed through jenkins job
-    export RUN_SUCCESSFUL=1
-    TBFILE_NAME=${AVAILABLE_TESTBEDS}
-    tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
 }
 
 
