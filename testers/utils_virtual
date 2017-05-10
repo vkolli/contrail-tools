@@ -740,7 +740,7 @@ function add_server_cluster_SM() {
                     exit 1
                 fi        
             else
-                echo "Not doing the Preconfig as 'SKIP_SANITY' parameter is not equal to 0 "    
+                echo "Not doing the Preconfig as SKIP_SANITY parameter is not equal to 0 "    
         ) "
     fi
 
@@ -917,7 +917,7 @@ function run_smgr_virtual_task() {
         TBFILE_NAME=${AVAILABLE_TESTBEDS}
         tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
     else
-        echo "Skipping Provisioning and Sanity Run as 'SKIP_SANITY' parameter is not equal to 0 "
+        echo "Skipping Provisioning and Sanity Run as SKIP_SANITY parameter is not equal to 0 "
     fi
 }
 
