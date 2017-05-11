@@ -5,7 +5,7 @@
 		},
 		"params":{
 			"no_of_servers" : 2,
-			"no_of_networks" : 1,
+			"no_of_networks" : 2,
 			"network_stack_name" : "test_network_final",
 			"server_stack_name" : "test_server_final",
 			"project_uuid" : "project_uuid_val"	
@@ -16,7 +16,13 @@
 				"ip_block_with_mask" : "10.0.0.0/24",
 				"default_gateway" : "10.0.0.1",
 				"role" : "management"
-			}
+			},
+			"final_test_network_2":{
+                                "name": "final_test_network_2",
+                                "ip_block_with_mask" : "10.10.0.0/24",
+                                "default_gateway" : "10.10.0.1",
+                                "role" : "control-data"
+                        }
 		},
 		"floating_ip_network":{
                         "param":{
@@ -29,7 +35,7 @@
 				"servers":{
 					"server1":{
 						"name":"server1" , 
-						"ip_address" : { "final_test_network_1":"10.0.0.4"},
+						"ip_address" : { "final_test_network_1":"10.0.0.4", "final_test_network_2":"10.10.0.4"},
 						"flavor" : "m1.xxlarge",
 						"image" : "image_val",
 						"floating_ip" : "true",
@@ -38,7 +44,7 @@
 					},
 					"servermanager":{
                                 		"name":"servermanager" ,
-                                		"ip_address" : { "final_test_network_1":"10.0.0.5"},
+                                		"ip_address" : { "final_test_network_1":"10.0.0.5", "final_test_network_2":"10.10.0.5"},
                                 		"flavor" : "m1.xxlarge",
                                 		"image" : "image_val",
                                 		"floating_ip" : "true",
@@ -51,7 +57,7 @@
 					"keystone_admin_password": "c0ntrail123",
 					"keystone_admin_token": "c0ntrail123",
 					"management_interface": "eth0",
-					"control_data_iterface": "eth0",
+					"control_data_iterface": "eth1",
                         		"cluster_id": "test-cluster",
 					"provisioning_type": "kickstart",
                         		"parameters": {
