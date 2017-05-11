@@ -273,9 +273,19 @@ function provision_using_SMLite() {
         echo '{\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\"}]}' > /root/image.json
         dpkg -i /root/${SERVER_MANAGER_INSTALLER}
         if [ -z $CLUSTER_JSON ] || [ -z $SERVER_JSON ]; then
-            /opt/contrail/contrail_server_manager/provision_containers.sh -c /root/${CONTRAIL_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
+            if [ $SKIP_SMLITE_INSTALL -ne 0 ]
+            then
+                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -c /root/${CONTRAIL_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
+            else
+                /opt/contrail/contrail_server_manager/provision_containers.sh -c /root/${CONTRAIL_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
+            fi
         else
-            /opt/contrail/contrail_server_manager/provision_containers.sh -ij /root/image.json -cj /root/${CLUSTER_JSON} -sj /root/${SERVER_JSON}
+            if [ $SKIP_SMLITE_INSTALL -ne 0 ]
+            then
+                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -ij /root/image.json -cj /root/${CLUSTER_JSON} -sj /root/${SERVER_JSON}
+            else
+                /opt/contrail/contrail_server_manager/provision_containers.sh -ij /root/image.json -cj /root/${CLUSTER_JSON} -sj /root/${SERVER_JSON}
+            fi
         fi
 
     ) "
