@@ -19,3 +19,5 @@ cd /opt/contrail/contrail_server_manager/
 ./setup.sh --all 
 #cp /root/sm_files/dhcp.template /etc/cobbler/dhcp.template
 service contrail-server-manager start
+sleep 10
+service contrail-server-manager restart
