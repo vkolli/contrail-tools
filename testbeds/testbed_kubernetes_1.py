@@ -1,3 +1,4 @@
+import os
 from fabric.api import env
 
 #Management ip addresses of hosts in the cluster
@@ -29,6 +30,7 @@ env.roledefs = {
     'webui': [host1],
     'database': [host1],
     'build': [host_build],
+    'contrail-kubernetes': [host1],
 }
 
 env.hostnames = {
@@ -69,13 +71,14 @@ env.test = {
   'mail_port' : '25',
   'mail_sender': 'contrailbuild@juniper.net',
 }
+image_name = os.getenv('IMAGE_NAME', 'centos-7.3-1611.qcow2.gz')
 vm_node_details = {
     'default': {
                 'image_dest' : '/mnt/disk1/images/',
                 'ram' : '16384',
                 'vcpus' : '4',
                 'disk_format' : 'qcow2',
-                'image_source' : 'http://10.204.217.158/images/node_vm_images/centos-72-200G.img.gz'
+                'image_source' : 'http://10.204.217.158/images/node_vm_images/%s' %(image_name)
                 },
     host1 : {
                 'name' : 'testbed-1-vm1',
