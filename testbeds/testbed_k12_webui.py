@@ -16,13 +16,11 @@ public_vn_subnet = "10.84.41.0/24"
 host_build = 'stack@10.204.216.49'
 env.roledefs = {
     'all': [host1],
-    'cfgm': [host1],
+    'contrail-controller': [host1],
     'openstack':[host1],
-    'collector': [host1],
-    'webui': [host1],
-    'control': [host1],
-    'compute': [host1],
-    'database': [host1],
+    'contrail-analytics': [host1],
+    'contrail-analyticsdb': [host1],
+    'contrail-compute': [host1],
     'build': [host_build],
 }
 env.hostnames = {
