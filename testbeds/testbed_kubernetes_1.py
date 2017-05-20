@@ -107,3 +107,10 @@ vm_node_details = {
 }
 env.test_repo_dir='/root/vjoshi/contrail-tools/contrail-test'
 env.orchestrator='kubernetes'
+
+
+env.kubernetes = {
+'mode' : 'baremetal',
+'master': host1,
+'slaves': [host2, host3]
+}
