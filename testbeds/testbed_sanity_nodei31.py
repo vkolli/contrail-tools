@@ -18,13 +18,11 @@ host_build = 'stack@10.204.216.49'
 #Role definition of the hosts.
 env.roledefs = {
     'all': [host1],
-    'cfgm': [host1],
+    'contrail-controller': [host1],
     'openstack': [host1],
-    'control': [host1],
-    'compute': [host1],
-    'collector': [host1],
-    'webui': [host1],
-    'database': [host1],
+    'contrail-compute': [host1],
+    'contrail-analytics': [host1],
+    'contrail-analyticsdb': [host1],
     'build': [host_build],
 }
 
@@ -81,7 +79,7 @@ minimum_diskGB=32
 #do_parallel = True
 #haproxy = True
 env.test_repo_dir='/home/stack/github_ubuntu_single_node/havana/contrail-test'
-env.log_scenario='Single Node Sanity'
+env.log_scenario='Single Node Container Sanity'
 env.enable_lbaas = True
 
 env.physical_routers={
