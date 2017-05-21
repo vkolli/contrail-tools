@@ -139,6 +139,7 @@ def check_if_sm_has_correct_image():
 
 
 def check_and_create_required_flavor():
+    print "Checking Flavor for servers"
     chk_flavor = subprocess.Popen(
         "openstack flavor list  | grep m1.xxlarge",
         shell=True,
@@ -154,7 +155,7 @@ def check_and_create_required_flavor():
         print add_flavor_tmp
         print "Printing all the Flavors Present on the base cluster:-"
         chk_flavor = subprocess.Popen(
-            "openstack flavor list",
+            "openstack flavor list | grep m1.xxlarge",
             shell=True,
             stdout=subprocess.PIPE)
         chk_flavor_tmp = chk_flavor.stdout.read()
@@ -162,7 +163,65 @@ def check_and_create_required_flavor():
     else:
         print "The Recommended Flavor is Present in the Base Cluster"
         chk_flavor = subprocess.Popen(
-            "openstack flavor list",
+            "openstack flavor list | grep m1.xxlarge",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+
+    print "Checking Flavor re-flv for vMX to work"
+    chk_flavor = subprocess.Popen(
+        "openstack flavor list  | grep re-flv",
+        shell=True,
+        stdout=subprocess.PIPE)
+    chk_flavor_tmp = chk_flavor.stdout.read()
+    if len(chk_flavor_tmp) == 0:
+        print "The Recommended Flavor is not present on the base cluster, Adding it :-\n"
+        add_flavor = subprocess.Popen(
+            "nova flavor-create --is-public true re-flv auto 4096 40 1; nova flavor-key  re-flv set  aggregate_instance_extra_specs:global-grouppinned=true ; nova flavor-key  re-flv set hw:cpu_policy=dedicated",
+            shell=True,
+            stdout=subprocess.PIPE)
+        add_flavor_tmp = add_flavor.stdout.read()
+        print add_flavor_tmp
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list | grep re-flv",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+    else:
+        print "The Recommended re-flv  Flavor is Present in the Base Cluster"
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list | grep re-flv",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+
+    print "Checking Flavor pfe-flv for vMX to work"
+    chk_flavor = subprocess.Popen(
+        "openstack flavor list  | grep pfe-flv",
+        shell=True,
+        stdout=subprocess.PIPE)
+    chk_flavor_tmp = chk_flavor.stdout.read()
+    if len(chk_flavor_tmp) == 0:
+        print "The Recommended Flavor is not present on the base cluster, Adding it :-\n"
+        add_flavor = subprocess.Popen(
+            "nova flavor-create --is-public true pfe-flv auto 16384 40 7 ; nova flavor-key  pfe-flv set  aggregate_instance_extra_specs:global-grouppinned=true ; nova flavor-key  pfe-flv set hw:cpu_policy=dedicated",
+            shell=True,
+            stdout=subprocess.PIPE)
+        add_flavor_tmp = add_flavor.stdout.read()
+        print add_flavor_tmp
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list | grep pfe-flv",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+    else:
+        print "The Recommended pfe-flv  Flavor is Present in the Base Cluster"
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list | grep pfe-flv",
             shell=True,
             stdout=subprocess.PIPE)
         chk_flavor_tmp = chk_flavor.stdout.read()
@@ -311,6 +370,7 @@ def create_server_yaml():
                 server_string = server_string + "    properties:\n"
                 server_string = server_string + "      network: %s\n" % net_name
                 server_string = server_string + "      name: %s\n" % port_name
+                #server_string = server_string + "      tenant_id: %s\n" %project_uuid
                 if "mac_address" in server_dict[clus][i]:
                     server_string = server_string + \
                         "      mac_address: %s\n" % (
@@ -1022,6 +1082,128 @@ def create_cluster_json_mainline():
                     '\t\t\t"subnet_mask": "255.255.255.0",\n'
         individual_clus_string = individual_clus_string + \
             '\t\t\t"provision":{\n'
+        if "contrail_4" in cluster_dict[clus]["parameters"]["provision"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t"contrail_4":{\n'
+            no_of_items_in_contrail_4 = len(
+                cluster_dict[clus]["parameters"]["provision"]["contrail_4"])
+            for i in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+                if i == "rbac":
+                    if no_of_items_in_contrail_4 > 1:
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t"api_config":{\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"aaa_mode": "rbac"\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t},\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t"analytics_api_config":{\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"log": "/var/log/contrail/contrail-analytics-api.log",\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"aaa_mode": "rbac"\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t},\n'
+                        no_of_items_in_contrail_4 -= 1
+                    else:
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t"api_config":{\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"aaa_mode": "rbac"\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t},\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t"analytics_api_config":{\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"log": "/var/log/contrail/contrail-analytics-api.log",\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"aaa_mode": "rbac"\n'
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t}\n'
+                        no_of_items_in_contrail_4 -= 1
+                if i == "global_config":
+                    no_of_items_in_global_config = len(
+                        cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"])
+                    if no_of_items_in_contrail_4 > 1:
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t"global_config":{\n'
+                        for j in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+                            if j == "sandesh_ssl":
+                                if no_of_items_in_global_config > 1:
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"sandesh_ssl_enable": %s,\n' % cluster_dict[clus][
+                                            "parameters"]["provision"]["contrail_4"]["global_config"]["sandesh_ssl"]
+                                    no_of_items_in_global_config -= 1
+                                else:
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"sandesh_ssl_enable": %s\n' % cluster_dict[clus][
+                                            "parameters"]["provision"]["contrail_4"]["global_config"]["sandesh_ssl"]
+                                    no_of_items_in_global_config -= 1
+
+                            if j == "xmpp_auth_ssl":
+                                if no_of_items_in_global_config > 1:
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"xmpp_auth_enable": %s,\n' % cluster_dict[clus]["parameters"][
+                                            "provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"xmpp_dns_auth_enable": %s,\n' % cluster_dict[clus][
+                                            "parameters"]["provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+                                    no_of_items_in_global_config -= 1
+                                else:
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"xmpp_auth_enable": %s,\n' % cluster_dict[clus]["parameters"][
+                                            "provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"xmpp_dns_auth_enable": %s\n' % cluster_dict[clus][
+                                            "parameters"]["provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+                                    no_of_items_in_global_config -= 1
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t},\n'
+                    else:
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t"global_config":{\n'
+                        for j in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+                            if j == "sandesh_ssl":
+                                if no_of_items_in_global_config > 1:
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"sandesh_ssl_enable": %s,\n' % cluster_dict[clus][
+                                            "parameters"]["provision"]["contrail_4"]["global_config"]["sandesh_ssl"]
+                                    no_of_items_in_global_config -= 1
+                                else:
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"sandesh_ssl_enable": %s\n' % cluster_dict[clus][
+                                            "parameters"]["provision"]["contrail_4"]["global_config"]["sandesh_ssl"]
+                                    no_of_items_in_global_config -= 1
+
+                            if j == "xmpp_auth_ssl":
+                                if no_of_items_in_global_config > 1:
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"xmpp_auth_enable": %s,\n' % cluster_dict[clus]["parameters"][
+                                            "provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"xmpp_dns_auth_enable": %s,\n' % cluster_dict[clus][
+                                            "parameters"]["provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+                                    no_of_items_in_global_config -= 1
+                                else:
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"xmpp_auth_enable": %s,\n' % cluster_dict[clus]["parameters"][
+                                            "provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+                                    individual_clus_string = individual_clus_string + \
+                                        '\t\t\t\t\t\t"xmpp_dns_auth_enable": %s\n' % cluster_dict[clus][
+                                            "parameters"]["provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+                                    no_of_items_in_global_config -= 1
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t}\n'
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t},\n'
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t"containers":{\n'
         individual_clus_string = individual_clus_string + \
@@ -1099,9 +1281,9 @@ def create_cluster_json_mainline():
         # individual_clus_string = individual_clus_string + \
         #    '\t\t\t\t\t\t\t\t"service_tenant_name": "services",\n'
         if "openstack_manage_amqp" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
-		if cluster_dict[clus]["parameters"]["provision"]["openstack"]["openstack_manage_amqp"] == "true":
-			individual_clus_string = individual_clus_string + \
-            		    '''\t\t\t\t\t\t\t\t"external_rabbitmq_servers": "%s" \n''' % openstack_control_data_ip_list
+            if cluster_dict[clus]["parameters"]["provision"]["openstack"]["openstack_manage_amqp"] == "true":
+                individual_clus_string = individual_clus_string + \
+                    '''\t\t\t\t\t\t\t\t"external_rabbitmq_servers": "%s" \n''' % openstack_control_data_ip_list
         individual_clus_string = individual_clus_string + '\t\t\t\t\t\t\t}\n'
         # if "contrail_compute_mode" in cluster_dict[clus]:
         #    individual_clus_string = individual_clus_string + \
@@ -1995,6 +2177,88 @@ def get_control_data_ip_sm():
                                 '/')
                             ret_ip = ret_ip + '/' + mask_list[1]
     print ret_ip
+
+
+def produce_vmx_env_file():
+    change_network_dict()
+    net_1 = ''
+    net_2 = ''
+    for i in network_dict:
+        if network_dict[i]['role'] == 'management':
+            net_1 = network_dict[i]['name']
+        else:
+            net_2 = network_dict[i]['name']
+    # print net_1
+    # print net_2
+    project_uuid = general_params_dict["project_uuid"]
+    undashed_uuid = project_uuid.replace('-', '')
+    # print undashed_uuid
+    project_name = ''
+    a = subprocess.Popen("openstack project list -f json",
+                         shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp_dict = eval(a_tmp)
+    a_tmp = ""
+    # print a_tmp_dict
+    for i in a_tmp_dict:
+        # print i
+        if i["ID"] == undashed_uuid:
+            project_name = i["Name"]
+    # print project_name
+    env_string = '''
+
+#Copyright (c) Juniper Networks, Inc., 2017-2024.
+#All rights reserved.
+parameters:
+    net_id1: %s
+
+parameter_defaults:
+    public_network: %s
+    vfp_image: vPFE_17
+    vfp_flavor: pfe-flv
+    vcp_flavor: re-flv
+    vcp_image: vRE_17
+    project_name: %s
+    gateway_ip: 0.0.0.0
+    stack_name: VmxContrail 
+
+resource_registry:
+#  "OS::Nova::Vmx": vmx.yaml
+  "OS::Nova::VmxContrail": vmx_contrail.yaml
+#  "OS::Nova::VmxContrailSriov": vmx_contrail_sriov.yaml
+  "OS::Nova::VmxRe": vmx-components/vms/re.yaml
+  "OS::Nova::VmxFpc": vmx-components/vms/fpc.yaml
+  "OS::Nova::VmxFpcSingle": vmx-components/vms/fpc_no_metadata.yaml
+  "OS::Nova::VmxFpcSriov": vmx-components/vms/fpc_fixed_sriov.yaml
+  "OS::Nova::VmxFpcVirtio": vmx-components/vms/fpc_fixed_virtio.yaml
+  "OS::Networking::VmxFpcFixedNet": vmx-components/vms/fpc_fixed_net.yaml
+  "OS::Networking::VmxIntNet": vmx-components/bridges/bridge_int.yaml
+  "OS::Networking::VmxInternalNet": vmx-components/bridges/bridges_internal.yaml
+  "OS::Networking::VmxInternalNetContrail": vmx-components/contrail/bridges_internal_contrail.yaml
+  "OS::Networking::VmxIntNetContrail": vmx-components/contrail/bridge_int_contrail.yaml
+  "OS::Networking::VmxNet": vmx-components/bridges/bridge_wan.yaml
+  "OS::Networking::VmxNetContrail": vmx-components/contrail/bridge_wan_contrail.yaml
+  "OS::Networking::VmxNetProvider": vmx-components/bridges/bridge_provider.yaml
+  "OS::Networking::VmxProviderNetPort": vmx-components/ports/bridge_provider_port.yaml
+  "OS::Networking::VmxProviderNetSriovPort": vmx-components/ports/bridge_provider_sriov_port.yaml
+  "OS::Networking::VmxNet": vmx-components/bridges/bridge_wan.yaml
+  "OS::Networking::VmxPort": vmx-components/ports/port.yaml
+  "OS::Networking::VmxSriovPort": vmx-components/ports/sriov_port.yaml
+  "OS::Networking::VmxContrailSriovPort": vmx-components/contrail/contrail_sriov_port.yaml
+  "OS::Networking::VmFixedNet": vmx-components/vms/vm_fixed_net.yaml
+  "OS::Networking::VmxPortWithIP": vmx-components/ports/port_with_ip.yaml
+  "OS::Networking::VmxRePfePort": vmx-components/ports/re_pfe_port.yaml
+
+
+''' % (net_2, net_1,  project_name)
+    print env_string
+
+
+def is_vmx_true():
+    vmx_val = "false"
+    if "vmx" in parsed_json["inp_params"]["params"]:
+        vmx_val = parsed_json["inp_params"]["params"]["vmx"]
+    print vmx_val
 
 
 if __name__ == '__main__':
