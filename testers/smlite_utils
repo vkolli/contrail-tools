@@ -72,6 +72,13 @@ function add_sourcelist_SMLite() {
 
 }
 
+function initialize_any_vms {
+    build_fab_path="${TOOLS_WS}/contrail-fabric-utils/fabfile/testbeds"
+    grep -q "^vm_node_details" $build_fab_path/testbed.py
+    if [ $? -eq 0 ] ; then
+        (cd ${TOOLS_WS}/virtmanager_scripts; fab -f fabfile/setup_virtmanager.py create_vms_from_testbed:${TOOLS_WS}/contrail-fabric-utils)
+    fi
+}
 
 function reimage_setup_using_SM {
     if [ $SKIP_REIMAGE -ne 0 ]
@@ -139,6 +146,13 @@ function reimage_setup_using_SM {
         echo "reimage of target $CLUSTER_NAME failed!!!"
         exit 1
     fi
+    initialize_any_vms
+    if [[ ( "$BRANCH" < "R2.0" ) && ( ${BRANCH} != "mainline" ) ]]; then
+        fab wait_till_all_up:attempts=180;
+    else
+        fab wait_till_all_up:attempts=180,waitdown=False,reimaged=True;
+    fi
+    fab check_reimage_state" || debug_and_die "reimage_setup failed"
 
 }
 
