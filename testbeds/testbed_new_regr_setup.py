@@ -18,6 +18,7 @@ ext_routers = [('yuvaraj', '10.10.10.100')]
 router_asn = 64510
 public_vn_rtgt = 19005
 public_vn_subnet = "10.204.219.88/29"
+use_devicemanager_for_md5 = True
 
 host_build = 'stack@10.204.216.49'
 
