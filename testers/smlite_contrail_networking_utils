@@ -255,7 +255,7 @@ function provision_using_SMLite() {
         pkg_type="contrail-ubuntu-package"
         iso_type="ubuntu"
         SMID=ubuntu14$SKU${BUILDID}
-	OPENSTACK=${OPENSTACK_SKU}dd
+	OPENSTACK=${OPENSTACK_SKU}
     elif [[ ${CENTOS_72} -eq 1 ]];then
         pkg_type="contrail-centos-package"
         iso_type="redhat"
@@ -270,7 +270,7 @@ function provision_using_SMLite() {
  
     echo "Connect to SM_SERVER to provision the targets/cluster"
 
-    cntl_pkg="/root/contrail-cloud-docker_4.0.0.0-${BUILDID}-${SKU}.tgz"
+    cntl_pkg="/root/contrail-networking-docker_4.0.0.0-${BUILDID}.tgz"
     openstk_pkg="/root/contrail-install-packages_4.0.0.0-${BUILDID}~${OPENSTACK_SKU}_all.deb"
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
         set -e
@@ -278,6 +278,7 @@ function provision_using_SMLite() {
         echo "Install SM-Lite and provision the target setup"
         echo '{\"image\":[{\"category\": \"package\", \"id\": \"openstack_image\", \"type\": \"$pkg_type\", \"path\": \"$openstk_pkg\", \"version\":\"$BUILDID\"},{\"category\": \"package\", \"id\": \"networking_image\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\", \"parameters\": {\"openstack_sku\": \"${OPENSTACK_SKU}\"}}]}' > /root/image.json
         dpkg -i /root/${SERVER_MANAGER_INSTALLER}
+        sed -i '/server-manager provision -F/d' /opt/contrail/contrail_server_manager/provision_containers.sh
         if [ -z $CLUSTER_JSON ] || [ -z $SERVER_JSON ]; then
             if [ $SKIP_SMLITE_INSTALL -ne 0 ]
             then
@@ -295,7 +296,6 @@ function provision_using_SMLite() {
             fi
         fi
         server-manager provision -F --cluster_id ${OS_CLUSTER_NAME} openstack_image
-        server-manager provision -F --cluster_id ${CLUSTER_NAME} networking_image
     ) "
     sleep 600 
     #assumption is by this time, SM is installed on cfgm0 and provision is at kernel upgrade and node reboot.
@@ -352,9 +352,9 @@ function provision_using_SMLite() {
 
     if [ $rv == 0 ]
     then
-        echo "Provisioning openstack is sucessfull!!!"
+        echo "Provisioning contrail networking is sucessfull!!!"
     else
-        echo "Provisioning openstack failed!!! aborting the process"
+        echo "Provisioning contrail networking failed!!! aborting the process"
         exit 1
     fi
 
