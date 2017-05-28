@@ -4,7 +4,7 @@ IS_UBUNTU_14041=0
 source $TOOLS_WS/testers/environment.sh
 source $TOOLS_WS/testers/smgr_utils
 declare -A BUILD_MAP
-export BUILD_MAP=( [ubuntu-12-04]=ubuntu-12.04.3 [centos64_os]=centos-6.4 [centos65]=centos-6.5 [ubuntu-14-04]=ubuntu-14.04 [ubuntu-14-04-1]=ubuntu-14.04.1 [redhat70]=redhat-7.1 [centos71]=centos-7.1 )
+export BUILD_MAP=( [ubuntu-12-04]=ubuntu-12.04.3 [centos64_os]=centos-6.4 [centos65]=centos-6.5 [ubuntu-14-04]=ubuntu-14.04 [ubuntu-16-04]=ubuntu-16.04 [ubuntu-14-04-1]=ubuntu-14.04.1 [redhat70]=redhat-7.1 [centos71]=centos-7.1 )
 export_variables_for_fab="export HA_TEST=$HA_TEST; export AUTH_PROTOCOL=$AUTH_PROTOCOL; export KEYSTONE_VERSION=$KEYSTONE_VERSION; export ENABLE_RBAC=$ENABLE_RBAC"
 ##
 # try
