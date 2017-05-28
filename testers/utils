@@ -148,6 +148,9 @@ function search_package {
         else
             export REIMAGE_PARAM=${BUILD_MAP[${DISTRO}]}
         fi
+    elif [[ ${BUILD_MAP[${DISTRO}]} =~ ubuntu-16 ]]; then
+	if [ "$BRANCH" == "R4.0" ] && [ "$SKU" == "newton" ]; then
+            export REIMAGE_PARAM="ubuntu-16.04.2"
     else
         if [ -z $REDHAT_72 ]; then
             if [ -z $CENTOS_72 ]; then
