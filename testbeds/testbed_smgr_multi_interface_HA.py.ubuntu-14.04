@@ -22,9 +22,9 @@ env.roledefs = {
 
     'all': [host1, host2, host3, host4, host5, host6],
     'cfgm': [host1, host2, host3],
-    'openstack': [host4],
+    'openstack': [host5],
     'control': [host1, host2, host3],
-    'compute': [host5, host6],
+    'compute': [host6],
     'collector': [host1, host2, host3],
     'webui': [host1, host2, host3],
     'database': [host1, host2, host3],
@@ -87,4 +87,4 @@ do_parallel = True
 env.test_repo_dir='/home/stack/smgr_github_ubuntu_multi_node/contrail-test'
 env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'
-env.log_scenario='SMLite Multi-Interface HA Sanity'
+env.log_scenario='SMLite Contrail Networking HA Sanity'
