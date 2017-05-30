@@ -37,7 +37,7 @@
 						"name":"server1" , 
 						"ip_address" : { "final_test_network_1":"10.0.0.4", "final_test_network_2":"10.10.0.4"},
 						"flavor" : "m1.xxlarge",
-						"image" : "160402-iso.qcow2",
+						"image" : "image_val",
 						"floating_ip" : "true",
 						"server_manager" : "flase",
 						"roles" : ["openstack"]
@@ -46,7 +46,7 @@
                                                 "name":"server2" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.5", "final_test_network_2":"10.10.0.5"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["openstack"]
@@ -55,7 +55,7 @@
                                                 "name":"server3" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.6", "final_test_network_2":"10.10.0.6"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["openstack"]
@@ -64,7 +64,7 @@
                                                 "name":"server4" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.7", "final_test_network_2":"10.10.0.7"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-controller", "contrail-analytics", "contrail-analyticsdb"]
@@ -73,7 +73,7 @@
                                                 "name":"server5" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.8", "final_test_network_2":"10.10.0.8"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-controller", "contrail-analytics", "contrail-analyticsdb"]
@@ -82,7 +82,7 @@
                                                 "name":"server6" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.9", "final_test_network_2":"10.10.0.9"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-controller", "contrail-analytics", "contrail-analyticsdb"]
@@ -91,7 +91,7 @@
                                                 "name":"server7" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.10", "final_test_network_2":"10.10.0.10"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-lb"]
@@ -100,7 +100,7 @@
                                                 "name":"server8" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.11", "final_test_network_2":"10.10.0.11"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-compute"]
@@ -109,7 +109,7 @@
                                                 "name":"server9" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.12", "final_test_network_2":"10.10.0.12"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-compute"]
