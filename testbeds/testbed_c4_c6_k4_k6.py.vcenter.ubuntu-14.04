@@ -41,7 +41,7 @@ if os.getenv('HA_TEST',None) == 'True':
         'cfgm': [host1, host2, host3],
         'webui': [host1, host2, host3],
         'control': [host2, host3],
-        'collector': [host1],
+        'collector': [host1,host2,host3],
         'database': [host1, host2, host3],
         'compute': [host4, host5, host6],
         'build': [host_build]
@@ -52,7 +52,7 @@ else:
         'cfgm': [host1, host2, host3],
         'webui': [host1],
         'control': [host2, host3],
-        'collector': [host1],
+        'collector': [host1,host2,host3],
         'database': [host1, host2, host3],
         'compute': [host4, host5, host6],
         'build': [host_build]
