@@ -448,6 +448,9 @@ function use_testbed_file {
     if [[ ${DISTRO} =~ ubuntu-14-04 ]]; then
         distro_name="ubuntu-14.04"
         cp -f ${tbfile_hyper}.$distro_name ${tbfile}
+    elif [[ ${DISTRO} =~ ubuntu-16-04 ]]; then
+        distro_name="ubuntu-16.04"
+        cp -f ${tbfile_hyper}.$distro_name ${tbfile}
     elif [ -f ${tbfile_hyper}.$image_name ]; then
             cp -f ${tbfile_hyper}.$image_name ${tbfile}
     elif [ -f ${tbfile_hyper}.${base_distro} ]; then
@@ -582,6 +585,10 @@ function setup_and_install_contrail {
     fi
 
     # upgrade kernel to latest if its ubuntu
+    if [[ ${DISTRO} =~ ubuntu-16-04 ]]; then
+	SKIP_KERNEL_UPGRADE=1
+    fi
+
     cd ${TOOLS_WS}/contrail-fabric-utils
     if [[ "${DISTRO}" =~ "ubuntu" || $CENTOS_72 -eq 1 || "${DISTRO}" =~ "centos65" ]]; then
         if [ $SKIP_KERNEL_UPGRADE -ne 0 ]
@@ -900,6 +907,9 @@ function set_threshold {
             echo 85
             ;;
         'ubuntu-14-04')
+            echo 85
+            ;;
+        'ubuntu-16-04')
             echo 85
             ;;
         'redhat70')
