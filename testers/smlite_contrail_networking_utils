@@ -256,6 +256,9 @@ function provision_using_SMLite() {
         iso_type="ubuntu"
         SMID=ubuntu14$SKU${BUILDID}
 	OPENSTACK=${OPENSTACK_SKU}
+        if [[ $SKU =~ mitaka ]]; then
+            ubuntu_rel="trusty"
+        fi
     elif [[ ${CENTOS_72} -eq 1 ]];then
         pkg_type="contrail-centos-package"
         iso_type="redhat"
@@ -270,7 +273,7 @@ function provision_using_SMLite() {
  
     echo "Connect to SM_SERVER to provision the targets/cluster"
 
-    cntl_pkg="/root/contrail-networking-docker_4.0.0.0-${BUILDID}.tgz"
+    cntl_pkg="/root/contrail-networking-docker_4.0.0.0-${BUILDID}_$ubuntu_rel.tgz"
     openstk_pkg="/root/contrail-install-packages_4.0.0.0-${BUILDID}~${OPENSTACK_SKU}_all.deb"
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
         set -e
