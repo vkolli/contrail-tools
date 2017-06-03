@@ -1194,6 +1194,21 @@ def create_cluster_json_mainline():
                 '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["minimum_disk_database"]
             individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
         """
+	for server in server_dict[clus]:
+            if "contrail-lb" in server_dict[clus][server]["roles"]:
+                lb_external = ''
+                lb_internal = ''
+                for n in server_dict[clus][server]["ip_address"]:
+                    if network_dict[n]["role"] == "management":
+                        lb_external = server_dict[clus][server]["ip_address"][n]
+                    if network_dict[n]["role"] == "control-data":
+                        lb_internal = server_dict[clus][server]["ip_address"][n]
+                #individual_clus_string = individual_clus_string + \
+                #    '\t\t\t\t\t\t\t"config_ip": "%s",\n' % lb_external
+                #individual_clus_string = individual_clus_string + \
+                #    '\t\t\t\t\t\t\t"controller_ip": "%s",\n' % lb_external
+                #individual_clus_string = individual_clus_string + \
+                #    '\t\t\t\t\t\t\t"analytics_ip": "%s",\n' % lb_external
         for server in server_dict[clus]:
             if "contrail-lb" in server_dict[clus][server]["roles"]:
                 if len(lb_external) != 0:
