@@ -10,8 +10,10 @@ host4 = 'root@10.204.217.77'
 host5 = 'root@10.204.217.176'
 host6 = 'root@10.204.217.132'
 
-ext_routers = []
+ext_routers = [('blr-mx2','192.168.100.100')]
 router_asn = 64512
+public_vn_rtgt = 19010
+public_vn_subnet = '10.204.219.168/29'
 database_dir = '/home/cassandra'
 
  
@@ -35,6 +37,17 @@ env.roledefs = {
  
 env.hostnames ={
     'all': ['nodei17', 'nodei19', 'nodec28', 'nodeg37', 'nodec10', 'nodei20']
+}
+
+env.physical_routers={
+'blr-mx2'     : {    'vendor': 'juniper',
+                     'model' : 'mx',
+                     'asn'   : '64512',
+                     'name'  : 'blr-mx2',
+                     'ssh_username' : 'root',
+                     'ssh_password' : 'c0ntrail123',
+                     'mgmt_ip'  : '10.204.216.245',
+             }
 }
 
 #Openstack admin password
@@ -81,6 +94,10 @@ env.ha = {
 }
 
 #To enable multi-tenancy feature
+enable_ceilometer = True
+ceilometer_polling_interval = 60
+env.enable_lbaas = True
+ha_setup = True
 multi_tenancy = True
 env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
 do_parallel = True
