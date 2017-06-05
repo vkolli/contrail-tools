@@ -658,26 +658,28 @@ function add_server_cluster_SM() {
             set -e
             echo "add required image/server/cluster for reimage and provision of the target"
 
-            echo "delete iso image if it exists"
-            server-manager-client delete image --image_id ${iso_name}
-
-            echo "add base ISO image to server manager database"
-            echo "add base ISO image to server manager database"
-            server-manager-client upload-image --id ${iso_name} --version ${BUILDID} --category image --type ${iso_type} --file_name ${isofile}
-            if [ $? == 0 ]
+            if [ ${SKIP_ADD_ISO} == 1 ]
             then
-                echo "Server-manager adding image command is successful"
-            else
-                echo "Server-manager adding image command failed, aborting the process"
-                exit 1
-            fi
+                echo "delete iso image if it exists"
+                server-manager-client delete image --image_id ${iso_name}
 
-            echo "check if the image was added successfully"
-            server-manager-client display image --json | grep ${iso_name}
-            if [ $? != 0 ]
-            then
-                echo "Adding Base ISO image failed"
-                exit 1
+                echo "add base ISO image to server manager database"
+                server-manager-client upload-image --id ${iso_name} --version ${BUILDID} --category image --type ${iso_type} --file_name ${isofile}
+                if [ $? == 0 ]
+                then
+                    echo "Server-manager adding image command is successful"
+                else
+                    echo "Server-manager adding image command failed, aborting the process"
+                    exit 1
+                fi
+            
+                echo "check if the image was added successfully"
+                server-manager-client display image --json | grep ${iso_name}
+                if [ $? != 0 ]
+                then
+                    echo "Adding Base ISO image failed"
+                    exit 1
+                fi
             fi
 
             echo "delete contrail package if it exists"
