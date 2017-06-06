@@ -658,7 +658,7 @@ function add_server_cluster_SM() {
             set -e
             echo "add required image/server/cluster for reimage and provision of the target"
 
-            if [ ${SKIP_ADD_ISO} == 1 ]
+            if [ ${SKIP_ADD_ISO} == 0 ]
             then
                 echo "delete iso image if it exists"
                 server-manager-client delete image --image_id ${iso_name}
