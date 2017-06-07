@@ -67,6 +67,24 @@ def get_requested_image():
             a_tmp = a.stdout.read()
             a_tmp = str(a_tmp)
             print a_tmp
+	if sys.argv[2] == "ubuntu-14-04-4":
+            #a = subprocess.Popen("cd /root/heat/final_scripts/new_rev/ ; wget http://10.84.5.120/images/soumilk/vm_images/ubuntu14-04-5.qcow2", shell=True ,stdout=subprocess.PIPE)
+            a = subprocess.Popen(
+                "wget http://10.84.5.120/images/soumilk/vm_images/ubuntu-14-04-4-nokey.qcow2",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp = str(a_tmp)
+            print a_tmp
+	if sys.argv[2] == "ubuntu-14-04-2":
+            #a = subprocess.Popen("cd /root/heat/final_scripts/new_rev/ ; wget http://10.84.5.120/images/soumilk/vm_images/ubuntu14-04-5.qcow2", shell=True ,stdout=subprocess.PIPE)
+            a = subprocess.Popen(
+                "wget http://10.84.5.120/images/soumilk/vm_images/ubuntu-14-04-2-nokey.qcow2",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp = str(a_tmp)
+            print a_tmp
         if sys.argv[2] == 'U14_04_4':
             #a = subprocess.Popen("cd /root/heat/final_scripts/new_rev/ ; wget http://10.84.5.120/images/soumilk/vm_images/ubuntu14-04-4.qcow2", shell=True ,stdout=subprocess.PIPE)
             a = subprocess.Popen(
@@ -229,6 +247,81 @@ def parse_openstack_image_list_command():
                     stdout=subprocess.PIPE)
                 a_tmp = a.stdout.read()
                 print a_tmp
+
+	if sys.argv[2] == "ubuntu-14-04-4":
+            a = subprocess.Popen(
+                "openstack image list -f json",
+                shell=True,
+                stdout=subprocess.PIPE)
+            #a = subprocess.Popen("openstack image list | grep ubuntu-14-04", shell=True ,stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp_dict = eval(a_tmp)
+            a_tmp = ""
+            for i in a_tmp_dict:
+                if i["Name"] == "ubuntu-14-04-4":
+                    a_tmp = "ubuntu-14-04-4"
+            if len(a_tmp) == 0:
+                print "The Requested Image is not present in the cluster, Downloading it ----->>\n"
+                get_requested_image()
+                a = subprocess.Popen(
+                    "openstack image create --disk-format qcow2 --container-format bare --public --file ubuntu-14-04-4-nokey.qcow2 ubuntu-14-04-4",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+                time.sleep(5)
+                a = subprocess.Popen(
+                    "openstack image list | grep ubuntu-14-04-4",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+            else:
+                print "Requested Image already exists in the cluster "
+                a = subprocess.Popen(
+                    "openstack image list | grep ubuntu-14-04-4",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+
+	if sys.argv[2] == "ubuntu-14-04-2":
+            a = subprocess.Popen(
+                "openstack image list -f json",
+                shell=True,
+                stdout=subprocess.PIPE)
+            #a = subprocess.Popen("openstack image list | grep ubuntu-14-04", shell=True ,stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp_dict = eval(a_tmp)
+            a_tmp = ""
+            for i in a_tmp_dict:
+                if i["Name"] == "ubuntu-14-04-2":
+                    a_tmp = "ubuntu-14-04-2"
+            if len(a_tmp) == 0:
+                print "The Requested Image is not present in the cluster, Downloading it ----->>\n"
+                get_requested_image()
+                a = subprocess.Popen(
+                    "openstack image create --disk-format qcow2 --container-format bare --public --file ubuntu-14-04-2-nokey.qcow2 ubuntu-14-04-2",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+                time.sleep(5)
+                a = subprocess.Popen(
+                    "openstack image list | grep ubuntu-14-04-2",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+            else:
+                print "Requested Image already exists in the cluster "
+                a = subprocess.Popen(
+                    "openstack image list | grep ubuntu-14-04-2",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+
 
         elif sys.argv[2] == "U14_04_4":
             a = subprocess.Popen(
