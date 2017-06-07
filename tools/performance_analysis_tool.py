@@ -283,6 +283,8 @@ def create_html_file(dict1):
         html_string = html_string + "<p>The median of the response times: %s msec</p>\n" %dict1["median_of_response_times"]
     if "standard_deviation_of_response_times" in dict1:
         html_string = html_string + "<p>The Standard Deviation of the response times: %s msec</p>\n" %dict1["standard_deviation_of_response_times"]
+    if "max_object_download_time" in dict1:
+        html_string = html_string + "<p>Max Obejct Download Time in Throughput Test: %s msec</p>\n" %dict1["max_object_download_time"]
     if "graph_image_path" in dict1:
         html_string = html_string + '<img src="%s" alt="Could not find the graph image" width="800" height="500">\n' %dict1["graph_image_path"]
     """
@@ -375,20 +377,20 @@ def time_throughput(inp_file='', out_file=''):
     starting_pt = 0
     itr = 0
     while (itr < len(res_list)):
-        if res_list[itr] <= 100:
+        if res_list[itr] <= 6:
             starting_pt = res_list[itr]
             # print starting_pt
             itr += 1
         else:
             posn = itr
             check = 0
-            for i in range(10):
-                if (res_list[posn] <= 100):
+            for i in range(5):
+                if (res_list[posn] <= 6):
                     itr += 1
                     break
                 else:
                     posn += 1
-                    if (i == 9):
+                    if (i == 4):
                         check = 1
             if check == 1:
                 break
@@ -400,12 +402,16 @@ def time_throughput(inp_file='', out_file=''):
     print "Elapsed Time at the final Point : %.2f sec" % final_elapsed_time
     print "Final Value of Incoming Traffic at the final point: %.2f kbps" % final_incoming_tafffic
     print "Final throughput Response at the final point: %.2f msec" % final_throughput_response
+    max_object_download_time = max(throughput_response_list)
+    print "Maximum Object Download Time in Throughput test: %.2f msec" % max_object_download_time
     web_page_dict = {
         'title': " Contrail Performance Throughput ",
         "graph_image_path": "/Users/soumilk/Downloads/soumil.png",
         "destination_path_for_html_file": "/Users/soumilk/Desktop/code/Performance_Analysis_Tool/throughput_flow.html",
         "final_elapsed_time": str(
             final_elapsed_time),
+	"max_object_download_time": str(
+	    max_object_download_time),
         "final_incoming_traffic": str(
             final_incoming_tafffic),
         "final_throughput_response": str(

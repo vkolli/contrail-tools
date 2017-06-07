@@ -171,7 +171,7 @@ esxi_hosts = {
             'mac' : "00:77:56:aa:bb:01",
             'host' : "root@10.87.36.19",
             'mode': "vcenter",
-            'vmdk_download_path': "http://10.84.5.120/cs-shared/contrail-vcenter/vmdk/vmdk-16.04-1/ContrailVM-disk1.vmdk",
+            'vmdk_download_path': "http://10.84.5.120/cs-shared/contrail-vcenter/vmdk/16.04/vmdk-16.04-1/ContrailVM-disk1.vmdk",
         }
     },
 
@@ -188,7 +188,7 @@ esxi_hosts = {
             'mac' : "00:77:56:aa:bb:02",
             'host' : "root@10.87.36.20",
             'mode': "vcenter",
-            'vmdk_download_path': "http://10.84.5.120/cs-shared/contrail-vcenter/vmdk/vmdk-16.04-1/ContrailVM-disk1.vmdk",
+            'vmdk_download_path': "http://10.84.5.120/cs-shared/contrail-vcenter/vmdk/16.04/vmdk-16.04-1/ContrailVM-disk1.vmdk",
         }
     },
 
@@ -205,7 +205,7 @@ esxi_hosts = {
             'mac' : "00:77:56:aa:bb:03",
             'host' : "root@10.87.36.21",
             'mode': "vcenter",
-            'vmdk_download_path': "http://10.84.5.120/cs-shared/contrail-vcenter/vmdk/vmdk-16.04-1/ContrailVM-disk1.vmdk",
+            'vmdk_download_path': "http://10.84.5.120/cs-shared/contrail-vcenter/vmdk/16.04/vmdk-16.04-1/ContrailVM-disk1.vmdk",
         }
     },
 
