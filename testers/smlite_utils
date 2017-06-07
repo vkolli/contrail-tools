@@ -86,6 +86,13 @@ function reimage_setup_using_SM {
         iso_type="ubuntu"
         SMID=ubuntu14$SKU${BUILDID}
         isofile="/root/images/image145.json"
+    elif [[ $DISTRO =~ ubuntu-16.04 ]]; then
+        image_id="ubuntu-16.04.2"
+	image="/cs-shared/images/ubuntu-16.04.2-server-amd64.iso"
+        pkg_type="contrail-ubuntu-package"
+        iso_type="ubuntu"
+        SMID=ubuntu16$SKU${BUILDID}
+        isofile="/root/images/image-16.04.2-minimal-ks.json"
     elif [[ ${CENTOS_72} -eq 1 ]];then
         image_id="centos-7.2"
 	image="/root/images/CentOS-7-x86_64-Minimal-1511.iso"
@@ -256,6 +263,11 @@ function provision_using_SMLite() {
         elif [[ $SKU =~ neuton ]]; then
             ubuntu_rel="xenial"
         fi
+    elif [[ $DISTRO =~ ubuntu-16 ]]; then
+        pkg_type="contrail-ubuntu-package"
+        iso_type="ubuntu"
+        SMID=ubuntu16$SKU${BUILDID}
+        ubuntu_rel="xenial"
     elif [[ ${CENTOS_72} -eq 1 ]];then
         pkg_type="contrail-centos-package"
         iso_type="redhat"
