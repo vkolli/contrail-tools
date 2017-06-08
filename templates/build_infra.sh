@@ -25,7 +25,7 @@ echo "Change Premissions on cloud_init.sh file"
 chmod 777 /root/$1/cloud_init.sh
 
 echo "Lets See if the Server Manager OS is already added to openstack"
-python /root/$1/inp_to_yaml.py /root/$1/input.json add_sm_os_to_openstack
+#python /root/$1/inp_to_yaml.py /root/$1/input.json add_sm_os_to_openstack
 echo "Server Manager OS added"
 
 #Adding the recommended flavor for the VM on the base cluster
