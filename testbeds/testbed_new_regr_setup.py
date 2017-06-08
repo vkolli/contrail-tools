@@ -90,6 +90,42 @@ env.ha = {
     'external_vip' : '10.204.216.140',
 }
 
+env.qos = {host3: [{'hardware_q_id': '3', 'logical_queue':['1', '6-10', '12-15']},
+                   {'hardware_q_id': '11', 'logical_queue':['40-46']},
+                   {'hardware_q_id': '18', 'logical_queue':['70-74', '75', '80-95']},
+                   {'hardware_q_id': '28', 'logical_queue':['115']},
+                   {'hardware_q_id': '36', 'logical_queue':['140-143', '145']},
+                   {'hardware_q_id': '43', 'logical_queue':['175']},
+                   {'hardware_q_id': '53', 'logical_queue':['215'], 'default': 'True'},
+                   {'hardware_q_id': '61', 'logical_queue':['245']}],
+            host4: [{'hardware_q_id': '3', 'logical_queue':['1', '6-10', '12-15']},
+                   {'hardware_q_id': '11', 'logical_queue':['40-46']},
+                   {'hardware_q_id': '18', 'logical_queue':['70-74', '75', '80-95']},
+                   {'hardware_q_id': '28', 'logical_queue':['115']},
+                   {'hardware_q_id': '36', 'logical_queue':['140-143', '145']},
+                   {'hardware_q_id': '43', 'logical_queue':['175']},
+                   {'hardware_q_id': '53', 'logical_queue':['215'], 'default': 'True'},
+                   {'hardware_q_id': '61', 'logical_queue':['245']}]}
+
+env.qos_niantic = {host3:[
+                          { 'priority_id': '0', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '1', 'scheduling': 'rr', 'bandwidth': '10'},
+                          { 'priority_id': '2', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '3', 'scheduling': 'rr', 'bandwidth': '20'},
+                          { 'priority_id': '4', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '5', 'scheduling': 'rr', 'bandwidth': '30'},
+                          { 'priority_id': '6', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '7', 'scheduling': 'rr', 'bandwidth': '40'}],
+                   host4:[
+                          { 'priority_id': '0', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '1', 'scheduling': 'rr', 'bandwidth': '10'},
+                          { 'priority_id': '2', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '3', 'scheduling': 'rr', 'bandwidth': '20'},
+                          { 'priority_id': '4', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '5', 'scheduling': 'rr', 'bandwidth': '30'},
+                          { 'priority_id': '6', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '7', 'scheduling': 'rr', 'bandwidth': '40'}]}
+
 #env.cluster_id='clusterm5m6m7m8m9m10'
 minimum_diskGB = 32
 #env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
