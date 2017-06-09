@@ -243,6 +243,9 @@ class Server(object):
         if status:
             log.info('Seems puppet host is not configured')
             log.info('Adding puppet alias to /etc/hosts file')
+            puppet_cmd = 'echo %s > /etc/hostname' % ( self.id)
+            print "HOST CMD: " + puppet_cmd
+            self.exec_cmd(puppet_cmd, error_on_fail=True)
             puppet_cmd = 'echo %s %s.%s %s >> /etc/hosts' % (self.ip , self.id, self.domain, self.id)
             print "HOST CMD: " + puppet_cmd
             self.exec_cmd(puppet_cmd, error_on_fail=True)
