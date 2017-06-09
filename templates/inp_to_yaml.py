@@ -1458,7 +1458,11 @@ def create_testbedpy_file():
                             if "host_build" in testbed_py_dict[clus]:
                                 build_ip = testbed_py_dict[clus]["host_build"]
                             else:
-                                build_ip = server_dict[clus][i]["ip_address"][j]
+                                if server_dict[clus][i]["floating_ip"] == 'true':
+                                    fip_dict_1 = get_all_fip_dict()
+                                    build_ip = '%s' % fip_dict_1[(server_dict[clus][i]["name"])]
+                                else:
+                                    build_ip = server_dict[clus][i]["ip_address"][j]
                         manag_ip = server_dict[clus][i]["ip_address"][j]
                     else:
                         if network_dict[j]["role"] == "control-data":
@@ -1477,8 +1481,13 @@ def create_testbedpy_file():
                             control_data_string = control_data_string + \
                                 "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1'},\n" % (
                                     str(itr), control_ip, gateway)
-                file_str = file_str + \
-                    "host%s = 'root@%s'\n" % (str(itr), manag_ip)
+                if server_dict[clus][i]["floating_ip"] == 'true':
+                    fip_dict_1 = get_all_fip_dict()
+                    file_str = file_str + \
+                        "host%s = 'root@%s'\n" % (str(itr), fip_dict_1[(server_dict[clus][i]["name"])])
+                else:    
+                    file_str = file_str + \
+                        "host%s = 'root@%s'\n" % (str(itr), manag_ip)
                 if "env_password" in testbed_py_dict[clus]:
                     env_password_string = env_password_string + \
                         "   host%s: '%s',\n" % (
@@ -1763,7 +1772,12 @@ def create_testbedpy_file_mainline():
                             if "host_build" in testbed_py_dict[clus]:
                                 build_ip = testbed_py_dict[clus]["host_build"]
                             else:
-                                build_ip = server_dict[clus][i]["ip_address"][j]
+                                if server_dict[clus][i]["floating_ip"] == 'true':
+                                    fip_dict_1 = get_all_fip_dict()
+                                    #print fip_dict_1
+                                    build_ip = '%s' % fip_dict_1[(server_dict[clus][i]["name"])]
+                                else:
+                                    build_ip = server_dict[clus][i]["ip_address"][j]
                         manag_ip = server_dict[clus][i]["ip_address"][j]
                     else:
                         if network_dict[j]["role"] == "control-data":
@@ -1782,8 +1796,16 @@ def create_testbedpy_file_mainline():
                             control_data_string = control_data_string + \
                                 "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1'},\n" % (
                                     str(itr), control_ip, gateway)
-                file_str = file_str + \
-                    "host%s = 'root@%s'\n" % (str(itr), manag_ip)
+
+                if server_dict[clus][i]["floating_ip"] == 'true':
+                    fip_dict_1 = get_all_fip_dict()
+                    file_str = file_str + \
+                        "host%s = 'root@%s'\n" % (str(itr), fip_dict_1[(server_dict[clus][i]["name"])])
+                else:    
+                    file_str = file_str + \
+                        "host%s = 'root@%s'\n" % (str(itr), manag_ip)
+                #file_str = file_str + \
+                #    "host%s = 'root@%s'\n" % (str(itr), manag_ip)
                 if "env_password" in testbed_py_dict[clus]:
                     env_password_string = env_password_string + \
                         "   host%s: '%s',\n" % (
