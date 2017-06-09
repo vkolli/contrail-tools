@@ -113,6 +113,13 @@ function search_package {
             die "Unable to find install package file"
         fi
         export PKG_FILE
+        pkg_file_name=`basename $PKG_FILE`
+        re_pkg="contrail-install-packages_(.*)-(.*)~.*"
+        if [[ $pkg_file_name =~ $re_pkg ]]; then
+            export RELEASE=${$BASH_REMATCH[1]}
+        else
+            echo "Unable to figure out Release of contrail"
+        fi
     else    
         pkg_file_name=`basename $PKG_FILE`
         re_ubuntu="contrail-install-packages_(.*)-(.*)~.*(.deb)"
