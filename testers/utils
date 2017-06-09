@@ -116,7 +116,7 @@ function search_package {
         pkg_file_name=`basename $PKG_FILE`
         re_pkg="contrail-install-packages_(.*)-(.*)~.*"
         if [[ $pkg_file_name =~ $re_pkg ]]; then
-            export RELEASE=${$BASH_REMATCH[1]}
+            export CONTRAIL_RELEASE=${BASH_REMATCH[1]}
         else
             echo "Unable to figure out Release of contrail"
         fi
