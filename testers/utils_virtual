@@ -847,6 +847,8 @@ function run_smgr_virtual_task() {
     then
         sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SM_SERVER_IP " (
             mkdir /root/sm_files/
+            sudo apt-get install python-netaddr -y
+            sudo apt-get install python-paramiko -y
         ) " 
     
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/*.json ${TOOLS_WS}/sm_files/ 
