@@ -1439,3 +1439,17 @@ function cleanup() {
     unlock_testbed $TBFILE_NAME || die "Failed to unlock testbed $TBFILE_NAME"
 }
 
+function copy_ansible_artifacts {
+    if [ $JUNIPER_INTRANET -eq 0 ]
+    then
+        echo "Not in Juniper Intranet..skipping copying ansible files"
+        return 0
+    fi
+    search_package
+    if [ $USE_LATEST_ANSIBLE_CODE -eq 0 ]; then
+        ANSIBLE_DIR=$TOOLS_WS/contrail-ansible
+        rm -rf $ANSIBLE_DIR; mkdir -p $ANSIBLE_DIR
+        sshpass -p ${TASK_RUNNER_HOST_PASSWORD} scp ${SSHOPT} ${TASK_RUNNER_HOST_STRING}:$PKG_FILE_DIR/artifacts_extra/contrail-ansible-${CONTRAIL_RELEASE}*.tar.gz $ANSIBLE_DIR/
+        (cd $ANSIBLE_DIR; tar xzf contrail-ansible*.tar.gz)
+    fi
+}
