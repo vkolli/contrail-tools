@@ -201,3 +201,4 @@ export USER_ISOLATION=${USER_ISOLATION:-"True"}
 # for few tests to be runnable
 # Default mode is enabled(1)
 export INSTALL_EXTRA_PKG_ON_NODES=${INSTALL_EXTRA_PKG_ON_NODES:-1}
+export USE_LATEST_ANSIBLE_CODE=${USE_LATEST_ANSIBLE_CODE:-0}
