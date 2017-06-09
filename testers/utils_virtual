@@ -846,6 +846,9 @@ function run_smgr_virtual_task() {
     if [ $FAB_BRINGUP -eq 1 ] 
     then
         echo "SM_SERVER_IP is not set,  will use Fab to bringup cluster"
+        bringup_SM_setup || debug_and_die "Failed to bringup SM setup"
+        #Add server and cluster to the SM
+        add_server_cluster_SM || debug_and_die "Failed to add server and cluster to SM"
         bringup_setup || die "Bringup failed"
     else
         bringup_SM_setup || debug_and_die "Failed to bringup SM setup"
