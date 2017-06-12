@@ -6,6 +6,17 @@ source $TOOLS_WS/testers/smgr_utils
 declare -A BUILD_MAP
 export BUILD_MAP=( [ubuntu-12-04]=ubuntu-12.04.3 [centos64_os]=centos-6.4 [centos65]=centos-6.5 [ubuntu-14-04]=ubuntu-14.04 [ubuntu-16-04]=ubuntu-16.04 [ubuntu-14-04-1]=ubuntu-14.04.1 [redhat70]=redhat-7.1 [centos71]=centos-7.1  [ubuntu-16-04]=ubuntu-16.04 )
 export_variables_for_fab="export HA_TEST=$HA_TEST; export AUTH_PROTOCOL=$AUTH_PROTOCOL; export KEYSTONE_VERSION=$KEYSTONE_VERSION; export ENABLE_RBAC=$ENABLE_RBAC"
+export NEW_TEST_INFRA=1
+
+# Set the tester host 
+if [[ -z $TEST_HOST_STRING ]]; then
+    export TEST_HOST_STRING=$API_SERVER_HOST_STRING
+    export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
+fi
+export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
+export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
+export RANDOM_DIR=$SCRIPT_TIMESTAMP
+
 ##
 # try
 function try {
@@ -272,11 +283,8 @@ function copy_testbedfile_cfgm {
         return 0
     fi
     tbpath="$CFGM_FAB_PATH/fabfile/testbeds/"
-    test_repo_dir=${TOOLS_WS}/contrail-test
 
     sshpass -p $API_SERVER_HOST_PASSWORD scp ${SSHOPT} $ABS_PATH_TBFILE  ${API_SERVER_HOST_STRING}:$tbpath/testbed.py 
-    exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "sed -i '/env.test_repo_dir/d' $tbpath/testbed.py"
-    exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "echo \"env.test_repo_dir='$CFGM_TEST_CODE_PATH'\" >> $tbpath/testbed.py"
     update_ca_cert_file_path
 }
 
@@ -304,30 +312,27 @@ function copy_fabric_test_artifacts {
     fi
     search_package
 
-    if [ $USE_LATEST_TEST_CODE -eq 1 ]; then
-        (cd $TOOLS_WS/
-        tar cf contrail-test.tar contrail-test)
-        sshpass -p $API_SERVER_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/contrail-test.tar  ${API_SERVER_HOST_STRING}:
-        exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
-            tar xf contrail-test.tar"
-        (cd $TOOLS_WS/
-        tar cf contrail-fabric-utils.tar contrail-fabric-utils)
-        sshpass -p $API_SERVER_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/contrail-fabric-utils.tar  ${API_SERVER_HOST_STRING}:
-        exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
-            tar xf contrail-fabric-utils.tar; mv -f contrail-fabric-utils fabric-utils"
-    else
-        exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/artifacts_extra/contrail-test*.tgz  ${API_SERVER_HOST_STRING}:" || die "Failed to copy test artifacts to $API_SERVER_HOST_STRING:"
-        exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "tar xzf contrail-test-[[:digit:]].*.tgz"
 
-        #If CONTRAIL_FABRIC_UTILS is defined use this variable to locate contrail-fabric-utils*.tgz
-        #export CONTRAIL_FABRIC_UTILS=`ls $CONTRAIL_FABRIC_UTILS`
-        if ! [ -z "$CONTRAIL_FABRIC_UTILS" ]; then
-            exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $CONTRAIL_FABRIC_UTILS  ${API_SERVER_HOST_STRING}:" || die "Failed to copy fab artifacts to $API_SERVER_HOST_STRING:"
-        else
-            exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/artifacts_extra/contrail-fabric-utils*.tgz  ${API_SERVER_HOST_STRING}:" || die "Failed to copy fab artifacts to $API_SERVER_HOST_STRING:"
-        fi
-        exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "tar xzf contrail-fabric-utils*.tgz"
+    # Copy test code
+    echo "test host TEST_HOST_STRING"
+    exec_cmds -s ${TEST_HOST_STRING} -p ${TEST_HOST_PASSWORD} -c "mkdir -p $RANDOM_DIR/combined-test"
+    for x in contrail-test contrail-test-ci; do
+	(cd $CONTRAIL_TEST_CODE_PATH/
+	tar cf ${x}.tar ${x})
+	sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} $CONTRAIL_TEST_CODE_PATH/${x}.tar  ${TEST_HOST_STRING}:$RANDOM_DIR/combined-test
+	exec_cmds -s ${TEST_HOST_STRING} -p ${TEST_HOST_PASSWORD} -c "
+	    cd $RANDOM_DIR/combined-test; tar xf ${x}.tar"
+    done
+
+    # Copy fab code
+    #If CONTRAIL_FABRIC_UTILS is defined use this variable to locate contrail-fabric-utils*.tgz
+    #export CONTRAIL_FABRIC_UTILS=`ls $CONTRAIL_FABRIC_UTILS`
+    if ! [ -z "$CONTRAIL_FABRIC_UTILS" ]; then
+	exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $CONTRAIL_FABRIC_UTILS  ${API_SERVER_HOST_STRING}:" || die "Failed to copy fab artifacts to $API_SERVER_HOST_STRING:"
+    else
+	exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/artifacts_extra/contrail-fabric-utils*.tgz  ${API_SERVER_HOST_STRING}:" || die "Failed to copy fab artifacts to $API_SERVER_HOST_STRING:"
     fi
+    exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "tar xzf contrail-fabric-utils*.tgz"
     
     copy_testbedfile_cfgm
                                                     
@@ -366,8 +371,21 @@ function checkout_fab_repo {
 
 function checkout_test_repo {
     cd $TOOLS_WS
-    sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/contrail-test*.tgz  . || die "Failed to copy test artifacts to build host"
-    tar xzf contrail-test*.tgz
+    if [ $USE_LATEST_TEST_CODE -eq 1 ]; then
+    	git clone git@github.com:Juniper/contrail-test.git
+    	git clone git@github.com:Juniper/contrail-test-ci.git
+	for x in contrail-test contrail-test-ci ; do
+	    ( cd $TOOLS_WS/$x
+	      git checkout -b ${FAB_GIT_BRANCH} origin/${FAB_GIT_BRANCH}
+	      git pull
+	    )
+	done
+    else
+	for x in contrail-test contrail-test-ci ; do
+	    sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/${x}*.tgz  . || die "Failed to copy test artifacts to build host"
+	    tar xzf ${x}*.tgz
+	done
+    fi
 }
 
 ##
@@ -475,8 +493,6 @@ function use_testbed_file {
         source ${TOOLS_WS}/contrail-fabric-utils/testbed_env
         sed 's/export //' ${TOOLS_WS}/contrail-fabric-utils/testbed_env > ${TOOLS_WS}/contrail-fabric-utils/plain_testbed_env
     fi
-    sed -i '/env.test_repo_dir/d' $dest_folder_path/testbed.py
-    echo "env.test_repo_dir='${TOOLS_WS}/contrail-test'" >> $dest_folder_path/testbed.py
     if [ $TESTBED_LOCATION != "LOCAL" ]; then
         export USE_TASK_RUNNER_HOST=1
     fi
@@ -837,6 +853,7 @@ function run_sanity_simple {
         return 0
     fi
     search_package
+    copy_fabric_test_artifacts
     setup_sanity_base_simple
 }
 
@@ -1055,11 +1072,16 @@ function setup_sanity_base_simple {
     if [[ "$TEST_RUN_CMD" == *"control_node_scaling"* ]]; then
         copy_bgp_stress_test_binary # This is not going to work in container, this will need to happen while building the container
     fi
-    sanity_cmd="bash -x /usr/local/bin/testrunner.sh run -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-${TEST_SKU}:${PACKAGE_VERSION}"
+
+    MOUNT_ARGS=""
+    if [ $USE_LATEST_TEST_CODE -eq 1 ]; then
+	MOUNT_ARGS=" -m $RANDOM_DIR/combined-test"
+    fi
+
+    sanity_cmd="bash -x /usr/local/bin/testrunner.sh run $MOUNT_ARGS -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-${TEST_SKU}:${PACKAGE_VERSION}"
     if [ $PARALLEL_RUN -eq 1 ]; then
          EXTRA_RUN_TEST_ARGS="$EXTRA_RUN_TEST_ARGS -t "
     fi
-    pythonpath=""
 
     if [[ "$TEST_RUN_CMD" != *"-d"* ]]; then
         EXTRA_RUN_TEST_ARGS="$EXTRA_RUN_TEST_ARGS --test-failure-threshold $(failure_threshold_limit) "
@@ -1080,7 +1102,6 @@ function setup_sanity_base_simple {
                                                          export CT_BRANCH=$BRANCH;
                                                          $OTHER_OPTS
                                                          $other_test_params
-                                                         $pythonpath
                                                          ${sanity_cmd};"; rv_test_run=$?
     if [ $rv_test_run -ne 0 ] && [ $rv_test_run -ne 100 ]; then
         if [ $rv_test_run -gt 100 ]; then
@@ -1104,35 +1125,18 @@ function setup_sanity_base {
         sanitytype="serial" 
     fi
 
-    if [ -f ${TOOLS_WS}/contrail-test/scripts/sanity_tests_with_setup.py ]; then 
-        export NEW_TEST_INFRA=0
-    else
-        export NEW_TEST_INFRA=1
-    fi
 
     PARAMS_FILE=$CFGM_TEST_CODE_PATH/scripts/sanity_params.ini
     TEST_CONFIG_FILE=$CFGM_TEST_CODE_PATH/sanity_params.ini
 
-    if [ $NEW_TEST_INFRA -eq 1 ]; then
-        if [[ "$TEST_RUN_CMD" == *"control_node_scaling"* ]]; then
-            copy_bgp_stress_test_binary
-        fi
-        sanity_cmd=${TEST_RUN_CMD:-"bash -x run_tests.sh -m -U -s "}
-        if [ $PARALLEL_RUN -eq 1 ]; then
-            sanity_cmd="$sanity_cmd -t "
-        fi
-        cd_str="cd $CFGM_TEST_CODE_PATH ;"
-        pythonpath=""
-    else
-        TEST_RUN_CMD=${TEST_RUN_CMD:-"python sanity_tests_with_setup.py"}
-        if [ ${RUN_WITHIN_VENV} -eq 1 ]; then
-            sanity_cmd="source /opt/contrail/api-venv/bin/activate && $TEST_RUN_CMD"
-        else
-            sanity_cmd=$TEST_RUN_CMD
-        fi
-        cd_str="cd $CFGM_TEST_CODE_PATH/scripts ; export BRANCH=${BRANCH}"
-        pythonpath="export PYTHONPATH=$PATH:${CFGM_TEST_CODE_PATH}/fixtures/:${CFGM_TEST_CODE_PATH}/scripts/ ;"
+    if [[ "$TEST_RUN_CMD" == *"control_node_scaling"* ]]; then
+	copy_bgp_stress_test_binary
     fi
+    sanity_cmd=${TEST_RUN_CMD:-"bash -x run_tests.sh -m -U -s "}
+    if [ $PARALLEL_RUN -eq 1 ]; then
+	sanity_cmd="$sanity_cmd -t "
+    fi
+    cd_str="cd $CFGM_TEST_CODE_PATH ;"
     if [[ ${SM_BASE_IMG} ]] && [[ ${SM_UPGD_IMG} ]] && [[ ${AR_BASE_DEB} ]] && [[ ${AR_UPGD_DEB} ]]; then
         exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "export SCRIPT_TS=${SCRIPT_TIMESTAMP};
                                                          export JENKINS_TRIGGERED=${jenkins_triggered};
@@ -1151,7 +1155,6 @@ function setup_sanity_base {
                                                          export AR_UPGD_DEB=${AR_UPGD_DEB};
                                                          $OTHER_OPTS
                                                          $cd_str
-                                                         $pythonpath
                                                          ${sanity_cmd};" || die "Task to run sanity failed"
     else
         exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "export SCRIPT_TS=${SCRIPT_TIMESTAMP};
@@ -1167,7 +1170,6 @@ function setup_sanity_base {
                                                          export BRANCH=$BRANCH;
                                                          $OTHER_OPTS
                                                          $cd_str
-                                                         $pythonpath
                                                          ${sanity_cmd};" || die "Task to run sanity failed"
     fi
 
@@ -1303,12 +1305,11 @@ function reimage_and_bringup {
 function create_testbed {
 
     search_package || die "Unable to locate package"
-    if [ "$BRANCH" = "R1.10" ]; then
-        export NEW_TEST_INFRA=0
-    fi
 
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
-        # No need to fetch test repos in case of docker
+	if [ $USE_LATEST_TEST_CODE -eq 1 ]; then
+	    checkout_test_repo
+	fi
         checkout_fab_repo || die "Unable to checkout fab/test repos" # No need to checkout test repo for container
     else
         checkout_repo
@@ -1429,12 +1430,6 @@ function run_task() {
         else
             export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
         fi
-        if [[ -z $TEST_HOST_STRING ]]; then
-            export TEST_HOST_STRING=$API_SERVER_HOST_STRING
-            export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
-        fi
-        export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
-        export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
         setup_testnode || die "test node setup failed"
         install_dep_pkgs_for_test
         run_sanity_simple || die "run_sanity_simple failed"
