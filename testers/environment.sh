@@ -202,3 +202,7 @@ export USER_ISOLATION=${USER_ISOLATION:-"True"}
 # Default mode is enabled(1)
 export INSTALL_EXTRA_PKG_ON_NODES=${INSTALL_EXTRA_PKG_ON_NODES:-1}
 export USE_LATEST_ANSIBLE_CODE=${USE_LATEST_ANSIBLE_CODE:-0}
+
+# CONTRAIL_TEST_CODE_PATH is the folder where both contrail-test and
+# contrail-test-ci repo folder are present
+export CONTRAIL_TEST_CODE_PATH=${CONTRAIL_TEST_CODE_PATH:-$TOOLS_WS}
