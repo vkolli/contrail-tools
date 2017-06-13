@@ -84,7 +84,7 @@ env.vcenter_servers = {
 
 esxi_hosts = {
     'nodei10' : {
-        'ip' : '10.204.217.128',
+        'ip' : '10.204.217.122',
         'vcenter_server':'vcenter1',
         'username' : 'root',
         'password' : 'c0ntrail123',
