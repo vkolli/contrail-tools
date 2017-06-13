@@ -17,7 +17,7 @@ pub_file = os.path.expanduser('~/.ssh/id_rsa.pub')
 if not os.path.isfile(pub_file):
     # Generate ssh-keys
     local('ssh-keygen -f ~/.ssh/id_rsa -t rsa -N \'\'')
-id_rsa_pub = open('%s' %(pub_file), 'r').read()
+id_rsa_pub = open('%s' %(pub_file), 'r').read().strip()
 
 for host_string in testbed.env.roledefs['all']:
     (u, host) = host_string.split('@')
