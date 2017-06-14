@@ -30,8 +30,6 @@ env.roledefs = {
     'database': [host1, host3, host5], 
     'build': [host_build],
 }
-#Openstack admin password
-env.openstack_admin_password = 'contrail123'
 
 #Hostnames
 env.hostnames = {
@@ -95,7 +93,7 @@ esxi_hosts = {
             'mac' : '00:50:56:aa:aa:10',
             'host' : host2,
             'pci_devices':{
-                'nic':["004:00.1"]
+                'nic':["04:00.1"]
             },
             'cluster' : 'pulkitDCtemp',
             'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
@@ -112,7 +110,7 @@ esxi_hosts = {
             'name' : 'nodei18-compute-vm',
             'mac' : '00:50:56:aa:aa:18',
             'pci_devices':{
-                'nic':["004:00.1"]
+                'nic':["04:00.1"]
             },
             'host' : host4,
             'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
