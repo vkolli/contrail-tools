@@ -12,6 +12,7 @@ host3 = 'root@10.204.216.97'
 host4 = 'root@10.204.216.98'
 host5 = 'root@10.204.216.99'
 host6 = 'root@10.204.216.103'
+host7 = 'root@10.204.216.152'
 
 
 ext_routers = [('yuvaraj', '10.10.10.100')]
@@ -23,12 +24,12 @@ use_devicemanager_for_md5 = True
 host_build = 'stack@10.204.216.49'
 
 env.roledefs = {
-    'all': [host1, host2, host3, host4, host5, host6],
+    'all': [host1, host2, host3, host4, host5, host6, host7],
     'contrail-controller': [host6, host2, host1],
     'contrail-analytics': [host6, host2, host1],
     'contrail-analyticsdb': [host6, host2, host1],
     'openstack': [host6, host2, host1],
-    'contrail-compute': [host3, host4],
+    'contrail-compute': [host3, host4, host7],
     'contrail-lb': [host5],
     'build': [host_build]
 }
@@ -45,7 +46,7 @@ env.physical_routers={
 }
 
 env.hostnames = {
-    'all': ['nodem6', 'nodem7', 'nodem8', 'nodem9', 'nodem10', 'nodem14']
+    'all': ['nodem6', 'nodem7', 'nodem8', 'nodem9', 'nodem10', 'nodem14', 'nodec35']
 }
 
 env.openstack_admin_password = 'contrail123'
@@ -59,6 +60,7 @@ env.passwords = {
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     host6: 'c0ntrail123',
+    host7: 'c0ntrail123',
     host_build: 'stack@123',
 }
 
@@ -69,6 +71,7 @@ env.ostypes = {
     host4:'ubuntu',
     host5:'ubuntu',
     host6:'ubuntu',
+    host7:'ubuntu',
 }
 
 bond= {
@@ -82,6 +85,7 @@ control_data = {
     host4: {'ip': '10.10.10.9/24', 'gw': '10.10.10.100', 'device': 'p514p2'},
     host5: {'ip': '10.10.10.10/24', 'gw': '10.10.10.100', 'device': 'p514p2'},
     host6: {'ip': '10.10.10.14/24', 'gw': '10.10.10.100', 'device': 'p514p2'}
+    host7: {'ip': '10.10.10.35/24', 'gw': '10.10.10.100', 'device': 'p1p2'}
 }
 
 env.ha = {
@@ -137,7 +141,7 @@ env.mail_to = 'dl-contrail-sw@juniper.net'
 multi_tenancy = True
 #env.interface_rename = True
 env.log_scenario = 'SMLite Openstack HA Regression'
-#env.enable_lbaas = True
+env.enable_lbaas = True
 do_parallel = True
 env.test_repo_dir='/root/contrail-test'
 
