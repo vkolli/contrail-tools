@@ -9,6 +9,7 @@ host3 = 'root@10.204.217.13'
 host4 = 'root@10.204.217.77'
 host5 = 'root@10.204.217.176'
 host6 = 'root@10.204.217.132'
+host7 = 'root@10.204.217.168'
 
 ext_routers = [('blr-mx2','192.168.100.100')]
 router_asn = 64512
@@ -22,21 +23,18 @@ host_build = 'stack@10.204.216.49'
  
 env.roledefs = {
 
-    'all': [host1, host2, host3, host4, host5, host6],
-    'cfgm': [host1, host2, host3],
+    'all': [host1, host2, host3, host4, host5, host6, host7],
+    'contrail-controller': [host1, host2, host3],
     'openstack': [host5],
-    'control': [host1, host2, host3],
-    'compute': [host6],
-    'collector': [host1, host2, host3],
-    'webui': [host1, host2, host3],
-    'database': [host1, host2, host3],
+    'contrail-compute': [host6, host7],
+    'contrail-analytics': [host1, host2, host3],
+    'contrail-analyticsdb': [host1, host2, host3],
+    'contrail-lb': [host4],
     'build': [host_build],
-
-
 }
  
 env.hostnames ={
-    'all': ['nodei17', 'nodei19', 'nodec28', 'nodeg37', 'nodec10', 'nodei20']
+    'all': ['nodei17', 'nodei19', 'nodec28', 'nodeg37', 'nodec10', 'nodei20', 'nodec33']
 }
 
 env.physical_routers={
@@ -62,6 +60,7 @@ env.passwords = {
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     host6: 'c0ntrail123',
+    host7: 'c0ntrail123',
     host_build: 'stack@123',
 }
 
@@ -72,6 +71,7 @@ env.ostypes = {
     host4:'ubuntu',
     host5:'ubuntu',
     host6:'ubuntu',
+    host7:'ubuntu',
 }
 
 bond= {
@@ -85,6 +85,7 @@ control_data = {
     host4 : { 'ip': '192.168.100.12/24', 'gw' : '', 'device':'eth1' },
     host5 : { 'ip': '192.168.100.13/24', 'gw' : '', 'device':'eth1' },
     host6 : { 'ip': '192.168.100.16/24', 'gw' : '', 'device':'bond0' },
+    host7 : { 'ip': '192.168.100.17/24', 'gw' : '', 'device':'p1p2' },
 }
 
 # VIP
