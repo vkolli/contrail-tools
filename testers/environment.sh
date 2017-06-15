@@ -73,6 +73,9 @@ export PARALLEL_RUN=${PARALLEL_RUN:-0}
 # Knob to add basic images (fab add_basic_images) before the test run
 export ADD_IMAGES=${ADD_IMAGES:-0}
 
+# Knob to add basic flavors (fab add_basic_flavors) before the test run
+export ADD_FLAVORS=${ADD_FLAVORS:-0}
+
 # Location can be REMOTE or LOCAL 
 # If REMOTE, reimage command will be triggered from TASK_RUNNER_HOST_STRING
 export TESTBED_LOCATION=${TESTBED_LOCATION:-"LOCAL"}

@@ -739,6 +739,11 @@ function setup_and_install_contrail {
        (cd ${TOOLS_WS}/contrail-fabric-utils
         fab add_basic_images)
     fi
+    if [ $ADD_FLAVORS -eq 1 ]; then
+	(cd ${TOOLS_WS}/contrail-fabric-utils
+	fab add_basic_flavors)
+    fi
+
     # reboot compute nodes after setup
     (cd ${TOOLS_WS}/contrail-fabric-utils
     fab compute_reboot)
