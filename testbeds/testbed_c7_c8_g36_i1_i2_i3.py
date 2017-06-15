@@ -7,6 +7,7 @@ host3 = 'root@10.204.217.76'
 host4 = 'root@10.204.216.150'
 host5 = 'root@10.204.217.114'
 host6 = 'root@10.204.217.115'
+host7 = 'root@10.204.216.153'
 
 ext_routers = [('hooper','192.168.192.253')]
 router_asn = 64512
@@ -17,12 +18,12 @@ host_build = 'stack@10.204.216.49'
 
 
 env.roledefs = {
-    'all': [host1, host2, host3, host4, host5, host6],
+    'all': [host1, host2, host3, host4, host5, host6, host7],
     'contrail-controller': [host4, host5, host6],
     'openstack': [host4, host5, host6],
     'contrail-analytics': [host4, host5, host6],
     'contrail-lb': [host3],
-    'compute': [host1, host2],
+    'contrail-compute': [host1, host2, host7],
     'contrail-analyticsdb': [host4, host5, host6],
     'build': [host_build],
 }
@@ -43,7 +44,7 @@ if os.getenv('ENABLE_RBAC',None) == 'true':
     aaa_mode = 'rbac'
 
 env.hostnames = {
-    'all': ['nodec7', 'nodec8', 'nodeg36', 'nodei1', 'nodei2', 'nodei3']
+    'all': ['nodec7', 'nodec8', 'nodeg36', 'nodei1', 'nodei2', 'nodei3', 'nodec57']
 }
 env.physical_routers={
 'hooper'     : {       'vendor': 'juniper',
@@ -65,6 +66,7 @@ env.passwords = {
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     host6: 'c0ntrail123',
+    host7: 'c0ntrail123',
 
     host_build: 'stack@123',
 }
@@ -76,15 +78,17 @@ env.ostypes = {
     host4:'ubuntu',
     host5:'ubuntu',
     host6:'ubuntu',
+    host7:'ubuntu',
 }
 
 control_data = {
     host1 : { 'ip': '192.168.192.6/24', 'gw' : '192.168.192.254', 'device':'p1p2' },
     host2 : { 'ip': '192.168.192.5/24', 'gw' : '192.168.192.254', 'device':'p1p2' },
     host3 : { 'ip': '192.168.192.4/24', 'gw' : '192.168.192.254', 'device':'p1p2' },
-    host4 : { 'ip': '192.168.192.1/24', 'gw' : '192.168.192.254', 'device':'p6p2', 'vlan': '128' },
-    host5 : { 'ip': '192.168.192.2/24', 'gw' : '192.168.192.254', 'device':'p6p2', 'vlan': '128' },
-    host6 : { 'ip': '192.168.192.3/24', 'gw' : '192.168.192.254', 'device':'p6p2', 'vlan': '128' },
+    host4 : { 'ip': '192.168.192.1/24', 'gw' : '192.168.192.254', 'device':'em2' },
+    host5 : { 'ip': '192.168.192.2/24', 'gw' : '192.168.192.254', 'device':'em2' },
+    host6 : { 'ip': '192.168.192.3/24', 'gw' : '192.168.192.254', 'device':'em2' },
+    host7 : { 'ip': '192.168.192.7/24', 'gw' : '192.168.192.254', 'device':'p1p2' },
 }
 
 env.ha = {
