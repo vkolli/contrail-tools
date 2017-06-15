@@ -7,6 +7,7 @@ host3 = 'root@10.204.216.60'
 host4 = 'root@10.204.216.221'
 host5 = 'root@10.204.216.222'
 host6 = 'root@10.204.216.223'
+host7 = 'root@10.204.217.51'
 
 #External routers if any
 #for eg. 
@@ -22,7 +23,7 @@ host_build = 'root@10.204.217.187'
 
 #Role definition of the hosts.
 env.roledefs = {
-    'all': [host1, host2, host3, host4, host5, host6],
+    'all': [host1, host2, host3, host4, host5, host6, host7],
     'cfgm': [host1, host2, host3],
     'control': [host1, host2, host3],
     'compute': [host4, host5, host6],
@@ -33,7 +34,7 @@ env.roledefs = {
 }
 
 env.hostnames = {
-    'all': ['nodec1', 'nodec2', 'nodec3', 'nodek1', 'nodek2', 'nodek3']
+    'all': ['nodec1', 'nodec2', 'nodec3', 'nodek1', 'nodek2', 'nodek3', 'nodeg11']
 }
 
 #Openstack admin password
@@ -48,6 +49,7 @@ env.passwords = {
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     host6: 'c0ntrail123',
+    host7: 'c0ntrail123',
 
     host_build: 'c0ntrail123',
 }
