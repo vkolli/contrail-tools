@@ -314,9 +314,14 @@ control_data = {
 ###OPTIONAL STATIC ROUTE CONFIGURATION  
 ###===================================  
 static_route  = {
-    host17 : [{ 'ip': '173.173.173.173', 'netmask' : '255.255.255.255', 'gw':'172.17.90.249', 'intf': 'p514p1' },
+    host2 : [{ 'ip': '172.18.90.0', 'netmask' : '255.255.255.0', 'gw':'172.17.90.249', 'intf': 'p514p1' }],
+    host6 : [{ 'ip': '172.18.90.0', 'netmask' : '255.255.255.0', 'gw':'172.17.90.249', 'intf': 'p514p1' }],
+    host10 : [{ 'ip': '172.18.90.0', 'netmask' : '255.255.255.0', 'gw':'172.17.90.249', 'intf': 'p514p1' }],
+    host17 : [{ 'ip': '172.18.90.0', 'netmask' : '255.255.255.0', 'gw':'172.17.90.249', 'intf': 'p514p1' },
+             { 'ip': '173.173.173.173', 'netmask' : '255.255.255.255', 'gw':'172.17.90.249', 'intf': 'p514p1' },
              { 'ip': '185.185.185.185', 'netmask' : '255.255.255.255', 'gw':'172.17.90.249', 'intf': 'p514p1' }],
-    host19 : [{ 'ip': '173.173.173.173', 'netmask' : '255.255.255.255', 'gw':'172.17.90.249', 'intf': 'p514p1' },
+    host19 : [{ 'ip': '172.18.90.0', 'netmask' : '255.255.255.0', 'gw':'172.17.90.249', 'intf': 'p514p1' },
+             { 'ip': '173.173.173.173', 'netmask' : '255.255.255.255', 'gw':'172.17.90.249', 'intf': 'p514p1' },
              { 'ip': '185.185.185.185', 'netmask' : '255.255.255.255', 'gw':'172.17.90.249', 'intf': 'p514p1' }],
 }
 ###OPTIONAL STATIC ROUTE CONFIGURATION  
@@ -540,7 +545,7 @@ env.vrouter_module_params = {
 }
 
 env.tor_agent = {host17:[{
-                    'tor_ip':'172.17.90.248',
+                    'tor_ip':'172.18.90.248',
                     'tor_agent_id':'1',
                     'tor_type':'ovs',
                     'tor_ovs_port':'4321',
@@ -555,7 +560,7 @@ env.tor_agent = {host17:[{
                     'tor_agent_ovs_ka': '10000',
                        },
                        {
-                    'tor_ip':'172.17.90.250',
+                    'tor_ip':'172.18.90.250',
                     'tor_agent_id':'2',
                     'tor_type':'ovs',
                     'tor_ovs_port':'4322',
@@ -572,7 +577,7 @@ env.tor_agent = {host17:[{
                        ],
                    
                  host19:[{
-                    'tor_ip':'172.17.90.248',
+                    'tor_ip':'172.18.90.248',
                     'tor_agent_id':'1',
                     'tor_type':'ovs',
                     'tor_ovs_port':'4321',
@@ -587,7 +592,7 @@ env.tor_agent = {host17:[{
                     'tor_agent_ovs_ka': '10000',
                        },
                        {
-                    'tor_ip':'172.17.90.250',
+                    'tor_ip':'172.18.90.250',
                     'tor_agent_id':'2',
                     'tor_type':'ovs',
                     'tor_ovs_port':'4322',
