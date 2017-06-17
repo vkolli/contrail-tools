@@ -3,6 +3,8 @@ set -x
 set -e
 cluster_name=$1
 count=0
+echo "server ntp.juniper.net" >> /etc/ntp.conf
+service ntp restart
 while [ $(server-manager-client status server --cluster_id $cluster_name --json | grep -c  id) -ne $(server-manager-client status server --cluster_id $cluster_name --json | grep -c  provision_completed)  ]; do
     if [ "$count"  -ne 80 ]; then
         echo "Provisioing is not done yet, lets wait for some more time"

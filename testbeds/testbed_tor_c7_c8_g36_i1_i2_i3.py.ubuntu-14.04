@@ -4,7 +4,7 @@ import os
 host1 = 'root@10.204.217.194'
 host2 = 'root@10.204.217.197'
 host3 = 'root@10.204.217.198'
-host4 = 'root@10.204.217.113'
+host4 = 'root@10.204.216.150'
 host5 = 'root@10.204.217.114'
 host6 = 'root@10.204.217.115'
 host7 = 'root@10.204.217.76'

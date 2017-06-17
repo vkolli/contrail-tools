@@ -67,6 +67,18 @@ env.passwords = {
     host_build: 'c0ntrail123'
 }
 
+env.ostypes = {
+    host1:'centos65',
+    host2:'centos65',
+    host4:'centos65',
+    host5:'centos65',
+    host6:'centos65',
+    host7:'centos65',
+    host16:'centos65',
+    host21:'centos65',
+    host22:'centos65',
+}
+
 
 env.mail_from='contrail-build@juniper.net'
 env.mail_to='vjoshi@juniper.net'

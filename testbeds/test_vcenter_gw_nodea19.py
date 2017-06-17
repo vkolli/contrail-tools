@@ -141,7 +141,7 @@ esxi_hosts = {
 }
 
 env.test = {
-  'mail_to' : 'sandipd@juniper.net',
+  'mail_to' : 'dl-contrail-sw@juniper.net',
   'webserver_host': '10.204.216.50',
   'webserver_user' : 'bhushana',
   'webserver_password' : 'bhu@123',
@@ -160,7 +160,7 @@ env.test = {
 
 minimum_diskGB=32
 env.mail_from='contrail-build@juniper.net'
-env.mail_to='sandipd@juniper.net'
+env.mail_to='dl-contrail-sw@juniper.net'
 multi_tenancy=True
 env.interface_rename = False
 env.encap_priority =  "'MPLSoUDP','MPLSoGRE','VXLAN'"

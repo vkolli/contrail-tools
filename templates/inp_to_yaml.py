@@ -1,3 +1,8 @@
+"""
+Author: Soumil Kulkarni
+File Name: inp_to_yaml.py
+Summary: Script to create a virtualized infrastructure for running daily sanity or recreating any bugs for testing purpose. (Contrail on Contrail)
+"""
 import sys
 import json
 from fabric.api import *
@@ -57,14 +62,6 @@ for i in network_dict:
     # A list to maintain all the network names
 
 
-def test():
-    # print network_dict
-    # print server_dict
-    # print all_cluster_dict
-    # print testbed_py_dict
-    print len(server_dict["cluster_1"])
-
-
 def add_sm_os_to_openstack():
     a = subprocess.Popen(
         "openstack image list -f json",
@@ -102,13 +99,6 @@ def add_sm_os_to_openstack():
         print "Requested Image already exists in the cluster "
 
 
-# A method for generating random names for the project name
-def generate_random_name():
-    size = 10
-    chars = string.ascii_uppercase + string.digits
-    print ''.join(random.choice(chars)for x in range(size))
-
-
 def check_if_sm_has_correct_image():
     for clus in server_dict:
         for server in server_dict[clus]:
@@ -143,6 +133,100 @@ def check_if_sm_has_correct_image():
 
                 else:
                     print "Server Image already exists in the cluster"
+
+# A method for checking if the required falvor exists in the openstack, if
+# not creating it.
+
+
+def check_and_create_required_flavor():
+    print "Checking Flavor for servers"
+    chk_flavor = subprocess.Popen(
+        "openstack flavor list  | grep m1.xxlarge",
+        shell=True,
+        stdout=subprocess.PIPE)
+    chk_flavor_tmp = chk_flavor.stdout.read()
+    if len(chk_flavor_tmp) == 0:
+        print "The Recommended Flavor is not present on the base cluster, Adding it :-\n"
+        add_flavor = subprocess.Popen(
+            "openstack flavor create m1.xxlarge --id 100 --ram 32768 --disk 300 --vcpus 10 --public",
+            shell=True,
+            stdout=subprocess.PIPE)
+        add_flavor_tmp = add_flavor.stdout.read()
+        print add_flavor_tmp
+        print "Printing all the Flavors Present on the base cluster:-"
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list | grep m1.xxlarge",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+    else:
+        print "The Recommended Flavor is Present in the Base Cluster"
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list | grep m1.xxlarge",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+
+    print "Checking Flavor re-flv for vMX to work"
+    chk_flavor = subprocess.Popen(
+        "openstack flavor list  | grep re-flv",
+        shell=True,
+        stdout=subprocess.PIPE)
+    chk_flavor_tmp = chk_flavor.stdout.read()
+    if len(chk_flavor_tmp) == 0:
+        print "The Recommended Flavor is not present on the base cluster, Adding it :-\n"
+        add_flavor = subprocess.Popen(
+            "nova flavor-create --is-public true re-flv auto 4096 40 1; nova flavor-key  re-flv set  aggregate_instance_extra_specs:global-grouppinned=true ; nova flavor-key  re-flv set hw:cpu_policy=dedicated",
+            shell=True,
+            stdout=subprocess.PIPE)
+        add_flavor_tmp = add_flavor.stdout.read()
+        print add_flavor_tmp
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list | grep re-flv",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+    else:
+        print "The Recommended re-flv  Flavor is Present in the Base Cluster"
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list | grep re-flv",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+
+    print "Checking Flavor pfe-flv for vMX to work"
+    chk_flavor = subprocess.Popen(
+        "openstack flavor list  | grep pfe-flv",
+        shell=True,
+        stdout=subprocess.PIPE)
+    chk_flavor_tmp = chk_flavor.stdout.read()
+    if len(chk_flavor_tmp) == 0:
+        print "The Recommended Flavor is not present on the base cluster, Adding it :-\n"
+        add_flavor = subprocess.Popen(
+            "nova flavor-create --is-public true pfe-flv auto 16384 40 7 ; nova flavor-key  pfe-flv set  aggregate_instance_extra_specs:global-grouppinned=true ; nova flavor-key  pfe-flv set hw:cpu_policy=dedicated",
+            shell=True,
+            stdout=subprocess.PIPE)
+        add_flavor_tmp = add_flavor.stdout.read()
+        print add_flavor_tmp
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list | grep pfe-flv",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+    else:
+        print "The Recommended pfe-flv  Flavor is Present in the Base Cluster"
+        chk_flavor = subprocess.Popen(
+            "openstack flavor list | grep pfe-flv",
+            shell=True,
+            stdout=subprocess.PIPE)
+        chk_flavor_tmp = chk_flavor.stdout.read()
+        print chk_flavor_tmp
+
 
 # A method for adding the project UUID in the names of the of all the
 # networks so that they won't create duplicates
@@ -286,13 +370,16 @@ def create_server_yaml():
                 server_string = server_string + "    properties:\n"
                 server_string = server_string + "      network: %s\n" % net_name
                 server_string = server_string + "      name: %s\n" % port_name
+                #server_string = server_string + "      tenant_id: %s\n" %project_uuid
                 if "mac_address" in server_dict[clus][i]:
                     server_string = server_string + \
-                        "      mac_address: %s\n" % (server_dict[clus][i]["mac_address"][net_name])
+                        "      mac_address: %s\n" % (
+                            server_dict[clus][i]["mac_address"][net_name])
                 server_string = server_string + "      fixed_ips:\n"
                 server_string = server_string + \
                     "        - ip_address: %s\n" % ip_address_dict[net_name]
-                if network_dict[j]["role"] == "management":
+                """
+		if network_dict[j]["role"] == "management":
                     if ("external_vip" in cluster_dict[clus]
                             ["parameters"]["provision"]["openstack"]):
                         server_string = server_string + "      allowed_address_pairs:\n"
@@ -300,6 +387,7 @@ def create_server_yaml():
                             "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
                     if ("contrail_external_vip" in cluster_dict[clus]
                             ["parameters"]["provision"]["contrail"]):
+                        server_string = server_string + "      allowed_address_pairs:\n"
                         server_string = server_string + \
                             "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
                 if network_dict[j]["role"] == "control-data":
@@ -310,8 +398,46 @@ def create_server_yaml():
                             "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
                     if ("contrail_internal_vip" in cluster_dict[clus]
                             ["parameters"]["provision"]["contrail"]):
+                        server_string = server_string + "      allowed_address_pairs:\n"
                         server_string = server_string + \
                             "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+		"""
+                if network_dict[j]["role"] == "management":
+                    server_string = server_string + "      allowed_address_pairs:\n"
+                    if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or (
+                            "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                        if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
+                                "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
+                                    "provision"]["contrail"]["contrail_external_vip"]
+                        elif (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                        elif (("external_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
+                                    "provision"]["contrail"]["contrail_external_vip"]
+                if network_dict[j]["role"] == "control-data":
+                    server_string = server_string + "      allowed_address_pairs:\n"
+                    if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or (
+                            "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                        if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
+                                "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
+                                    "provision"]["contrail"]["contrail_internal_vip"]
+                        elif (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                        elif (("internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            server_string = server_string + \
+                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
+                                    "provision"]["contrail"]["contrail_internal_vip"]
                 ip_port_dict[(ip_address_dict[net_name])] = port_name
             #ip_num += 1
     # Launch the VMs
@@ -362,7 +488,8 @@ def create_server_yaml():
         server_string = server_string + "    properties:\n"
         server_string = server_string + "      name: %s\n" % name
         server_string = server_string + \
-            "      virtual_network: %s\n\n" % floating_ip_network_dict["param"]["floating_ip_network_uuid"]
+            "      virtual_network: %s\n\n" % floating_ip_network_dict[
+                "param"]["floating_ip_network_uuid"]
         #server_string = server_string + "      virtual_network: public\n\n"
     # creating floating IP from the above created pool for the VMs
     for i in server_dict[clus]:
@@ -383,7 +510,8 @@ def create_server_yaml():
                 "      virtual_machine_interface_refs: [{ get_resource : %s}]\n" % port_to_associate
             floating_ip_network_dict = parsed_json["inp_params"]["floating_ip_network"]["param"]
             server_string = server_string + \
-                "      floating_ip_pool: { get_resource: %s }\n" % floating_ip_network_dict["name"]
+                "      floating_ip_pool: { get_resource: %s }\n" % floating_ip_network_dict[
+                    "name"]
             server_string = server_string + "      floating_ip_fixed_ip_address: %s \n" % abc
             server_string = server_string + \
                 "      project_refs: [ %s ]\n\n" % general_params_dict["project_uuid"]
@@ -462,9 +590,115 @@ def parse_output():
     # print fixed_ip_mac_mapping
     # print floating_ip_mac_mapping
 
-
 # A Method for gettinf the server manager ip
+
+
 def get_sm_ip():
+    fixedip_to_floatingip_mapping_dict = {}
+    ret_dict = {}
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    change_network_dict()
+    fip_neutron_dict = eval(a_tmp)
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]
+                                           ["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            name = server_dict[clus][i]["name"]
+            if server_dict[clus][i]["server_manager"] == "true":
+                for j in server_dict[clus][i]["ip_address"]:
+                    if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+                        ret_dict[name] = fixedip_to_floatingip_mapping_dict[server_dict[clus]
+                                                                            [i]["ip_address"][j]]
+                        print fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
+                        break
+                break
+        break
+
+# Method for getting floating ips of all the servers so that can be used
+# in the testbed.py
+
+
+def get_all_fip_dict():
+    fixedip_to_floatingip_mapping_dict = {}
+    ret_dict = {}
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    # print fip_neutron_dict
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]
+                                           ["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    # print fixedip_to_floatingip_mapping_dict
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            name = server_dict[clus][i]["name"]
+            for j in server_dict[clus][i]["ip_address"]:
+                if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+                    ret_dict[name] = fixedip_to_floatingip_mapping_dict[server_dict[clus]
+                                                                        [i]["ip_address"][j]]
+    return ret_dict
+
+
+# A Method for gettinf the config node ip
+def get_config_node_ip_mainline():
+    fixedip_to_floatingip_mapping_dict = {}
+    ret_dict = {}
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    # print fip_neutron_dict
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]
+                                           ["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+                if "contrail-controller" in server_dict[clus][i]["roles"]:
+                    for j in server_dict[clus][i]["ip_address"]:
+                        if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+                            ret_dict["contrail-controller"] = fixedip_to_floatingip_mapping_dict[server_dict[clus]
+                                                                                                 [i]["ip_address"][j]]
+    print ret_dict["contrail-controller"]
+
+
+def get_config_node_ip():
+    fixedip_to_floatingip_mapping_dict = {}
+    ret_dict = {}
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    # print fip_neutron_dict
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]
+                                           ["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+                if "config" in server_dict[clus][i]["roles"]:
+                    for j in server_dict[clus][i]["ip_address"]:
+                        if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+                            ret_dict["config"] = fixedip_to_floatingip_mapping_dict[server_dict[clus]
+                                                                                    [i]["ip_address"][j]]
+    print ret_dict["config"]
+
+
+"""
+# A Method for gettinf the config node ip
+def get_config_node_ip_mainline():
     a = subprocess.Popen(
         'neutron floatingip-list -f json',
         shell=True,
@@ -472,44 +706,47 @@ def get_sm_ip():
     a_tmp = a.stdout.read()
     a_tmp = str(a_tmp)
     fip_neutron_dict = eval(a_tmp)
-    floating_ip_list = []
+    project_uuid = general_params_dict["project_uuid"]
+    config_node_ip_dict = {}
     change_network_dict()
     net_name = []
     for i in network_dict:
         net_name.append(network_dict[i]["name"])
     for clus in server_dict:
         for i in server_dict[clus]:
-            if server_dict[clus][i]["server_manager"] == "true":
-                for j in server_dict[clus][i]["ip_address"]:
-                    for k in range(len(fip_neutron_dict)):
-                        if fip_neutron_dict[k]["fixed_ip_address"] == server_dict[clus][i]["ip_address"][j]:
-                            b = subprocess.Popen(
-                                'neutron port-show %s -f json' %
-                                fip_neutron_dict[k]["port_id"],
-                                shell=True,
-                                stdout=subprocess.PIPE)
-                            b_tmp = b.stdout.read()
-                            b_tmp = str(b_tmp)
-                            current_port_dict = json.loads(b_tmp)
-                            current_network_id = current_port_dict["network_id"]
-                            c = subprocess.Popen(
-                                'neutron net-list -f json', shell=True, stdout=subprocess.PIPE)
-                            c_tmp = c.stdout.read()
-                            c_tmp = str(c_tmp)
-                            all_net_dict = json.loads(c_tmp)
-                            for net in all_net_dict:
-                                if current_network_id == net["id"] and net["name"] in net_name:
-                                    floating_ip_list.append(
-                                        fip_neutron_dict[k]["floating_ip_address"])
-
-    for fip in floating_ip_list:
-        print fip
+            if server_dict[clus][i]["server_manager"] != "true":
+                if "contrail-controller" in server_dict[clus][i]["roles"]:
+                    for j in server_dict[clus][i]["ip_address"]:
+                        for k in range(len(fip_neutron_dict)):
+                            if fip_neutron_dict[k]["fixed_ip_address"] == server_dict[clus][i]["ip_address"][j]:
+                                b = subprocess.Popen(
+                                    'neutron port-show %s -f json' %
+                                    fip_neutron_dict[k]["port_id"],
+                                    shell=True,
+                                    stdout=subprocess.PIPE)
+                                b_tmp = b.stdout.read()
+                                b_tmp = str(b_tmp)
+                                current_port_dict = json.loads(b_tmp)
+                                current_network_id = current_port_dict["network_id"]
+                                c = subprocess.Popen(
+                                    'neutron net-list -f json', shell=True, stdout=subprocess.PIPE)
+                                c_tmp = c.stdout.read()
+                                c_tmp = str(c_tmp)
+                                all_net_dict = json.loads(c_tmp)
+                                for net in all_net_dict:
+                                    if current_network_id == net["id"] and net["name"] in net_name:
+                                        config_node_ip_dict[clus] = (
+                                            fip_neutron_dict[k]["floating_ip_address"])
+    for cfgmip in config_node_ip_dict:
+        print config_node_ip_dict[cfgmip]
+"""
 
 # Method for getting the floating ip of the config node so that the
 # testbed.py can be transferred to this server and the tests can run from
 # here.
 
 
+"""
 def get_config_node_ip():
     a = subprocess.Popen(
         'neutron floatingip-list -f json',
@@ -551,11 +788,145 @@ def get_config_node_ip():
                                             fip_neutron_dict[k]["floating_ip_address"])
     for cfgmip in config_node_ip_dict:
         print config_node_ip_dict[cfgmip]
+"""
+
+# Method for creatng server.json required for the mainline build
+
+
+def create_server_json_mainline():
+    parse_output()
+    change_network_dict()
+    floating_ip_network_dict = change_floatingip_pool_params()
+    change_stack_names()
+    server_json_string = '''{
+        "server":[
+        '''
+    mac_address_list = []
+    for i in fixed_ip_mac_mapping:
+        mac_address_list.append(fixed_ip_mac_mapping[i])
+    total_server_number = 0
+    for clus in server_dict:
+        total_server_number = total_server_number + len(server_dict[clus])
+    total_server_number = total_server_number - 1
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+                single_server_string = '\t{\n'
+                if "cluster_id" in cluster_dict[clus]:
+                    single_server_string = single_server_string + \
+                        '\t\t"cluster_id": "%s",\n' % cluster_dict[clus]["cluster_id"]
+                single_server_string = single_server_string + \
+                    '\t\t"id": "%s",\n' % server_dict[clus][i]["name"]
+                if "domain" in cluster_dict[clus]["parameters"]:
+                    single_server_string = single_server_string + \
+                        '\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
+                if "ipmi_address" in cluster_dict[clus]:
+                    single_server_string = single_server_string + \
+                        '\t\t"ipmi_address": "%s",\n' % cluster_dict[clus]["ipmi_address"]
+                else:
+                    single_server_string = single_server_string + '\t\t"ipmi_address": null,\n'
+                if "ipmi_username" in cluster_dict[clus]:
+                    single_server_string = single_server_string + \
+                        '\t\t"ipmi_username": "%s",\n' % cluster_dict[clus]["ipmi_username"]
+                else:
+                    single_server_string = single_server_string + '\t\t"ipmi_username": null,\n'
+                if "ipmi_password" in cluster_dict[clus]:
+                    single_server_string = single_server_string + \
+                        '\t\t"ipmi_password": "%s",\n' % cluster_dict[clus]["ipmi_password"]
+                else:
+                    single_server_string = single_server_string + '\t\t"ipmi_password": null,\n'
+                if "control_data_iterface" in cluster_dict[clus]:
+                    single_server_string = single_server_string + \
+                        '\t\t"contrail": {\n'
+                    single_server_string = single_server_string + \
+                        '\t\t\t"control_data_interface": "%s"\n' % cluster_dict[
+                            clus]["control_data_iterface"]
+                    single_server_string = single_server_string + '\t\t},\n'
+                # Now lets get all the network interface parameters and add
+                # them to the server.json
+                single_server_string = single_server_string + \
+                    '\t\t"network": {\n'
+                single_server_string = single_server_string + \
+                    '\t\t\t"interfaces": [\n'
+                total_server_interfaces = len(
+                    server_dict[clus][i]["ip_address"])
+                for j in (server_dict[clus][i]["ip_address"]):
+                    current_network = j
+                    gateway = network_dict[j]["default_gateway"]
+                    ip_add = server_dict[clus][i]["ip_address"][j]
+                    mask = network_dict[j]["ip_block_with_mask"]
+                    mask_list = mask.split("/")
+                    mask = mask_list[1]
+                    ip_add_with_mask = ip_add + '/' + mask
+                    mac_address = fixed_ip_mac_mapping[ip_add]
+                    role = network_dict[j]["role"]
+                    if role == "management":
+                        int_name = cluster_dict[clus]["management_interface"]
+                    else:
+                        int_name = cluster_dict[clus]["control_data_iterface"]
+                    single_server_string = single_server_string + '\t\t\t\t{\n'
+                    single_server_string = single_server_string + \
+                        '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
+                    single_server_string = single_server_string + \
+                        '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
+                    single_server_string = single_server_string + \
+                        '\t\t\t\t\t"mac_address": "%s",\n' % mac_address
+                    if "server_json_dhcp" in cluster_dict[clus]:
+                        single_server_string = single_server_string + \
+                            '\t\t\t\t\t"dhcp": %s,\n' % cluster_dict[clus]["server_json_dhcp"]
+                    else:
+                        single_server_string = single_server_string + '\t\t\t\t\t"dhcp": false,\n'
+                    single_server_string = single_server_string + \
+                        '\t\t\t\t\t"name": "%s"\n' % int_name
+                    if total_server_interfaces > 1:
+                        single_server_string = single_server_string + '\t\t\t\t},\n'
+                    else:
+                        single_server_string = single_server_string + '\t\t\t\t}\n'
+                    total_server_interfaces = total_server_interfaces - 1
+                single_server_string = single_server_string + "\t\t\t],\n"
+                if "provisioning_type" in cluster_dict[clus]:
+                    single_server_string = single_server_string + \
+                        '\t\t\t"provisioning_type": "%s",\n' % cluster_dict[clus]["provisioning_type"]
+                if "management_interface" in cluster_dict[clus]:
+                    single_server_string = single_server_string + \
+                        '\t\t\t"management_interface": "%s"\n' % cluster_dict[
+                            clus]["management_interface"]
+                single_server_string = single_server_string + '\t\t},\n'
+                single_server_string = single_server_string + \
+                    '\t\t"password": "%s",\n' % cluster_dict[clus]["server_password"]
+                role_string = '['
+                no_of_roles = len(server_dict[clus][i]["roles"])
+                for r in server_dict[clus][i]["roles"]:
+                    if no_of_roles == 1:
+                        role_string = role_string + ' "%s"' % r
+                    else:
+                        role_string = role_string + ' "%s",' % r
+                        no_of_roles = no_of_roles - 1
+                role_string = role_string + ' ]'
+                single_server_string = single_server_string + '\t\t"roles": %s,\n' % role_string
+                if "partition" in server_dict[clus][i]:
+                    single_server_string = single_server_string + \
+                        '\t\t"parameters": {\n'
+                    single_server_string = single_server_string + \
+                        '\t\t\t"partition": "%s"\n' % server_dict[clus][i]["partition"]
+                    single_server_string = single_server_string + '\t\t}\n'
+                else:
+                    single_server_string = single_server_string + \
+                        '\t\t"parameters": {\n'
+                    single_server_string = single_server_string + '\t\t}\n'
+                if total_server_number > 1:
+                    single_server_string = single_server_string + '\t\t},\n'
+                    total_server_number = total_server_number - 1
+                else:
+                    single_server_string = single_server_string + '\t\t}\n'
+                server_json_string = server_json_string + single_server_string
+    server_json_string = server_json_string + '\t]\n'
+    server_json_string = server_json_string + '}\n'
+    print server_json_string
+
 
 # Method for creating the server json required for adding the servers to
 # the server manager
-
-
 def create_server_json():
     parse_output()
     # Change the contents of the Server_dict
@@ -640,7 +1011,8 @@ def create_server_json():
                     total_server_interfaces = total_server_interfaces - 1
                 single_server_string = single_server_string + "],"
                 single_server_string = single_server_string + \
-                    '\n			"management_interface": "%s"\n' % (cluster_dict[clus]["management_interface"])
+                    '\n			"management_interface": "%s"\n' % (
+                        cluster_dict[clus]["management_interface"])
                 server_json_string = server_json_string + single_server_string
                 server_json_string_contd = '''
 				},
@@ -682,6 +1054,274 @@ def create_server_json():
         server_json_string = server_json_string + closing_string
         print server_json_string
 
+# Method for Creating Cluster.json for the Server Manager Mainline Build
+
+
+
+def create_cluster_json_mainline():
+    change_stack_names()
+    clus_json_string = '{\n\t"cluster":[\n'
+    no_of_clusters = len(cluster_dict)
+    for clus in cluster_dict:
+        individual_clus_string = '\t\t{\n'
+        if "cluster_id" in cluster_dict[clus]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t"id": "%s",\n' % cluster_dict[clus]["cluster_id"]
+        individual_clus_string = individual_clus_string + \
+            '\t\t"parameters":{\n'
+        if "domain" in cluster_dict[clus]["parameters"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
+        if "enable_lbaas" in cluster_dict[clus]["parameters"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
+        for net in network_dict:
+            if network_dict[net]["role"] == "management":
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t"gateway": "%s",\n' % network_dict[net]["default_gateway"]
+                individual_clus_string = individual_clus_string + \
+                    '\t\t\t"subnet_mask": "255.255.255.0",\n'
+        individual_clus_string = individual_clus_string + \
+            '\t\t\t"provision":{\n'
+        if "contrail_4" in cluster_dict[clus]["parameters"]["provision"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t"contrail_4": {\n'
+            if "docker_registry" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+            	individual_clus_string = individual_clus_string + \
+            	    '\t\t\t\t\t"docker_registry": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry"]
+        	if "docker_registry_insecure" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"docker_registry_insecure": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry_insecure"]
+        	if "controller_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"controller_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["controller_image"]
+        	if "analytics_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"analytics_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["analytics_image"]	
+                if "lb_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"lb_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["lb_image"]
+        	if "analyticsdb_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"analyticsdb_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["analyticsdb_image"]
+        	if "agent_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"agent_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["agent_image"]
+        	if "ssl_certs_src_dir" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"ssl_certs_src_dir": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["ssl_certs_src_dir"]
+        	if "tor_ca_cert_file" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"tor_ca_cert_file": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tor_ca_cert_file"]
+        	if "tor_ssl_certs_src_dir" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"tor_ssl_certs_src_dir": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tor_ssl_certs_src_dir"]
+        	if "ctrl_data_network" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"ctrl_data_network": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["ctrl_data_network"]
+        	if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"enable_lbaas": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["enable_lbaas"]
+        	if "tsn_mode" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		individual_clus_string = individual_clus_string + \
+        			'\t\t\t\t\t"tsn_mode": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tsn_mode"]
+        	if "rbac" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        		if cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["rbac"] == 'true':
+        			individual_clus_string = individual_clus_string + \
+        				'\t\t\t\t\t"api_config":{\n'
+        			individual_clus_string = individual_clus_string + \
+        				'\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
+        			individual_clus_string = individual_clus_string + \
+        				'\t\t\t\t\t\t"aaa_mode": "rbac"\n'
+        			individual_clus_string = individual_clus_string + \
+        				'\t\t\t\t\t},\n'
+        			individual_clus_string = individual_clus_string + \
+        				'\t\t\t\t\t"analytics_api_config":{\n'
+        			individual_clus_string = individual_clus_string + \
+        				'\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
+        			individual_clus_string = individual_clus_string + \
+        				'\t\t\t\t\t\t"log": "/var/log/contrail/contrail-analytics-api.log",\n'
+        			individual_clus_string = individual_clus_string + \
+        				'\t\t\t\t\t\t"aaa_mode": "rbac"\n'
+        			individual_clus_string = individual_clus_string + \
+        				'\t\t\t\t\t},\n'
+            if "global_config" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+            	individual_clus_string = individual_clus_string + \
+                        '\t\t\t\t\t"global_config": {\n'
+            	if "cloud_orchestrator" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+            		individual_clus_string = individual_clus_string + \
+            			'\t\t\t\t\t\t"cloud_orchestrator": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["cloud_orchestrator"]	
+            	if "external_lb" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+            		individual_clus_string = individual_clus_string + \
+            			'\t\t\t\t\t\t"external_lb": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_lb"]
+            	if "external_rabbitmq_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+            		individual_clus_string = individual_clus_string + \
+            			'\t\t\t\t\t\t"external_rabbitmq_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_rabbitmq_servers"]
+            	if "external_zookeeper_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+            		individual_clus_string = individual_clus_string + \
+            			'\t\t\t\t\t\t"external_zookeeper_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_zookeeper_servers"]
+            	if "external_cassandra_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+            		individual_clus_string = individual_clus_string + \
+            			'\t\t\t\t\t\t"external_cassandra_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_cassandra_servers"]
+            	if "external_configdb_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+            		individual_clus_string = individual_clus_string + \
+            			'\t\t\t\t\t\t"external_configdb_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_configdb_servers"]
+            	if "xmpp_auth_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+            		individual_clus_string = individual_clus_string + \
+            			'\t\t\t\t\t\t"xmpp_auth_enable": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+            		individual_clus_string = individual_clus_string + \
+            			'\t\t\t\t\t\t"xmpp_dns_auth_enable": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+            	if "sandesh_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+            		individual_clus_string = individual_clus_string + \
+            			'\t\t\t\t\t\t"sandesh_ssl_enable": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["sandesh_ssl"]	
+            	individual_clus_string = individual_clus_string + \
+            		'\t\t\t\t\t\t"log_level": "SYS_INFO"\n'	
+            	individual_clus_string = individual_clus_string + \
+            		'\t\t\t\t\t}\n'	
+		individual_clus_string = individual_clus_string + \
+	    	    '\t\t\t\t},\n'
+        individual_clus_string = individual_clus_string + \
+            '\t\t\t\t"contrail": {\n'
+        if "kernel_upgrade" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t"kernel_upgrade": %s,\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["kernel_upgrade"]
+        """
+	if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t"database": {\n'
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["minimum_disk_database"]
+            individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+        """
+	for server in server_dict[clus]:
+            if "contrail-lb" in server_dict[clus][server]["roles"]:
+                lb_external = ''
+                lb_internal = ''
+                for n in server_dict[clus][server]["ip_address"]:
+                    if network_dict[n]["role"] == "management":
+                        lb_external = server_dict[clus][server]["ip_address"][n]
+                    if network_dict[n]["role"] == "control-data":
+                        lb_internal = server_dict[clus][server]["ip_address"][n]
+                #individual_clus_string = individual_clus_string + \
+                #    '\t\t\t\t\t\t\t"config_ip": "%s",\n' % lb_external
+                #individual_clus_string = individual_clus_string + \
+                #    '\t\t\t\t\t\t\t"controller_ip": "%s",\n' % lb_external
+                #individual_clus_string = individual_clus_string + \
+                #    '\t\t\t\t\t\t\t"analytics_ip": "%s",\n' % lb_external
+        for server in server_dict[clus]:
+            if "contrail-lb" in server_dict[clus][server]["roles"]:
+                if len(lb_external) != 0:
+                    individual_clus_string = individual_clus_string + \
+                        '\t\t\t\t\t"ha": {\n'
+                    if len(lb_internal) != 0:
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"contrail_external_vip": "%s",\n' % lb_external
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"contrail_internal_vip": "%s"\n' % lb_internal
+                        individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+                    else:
+                        individual_clus_string = individual_clus_string + \
+                            '\t\t\t\t\t\t"contrail_external_vip": "%s"\n' % lb_external
+                        individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+        '''
+		if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+			if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t"ha": {\n'
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t\t"contrail_external_vip": "%s",\n'%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t\t"contrail_internal_vip": "%s"\n'%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+			else:
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t"ha": {\n'
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t\t"contrail_external_vip": "%s",\n'%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+				individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+		'''
+        config_node_control_data_ip_list = []
+        for server in server_dict[clus]:
+            if "contrail-controller" in server_dict[clus][server]["roles"]:
+                if len(server_dict[clus][server]["ip_address"]) == 1:
+                    for temp in server_dict[clus][server]["ip_address"]:
+                        config_node_control_data_ip_list.append(
+                            str(server_dict[clus][server]["ip_address"][temp]))
+                else:
+                    for temp in server_dict[clus][server]["ip_address"]:
+                        if network_dict[temp]["role"] == "control-data":
+                            config_node_control_data_ip_list.append(
+                                str(server_dict[clus][server]["ip_address"][temp]))
+        config_ip_list_string = '[ '
+        ip_tot = len(config_node_control_data_ip_list)
+        for ip in config_node_control_data_ip_list:
+            if ip_tot > 1:
+                config_ip_list_string = config_ip_list_string + '"%s", ' % ip
+            else:
+                config_ip_list_string = config_ip_list_string + '"%s" ' % ip
+            ip_tot = ip_tot - 1
+        config_ip_list_string = config_ip_list_string + ']'
+        individual_clus_string = individual_clus_string + \
+            '\t\t\t\t\t"config": {\n'
+        individual_clus_string = individual_clus_string + \
+            '\t\t\t\t\t\t"config_ip_list": %s,\n' % config_ip_list_string
+        if "manage_neutron" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t\t"manage_neutron": %s\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["manage_neutron"]
+        individual_clus_string = individual_clus_string + '\t\t\t\t\t}\n'
+        individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
+        individual_clus_string = individual_clus_string + \
+            '\t\t\t\t"openstack": {\n'
+        if "external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+            if "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+                openstack_ha_string = '\t\t\t\t\t"ha": {\n'
+                openstack_ha_string = openstack_ha_string + \
+                    '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus][
+                        "parameters"]["provision"]["openstack"]["external_vip"]
+                openstack_ha_string = openstack_ha_string + \
+                    '\t\t\t\t\t\t"external_virtual_router_id": 101,\n'
+                openstack_ha_string = openstack_ha_string + \
+                    '\t\t\t\t\t\t"internal_virtual_router_id": 102,\n'
+                openstack_ha_string = openstack_ha_string + \
+                    '\t\t\t\t\t\t"internal_vip": "%s"\n' % cluster_dict[clus][
+                        "parameters"]["provision"]["openstack"]["internal_vip"]
+                openstack_ha_string = openstack_ha_string + "\t\t\t\t\t},\n"
+            else:
+                openstack_ha_string = '\t\t\t\t\t"ha": {\n'
+                openstack_ha_string = openstack_ha_string + \
+                    '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus][
+                        "parameters"]["provision"]["openstack"]["external_vip"]
+                openstack_ha_string = openstack_ha_string + \
+                    '\t\t\t\t\t\t"external_virtual_router_id": 101\n'
+                openstack_ha_string = openstack_ha_string + "\t\t\t\t\t},\n"
+            individual_clus_string = individual_clus_string + openstack_ha_string
+        if "openstack_manage_amqp" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t"openstack_manage_amqp": %s,\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["openstack_manage_amqp"]
+        individual_clus_string = individual_clus_string + \
+            '\t\t\t\t\t"keystone": {\n'
+        if "keystone_admin_token" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t\t"admin_token": "%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["keystone_admin_token"]
+        else:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t\t"admin_token": "c0ntrail123",\n'
+        if "keystone_admin_password" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["keystone_admin_password"]
+        else:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t\t"admin_password": "c0ntrail123"\n'
+        individual_clus_string = individual_clus_string + '\t\t\t\t\t}\n'
+        individual_clus_string = individual_clus_string + '\t\t\t\t}\n'
+        individual_clus_string = individual_clus_string + '\t\t\t}\n'
+        individual_clus_string = individual_clus_string + '\t\t}\n'
+        individual_clus_string = individual_clus_string + '\t}\n'
+    clus_json_string = clus_json_string + individual_clus_string
+    clus_json_string = clus_json_string + '\t]\n'
+    clus_json_string = clus_json_string + '}\n'
+    print clus_json_string
+
 # Method for creating cluster json for the server manager
 
 
@@ -699,6 +1339,9 @@ def create_cluster_json():
         if "domain" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
+        if "enable_lbaas" in cluster_dict[clus]["parameters"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
         individual_clus_string = individual_clus_string + \
             '\t\t\t"provision":{\n'
         # Lets start the contrail Part
@@ -708,17 +1351,21 @@ def create_cluster_json():
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"database":{\n'
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["minimum_disk_database"]
+                '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["minimum_disk_database"]
             individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
         if "enable_rabbitmq_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"amqp_ssl":"%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["enable_rabbitmq_ssl"]
+                '\t\t\t\t\t"amqp_ssl":"%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["enable_rabbitmq_ssl"]
         if "kernel_version" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"kernel_version":"%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_version"]
+                '\t\t\t\t\t"kernel_version":"%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["kernel_version"]
         if "kernel_upgrade" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"kernel_upgrade": "%s"' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_upgrade"]
+                '\t\t\t\t\t"kernel_upgrade": %s' % cluster_dict[clus][
+                    "parameters"]["provision"]["contrail"]["kernel_upgrade"]
         # Contrail Part Ends here
         individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
 
@@ -727,9 +1374,10 @@ def create_cluster_json():
             '\t\t\t\t"openstack":{\n'
         if "keystone_admin_password" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
-                '					"keystone":{\n'
+                '\t\t\t\t\t"keystone":{\n'
             individual_clus_string = individual_clus_string + \
-                '						"admin_password": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_password"]
+                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["keystone_admin_password"]
             #individual_clus_string = individual_clus_string + '					},\n'
         if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
                 "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"])):
@@ -737,13 +1385,17 @@ def create_cluster_json():
             individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
             vip_string = vip_string + '\t\t\t\t"ha":{\n'
             vip_string = vip_string + \
-                '\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                '\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["external_vip"]
             vip_string = vip_string + \
-                '\t\t\t\t\t"internal_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                '\t\t\t\t\t"internal_vip": "%s",\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["internal_vip"]
             vip_string = vip_string + \
-                '\t\t\t\t\t"external_virtual_router_id" : %d,\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_virtual_router_id"]
+                '\t\t\t\t\t"external_virtual_router_id" : %d,\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["external_virtual_router_id"]
             vip_string = vip_string + \
-                '\t\t\t\t\t"internal_virtual_router_id" : %d\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_virtual_router_id"]
+                '\t\t\t\t\t"internal_virtual_router_id" : %d\n' % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["internal_virtual_router_id"]
             vip_string = vip_string + '\t\t\t\t}\n'
             vip_string = vip_string + '\t\t\t}\n'
             vip_string = vip_string + '\t\t}\n'
@@ -806,7 +1458,11 @@ def create_testbedpy_file():
                             if "host_build" in testbed_py_dict[clus]:
                                 build_ip = testbed_py_dict[clus]["host_build"]
                             else:
-                                build_ip = server_dict[clus][i]["ip_address"][j]
+                                if server_dict[clus][i]["floating_ip"] == 'true':
+                                    fip_dict_1 = get_all_fip_dict()
+                                    build_ip = '%s' % fip_dict_1[(server_dict[clus][i]["name"])]
+                                else:
+                                    build_ip = server_dict[clus][i]["ip_address"][j]
                         manag_ip = server_dict[clus][i]["ip_address"][j]
                     else:
                         if network_dict[j]["role"] == "control-data":
@@ -823,15 +1479,23 @@ def create_testbedpy_file():
                                 str(itr), control_ip, gateway, testbed_py_dict[clus]["control_data_vlan"])
                         else:
                             control_data_string = control_data_string + \
-                                "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1'},\n" % (str(itr), control_ip, gateway)
-                file_str = file_str + \
-                    "host%s = 'root@%s'\n" % (str(itr), manag_ip)
+                                "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1'},\n" % (
+                                    str(itr), control_ip, gateway)
+                if server_dict[clus][i]["floating_ip"] == 'true':
+                    fip_dict_1 = get_all_fip_dict()
+                    file_str = file_str + \
+                        "host%s = 'root@%s'\n" % (str(itr), fip_dict_1[(server_dict[clus][i]["name"])])
+                else:    
+                    file_str = file_str + \
+                        "host%s = 'root@%s'\n" % (str(itr), manag_ip)
                 if "env_password" in testbed_py_dict[clus]:
                     env_password_string = env_password_string + \
-                        "   host%s: '%s',\n" % (str(itr), testbed_py_dict[clus]["env_password"])
+                        "   host%s: '%s',\n" % (
+                            str(itr), testbed_py_dict[clus]["env_password"])
                 if "env_ostypes" in testbed_py_dict[clus]:
                     env_ostypes_string = env_ostypes_string + \
-                        "     host%s: '%s',\n" % (str(itr), testbed_py_dict[clus]["env_ostypes"])
+                        "     host%s: '%s',\n" % (
+                            str(itr), testbed_py_dict[clus]["env_ostypes"])
                 # logic for not adding ',' (comma) after the last hostname in
                 # the env.hostname field of the testbed.py being created.
                 if itr == len(server_dict[clus]) - 1:
@@ -924,7 +1588,10 @@ def create_testbedpy_file():
         file_str = file_str + "}\n\n"
         if "openstack_admin_password" in testbed_py_dict[clus]:
             file_str = file_str + \
-                "env.openstack_admin_password = '%s'\n" % testbed_py_dict[clus]["openstack_admin_password"]
+                "env.openstack_admin_password = '%s'\n\n" % testbed_py_dict[
+                    clus]["openstack_admin_password"]
+        all_fip_dict = get_all_fip_dict()
+        file_str = file_str + "env.all_server_fips = %s\n" % all_fip_dict
         if "env.log_scenario" in testbed_py_dict[clus]:
             log_scenario_str = ''
             if "auth_protocol" in testbed_py_dict[clus]["env.log_scenario"]:
@@ -933,7 +1600,8 @@ def create_testbedpy_file():
                         if testbed_py_dict[clus]["env.log_scenario"]["keystone_version"] == "v3":
                             if "description" in testbed_py_dict[clus]["env.log_scenario"]:
                                 log_scenario_str = log_scenario_str + \
-                                    "env.log_scenario= %s\n" % testbed_py_dict[clus]["env.log_scenario"]["description"]
+                                    "env.log_scenario= %s\n" % testbed_py_dict[
+                                        clus]["env.log_scenario"]["description"]
                             log_scenario_str = log_scenario_str + \
                                 "env.keystone = {\n"
                             log_scenario_str = log_scenario_str + "	'version': 'v3',\n"
@@ -942,7 +1610,8 @@ def create_testbedpy_file():
                     else:
                         if "description" in testbed_py_dict[clus]["env.log_scenario"]:
                             log_scenario_str = log_scenario_str + \
-                                "env.log_scenario= %s\n" % testbed_py_dict[clus]["env.log_scenario"]["description"]
+                                "env.log_scenario= %s\n" % testbed_py_dict[
+                                    clus]["env.log_scenario"]["description"]
                         log_scenario_str = log_scenario_str + \
                             "env.keystone = {\n"
                         log_scenario_str = log_scenario_str + "	'auth_protocol': 'https'\n"
@@ -970,23 +1639,29 @@ def create_testbedpy_file():
             file_str = file_str + "ha_setup = True\n"
             file_str = file_str + "env.ha = {\n"
             file_str = file_str + \
-                "	'internal_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                "	'internal_vip' : '%s',\n" % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["internal_vip"]
             if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "	'contrail_internal_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                    "	'contrail_internal_vip' : '%s',\n" % cluster_dict[clus][
+                        "parameters"]["provision"]["contrail"]["contrail_internal_vip"]
             if "contrail_internal_virtual_router_id" in cluster_dict[
                     clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "	'contrail_internal_virtual_router_id' : %s,\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_virtual_router_id"]
+                    "	'contrail_internal_virtual_router_id' : %s,\n" % cluster_dict[clus][
+                        "parameters"]["provision"]["contrail"]["contrail_internal_virtual_router_id"]
             if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "	'contrail_external_vip' : '%s',\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+                    "	'contrail_external_vip' : '%s',\n" % cluster_dict[clus][
+                        "parameters"]["provision"]["contrail"]["contrail_external_vip"]
             if "contrail_external_virtual_router_id" in cluster_dict[
                     clus]["parameters"]["provision"]["contrail"]:
                 file_str = file_str + \
-                    "	'contrail_external_virtual_router_id' : %s,\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_virtual_router_id"]
+                    "	'contrail_external_virtual_router_id' : %s,\n" % cluster_dict[clus][
+                        "parameters"]["provision"]["contrail"]["contrail_external_virtual_router_id"]
             file_str = file_str + \
-                "	'external_vip' : '%s'\n}\n\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                "	'external_vip' : '%s'\n}\n\n" % cluster_dict[clus][
+                    "parameters"]["provision"]["openstack"]["external_vip"]
         if "ipmi_username" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "ipmi_username = '%s'\n" % testbed_py_dict[clus]["ipmi_username"]
@@ -1030,7 +1705,8 @@ def create_testbedpy_file():
                 "enable_ceilometer = %s\n" % testbed_py_dict[clus]["enable_ceilometer"]
         if "ceilometer_polling_interval" in testbed_py_dict[clus]:
             file_str = file_str + \
-                "ceilometer_polling_interval = %d\n" % testbed_py_dict[clus]["ceilometer_polling_interval"]
+                "ceilometer_polling_interval = %d\n" % testbed_py_dict[
+                    clus]["ceilometer_polling_interval"]
         if "do_parallel" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "do_parallel = %s\n" % testbed_py_dict[clus]["do_parallel"]
@@ -1057,39 +1733,456 @@ def create_testbedpy_file():
     for testbed in dict_of_testbed_files:
         print dict_of_testbed_files[testbed]
 
+# Method to create testbed.py file for the mainline build
+
+
+def create_testbedpy_file_mainline():
+    dict_of_testbed_files = {}
+    for clus in testbed_py_dict:
+        file_str = ""
+        file_str = file_str + "from fabric.api import env \nimport os\n\nnext_routers = []\n"
+        if "router_asn" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "router_asn = %s\n\n" % testbed_py_dict[clus]["router_asn"]
+        else:
+            file_str = file_str + "router_asn = 64512\n\n"
+        itr = 1
+        if "public_vn_rtgt" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "public_vn_rtgt = %s\n\n" % testbed_py_dict[clus]["public_vn_rtgt"]
+        if "public_vn_subnet" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                'public_vn_subnet = "%s"\n\n' % testbed_py_dict[clus]["public_vn_subnet"]
+        # hostname_string contains the hostanme of all the servers. This would
+        # be added to the main string after wards
+        hostname_string = "     'all' : [ "
+        build_ip = ""
+        control_data_string = "control_data = {\n"
+        name_mapping = {}
+        if "env_password" in testbed_py_dict[clus]:
+            env_password_string = "\nenv.passwords = {\n"
+        if "env_ostypes" in testbed_py_dict[clus]:
+            env_ostypes_string = "env.ostypes = {\n"
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+                for j in server_dict[clus][i]["ip_address"]:
+                    if network_dict[j]["role"] == "management":
+                        if "contrail-controller" in server_dict[clus][i]["roles"]:
+                            # Build Ip that will be used in the testbed.py file
+                            if "host_build" in testbed_py_dict[clus]:
+                                build_ip = testbed_py_dict[clus]["host_build"]
+                            else:
+                                if server_dict[clus][i]["floating_ip"] == 'true':
+                                    fip_dict_1 = get_all_fip_dict()
+                                    #print fip_dict_1
+                                    build_ip = '%s' % fip_dict_1[(server_dict[clus][i]["name"])]
+                                else:
+                                    build_ip = server_dict[clus][i]["ip_address"][j]
+                        manag_ip = server_dict[clus][i]["ip_address"][j]
+                    else:
+                        if network_dict[j]["role"] == "control-data":
+                            # control data ip that will be used in the
+                            # control-data section of the testbed.py file
+                            control_ip = server_dict[clus][i]["ip_address"][j]
+                            gateway = network_dict[j]["default_gateway"]
+                        else:
+                            continue
+                for net in network_dict:
+                    if network_dict[net]["role"] == 'control-data':
+                        if "control_data_vlan" in testbed_py_dict[clus]:
+                            control_data_string = control_data_string + "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1', 'vlan': '%s'},\n" % (
+                                str(itr), control_ip, gateway, testbed_py_dict[clus]["control_data_vlan"])
+                        else:
+                            control_data_string = control_data_string + \
+                                "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1'},\n" % (
+                                    str(itr), control_ip, gateway)
+
+                if server_dict[clus][i]["floating_ip"] == 'true':
+                    fip_dict_1 = get_all_fip_dict()
+                    file_str = file_str + \
+                        "host%s = 'root@%s'\n" % (str(itr), fip_dict_1[(server_dict[clus][i]["name"])])
+                else:    
+                    file_str = file_str + \
+                        "host%s = 'root@%s'\n" % (str(itr), manag_ip)
+                #file_str = file_str + \
+                #    "host%s = 'root@%s'\n" % (str(itr), manag_ip)
+                if "env_password" in testbed_py_dict[clus]:
+                    env_password_string = env_password_string + \
+                        "   host%s: '%s',\n" % (
+                            str(itr), testbed_py_dict[clus]["env_password"])
+                if "env_ostypes" in testbed_py_dict[clus]:
+                    env_ostypes_string = env_ostypes_string + \
+                        "     host%s: '%s',\n" % (
+                            str(itr), testbed_py_dict[clus]["env_ostypes"])
+                # logic for not adding ',' (comma) after the last hostname in
+                # the env.hostname field of the testbed.py being created.
+                if itr == len(server_dict[clus]) - 1:
+                    hostname_string = hostname_string + "'" + \
+                        (server_dict[clus][i]["name"]) + "' "
+                    testbed_py_name = "host%s" % str(itr)
+                    name_mapping[server_dict[clus][i]
+                                 ["name"]] = testbed_py_name
+                else:
+                    hostname_string = hostname_string + "'" + \
+                        (server_dict[clus][i]["name"]) + "', "
+                    testbed_py_name = "host%s" % str(itr)
+                    name_mapping[server_dict[clus][i]
+                                 ["name"]] = testbed_py_name
+                itr += 1
+        hostname_string = hostname_string + "]\n"
+        control_data_string = control_data_string + "}\n\n"
+
+        testbedfile_serverjson_role_mapping = {
+            "openstack": "openstack",
+            "contrail-controller": "control",
+            "contrail-analytics": "collector",
+            "contrail-analyticsdb": "database",
+            "contrail-compute": "compute",
+            "contrail-lb": "lb",
+            "contrail-cfgm": "cfgm"}
+        role_per_server_mapping = {
+            "all": [],
+            "openstack": [],
+            "contrail-controller": [],
+            "contrail-analytics": [],
+            "contrail-analyticsdb": [],
+            "contrail-compute": [],
+            "build": ["host_build"]}
+        if "env_ostypes" in testbed_py_dict[clus]:
+            env_ostypes_string = env_ostypes_string + "}\n\n"
+        if "env_password" in testbed_py_dict[clus]:
+            env_password_string = env_password_string + \
+                "   host_build: '%s',\n}\n\n" % testbed_py_dict[clus]["env_password"]
+            file_str = file_str + \
+                "\nenv.password = '%s'\n" % testbed_py_dict[clus]["env_password"]
+        file_str = file_str + "host_build = 'root@%s'\n\n" % build_ip
+        # Lets Get the role definitions for all the servers in the input file
+        # All the hostnames for env.roles section in testbed.py file
+        all_host_list = name_mapping.values()
+        for i in all_host_list:
+            role_per_server_mapping["all"].append(i)
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+                if "openstack" in server_dict[clus][i]["roles"]:
+                    role_per_server_mapping["openstack"].append(
+                        name_mapping[server_dict[clus][i]["name"]])
+                if "contrail-controller" in server_dict[clus][i]["roles"]:
+                    role_per_server_mapping["contrail-controller"].append(
+                        name_mapping[server_dict[clus][i]["name"]])
+                    if "contrail-cfgm" in role_per_server_mapping:
+                        role_per_server_mapping["contrail-cfgm"].append(
+                            name_mapping[server_dict[clus][i]["name"]])
+                    else:
+                        role_per_server_mapping["contrail-cfgm"] = []
+                        role_per_server_mapping["contrail-cfgm"].append(
+                            name_mapping[server_dict[clus][i]["name"]])
+                if "contrail-analytics" in server_dict[clus][i]["roles"]:
+                    role_per_server_mapping["contrail-analytics"].append(
+                        name_mapping[server_dict[clus][i]["name"]])
+                if "contrail-analyticsdb" in server_dict[clus][i]["roles"]:
+                    role_per_server_mapping["contrail-analyticsdb"].append(
+                        name_mapping[server_dict[clus][i]["name"]])
+                if "contrail-compute" in server_dict[clus][i]["roles"]:
+                    role_per_server_mapping["contrail-compute"].append(
+                        name_mapping[server_dict[clus][i]["name"]])
+                if "contrail-lb" in server_dict[clus][i]["roles"]:
+                    if "contrail-lb" in role_per_server_mapping:
+                        role_per_server_mapping["contrail-lb"].append(
+                            name_mapping[server_dict[clus][i]["name"]])
+                    else:
+                        role_per_server_mapping["contrail-lb"] = []
+                        role_per_server_mapping["contrail-lb"].append(
+                            name_mapping[server_dict[clus][i]["name"]])
+        file_str = file_str + "env.hostnames = {\n"
+        file_str = file_str + hostname_string + "}\n\n"
+        file_str = file_str + "env.interface_rename = False\n\n"
+        for net in network_dict:
+            if network_dict[net]["role"] == "control-data":
+                file_str = file_str + control_data_string
+        # Print all the role defs referenced from the 'role_per_server_mapping'
+        # dict mention above
+        file_str = file_str + "env.roledefs = {\n"
+        #itr = len(role_per_server_mapping)
+        itr = 1
+        for i in role_per_server_mapping:
+            #inner_iter = len(role_per_server_mapping[i])
+            inner_iter = 1
+            if i not in testbedfile_serverjson_role_mapping:
+                file_str = file_str + "\t'%s' : [ " % i
+            else:
+                file_str = file_str + \
+                    "\t'%s' : [ " % testbedfile_serverjson_role_mapping[i]
+            for j in role_per_server_mapping[i]:
+                if inner_iter == len(role_per_server_mapping[i]):
+                    file_str = file_str + j + " ]"
+                else:
+                    file_str = file_str + "%s, " % j
+                inner_iter += 1
+            if itr == len(role_per_server_mapping):
+                file_str = file_str + "\n"
+            else:
+                file_str = file_str + ",\n"
+            itr += 1
+        file_str = file_str + "}\n\n"
+        if "openstack_admin_password" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.openstack_admin_password = '%s'\n\n" % testbed_py_dict[
+                    clus]["openstack_admin_password"]
+        all_fip_dict = get_all_fip_dict()
+        file_str = file_str + "env.all_server_fips = %s\n" % all_fip_dict
+        if "env.log_scenario" in testbed_py_dict[clus]:
+            log_scenario_str = ''
+            if "auth_protocol" in testbed_py_dict[clus]["env.log_scenario"]:
+                if testbed_py_dict[clus]["env.log_scenario"]["auth_protocol"] == "https":
+                    if "keystone_version" in testbed_py_dict[clus]["env.log_scenario"]:
+                        if testbed_py_dict[clus]["env.log_scenario"]["keystone_version"] == "v3":
+                            if "description" in testbed_py_dict[clus]["env.log_scenario"]:
+                                log_scenario_str = log_scenario_str + \
+                                    "env.log_scenario= %s\n" % testbed_py_dict[
+                                        clus]["env.log_scenario"]["description"]
+                            log_scenario_str = log_scenario_str + \
+                                "env.keystone = {\n"
+                            log_scenario_str = log_scenario_str + "	'version': 'v3',\n"
+                            log_scenario_str = log_scenario_str + "	'auth_protocol': 'https'\n"
+                            log_scenario_str = log_scenario_str + "}\n"
+                    else:
+                        if "description" in testbed_py_dict[clus]["env.log_scenario"]:
+                            log_scenario_str = log_scenario_str + \
+                                "env.log_scenario= %s\n" % testbed_py_dict[
+                                    clus]["env.log_scenario"]["description"]
+                        log_scenario_str = log_scenario_str + \
+                            "env.keystone = {\n"
+                        log_scenario_str = log_scenario_str + "	'auth_protocol': 'https'\n"
+                        log_scenario_str = log_scenario_str + "}\n"
+                    log_scenario_str = log_scenario_str + "env.cfgm = {\n"
+                    log_scenario_str = log_scenario_str + "	'auth_protocol': 'https'\n"
+                    log_scenario_str = log_scenario_str + "}\n"
+                else:
+                    if "description" in testbed_py_dict[clus]["env.log_scenario"]:
+                        log_scenario_str = log_scenario_str + \
+                            "env.log_scenario= %s\n" % testbed_py_dict[clus]["env.log_scenario"]["description"]
+                    else:
+                        pass
+                file_str = file_str + log_scenario_str
+        if "enable_rbac" in testbed_py_dict[clus]:
+            if testbed_py_dict[clus]["enable_rbac"] == "true":
+                file_str = file_str + "cloud_admin_role = 'admin'\n"
+                file_str = file_str + "aaa_mode = 'rbac'\n"
+        if "env_password" in testbed_py_dict[clus]:
+            file_str = file_str + env_password_string
+        if "env_ostypes" in testbed_py_dict[clus]:
+            file_str = file_str + env_ostypes_string
+        for server in server_dict[clus]:
+            if "contrail-lb" in server_dict[clus][server]["roles"]:
+                lb_external = ''
+                lb_internal = ''
+                for n in server_dict[clus][server]["ip_address"]:
+                    if network_dict[n]["role"] == "management":
+                        lb_external = server_dict[clus][server]["ip_address"][n]
+                    if network_dict[n]["role"] == "control-data":
+                        lb_internal = server_dict[clus][server]["ip_address"][n]
+
+        if (("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]) and (
+                "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+            file_str = file_str + "ha_setup = True\n"
+            file_str = file_str + "env.ha = {\n"
+            if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+                file_str = file_str + \
+                    "   'contrail_internal_vip' : '%s',\n" % lb_internal
+            if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+                file_str = file_str + \
+                    "   'contrail_external_vip' : '%s'\n}\n\n" % lb_external
+        '''
+		if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"])):
+			file_str = file_str+"ha_setup = True\n"
+			file_str = file_str + "env.ha = {\n"
+			file_str = file_str+"	'internal_vip' : '%s',\n"%cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+			if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+				file_str = file_str+"	'contrail_internal_vip' : '%s',\n"%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+			if "contrail_internal_virtual_router_id" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+				file_str = file_str+"	'contrail_internal_virtual_router_id' : %s,\n"%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_virtual_router_id"]
+			if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+				file_str = file_str+"	'contrail_external_vip' : '%s',\n"%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+			if "contrail_external_virtual_router_id" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+				file_str = file_str+"	'contrail_external_virtual_router_id' : %s,\n"%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_virtual_router_id"]
+			file_str = file_str+"	'external_vip' : '%s'\n}\n\n"%cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+		'''
+        if "ipmi_username" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "ipmi_username = '%s'\n" % testbed_py_dict[clus]["ipmi_username"]
+        if "ipmi_password" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "ipmi_password = '%s'\n\n" % testbed_py_dict[clus]["ipmi_password"]
+        file_str = file_str + \
+            "env.cluster_id='%s'\n" % cluster_dict[clus]["cluster_id"]
+        if "minimum_diskGB" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "minimum_diskGB = %d\n" % testbed_py_dict[clus]["minimum_diskGB"]
+        if "env.test_repo_dir" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.test_repo_dir= '%s'\n" % testbed_py_dict[clus]["env.test_repo_dir"]
+        if "env.mail_from" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.mail_from= '%s'\n" % testbed_py_dict[clus]["env.mail_from"]
+        if "env.mail_to" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.mail_to= '%s'\n" % testbed_py_dict[clus]["env.mail_to"]
+        if "env.mail_server" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.mail_server = '%s'\n" % testbed_py_dict[clus]["env.mail_server"]
+        if "env.mail_port" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.mail_port = '%s'\n" % testbed_py_dict[clus]["env.mail_port"]
+        if "multi_tenancy" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "multi_tenancy= %s\n" % testbed_py_dict[clus]["multi_tenancy"]
+        if "env.interface_rename" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.interface_rename = %s\n" % testbed_py_dict[clus]["env.interface_rename"]
+        if "env.encap_priority" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                'env.encap_priority = "%s"\n' % testbed_py_dict[clus]["env.encap_priority"]
+        if "env.enable_lbaas" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.enable_lbaas = %s\n" % testbed_py_dict[clus]["env.enable_lbaas"]
+        if "enable_ceilometer" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "enable_ceilometer = %s\n" % testbed_py_dict[clus]["enable_ceilometer"]
+        if "ceilometer_polling_interval" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "ceilometer_polling_interval = %d\n" % testbed_py_dict[
+                    clus]["ceilometer_polling_interval"]
+        if "do_parallel" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "do_parallel = %s\n" % testbed_py_dict[clus]["do_parallel"]
+        if "env.image_web_server" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.image_web_server = '%s'\n" % testbed_py_dict[clus]["env.image_web_server"]
+        if "env.testbed_location" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.testbed_location = '%s'\n" % testbed_py_dict[clus]["env.testbed_location"]
+        if "env.mx_gw_test" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.mx_gw_test = %s\n" % testbed_py_dict[clus]["env.mx_gw_test"]
+        if "env.ntp_server" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.ntp_server = '%s'\n" % testbed_py_dict[clus]["env.ntp_server"]
+        if "env.rsyslog_params" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "env.rsyslog_params = %s\n" % testbed_py_dict[clus]["env.rsyslog_params"]
+        if "storage_replica_size" in testbed_py_dict[clus]:
+            file_str = file_str + \
+                "storage_replica_size = %s\n" % testbed_py_dict[clus]["storage_replica_size"]
+
+        dict_of_testbed_files[clus] = file_str
+    for testbed in dict_of_testbed_files:
+        print dict_of_testbed_files[testbed]
+
+# Method to get the control data ip with mask so that it can be used in
+# server.json required for the mainline build(contrail 4.0 onwards)
+
+
+def get_control_data_ip_sm():
+    ret_ip = ''
+    for clus in server_dict:
+        for server in server_dict[clus]:
+            if server_dict[clus][server]["server_manager"] == "true":
+                for i in server_dict[clus][server]["ip_address"]:
+                    if len(server_dict[clus][server]["ip_address"]) == 1:
+                        ret_ip = server_dict[clus][server]["ip_address"][i]
+                        mask_list = network_dict[i]["ip_block_with_mask"].split(
+                            '/')
+                        ret_ip = ret_ip + '/' + mask_list[1]
+                    else:
+                        if network_dict[i]["role"] == "control-data":
+                            ret_ip = server_dict[clus][server]["ip_address"][i]
+                            mask_list = network_dict[i]["ip_block_with_mask"].split(
+                                '/')
+                            ret_ip = ret_ip + '/' + mask_list[1]
+    print ret_ip
+
+
+def produce_vmx_env_file():
+    change_network_dict()
+    net_1 = ''
+    net_2 = ''
+    for i in network_dict:
+        if network_dict[i]['role'] == 'management':
+            net_1 = network_dict[i]['name']
+        else:
+            net_2 = network_dict[i]['name']
+    # print net_1
+    # print net_2
+    project_uuid = general_params_dict["project_uuid"]
+    undashed_uuid = project_uuid.replace('-', '')
+    # print undashed_uuid
+    project_name = ''
+    a = subprocess.Popen("openstack project list -f json",
+                         shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp_dict = eval(a_tmp)
+    a_tmp = ""
+    # print a_tmp_dict
+    for i in a_tmp_dict:
+        # print i
+        if i["ID"] == undashed_uuid:
+            project_name = i["Name"]
+    # print project_name
+    env_string = '''
+
+#Copyright (c) Juniper Networks, Inc., 2017-2024.
+#All rights reserved.
+parameters:
+    net_id1: %s
+
+parameter_defaults:
+    public_network: %s
+    vfp_image: vPFE_17
+    vfp_flavor: pfe-flv
+    vcp_flavor: re-flv
+    vcp_image: vRE_17
+    project_name: %s
+    gateway_ip: 0.0.0.0
+    stack_name: VmxContrail 
+
+resource_registry:
+#  "OS::Nova::Vmx": vmx.yaml
+  "OS::Nova::VmxContrail": vmx_contrail.yaml
+#  "OS::Nova::VmxContrailSriov": vmx_contrail_sriov.yaml
+  "OS::Nova::VmxRe": vmx-components/vms/re.yaml
+  "OS::Nova::VmxFpc": vmx-components/vms/fpc.yaml
+  "OS::Nova::VmxFpcSingle": vmx-components/vms/fpc_no_metadata.yaml
+  "OS::Nova::VmxFpcSriov": vmx-components/vms/fpc_fixed_sriov.yaml
+  "OS::Nova::VmxFpcVirtio": vmx-components/vms/fpc_fixed_virtio.yaml
+  "OS::Networking::VmxFpcFixedNet": vmx-components/vms/fpc_fixed_net.yaml
+  "OS::Networking::VmxIntNet": vmx-components/bridges/bridge_int.yaml
+  "OS::Networking::VmxInternalNet": vmx-components/bridges/bridges_internal.yaml
+  "OS::Networking::VmxInternalNetContrail": vmx-components/contrail/bridges_internal_contrail.yaml
+  "OS::Networking::VmxIntNetContrail": vmx-components/contrail/bridge_int_contrail.yaml
+  "OS::Networking::VmxNet": vmx-components/bridges/bridge_wan.yaml
+  "OS::Networking::VmxNetContrail": vmx-components/contrail/bridge_wan_contrail.yaml
+  "OS::Networking::VmxNetProvider": vmx-components/bridges/bridge_provider.yaml
+  "OS::Networking::VmxProviderNetPort": vmx-components/ports/bridge_provider_port.yaml
+  "OS::Networking::VmxProviderNetSriovPort": vmx-components/ports/bridge_provider_sriov_port.yaml
+  "OS::Networking::VmxNet": vmx-components/bridges/bridge_wan.yaml
+  "OS::Networking::VmxPort": vmx-components/ports/port.yaml
+  "OS::Networking::VmxSriovPort": vmx-components/ports/sriov_port.yaml
+  "OS::Networking::VmxContrailSriovPort": vmx-components/contrail/contrail_sriov_port.yaml
+  "OS::Networking::VmFixedNet": vmx-components/vms/vm_fixed_net.yaml
+  "OS::Networking::VmxPortWithIP": vmx-components/ports/port_with_ip.yaml
+  "OS::Networking::VmxRePfePort": vmx-components/ports/re_pfe_port.yaml
+
+
+''' % (net_2, net_1,  project_name)
+    print env_string
+
+
+def is_vmx_true():
+    vmx_val = "false"
+    if "vmx" in parsed_json["inp_params"]["params"]:
+        vmx_val = parsed_json["inp_params"]["params"]["vmx"]
+    print vmx_val
+
 
 if __name__ == '__main__':
     globals()[sys.argv[2]]()
-
-"""
-Imp Points to Remember:
-
-FLAVORS USED :
------------------
-openstack flavor list
-+----+------------+-------+------+-----------+-------+-----------+
-| ID | Name       |   RAM | Disk | Ephemeral | VCPUs | Is Public |
-+----+------------+-------+------+-----------+-------+-----------+
-| 1  | m1.tiny    |   512 |    1 |         0 |     1 | True      |
-| 2  | m1.small   |  2048 |   20 |         0 |     1 | True      |
-| 3  | m1.medium  |  4096 |   40 |         0 |     2 | True      |
-| 4  | m1.large   |  8192 |   80 |         0 |     4 | True      |
-| 5  | m1.xlarge  | 16384 |  160 |         0 |     8 | True      |
-| 6  | m1.xxlarge | 32768 |  300 |         0 |    10 | True      |
-+----+------------+-------+------+-----------+-------+-----------+
-
-IMAGES USED:
----------------
-ubuntu-14.04-server-cloudimg-amd64-disk1.img  -- 256 MB
-
-create_network_yaml:
----------------------
- The name parameter in the input json file is optional. If you dont put in the name, the script will by default take the key from the network dictionary that is created.
-
-create_server_yaml:
---------------------
--> If you don't want to attach a floating IP to the Virtual machine, dont add the "floating_ip" field in the individual server dict.
--> If you don't intend to attach a Floating IP to any of your machine, in addition to doing the above setp, don't add the "floating_ip_network" field to the the "inp_params" dict. This will not create the flo
-ating IP pool required to the setup.
--> Also make sure to change the name of the FIP pool in the input json for every heat stack. So that they do not interfer with each other.(There can be multiple FIPs attached to a particular network)
-"""
