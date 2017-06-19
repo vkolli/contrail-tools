@@ -12,6 +12,7 @@ host3 = 'root@10.204.216.97'
 host4 = 'root@10.204.216.98'
 host5 = 'root@10.204.216.99'
 host6 = 'root@10.204.216.103'
+host7 = 'root@10.204.216.152'
 
 
 ext_routers = [('yuvaraj', '10.10.10.100')]
@@ -22,12 +23,12 @@ public_vn_subnet = "10.204.219.88/29"
 host_build = 'stack@10.204.216.49'
 
 env.roledefs = {
-    'all': [host1, host2, host3, host4, host5, host6],
+    'all': [host1, host2, host3, host4, host5, host6, host7],
     'contrail-controller': [host6, host2, host1],
     'contrail-analytics': [host6, host2, host1],
     'contrail-analyticsdb': [host6, host2, host1],
     'openstack': [host6, host2, host1],
-    'contrail-compute': [host3, host4],
+    'contrail-compute': [host3, host4, host7],
     'contrail-lb': [host5],
     'build': [host_build]
 }
@@ -44,7 +45,7 @@ env.physical_routers={
 }
 
 env.hostnames = {
-    'all': ['nodem6', 'nodem7', 'nodem8', 'nodem9', 'nodem10', 'nodem14']
+    'all': ['nodem6', 'nodem7', 'nodem8', 'nodem9', 'nodem10', 'nodem14', 'nodec35']
 }
 
 env.openstack_admin_password = 'contrail123'
@@ -58,6 +59,7 @@ env.passwords = {
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     host6: 'c0ntrail123',
+    host7: 'c0ntrail123',
     host_build: 'stack@123',
 }
 
@@ -68,6 +70,7 @@ env.ostypes = {
     host4:'ubuntu',
     host5:'ubuntu',
     host6:'ubuntu',
+    host7:'ubuntu',
 }
 
 bond= {
@@ -80,7 +83,8 @@ control_data = {
     host3: {'ip': '10.10.10.8/24', 'gw': '10.10.10.100', 'device': 'bond0'},
     host4: {'ip': '10.10.10.9/24', 'gw': '10.10.10.100', 'device': 'p514p2'},
     host5: {'ip': '10.10.10.10/24', 'gw': '10.10.10.100', 'device': 'p514p2'},
-    host6: {'ip': '10.10.10.14/24', 'gw': '10.10.10.100', 'device': 'p514p2'}
+    host6: {'ip': '10.10.10.14/24', 'gw': '10.10.10.100', 'device': 'p514p2'},
+    host7: {'ip': '10.10.10.35/24', 'gw': '10.10.10.100', 'device': 'p1p2'}
 }
 
 env.ha = {
@@ -89,6 +93,42 @@ env.ha = {
     'internal_vip' : '10.10.10.20',
     'external_vip' : '10.204.216.140',
 }
+
+env.qos = {host3: [{'hardware_q_id': '3', 'logical_queue':['1', '6-10', '12-15']},
+                   {'hardware_q_id': '11', 'logical_queue':['40-46']},
+                   {'hardware_q_id': '18', 'logical_queue':['70-74', '75', '80-95']},
+                   {'hardware_q_id': '28', 'logical_queue':['115']},
+                   {'hardware_q_id': '36', 'logical_queue':['140-143', '145']},
+                   {'hardware_q_id': '43', 'logical_queue':['175']},
+                   {'hardware_q_id': '53', 'logical_queue':['215'], 'default': 'True'},
+                   {'hardware_q_id': '61', 'logical_queue':['245']}],
+            host4: [{'hardware_q_id': '3', 'logical_queue':['1', '6-10', '12-15']},
+                   {'hardware_q_id': '11', 'logical_queue':['40-46']},
+                   {'hardware_q_id': '18', 'logical_queue':['70-74', '75', '80-95']},
+                   {'hardware_q_id': '28', 'logical_queue':['115']},
+                   {'hardware_q_id': '36', 'logical_queue':['140-143', '145']},
+                   {'hardware_q_id': '43', 'logical_queue':['175']},
+                   {'hardware_q_id': '53', 'logical_queue':['215'], 'default': 'True'},
+                   {'hardware_q_id': '61', 'logical_queue':['245']}]}
+
+env.qos_niantic = {host3:[
+                          { 'priority_id': '0', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '1', 'scheduling': 'rr', 'bandwidth': '10'},
+                          { 'priority_id': '2', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '3', 'scheduling': 'rr', 'bandwidth': '20'},
+                          { 'priority_id': '4', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '5', 'scheduling': 'rr', 'bandwidth': '30'},
+                          { 'priority_id': '6', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '7', 'scheduling': 'rr', 'bandwidth': '40'}],
+                   host4:[
+                          { 'priority_id': '0', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '1', 'scheduling': 'rr', 'bandwidth': '10'},
+                          { 'priority_id': '2', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '3', 'scheduling': 'rr', 'bandwidth': '20'},
+                          { 'priority_id': '4', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '5', 'scheduling': 'rr', 'bandwidth': '30'},
+                          { 'priority_id': '6', 'scheduling': 'strict', 'bandwidth': '0'},
+                          { 'priority_id': '7', 'scheduling': 'rr', 'bandwidth': '40'}]}
 
 #env.cluster_id='clusterm5m6m7m8m9m10'
 minimum_diskGB = 32
@@ -100,7 +140,7 @@ env.mail_to = 'dl-contrail-sw@juniper.net'
 multi_tenancy = True
 #env.interface_rename = True
 env.log_scenario = 'SMLite Openstack HA Regression'
-#env.enable_lbaas = True
+env.enable_lbaas = True
 do_parallel = True
 env.test_repo_dir='/root/contrail-test'
 

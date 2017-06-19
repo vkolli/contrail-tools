@@ -73,6 +73,9 @@ export PARALLEL_RUN=${PARALLEL_RUN:-0}
 # Knob to add basic images (fab add_basic_images) before the test run
 export ADD_IMAGES=${ADD_IMAGES:-0}
 
+# Knob to add basic flavors (fab add_basic_flavors) before the test run
+export ADD_FLAVORS=${ADD_FLAVORS:-0}
+
 # Location can be REMOTE or LOCAL 
 # If REMOTE, reimage command will be triggered from TASK_RUNNER_HOST_STRING
 export TESTBED_LOCATION=${TESTBED_LOCATION:-"LOCAL"}
@@ -201,3 +204,8 @@ export USER_ISOLATION=${USER_ISOLATION:-"True"}
 # for few tests to be runnable
 # Default mode is enabled(1)
 export INSTALL_EXTRA_PKG_ON_NODES=${INSTALL_EXTRA_PKG_ON_NODES:-1}
+export USE_LATEST_ANSIBLE_CODE=${USE_LATEST_ANSIBLE_CODE:-0}
+
+# CONTRAIL_TEST_CODE_PATH is the folder where both contrail-test and
+# contrail-test-ci repo folder are present
+export CONTRAIL_TEST_CODE_PATH=${CONTRAIL_TEST_CODE_PATH:-$TOOLS_WS}
