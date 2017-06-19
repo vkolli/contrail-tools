@@ -156,12 +156,18 @@ def get_exact_path(branch='', build=''):
 	a = stdout.readlines()
 	for i in a:
 		b = i.replace('\n', '')
+		#print b
 		ini_list.append(b)
 	#err_list = stderr.readlines()
 	client.close()
 	if (len(ini_list) == 1):
 		path = path + ini_list[0] + '/'
 		#print path
+	if (len(ini_list) > 1):
+		for j in ini_list:
+			if j == branch:
+				path = path + j + '/'
+				#print path
 	else:
 		return None
 	ini_list = []
