@@ -8,5 +8,6 @@ testbeds=(${AVAILABLE_TESTBEDS//,/ })
 echo "AVAILABLE TESTBEDS : ${testbeds[@]}"
 
 get_testbed
+initialize_any_vms
 run_smgr_task
 unlock_testbed $TBFILE_NAME
