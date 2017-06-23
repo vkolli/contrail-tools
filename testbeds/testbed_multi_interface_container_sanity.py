@@ -85,3 +85,7 @@ env.interface_rename = True
 env.log_scenario = 'MultiNode Regression'
 env.enable_lbaas = True
 do_parallel = True
+env.xmpp_auth_enable=True
+env.xmpp_dns_auth_enable=True
+enable_ceilometer = True
+ceilometer_polling_interval = 60
