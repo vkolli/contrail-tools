@@ -58,8 +58,7 @@ then
     apt-get -y install sshpass
 fi
 
-build_string_cmd="contrail-version |grep contrail-install |head -1| awk '{print \$2}'"
-CONTRAIL_BUILD_STRING=`/usr/bin/sshpass -p $KEYSTONE_SERVICE_HOST_PASSWORD ssh $SSHOPT -t ${KEYSTONE_SERVICE_HOST_USER}@${KEYSTONE_SERVICE_HOST} "$build_string_cmd" 2>/dev/null` || echo "Unable to detect Build Id"
+CONTRAIL_BUILD_STRING=$(contrail-version |grep contrail-install |head -1| awk '{print $2}' 2>/dev/null) || echo "Unable to detect Build Id"
 
 rm -f ${BUILD_STRING_FILE}
 echo "Build string is $CONTRAIL_BUILD_STRING"
