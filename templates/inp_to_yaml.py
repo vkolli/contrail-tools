@@ -2013,6 +2013,10 @@ def create_testbedpy_file_mainline():
         if "ipmi_password" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "ipmi_password = '%s'\n\n" % testbed_py_dict[clus]["ipmi_password"]
+	if "openstack_manage_amqp" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+            if cluster_dict[clus]["parameters"]["provision"]["openstack"]["openstack_manage_amqp"] == "false":
+		file_str = file_str + \
+		    "env.openstack = {\n"+"    'manage_amqp' : 'no'\n" + "}\n"
         file_str = file_str + \
             "env.cluster_id='%s'\n" % cluster_dict[clus]["cluster_id"]
         if "minimum_diskGB" in testbed_py_dict[clus]:
