@@ -12,6 +12,8 @@ host7 ='root@10.87.121.83'
 host8 ='root@10.87.121.84'
 host9 ='root@10.87.121.85'
 host10 ='root@10.87.121.86'
+host18 ='root@10.87.121.87'
+host19 ='root@10.87.121.88'
 
 host11 ='root@10.87.121.70'
 host12 ='root@10.87.121.71'
@@ -89,6 +91,15 @@ vm_node_details = {
                              {'bridge' : 'br1', 'model':'virtio'}
                             ],
             },
+    host18 : {
+                'name' : '5b7s1-3-vm3',
+                'ram' : '32768',
+                'vcpus' : '8',
+                'server': kvm_5b7s1_3,
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:55:02:02:02', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'}
+                            ],
+            },
     host7 : {
                 'name' : '5b7s1-4-vm1',
                 'ram' : '65536',
@@ -104,6 +115,15 @@ vm_node_details = {
                 'vcpus' : '16',
                 'server': kvm_5b7s1_4,
                 'network' : [{'bridge' : 'br0', 'mac':'62:53:55:02:03:01', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'}
+                            ],
+            },
+    host19 : {
+                'name' : '5b7s1-4-vm3',
+                'ram' : '32768',
+                'vcpus' : '8',
+                'server': kvm_5b7s1_4,
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:55:02:03:02', 'model':'virtio'},
                              {'bridge' : 'br1', 'model':'virtio'}
                             ],
             },
@@ -142,7 +162,7 @@ host_build = 'root@10.87.121.77'
 env.roledefs = {
     'all': [host1,host2,host3,host4,host5,host6,host7,host8,host9,host10,host11,host12,host13,host14,host15,host16,host17],
     'cfgm': [host1,host4,host7],
-    'openstack': [host10],
+    'openstack': [host10,host18,host19],
     'webui': [host1,host4,host7],
     'control': [host1,host4,host7],
     'compute': [host11,host12,host13,host14,host15,host16,host17],
@@ -154,7 +174,7 @@ env.roledefs = {
 }
 
 env.hostnames = {
-    'all': ['5b7s1_1-vm1','5b7s1_1-vm2','5b7s1_2-vm1','5b7s1_2-vm2','5b7s1_3-vm1','5b7s1_3-vm2','5b7s1_4-vm1','5b7s1_4-vm2','5b7s3-vm1','5b7s3-vm2','5b7s4','5b7s5','5b7s6','5b7s7','5b7s8','5b7s9','5b7s10']
+    'all': ['5b7s1_1-vm1','5b7s1_1-vm2','5b7s1_2-vm1','5b7s1_2-vm2','5b7s1_3-vm1','5b7s1_3-vm2','5b7s1_4-vm1','5b7s1_4-vm2','5b7s3-vm1','5b7s3-vm2','5b7s4','5b7s5','5b7s6','5b7s7','5b7s8','5b7s9','5b7s10','5b7s1_3-vm3','5b7s1_4-vm3']
 }
 #Openstack admin password
 env.openstack_admin_password = 'contrail123'
@@ -180,6 +200,8 @@ env.passwords = {
     host15: 'c0ntrail123',
     host16: 'c0ntrail123',
     host17: 'c0ntrail123',
+    host18: 'c0ntrail123',
+    host19: 'c0ntrail123',
     host_build: 'c0ntrail123',
 }
 
@@ -206,6 +228,8 @@ env.ostypes = {
     host15: 'ubuntu',
     host16: 'ubuntu',
     host17: 'ubuntu',
+    host18: 'ubuntu',
+    host19: 'ubuntu',
 }
 #env.orchestrator = 'openstack' #other values are 'vcenter', 'none' default:openstack
 
@@ -312,6 +336,8 @@ control_data = {
     host15 : { 'ip': '172.17.90.15/24', 'gw' : '172.17.90.254', 'device':'p514p1' },
     host16 : { 'ip': '172.17.90.16/24', 'gw' : '172.17.90.254', 'device':'p514p1' },
     host17 : { 'ip': '172.17.90.17/24', 'gw' : '172.17.90.254', 'device':'p514p1' },
+    host18 : { 'ip': '172.17.90.8/24', 'gw' : '172.17.90.254', 'device':'eth1' },
+    host19 : { 'ip': '172.17.90.9/24', 'gw' : '172.17.90.254', 'device':'eth1' },
 }
 
 #OPTIONAL STATIC ROUTE CONFIGURATION  
@@ -436,13 +462,29 @@ static_route  = {
              { 'ip': '33.33.33.33', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'p514p1' },
              { 'ip': '32.32.32.32', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'p514p1' },
              { 'ip': '31.31.31.31', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'p514p1' }],
+    host18 : [{ 'ip': '172.18.90.0', 'netmask' : '255.255.255.0', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '7.7.7.77', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '8.8.8.88', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '34.34.34.34', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '33.33.33.33', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '32.32.32.32', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '31.31.31.31', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' }],
+    host19 : [{ 'ip': '172.18.90.0', 'netmask' : '255.255.255.0', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '7.7.7.77', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '8.8.8.88', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '34.34.34.34', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '33.33.33.33', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '32.32.32.32', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' },
+             { 'ip': '31.31.31.31', 'netmask' : '255.255.255.255', 'gw':'172.17.90.254', 'intf': 'eth1' }],
 }
 
 
 # VIP
 env.ha = {
     'contrail_internal_vip' : '172.17.90.90',
-    'contrail_external_vip' : '10.87.121.90'
+    'contrail_external_vip' : '10.87.121.90',
+    'internal_vip' : '172.17.90.91',
+    'external_vip' : '10.87.121.91'
 }
 
 # OPTIONAL vrouter limit parameter
