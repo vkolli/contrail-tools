@@ -222,7 +222,7 @@ env.test = {
 env.ntp_server = '10.84.5.100'
 enable_ceilometer = True
 ceilometer_polling_interval = 60
-env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
+env.rsyslog_params = {'port':19876, 'proto':'udp', 'collector':'dynamic', 'status':'enable'}
 
 
 storage_replica_size = 2

@@ -144,4 +144,4 @@ env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
 enable_ceilometer = True
 ceilometer_polling_interval = 60
 env.ntp_server = '10.204.217.158'
-env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
+env.rsyslog_params = {'port':19876, 'proto':'udp', 'collector':'dynamic', 'status':'enable'}

@@ -301,7 +301,7 @@ env.enable_lbaas = True
 #                         only option.
 #status = enable
 #
-#env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
+#env.rsyslog_params = {'port':19876, 'proto':'udp', 'collector':'dynamic', 'status':'enable'}
 
 #OPTIONAL Virtual gateway CONFIGURATION
 #=======================================

@@ -88,7 +88,7 @@ ha_setup = True
 
 env.cluster_id='clusterc19c20c21c58c60c61'
 minimum_diskGB=32
-env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
+env.rsyslog_params = {'port':19876, 'proto':'udp', 'collector':'dynamic', 'status':'enable'}
 env.test_repo_dir='/home/stack/centos_multi_node_github_sanity/contrail-test'
 env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'

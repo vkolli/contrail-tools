@@ -136,7 +136,7 @@ env.qos_niantic = {host5:[
 
 #env.cluster_id='clusterm5m6m7m8m9m10'
 minimum_diskGB = 32
-env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
+env.rsyslog_params = {'port':19876, 'proto':'udp', 'collector':'dynamic', 'status':'enable'}
 #env.test_repo_dir = '/home/stack/regression/contrail-test'
 env.mail_from = 'contrail-build@juniper.net'
 env.mail_to = 'dl-contrail-sw@juniper.net'
