@@ -175,8 +175,6 @@ def get_exact_path(branch='', build=''):
 	client = paramiko.SSHClient()
 	client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 	client.connect(host, username = username, password = password)
-        cmd='ls %s | grep %s' %(path, build)
-        print cmd
 	stdin, stdout, stderr = client.exec_command('ls %s | grep %s' %(path, build))
 	a = stdout.readlines()
 	for i in a:
@@ -280,8 +278,6 @@ def print_report_summary(branch='', build=''):
 		print "Topology Summaty: %s" %info_dict[i]['topo_summary']
 		test_result_dict_lables = info_dict[i]["testcase_results"]["labels"]
 		test_result_dict_values = info_dict[i]["testcase_results"]["values"]
-		#print test_result_dict_lables
-		#print test_result_dict_values
 		num = len(test_result_dict_values)
 		itr = 0
 		print "TEST RESULTS SUMMARY : "
@@ -388,8 +384,6 @@ def get_build_date(branch='', build=''):
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(host, username = username, password = password)
-        cmd='stat %s/%s  | grep Change | cut -d" " -f2' %(path, build)
-        print cmd
         stdin, stdout, stderr = client.exec_command('stat %s/%s  | grep Change | cut -d" " -f2' %(path, build))
         a = stdout.readlines()
         b=a[0].replace('\n', '')
