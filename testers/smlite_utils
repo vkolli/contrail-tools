@@ -282,7 +282,7 @@ function provision_using_SMLite() {
  
     echo "Connect to SM_SERVER to provision the targets/cluster"
 
-    cntl_pkg="/root/contrail-cloud-docker_4.0.0.0-${BUILDID}-${SKU}_$ubuntu_rel.tgz"
+    cntl_pkg="/root/${CONTRAIL_PACKAGE}
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
         set -e
         set -x
