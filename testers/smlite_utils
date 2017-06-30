@@ -380,7 +380,6 @@ function run_smgr_task() {
         exit 1
     fi
     create_testbed || die "Failed to create required testbed details"
-    #bringup_SM_setup || debug_and_die "Failed to bringup SM setup"
     reimage_setup_using_SM || debug_and_die "reimage failed"
     if [ -z $JSON ]; then
         echo "JSON env variables is not set."
