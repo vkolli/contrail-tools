@@ -33,6 +33,11 @@ env.ostypes = {
 #Openstack admin password
 env.openstack_admin_password = 'contrail123'
 
+env.kernel_upgrade=False
+env.openstack = {
+    'manage_amqp': "true"
+}
+
 env.passwords = {
     host1: 'c0ntrail123',
     host_build: 'stack@123',
