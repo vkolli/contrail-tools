@@ -38,6 +38,10 @@ env.openstack = {
     'manage_amqp': "true"
 }
 
+env.keystone = {
+    'admin_password': 'contrail123'
+}
+
 env.passwords = {
     host1: 'c0ntrail123',
     host_build: 'stack@123',
