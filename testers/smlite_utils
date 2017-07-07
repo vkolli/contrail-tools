@@ -220,10 +220,10 @@ function copy_smlite_pkg() {
     sleep 30
     if [ -z $JSON ]; then
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
-        sshpass -p "c0ntrail123" ssh root@$SM_SERVER_IP "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${API_SERVER_HOST_STRING}:/root/"
+	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${API_SERVER_HOST_STRING}:/root/"
     else
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
-        sshpass -p "c0ntrail123" ssh root@$SM_SERVER_IP "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${API_SERVER_HOST_STRING}:/root/"
+	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${API_SERVER_HOST_STRING}:/root/"
     fi
     if [ $? == 0 ]
     then
