@@ -41,6 +41,11 @@ env.passwords = {
     host_build: 'stack@123',
 }
 
+env.kernel_upgrade=False
+env.openstack = {
+    'manage_amqp': "true"
+}
+
 #OPTIONAL BONDING CONFIGURATION
 #==============================
 #Inferface Bonding
