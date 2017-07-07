@@ -46,6 +46,10 @@ env.openstack = {
     'manage_amqp': "true"
 }
 
+env.keystone = {
+     'admin_password': 'contrail123'
+}
+
 #OPTIONAL BONDING CONFIGURATION
 #==============================
 #Inferface Bonding
