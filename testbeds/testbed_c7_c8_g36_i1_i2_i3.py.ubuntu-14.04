@@ -93,7 +93,7 @@ control_data = {
 
 env.ha = {
     'internal_vip' : '192.168.192.251',
-    'external_vip' : '192.168.192.251',
+    'external_vip' : '10.204.216.151',
     'contrail_internal_vip' : '192.168.192.4',
     'contrail_external_vip' : '10.204.217.76',
 }
