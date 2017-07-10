@@ -279,7 +279,6 @@ function provision_using_SMLite() {
         set -e
         set -x
         echo "Install SM-Lite and provision the target setup"
-        echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
         dpkg -i /root/${SERVER_MANAGER_INSTALLER}
         if [ -z $JSON ]; then
             if [ $SKIP_SMLITE_INSTALL -ne 0 ]
@@ -289,6 +288,7 @@ function provision_using_SMLite() {
                 /opt/contrail/contrail_server_manager/provision_containers.sh -c /root/${CONTRAIL_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
             fi
         else
+            echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
             if [ $SKIP_SMLITE_INSTALL -ne 0 ]
             then
                 /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
