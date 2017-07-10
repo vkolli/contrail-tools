@@ -115,9 +115,10 @@ function bringup_SM_setup() {
     echo "Bringup/upgrade SM setup"
 
     #check if SM pkgs are available in artifacts before proceeding further.
-    check_SM_pkg_availability || die "SM pkg not available in artifacts"
-
-    cd $pkg_dir
+    if [ -z $CONTINUOUS_BUILD ]; then
+        check_SM_pkg_availability || die "SM pkg not available in artifacts"
+        cd $pkg_dir
+    fi
 
     #SM pkg name is different for centos & ubuntu, so set it accordingly.
     #multi-node uses ubuntu SM and single node uses centos SM.
@@ -131,7 +132,12 @@ function bringup_SM_setup() {
     if [[ $DISTRO =~ ubuntu-16.04 ]]; then
         SM_SERVER_PKG_FILE=`ls contrail-server-manager-installer_*\.*-${BUILDID}\~mitaka\_all.deb*`
     fi
-
+    if [ $CONTINUOUS_BUILD -eq 1 ] ; then
+        pkg_dir = $TOOLS_WS
+        cd $pkg_path
+        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@10.84.22.50:/var/lib/jenkins/jobs/Continuous-Build-Ubuntu14/builds/${BUILDID}/archive/artifacts/contrail-server-manager-installer_*.deb ${TOOLS_WS}
+        SM_SERVER_PKG_FILE=`ls contrail-server-manager-installer_*.deb`
+    fi
     pkg_name="$pkg_dir/$SM_SERVER_PKG_FILE"
 
     sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SM_SERVER_IP " (
@@ -596,9 +602,10 @@ function add_server_cluster_SM() {
         then
             SMID="combined_image_mainline"
         fi
- 
         pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
-        cd $pkg_path
+        if [ -z $CONTINUOUS_BUILD ]; then
+            cd $pkg_path
+        fi 
         if [ $USE_CLOUD_PKG -eq 1 ]; then
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.tgz`
             contrail_pkg_name=`ls contrail-install-packages*.tgz`
@@ -617,6 +624,14 @@ function add_server_cluster_SM() {
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
             contrail_pkg_name=`ls contrail-cloud-docker_*.tgz`
         fi
+        if [ $CONTINUOUS_BUILD -eq 1 ]; then
+            pkg_path = $TOOLS_WS 
+            cd $pkg_path
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@10.84.22.50:/var/lib/jenkins/jobs/Continuous-Build-Ubuntu14/builds/${BUILDID}/archive/artifacts/contrail-cloud-docker_*.tgz ${TOOLS_WS} 
+            contrail_pkg=`ls contrail-cloud-docker_*.tgz`
+            contrail_pkg_name=`ls contrail-cloud-docker_*.tgz`
+        fi
+
 
         echo ${contrail_pkg}
         echo ${pkg_path} 
@@ -872,6 +887,7 @@ function run_smgr_virtual_task() {
     fi
     create_testbed || die "Failed to create required testbed details"
     bringup_SM_setup || debug_and_die "Failed to bringup SM setup"
+    
     #Add server and cluster to the SM
     add_server_cluster_SM || debug_and_die "Failed to add server and cluster to SM"
 
