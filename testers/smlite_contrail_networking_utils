@@ -147,21 +147,18 @@ function reimage_setup_using_SM {
 function set_json_file_path {
     set -x
     folder_path=''
-    clusterjson=''
-    serverjson=''
+    json=''
 
     #For the time being we are not checking in the cluster and server json files in contrail-tools
     #folder_path=${TOOLS_WS}/testbeds
     #clusterjson=$folder_path/$CLUSTER_JSON
     #serverjson=$folder_path/$SERVER_JSON
     folder_path="/root/sm_files"
-    clusterjson=$folder_path/$CLUSTER_JSON
-    serverjson=$folder_path/$SERVER_JSON
+    json=$folder_path/$JSON
 
     #[ -f $clusterjson ] || die "Cluster json file $clusterjson not found"
     #[ -f $serverjson ] || die "Server json file $serverjson not found"
-    export ABS_PATH_CLUSTERJSON=$clusterjson
-    export ABS_PATH_SERVERJSON=$serverjson
+    export ABS_PATH_JSON=$json
 
 }
 
@@ -224,12 +221,12 @@ function copy_smlite_pkg() {
     echo $CONTRAIL_NW_PACKAGE
     echo $SERVER_MANAGER_INSTALLER
     sleep 30
-    if [ -z $CLUSTER_JSON ] || [ -z $SERVER_JSON ]; then
+    if [ -z $JSON ]; then
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${nw_pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${nw_pkg_dir}/artifacts/${CONTRAIL_NW_PACKAGE} ${sku_pkg_dir}/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
-        sshpass -p "c0ntrail123" ssh root@$SM_SERVER_IP "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${API_SERVER_HOST_STRING}:/root/"
+        exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${API_SERVER_HOST_STRING}:/root/"
     else
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${nw_pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${nw_pkg_dir}/artifacts/${CONTRAIL_NW_PACKAGE} ${sku_pkg_dir}/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
-        sshpass -p "c0ntrail123" ssh root@$SM_SERVER_IP "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_CLUSTERJSON $ABS_PATH_SERVERJSON ${API_SERVER_HOST_STRING}:/root/"
+        exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${API_SERVER_HOST_STRING}:/root/"
     fi
     if [ $? == 0 ]
     then
@@ -273,16 +270,17 @@ function provision_using_SMLite() {
  
     echo "Connect to SM_SERVER to provision the targets/cluster"
 
-    cntl_pkg="/root/contrail-networking-docker_4.0.0.0-${BUILDID}_$ubuntu_rel.tgz"
-    openstk_pkg="/root/contrail-install-packages_4.0.0.0-${BUILDID}~${OPENSTACK_SKU}_all.deb"
+    cntl_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-networking-docker_*.tgz`
+    cntl_pkg=/root/${cntl_pkg_path##*/}
+    openstk_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${OPENSTACK_SKU}/contrail-install-packages_*.deb`
+    openstk_pkg=/root/${openstk_pkg_path##*/}
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
         set -e
         set -x
         echo "Install SM-Lite and provision the target setup"
-        echo '{\"image\":[{\"category\": \"package\", \"id\": \"openstack_image\", \"type\": \"$pkg_type\", \"path\": \"$openstk_pkg\", \"version\":\"$BUILDID\"},{\"category\": \"package\", \"id\": \"networking_image\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\", \"parameters\": {\"openstack_sku\": \"${OPENSTACK_SKU}\"}}]}' > /root/image.json
         dpkg -i /root/${SERVER_MANAGER_INSTALLER}
         sed -i '/server-manager provision -F/d' /opt/contrail/contrail_server_manager/provision_containers.sh
-        if [ -z $CLUSTER_JSON ] || [ -z $SERVER_JSON ]; then
+        if [ -z $JSON ]; then
             if [ $SKIP_SMLITE_INSTALL -ne 0 ]
             then
                 /opt/contrail/contrail_server_manager/provision_containers.sh -ni -c /root/${CONTRAIL_NW_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
@@ -290,12 +288,13 @@ function provision_using_SMLite() {
                 /opt/contrail/contrail_server_manager/provision_containers.sh -c /root/${CONTRAIL_NW_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
             fi
         else
+            echo '\"image\":[{\"category\": \"package\", \"id\": \"openstack_image\", \"type\": \"$pkg_type\", \"path\": \"$openstk_pkg\", \"version\":\"$BUILDID\"},{\"category\": \"package\", \"id\": \"networking_image\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\", \"parameters\": {\"openstack_sku\": \"${OPENSTACK_SKU}\"}}]}' >> /root/${JSON}
             sed -i '/server-manager provision -F/d' /opt/contrail/contrail_server_manager/provision_containers.sh
             if [ $SKIP_SMLITE_INSTALL -ne 0 ]
             then
-                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -ij /root/image.json -cj /root/${CLUSTER_JSON} -sj /root/${SERVER_JSON}
+                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
             else
-                /opt/contrail/contrail_server_manager/provision_containers.sh -ij /root/image.json -cj /root/${CLUSTER_JSON} -sj /root/${SERVER_JSON}
+                /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON}
             fi
         fi
         server-manager provision -F --cluster_id ${OS_CLUSTER_NAME} openstack_image
@@ -378,11 +377,11 @@ function run_smgr_task() {
     fi
     create_testbed || die "Failed to create required testbed details"
     reimage_setup_using_SM || debug_and_die "reimage failed"
-    if [ -z $CLUSTER_JSON ] || [ -z $SERVER_JSON ]; then
-        echo "CLUSTER_JSON and SERVER_JSON env variables are not set."
+    if [ -z JSON ]; then
+        echo "JSON env variables is not set."
 	echo "testbed.py will be used to provision the setup."
     else
-        echo "CLUSTER_JSON and SERVER_JSON will be used to provision the setup."
+        echo "JSON will be used to provision the setup."
 	set_json_file_path || die "setting json file path for cluster and server failed"
     fi
     copy_smlite_pkg || die "copy of sm-lite packages failed"
