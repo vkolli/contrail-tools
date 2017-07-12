@@ -20,10 +20,11 @@ OSP_TEMPLATES=$TOOLS_WS/contrail-tripleo-heat-templates-sanity
 OSP_INSTACK_GENERATE_VM_SH=$TOOLS_WS/contrail-tripleo-heat-templates-sanity/generate-instackjson.sh
 UNDERCLOUD_NODEHOME='/home/stack/'
 
+run_build_fab "osp10_sanity"
 #run_build_fab "configure_bridges"
 #run_build_fab "install_hypervisor_pkg"
-run_build_fab "undercloud_setup"
-run_build_fab "overcloud_configs"
+#run_build_fab "undercloud_setup"
+#run_build_fab "overcloud_configs"
 
 #fab configure_bridges || debug_and_die "Failed during hypervisor configuration"
 #fab create_rh_test_vm || debug_and_die "test-vm creation failed"
@@ -33,15 +34,17 @@ run_build_fab "overcloud_configs"
 ''' commit templates in contrail-tools '''
 
 echo "copying rhsop-10 templates to stack user home /home/stack"
-sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${OSP_TEMPLATES} ${UNDERCLOUD_IP}:${UNDERCLOUD_NODEHOME}
+# Not using it for now since the undercloud qcow2 has the contrail-templates
+#sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${OSP_TEMPLATES} ${UNDERCLOUD_IP}:${UNDERCLOUD_NODEHOME}
 echo "copy generate-instack-vm.sh script to stack home directory"
-sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${OSP_INSTACK_GENERATE_VM_SH} ${UNDERCLOUD_IP}:${UNDERCLOUD_NODEHOME}
+#TBD qcow2 has this script
+#sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${OSP_INSTACK_GENERATE_VM_SH} ${UNDERCLOUD_IP}:${UNDERCLOUD_NODEHOME}
 
 sshpass -p ${TASK_RUNNER_HOST_PASSWORD} ssh ${SSHOPT} ${UNDERCLOUD_HOST_STRING} "sudo mkdir -p /var/www/html/contrail/"
 
-cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${UNDERCLOUD_NODEHOME}:" || die "Failed to copy contrail-installi-packages  tgz to $UNDERCLOUD_NODEHOME:"
+cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${UNDERCLOUD_NODEHOME}:" || die "Failed to copy contrail-install-packages  tgz to $UNDERCLOUD_NODEHOME:"
 
-run_build_fab "osp10_instack_and_templates"
+#run_build_fab "osp10_instack_and_templates"
 #fab osp10_instack_and_templates || debug_and_die "osp10 instack tasks failed"
 
 if [[ $TEST_RUN_INFRA == 'docker' ]]; then
