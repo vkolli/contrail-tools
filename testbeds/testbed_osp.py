@@ -23,13 +23,13 @@ host12 = 'heat-admin@19.0.2.8'
 # Contrail WebUI
 host13 = 'root@1.87.141.213'
  
-undercloud_host = 'root@10.7.7.1'
-undercloud_host_stack = 'stack@10.87.67.44'
+undercloud_host = 'root@10.87.67.42'
+undercloud_host_stack = 'stack@10.87.67.42'
 
-#hypervisor_host = 'root@10.87.67.1'
-hypervisor_host = 'root@10.87.67.142'
+hypervisor_host = 'root@10.87.67.2'
+#hypervisor_host = 'root@10.87.67.142'
 #hypervisor_host_stack = 'stack@10.87.67.142'
-hypervisor_host_stack = 'stack@10.87.67.1' 
+hypervisor_host_stack = 'stack@10.87.67.2' 
 
 #hypervisor_host = 'root@10.87.66.153'
 #External routers if any
@@ -97,10 +97,10 @@ env.passwords = {
 	host12: 'SSH-KEY-SHARED',
 	host13: 'contrail123',
 	host_build: 'contrail123',
-        undercloud_host: 'contrail123',
+        undercloud_host: 'c0ntrail123',
         hypervisor_host: 'c0ntrail123',
-        hypervisor_host_stack: 'contrail123', 
-        undercloud_host_stack: 'contrail123',
+        hypervisor_host_stack: 'c0ntrail123', 
+        undercloud_host_stack: 'c0ntrail123',
 }
  
  

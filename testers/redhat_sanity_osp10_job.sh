@@ -9,22 +9,25 @@ echo "AVAILABLE TESTBEDS : ${testbeds[@]}"
 get_testbed
 create_testbed || die "Failed to create required testbed details"
 echo "Running tests on $TBFILE_NAME .."
-reimage_setup || debug_and_die "Reimage failed!"
+# reimage not needed for osp10 setup
+#reimage_setup || debug_and_die "Reimage failed!"
 search_third_party_package
-run_build_fab "cleanup_repo"
+#run_build_fab "cleanup_repo"
 
 OSP_VERSION=$OSP_VERSION
 TEST_HOST_IP=$TEST_VM_IP
 UNDERCLOUD_IP=$UNDERCLOUD_IP
 OSP_TEMPLATES=$TOOLS_WS/contrail-tripleo-heat-templates-sanity
-OSP_INSTACK_GENERATE_VM_SH=$TOOLS_WS/contrail-tripleo-heat-templates-sanity/generate-instackjson.sh
+#OSP_INSTACK_GENERATE_VM_SH not used for now.
+#OSP_INSTACK_GENERATE_VM_SH=$TOOLS_WS/contrail-tripleo-heat-templates-sanity/generate-instackjson.sh
+CONTRAIL_REPO_UNDERCLOUD='/var/www/html/contrail/'
 UNDERCLOUD_NODEHOME='/home/stack/'
 
-run_build_fab "osp10_sanity"
 #run_build_fab "configure_bridges"
 #run_build_fab "install_hypervisor_pkg"
 #run_build_fab "undercloud_setup"
 #run_build_fab "overcloud_configs"
+run_build_fab "osp10_sanity" || debug_and_die "Failed during osp10 provisioning"
 
 #fab configure_bridges || debug_and_die "Failed during hypervisor configuration"
 #fab create_rh_test_vm || debug_and_die "test-vm creation failed"
@@ -33,19 +36,26 @@ run_build_fab "osp10_sanity"
 #fab overcloud_configs || debug_and_die "overcloud_configs tasks failed"
 ''' commit templates in contrail-tools '''
 
-echo "copying rhsop-10 templates to stack user home /home/stack"
+#echo "copying rhsop-10 templates to stack user home /home/stack"
 # Not using it for now since the undercloud qcow2 has the contrail-templates
 #sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${OSP_TEMPLATES} ${UNDERCLOUD_IP}:${UNDERCLOUD_NODEHOME}
-echo "copy generate-instack-vm.sh script to stack home directory"
+#echo "copy generate-instack-vm.sh script to stack home directory"
 #TBD qcow2 has this script
+# Below lines needed entire setup bringup, now bringup only undercloud with templates
+#echo "copying rhsop-10 templates to stack user home /home/stack"
+#sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${OSP_TEMPLATES} ${UNDERCLOUD_IP}:${UNDERCLOUD_NODEHOME}
+#echo "copy generate-instack-vm.sh script to stack home directory"
 #sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${OSP_INSTACK_GENERATE_VM_SH} ${UNDERCLOUD_IP}:${UNDERCLOUD_NODEHOME}
 
-sshpass -p ${TASK_RUNNER_HOST_PASSWORD} ssh ${SSHOPT} ${UNDERCLOUD_HOST_STRING} "sudo mkdir -p /var/www/html/contrail/"
+# No need to create contrail repo since the qcow2 pre created with the below location
+#sshpass -p ${TASK_RUNNER_HOST_PASSWORD} ssh ${SSHOPT} ${UNDERCLOUD_HOST_STRING} "sudo mkdir -p /var/www/html/contrail/"
 
 cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${UNDERCLOUD_NODEHOME}:" || die "Failed to copy contrail-install-packages  tgz to $UNDERCLOUD_NODEHOME:"
 
 #run_build_fab "osp10_instack_and_templates"
-#fab osp10_instack_and_templates || debug_and_die "osp10 instack tasks failed"
+cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${CONTRAIL_REPO_UNDERCLOUD}:" || die "Failed to copy contrail-installi-packages  tgz to $CONTRAIL_REPO_UNDERCLOUD:"
+
+#run_build_fab "osp10_instack_and_templates" || debug_and_die "osp10 instack tasks failed"
 
 if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         search_package
