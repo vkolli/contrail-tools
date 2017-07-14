@@ -53,9 +53,9 @@ run_build_fab "osp10_sanity" || debug_and_die "Failed during osp10 provisioning"
 cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${UNDERCLOUD_NODEHOME}:" || die "Failed to copy contrail-install-packages  tgz to $UNDERCLOUD_NODEHOME:"
 
 #run_build_fab "osp10_instack_and_templates"
-cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${CONTRAIL_REPO_UNDERCLOUD}:" || die "Failed to copy contrail-installi-packages  tgz to $CONTRAIL_REPO_UNDERCLOUD:"
+cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${CONTRAIL_REPO_UNDERCLOUD}:" || die "Failed to copy contrail-install-packages  tgz to $CONTRAIL_REPO_UNDERCLOUD:"
 
-#run_build_fab "osp10_instack_and_templates" || debug_and_die "osp10 instack tasks failed"
+run_build_fab "osp_deploy" || debug_and_die "osp deployment task failed"
 
 if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         search_package
