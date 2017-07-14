@@ -38,6 +38,9 @@ test_vm  = 'root@10.87.67.85'
 undercloud_host = 'root@10.87.67.42'
 hypervisor_host = 'root@10.87.67.2'
 
+rh_username = 'aranjan.redhat'
+rh_password = 'H3Ub9pth3x'
+rh_pool_id = '8a85f98154747c980154787ef75a30af'
 
 #External routers if any
 #for eg.
@@ -62,6 +65,7 @@ env.roledefs = {
 	'database': [host17, host18, host19],
         'undercloud' : [undercloud_host],
         'rh_hypervisor' : [ hypervisor_host ],
+        'build' : [host1],
         'test_vm' : ['test_vm']
 }
  
@@ -81,6 +85,7 @@ env.hostnames = {
         host17: 'overcloud-contrailanalyticsdatabase-0.localdomain',
         host18: 'overcloud-contrailanalyticsdatabase-1.localdomain',
         host19: 'overcloud-contrailanalyticsdatabase-2.localdomain',
+        host_build: 'host1',
         undercloud_host: 'undercloud.example.com',
         hypervisor_host: '5b9s38',
         test_vm: 'ctest-pt-svm0-27350666'
@@ -214,3 +219,4 @@ env.cfgm = {
     'amqp_port' : '5672',
     'amqp_password' : 'RABBITMQ_PASSWORD' # OVERCLOUD_RABBITMQ_PASSWORD
 }
+env.test_repo_dir='/home/stack/jenkins/workspace/redhat_multi_node_osp10/contrail-tools/contrail-test'
