@@ -111,7 +111,6 @@ env.passwords = {
         undercloud_host: 'c0ntrail123',
         hypervisor_host: 'c0ntrail123',
         test_vm:'c0ntrail123',
-        undercloud_host_stack: 'c0ntrail123',
 }
  
  
