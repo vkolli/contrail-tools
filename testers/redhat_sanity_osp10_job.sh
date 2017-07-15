@@ -34,7 +34,7 @@ run_build_fab "osp10_sanity" || debug_and_die "Failed during osp10 provisioning"
 #fab install_hypervisor_pkg || debug_and_die "install hypervisor pkg failed"
 #fab undercloud_setup || debug_and_die "undercloud setup failed"
 #fab overcloud_configs || debug_and_die "overcloud_configs tasks failed"
-''' commit templates in contrail-tools '''
+##''' commit templates in contrail-tools '''
 
 #echo "copying rhsop-10 templates to stack user home /home/stack"
 # Not using it for now since the undercloud qcow2 has the contrail-templates
