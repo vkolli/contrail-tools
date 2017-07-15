@@ -17,6 +17,7 @@ search_third_party_package
 OSP_VERSION=$OSP_VERSION
 TEST_HOST_IP=$TEST_VM_IP
 UNDERCLOUD_IP=$UNDERCLOUD_IP
+UNDERCLOUD_HOST_STRING=$UNDERCLOUD_HOST_STRING
 OSP_TEMPLATES=$TOOLS_WS/contrail-tripleo-heat-templates-sanity
 #OSP_INSTACK_GENERATE_VM_SH not used for now.
 #OSP_INSTACK_GENERATE_VM_SH=$TOOLS_WS/contrail-tripleo-heat-templates-sanity/generate-instackjson.sh
@@ -50,10 +51,12 @@ run_build_fab "osp10_sanity" || debug_and_die "Failed during osp10 provisioning"
 # No need to create contrail repo since the qcow2 pre created with the below location
 #sshpass -p ${TASK_RUNNER_HOST_PASSWORD} ssh ${SSHOPT} ${UNDERCLOUD_HOST_STRING} "sudo mkdir -p /var/www/html/contrail/"
 
-cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${UNDERCLOUD_NODEHOME}:" || die "Failed to copy contrail-install-packages  tgz to $UNDERCLOUD_NODEHOME:"
+#sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} ${TEST_HOST_STRING}:tempest/result*.xml $TOOLS_WS/results
+
+cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${UNDERCLOUD_HOST_STRING}:/var/www/html/contrail/" || die "Failed to copy contrail-install-packages  tgz to $UNDERCLOUD_NODEHOME:"
 
 #run_build_fab "osp10_instack_and_templates"
-cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${CONTRAIL_REPO_UNDERCLOUD}:" || die "Failed to copy contrail-install-packages  tgz to $CONTRAIL_REPO_UNDERCLOUD:"
+cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/contrail-install-packages_*.tgz  ${UNDERCLOUD_HOST_STRING}:/var/www/html/contrail/" || die "Failed to copy contrail-install-packages  tgz to $CONTRAIL_REPO_UNDERCLOUD:"
 
 run_build_fab "osp_deploy" || debug_and_die "osp deployment task failed"
 
