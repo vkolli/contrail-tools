@@ -1426,7 +1426,7 @@ def create_testbedpy_file():
     dict_of_testbed_files = {}
     for clus in testbed_py_dict:
         file_str = ""
-        file_str = file_str + "from fabric.api import env \nimport os\n\nnext_routers = []\n"
+        file_str = file_str + "from fabric.api import env \nimport os\n\next_routers = []\n"
         if "router_asn" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "router_asn = %s\n\n" % testbed_py_dict[clus]["router_asn"]
@@ -1740,7 +1740,7 @@ def create_testbedpy_file_mainline():
     dict_of_testbed_files = {}
     for clus in testbed_py_dict:
         file_str = ""
-        file_str = file_str + "from fabric.api import env \nimport os\n\nnext_routers = []\n"
+        file_str = file_str + "from fabric.api import env \nimport os\n\next_routers = []\n"
         if "router_asn" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "router_asn = %s\n\n" % testbed_py_dict[clus]["router_asn"]
