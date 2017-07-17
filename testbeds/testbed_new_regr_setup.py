@@ -95,6 +95,15 @@ env.ha = {
     'external_vip' : '10.204.216.140',
 }
 
+env.kernel_upgrade=False
+env.openstack = {  
+    'manage_amqp': "true"
+}
+
+env.keystone = {   
+    'admin_password': 'contrail123'
+}
+
 env.qos = {host3: [{'hardware_q_id': '3', 'logical_queue':['1', '6-10', '12-15']},
                    {'hardware_q_id': '11', 'logical_queue':['40-46']},
                    {'hardware_q_id': '18', 'logical_queue':['70-74', '75', '80-95']},
