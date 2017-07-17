@@ -12,7 +12,7 @@ host3 = 'root@10.204.216.97'
 host4 = 'root@10.204.216.98'
 host5 = 'root@10.204.216.99'
 host6 = 'root@10.204.216.103'
-host7 = 'root@10.204.216.152'
+host7 = 'root@10.204.216.160'
 
 
 ext_routers = [('yuvaraj', '10.10.10.100')]
@@ -135,7 +135,7 @@ env.qos_niantic = {host3:[
 minimum_diskGB = 32
 #env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
 #env.test_repo_dir = '/home/stack/regression/contrail-test'
-env.encap_priority =  "'MPLSoUDP','MPLSoGRE','VXLAN'"
+env.encap_priority =  "'VXLAN', 'MPLSoUDP','MPLSoGRE'"
 env.mail_from = 'contrail-build@juniper.net'
 env.mail_to = 'dl-contrail-sw@juniper.net'
 multi_tenancy = True
