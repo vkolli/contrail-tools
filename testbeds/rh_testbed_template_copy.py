@@ -66,7 +66,7 @@ env.roledefs = {
         'undercloud' : [undercloud_host],
         'rh_hypervisor' : [ hypervisor_host ],
         'build' : [host1],
-        'test_vm' : ['test_vm']
+        'test_vm' : [test_vm]
 }
  
 #Hostnames
