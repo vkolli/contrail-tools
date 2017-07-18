@@ -963,7 +963,12 @@ EOF
         fi
         mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
     )"
-    sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py
+    if [[ ${TEST_SKU} = "newton" && ${DISTRO} = "redhat70" ]]
+    then
+      sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:/${tbpath}/testbed.py
+    else
+      sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py
+    fi
 }
 
 function set_other_test_params {
