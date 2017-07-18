@@ -27,12 +27,7 @@ else
 fi
 export TEST_RUN=${TEST_RUN:-'contrail-test'}
 export TEST_CONTAINER_IMAGE=${TEST_CONTAINER_IMAGE:-''}
-if [[ ${TEST_SKU} = "newton" && ${DISTRO} = "redhat70" ]]
-then
-  export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/mitaka/artifacts/"}
-else
-  export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts/"}
-fi
+export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts/"}
 # If BRANCH, BUILID, DISTRO, SKU are not defined,
 # PKG_FILE path needs to be set
 export PKG_FILE

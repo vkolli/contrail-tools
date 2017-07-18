@@ -937,13 +937,7 @@ EOF
     fi
 
 
-    if [[ ${TEST_SKU} = "newton" && ${DISTRO} = "redhat70" ]]
-    then
-       export TEST_SKU='mitaka'
-       container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
-    else
-       container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
-    fi 
+    container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
     container_image_file=`basename $container_image_path`
     if [[ ! -f $container_image_path ]]; then
         echo "ERROR!! Container image $container_image_path doesnt exist"
@@ -963,7 +957,7 @@ EOF
         fi
         mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
     )"
-    if [[ ${TEST_SKU} = "newton" && ${DISTRO} = "redhat70" ]]
+    if [[ ${SKU} = "newton" && ${DISTRO} = "redhat70" ]]
     then
       sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:/$tbpath/testbed.py
     else
