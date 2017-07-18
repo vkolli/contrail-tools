@@ -965,7 +965,7 @@ EOF
     )"
     if [[ ${TEST_SKU} = "newton" && ${DISTRO} = "redhat70" ]]
     then
-      sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:/${tbpath}/testbed.py
+      sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:/$tbpath/testbed.py
     else
       sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py
     fi
