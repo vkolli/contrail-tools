@@ -18,6 +18,7 @@ env.roledefs = {
     'all': [host1, host2, host3,host4,host5,host6],
     'contrail-controller': [host1, host2, host3],
     'openstack': [host4],
+    'contrail-lb': [host4],
     'contrail-analytics': [host1, host2, host3],
     'contrail-analyticsdb': [host1, host2, host3],
     'compute': [host5,host6],
@@ -37,6 +38,20 @@ env.physical_routers={
                      'ssh_password' : 'c0ntrail123',
                      'mgmt_ip'  : '10.204.217.240',
              }
+}
+
+env.ha = {
+    'contrail_internal_vip' : '10.204.217.136',
+    'contrail_external_vip' : '10.204.217.136'
+}
+
+env.kernel_upgrade=False
+env.openstack = {  
+    'manage_amqp': "true"
+}
+
+env.keystone = {   
+    'admin_password': 'contrail123'
 }
 
 env.openstack_admin_password = 'contrail123'
@@ -68,6 +83,6 @@ env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'
 multi_tenancy=True
 env.interface_rename = False
-env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
+env.encap_priority =  "VXLAN,MPLSoUDP,MPLSoGRE"
 env.log_scenario='SMLite Container Multi-Node ContrailHA Sanity'
 env.enable_lbaas = True
