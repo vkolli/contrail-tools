@@ -1386,8 +1386,12 @@ function run_task() {
           bringup_setup || die "Bringup failed"
        fi
     else
-       reimage_using_SM || debug_and_die "reimage failed"
-       provision_using_SM || debug_and_die "provision failed"
+       if [ ${OSP10} == "OSP10" ]; then
+          echo "OSP10 needs to provision using director"
+       else
+         reimage_using_SM || debug_and_die "reimage failed"
+         provision_using_SM || debug_and_die "provision failed"
+       fi
     fi
 
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
