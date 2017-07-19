@@ -1354,6 +1354,12 @@ def create_cluster_json():
                 '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus][
                     "parameters"]["provision"]["contrail"]["minimum_disk_database"]
             individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+
+	if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+	    individual_clus_string = individual_clus_string + \
+		\t\t\t\t\t"enable_lbaas": %s' % cluster_dict[clus][
+		    "parameters"]["provision"]["contrail"]["enable_lbaas"]
+
         if "enable_rabbitmq_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"amqp_ssl":"%s",\n' % cluster_dict[clus][
