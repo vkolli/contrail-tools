@@ -156,6 +156,8 @@ function search_package {
         else
             export REIMAGE_PARAM=${BUILD_MAP[${DISTRO}]}
         fi
+    elif [[ ${BUILD_MAP[${DISTRO}]} =~ ubuntu-16 ]]; then
+        export REIMAGE_PARAM="ubuntu-16.04.2.minimal"
     else
         if [ -z $REDHAT_72 ]; then
             if [ -z $CENTOS_72 ]; then
@@ -967,7 +969,7 @@ EOF
         echo "ERROR!! Container image $container_image_path doesnt exist"
         exit 1
     fi
-    sshpass -p $TEST_HOST_PASSWORD scp $SSHOPT $container_image_path $TEST_HOST_STRING:/tmp/
+    #sshpass -p $TEST_HOST_PASSWORD scp $SSHOPT $container_image_path $TEST_HOST_STRING:/tmp/
     exec_cmds -s $TEST_HOST_STRING -p $TEST_HOST_PASSWORD -c "(
         docker  -v &> /dev/null ; rv=\$?
         if [ \$rv -ne 0 ]; then
