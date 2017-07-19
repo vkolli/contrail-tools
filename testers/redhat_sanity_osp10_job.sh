@@ -59,7 +59,8 @@ exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshp
 exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/artifacts/contrail-thirdparty-packages*.tgz  ${UNDERCLOUD_HOST_STRING}:/var/www/html/contrail/" || die "Failed to copy contrail-install-packages  tgz to $CONTRAIL_REPO_UNDERCLOUD:"
 
 run_build_fab "osp_deploy" || debug_and_die "osp deployment task failed"
-
+run_sanity || die "run_sanity_simple failed"
+'''
 if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         search_package
         pkg_file_name=`basename $PKG_FILE`
@@ -80,7 +81,7 @@ if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         install_dep_pkgs_for_test
         run_sanity || die "Run_sanity step failed"
     fi
-
+'''
 echo "Test Done"
 collect_tech_support || die "Task to collect logs/cores failed"
 echo "Ending test on $TBFILE_NAME"
