@@ -61,28 +61,26 @@ exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshp
 run_build_fab "osp_deploy" || debug_and_die "osp deployment task failed"
 run_sanity_simple || die "run_sanity_simple failed"
 #setup_sanity_base_simple
-'''
-if [[ $TEST_RUN_INFRA == 'docker' ]]; then
-        search_package
-        pkg_file_name=`basename $PKG_FILE`
-        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
-        if [[ -z $TEST_HOST_STRING ]]; then
-            export TEST_HOST_STRING=$API_SERVER_HOST_STRING
-            export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
-        fi
-        export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
-        export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
-        export TEST_RUN='contrail-test'
-        setup_testnode || die "test node setup failed"
+#if [[ $TEST_RUN_INFRA == 'docker' ]]; then
+#        search_package
+#        pkg_file_name=`basename $PKG_FILE`
+#        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
+#        if [[ -z $TEST_HOST_STRING ]]; then
+#            export TEST_HOST_STRING=$API_SERVER_HOST_STRING
+#            export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
+#        fi
+#        export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
+#        export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
+#        export TEST_RUN='contrail-test'
+#        setup_testnode || die "test node setup failed"
        # run_fab "install_test_repo"
        # install_dep_pkgs_for_test
-        run_sanity_simple || die "run_sanity_simple failed"
-    else
-        run_fab "install_test_repo"
-        install_dep_pkgs_for_test
-        run_sanity || die "Run_sanity step failed"
-    fi
-'''
+#        run_sanity_simple || die "run_sanity_simple failed"
+#    else
+#        run_fab "install_test_repo"
+#        install_dep_pkgs_for_test
+#        run_sanity || die "Run_sanity step failed"
+#    fi
 echo "Test Done"
 collect_tech_support || die "Task to collect logs/cores failed"
 echo "Ending test on $TBFILE_NAME"
