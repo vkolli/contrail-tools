@@ -87,7 +87,7 @@ function reimage_setup_using_SM {
         SMID=ubuntu14$SKU${BUILDID}
         isofile="/root/images/image145.json"
     elif [[ $DISTRO =~ ubuntu-16.04 ]]; then
-        image_id="ubuntu-16.04.2"
+        image_id="ubuntu-16.04.2.minimal"
 	image="/cs-shared/images/ubuntu-16.04.2-server-amd64.iso"
         pkg_type="contrail-ubuntu-package"
         iso_type="ubuntu"
