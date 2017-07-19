@@ -1374,10 +1374,10 @@ function run_task() {
     create_testbed || die "Failed to create required testbed details"
     echo "Running tests on $TBFILE_NAME .." 
 
-    if [ -z "$SM_SERVER_IP" ]
+    if [ -n "$SM_SERVER_IP" ]
     then
        reimage_and_bringup
-    elif [ -z "$PROVISION_SM" ]
+    elif [ -n "$PROVISION_SM" ]
     then
        reimage_using_SM || debug_and_die "reimage failed"
        if [ ${OSP10} == "OSP10" ]; then
