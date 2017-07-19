@@ -29,6 +29,7 @@ fi
 export TEST_RUN=${TEST_RUN:-'contrail-test'}
 export TEST_CONTAINER_IMAGE=${TEST_CONTAINER_IMAGE:-''}
 if [ ${OSP10} == "OSP10" ]; then
+   export test_sku='mitaka'
    export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/mitaka/artifacts/"}
 else
    export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts/"}
