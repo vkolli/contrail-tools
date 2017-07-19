@@ -6,6 +6,7 @@ export TEST_HOST_PASSWORD=${TEST_HOST_PASSWORD}
 export API_SERVER_HOST_STRING=${API_SERVER_HOST_STRING:-"root@127.0.0.1"}
 export TOOLS_WS=${TOOLS_WS:-$PWD}
 
+export OSP10=${OSP10}
 # Set the below 4 variables if PKG_FILE is not set
 export BRANCH=${BRANCH:-mainline}
 export BUILDID=${BUILDID:-LATEST}
@@ -27,7 +28,12 @@ else
 fi
 export TEST_RUN=${TEST_RUN:-'contrail-test'}
 export TEST_CONTAINER_IMAGE=${TEST_CONTAINER_IMAGE:-''}
-export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts/"}
+if [ ${OSP10} == "OSP10" ]; then
+   export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/mitaka/artifacts/"}
+else
+   export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts/"}
+fi
+
 # If BRANCH, BUILID, DISTRO, SKU are not defined,
 # PKG_FILE path needs to be set
 export PKG_FILE
