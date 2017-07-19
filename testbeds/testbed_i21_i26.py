@@ -21,7 +21,7 @@ env.roledefs = {
     'contrail-lb': [host4],
     'contrail-analytics': [host1, host2, host3],
     'contrail-analyticsdb': [host1, host2, host3],
-    'compute': [host5,host6],
+    'contrail-compute': [host5,host6],
     'build': [host_build]
 }
 
