@@ -1380,7 +1380,7 @@ function run_task() {
     elif [ -z "$PROVISION_SM" ]
     then
        reimage_using_SM || debug_and_die "reimage failed"
-       if ![ ${OSP10} == "OSP10" ]; then
+       if [ ${OSP10} !== "OSP10" ]; then
           bringup_setup || die "Bringup failed"
        fi
     else
