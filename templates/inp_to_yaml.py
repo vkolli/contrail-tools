@@ -1169,6 +1169,11 @@ def create_cluster_json():
         # Lets start the contrail Part
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t"contrail":{\n'
+
+	if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+            individual_clus_string = individual_clus_string + \
+                '\t\t\t\t\t"enable_lbaas": %s' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["enable_lbaas"]
+
         if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"database":{\n'
@@ -1184,6 +1189,7 @@ def create_cluster_json():
         if "kernel_upgrade" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"kernel_upgrade": %s' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_upgrade"]
+
         # Contrail Part Ends here
         individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
 
