@@ -957,9 +957,9 @@ EOF
         fi
         mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
     )"
-    if [[ ${SKU} = "newton" && ${DISTRO} = "redhat70" ]]
+    if [ ${OSP10} == "OSP10" ]; then
     then
-      sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:/$tbpath/testbed.py
+      echo "fab task will create and copy testbed files to test vm testbeds directory"  
     else
       sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py
     fi
