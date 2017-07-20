@@ -959,11 +959,10 @@ EOF
     )"
     if [ ${OSP10} == "OSP10" ]; then
     then
-    #  echo "fab task will create and copy testbed files to test vm testbeds directory"  
+       sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:/$tbpath/testbed.py
        sshpass -p ${API_SERVER_HOST_PASSWORD} ssh -t -t ${SSHOPT} $API_SERVER_HOST_STRING ' (
        cd /roo/; cp /root/rh_testbed_template.py /opt/contrail/utils/fabfile/testbeds/testbed.py;
        echo "testbed file copied modified" )'
-    #  sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:/$tbpath/testbed.py
     else
       sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py
     fi
