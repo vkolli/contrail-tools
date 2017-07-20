@@ -454,6 +454,9 @@ function use_testbed_file {
     if [[ ${DISTRO} =~ ubuntu-14-04 ]]; then
         distro_name="ubuntu-14.04"
         cp -f ${tbfile_hyper}.$distro_name ${tbfile}
+    elif [[ ${DISTRO} =~ ubuntu-16-04 ]]; then
+        distro_name="ubuntu-16.04"
+        cp -f ${tbfile_hyper}.$distro_name ${tbfile}
     elif [ -f ${tbfile_hyper}.$image_name ]; then
             cp -f ${tbfile_hyper}.$image_name ${tbfile}
     elif [ -f ${tbfile_hyper}.${base_distro} ]; then
