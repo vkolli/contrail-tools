@@ -972,7 +972,7 @@ EOF
         echo "ERROR!! Container image $container_image_path doesnt exist"
         exit 1
     fi
-    #sshpass -p $TEST_HOST_PASSWORD scp $SSHOPT $container_image_path $TEST_HOST_STRING:/tmp/
+    sshpass -p $TEST_HOST_PASSWORD scp $SSHOPT $container_image_path $TEST_HOST_STRING:/tmp/
     exec_cmds -s $TEST_HOST_STRING -p $TEST_HOST_PASSWORD -c "(
         docker  -v &> /dev/null ; rv=\$?
         if [ \$rv -ne 0 ]; then
