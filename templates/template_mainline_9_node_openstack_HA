@@ -147,6 +147,8 @@
 								"internal_vip": "10.10.0.100",
 								"openstack_manage_amqp": "false",
 								"keystone_admin_password": "c0ntrail123",
+								"keystone_version": "v3",
+								"keystone_auth_protocol": "https",
 								"keystone_admin_token": "c0ntrail123"
                                         		}
                                 		}
