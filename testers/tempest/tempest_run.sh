@@ -11,6 +11,17 @@
 # Target node where Openstack/Contrail is setup can be any node(local/remote)
 # If remote, set the below environment variables appropriately
 
+function prepare_test_env () {
+    export contrail_fab_path=/opt/contrail/utils/
+    cd /contrail-test
+    source tools/common.sh
+    prepare
+    cd -
+}
+
+prepare_test_env
+source /etc/contrail/openstackrc
+
 export TEMPEST_WS=${TEMPEST_WS:-$(pwd)}
 BUILD_STRING_FILE="build_id.txt"
 export TEMPEST_DIR=$TEMPEST_WS
@@ -34,7 +45,7 @@ export API_SERVER_HOST_PASSWORD=${API_SERVER_HOST_PASSWORD:-c0ntrail123}
 export OS_USERNAME=${OS_USERNAME:-admin}
 export OS_PASSWORD=${OS_PASSWORD:-contrail123}
 export OS_TENANT_NAME=${OS_TENANT_NAME:-admin}
-export OS_AUTH_URL=http://${KEYSTONE_SERVICE_HOST}:5000/v2.0/
+export OS_AUTH_URL=${OS_AUTH_URL:-http://${KEYSTONE_SERVICE_HOST}:5000/v2.0/}
 export OS_NO_CACHE=1
 export SSHOPT="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
