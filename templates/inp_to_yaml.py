@@ -1072,10 +1072,12 @@ def create_cluster_json_mainline():
         if "domain" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
-        if "enable_lbaas" in cluster_dict[clus]["parameters"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
-        for net in network_dict:
+
+        #if "enable_lbaas" in cluster_dict[clus]["parameters"]:
+        #    individual_clus_string = individual_clus_string + \
+        #        '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
+        
+	for net in network_dict:
             if network_dict[net]["role"] == "management":
                 individual_clus_string = individual_clus_string + \
                     '\t\t\t"gateway": "%s",\n' % network_dict[net]["default_gateway"]
