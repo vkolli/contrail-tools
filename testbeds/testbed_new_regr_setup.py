@@ -15,10 +15,10 @@ host6 = 'root@10.204.216.103'
 host7 = 'root@10.204.216.160'
 
 
-ext_routers = [('yuvaraj', '10.10.10.100')]
+ext_routers = [('blr-mx1', '10.10.10.101')]
 router_asn = 64510
 public_vn_rtgt = 19005
-public_vn_subnet = "10.204.219.88/29"
+public_vn_subnet = "10.204.219.104/29"
 use_devicemanager_for_md5 = True
 
 host_build = 'stack@10.204.216.49'
@@ -35,13 +35,13 @@ env.roledefs = {
 }
 
 env.physical_routers={
-'yuvaraj'     : {       'vendor': 'juniper',
+'blr-mx1'     : {       'vendor': 'juniper',
                      'model' : 'mx',
                      'asn'   : '64510',
-                     'name'  : 'yuvaraj',
+                     'name'  : 'blr-mx1',
                      'ssh_username' : 'root',
                      'ssh_password' : 'c0ntrail123',
-                     'mgmt_ip'  : '10.204.217.190',
+                     'mgmt_ip'  : '10.204.216.253',
              }
 }
 
