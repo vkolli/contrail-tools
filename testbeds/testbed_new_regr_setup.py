@@ -45,6 +45,18 @@ env.physical_routers={
              }
 }
 
+env.dm_mx={
+'yuvaraj'     : {       'vendor': 'juniper',
+                     'model' : 'mx',
+                     'asn'   : '64510',
+                     'name'  : 'yuvaraj',
+                     'control_ip' : '10.10.10.100',
+                     'ssh_username' : 'root',
+                     'ssh_password' : 'c0ntrail123',
+                     'mgmt_ip'  : '10.204.217.190',
+             }
+}
+
 env.hostnames = {
     'all': ['nodem6', 'nodem7', 'nodem8', 'nodem9', 'nodem10', 'nodem14', 'nodec35']
 }
