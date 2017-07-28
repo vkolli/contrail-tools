@@ -74,6 +74,8 @@ env.ostypes = {
     host6: 'ubuntu',
 }
 #use_devicemanager_for_md5 = True
+enable_ceilometer = True
+ceilometer_polling_interval = 60
 env.cluster_id='clusterc53c54c55c56l1i10'
 minimum_diskGB = 32
 env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
