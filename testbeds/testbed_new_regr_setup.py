@@ -132,6 +132,8 @@ env.qos_niantic = {host3:[
 
 #env.cluster_id='clusterm5m6m7m8m9m10'
 minimum_diskGB = 32
+enable_ceilometer = True
+ceilometer_polling_interval = 60
 #env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
 #env.test_repo_dir = '/home/stack/regression/contrail-test'
 env.encap_priority =  "'MPLSoUDP','MPLSoGRE','VXLAN'"
