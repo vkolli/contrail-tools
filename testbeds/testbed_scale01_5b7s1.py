@@ -160,7 +160,7 @@ host_build = 'root@10.87.121.77'
 
 #Role definition of the hosts.
 env.roledefs = {
-    'all': [host1,host2,host3,host4,host5,host6,host7,host8,host9,host10,host11,host12,host13,host14,host15,host16,host17],
+    'all': [host1,host2,host3,host4,host5,host6,host7,host8,host9,host10,host11,host12,host13,host14,host15,host16,host17,host18,host19],
     'cfgm': [host1,host4,host7],
     'openstack': [host10,host18,host19],
     'webui': [host1,host4,host7],
