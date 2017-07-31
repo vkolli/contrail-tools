@@ -179,6 +179,10 @@ env.hostnames = {
 #Openstack admin password
 env.openstack_admin_password = 'contrail123'
 
+env.openstack = {
+    'manage_amqp': "true"
+}
+
 # Passwords of each host
 # for passwordless login's no need to set env.passwords,
 # instead populate env.key_filename in testbed.py with public key.
