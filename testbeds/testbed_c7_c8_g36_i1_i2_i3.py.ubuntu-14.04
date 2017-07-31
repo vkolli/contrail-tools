@@ -93,7 +93,7 @@ control_data = {
 }
 
 env.ha = {
-    'internal_vip' : '192.168.192.251',
+    'internal_vip' : '192.168.192.25',
 }
 ha_setup = True
 
