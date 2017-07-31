@@ -7,6 +7,7 @@ host3 = 'root@10.204.217.76'
 host4 = 'root@10.204.216.150'
 host5 = 'root@10.204.217.114'
 host6 = 'root@10.204.217.115'
+host7 = 'root@10.204.216.153'
 
 ext_routers = [('hooper','192.168.192.253')]
 router_asn = 64512
@@ -17,13 +18,13 @@ host_build = 'stack@10.204.216.49'
 
 
 env.roledefs = {
-    'all': [host1, host2, host3, host4, host5, host6],
+    'all': [host1, host2, host3, host4, host5, host6, host7],
     'cfgm': [host1, host3],
     'openstack': [host3],
     'webui': [host2],
-    'control': [host1, host3],
+    'control': [host1, host3, host7],
     'compute': [host4, host5, host6],
-    'collector': [host1, host3],
+    'collector': [host1, host3, host7],
     'database': [host1, host2, host3],
     'build': [host_build],
 }
@@ -32,6 +33,7 @@ env.hostnames = {
     'all': ['nodec7.englab.juniper.net',
             'nodec8.englab.juniper.net',
             'nodeg36.englab.juniper.net',
+            'nodec57.englab.juniper.net',
             'nodei1.englab.juniper.net',
             'nodei2.englab.juniper.net',
             'nodei3.englab.juniper.net']
@@ -56,6 +58,7 @@ env.passwords = {
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     host6: 'c0ntrail123',
+    host7: 'c0ntrail123',
 
     host_build: 'stack@123',
 }
@@ -67,6 +70,7 @@ env.ostypes = {
     host4:'centos71',
     host5:'centos71',
     host6:'centos71',
+    host7:'centos71',
 }
 
 control_data = {
@@ -76,6 +80,7 @@ control_data = {
     host4 : { 'ip': '192.168.192.1/24', 'gw' : '192.168.192.254', 'device':'enp4s0f1', 'vlan': '128' },
     host5 : { 'ip': '192.168.192.2/24', 'gw' : '192.168.192.254', 'device':'enp4s0f1', 'vlan': '128' },
     host6 : { 'ip': '192.168.192.3/24', 'gw' : '192.168.192.254', 'device':'enp4s0f1', 'vlan': '128' },
+    host7 : { 'ip': '192.168.192.7/24', 'gw' : '192.168.192.254', 'device':'enp1s0f1' }
 }
 
 env.cluster_id='clusterc7c8g36i1i2i3'
