@@ -860,13 +860,13 @@ def create_server_json_mainline():
                     ip_add_with_mask = ip_add + '/' + mask
                     mac_address = fixed_ip_mac_mapping[ip_add]
                     role = network_dict[j]["role"]
+                    single_server_string = single_server_string + '\t\t\t\t{\n'
                     if role == "management":
                         int_name = cluster_dict[clus]["management_interface"]
+                    	single_server_string = single_server_string + \
+                        	'\t\t\t\t\t"default_gateway": "%s",\n' % gateway
                     else:
                         int_name = cluster_dict[clus]["control_data_iterface"]
-                    single_server_string = single_server_string + '\t\t\t\t{\n'
-                    single_server_string = single_server_string + \
-                        '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
                     single_server_string = single_server_string + \
