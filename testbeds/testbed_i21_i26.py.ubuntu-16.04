@@ -6,6 +6,7 @@ host3 = 'root@10.204.217.135'
 host4 = 'root@10.204.217.136'
 host5 = 'root@10.204.217.137'
 host6 = 'root@10.204.217.138'
+host7 = 'root@10.204.216.39'
 
 ext_routers = [('hooper','10.204.217.240')]
 router_asn = 64512
@@ -17,16 +18,16 @@ host_build = 'stack@10.204.216.49'
 env.roledefs = {
     'all': [host1, host2, host3,host4,host5,host6],
     'contrail-controller': [host1, host2, host3],
-    'openstack': [host4],
-    'contrail-lb': [host4],
+    'openstack': [host7],
+    'contrail-lb': [host7],
     'contrail-analytics': [host1, host2, host3],
     'contrail-analyticsdb': [host1, host2, host3],
-    'contrail-compute': [host5,host6],
+    'contrail-compute': [host4,host5,host6],
     'build': [host_build]
 }
 
 env.hostnames = {
-    'all': ['nodei21', 'nodei22', 'nodei23', 'nodei24', 'nodei25', 'nodei26']
+    'all': ['nodei21', 'nodei22', 'nodei23', 'nodei24', 'nodei25', 'nodei26', 'nodea1']
 }
 env.interface_rename = False
 env.physical_routers={
@@ -41,8 +42,8 @@ env.physical_routers={
 }
 
 env.ha = {
-    'contrail_internal_vip' : '10.204.217.136',
-    'contrail_external_vip' : '10.204.217.136'
+    'contrail_internal_vip' : '10.204.216.39',
+    'contrail_external_vip' : '10.204.216.39'
 }
 
 env.kernel_upgrade=False
@@ -63,6 +64,7 @@ env.passwords = {
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     host6: 'c0ntrail123',
+    host7: 'c0ntrail123',
     host_build: 'stack@123',
 }
 
@@ -73,6 +75,7 @@ env.ostypes = {
     host4:'ubuntu',
     host5:'ubuntu',
     host6:'ubuntu',
+    host7:'ubuntu',
 }
 
 env.cluster_id='i21_i26_cluster'
