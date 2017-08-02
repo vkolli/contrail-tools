@@ -6,6 +6,35 @@ source $TOOLS_WS/testers/utils
 testbeds=(${AVAILABLE_TESTBEDS//,/ })
 echo "AVAILABLE TESTBEDS : ${testbeds[@]}"
 
+function run_setup_shell_script_openstack_nodes {
+    #get the openstack roles from testbed.py file.
+    hosts=`awk /\'openstack\':/ ${TOOLS_WS}/testbeds/${tb_filename}`
+    host=`echo $hosts | cut -d : -f2 | cut -d [ -f2 | cut -d ] -f1`
+    count=`echo $host | awk -F',' '{print NF}'`
+    i=0
+    if [ $count -eq 1 ]; then
+        array[$i]=$host
+    else
+        while [ $count -ne $i ]
+        do
+            j=`expr $i + 1`
+            host1=`echo $host | cut -d , -f$j`
+            array[$i]=$host1
+            i=`expr $i + 1`
+        done
+    fi
+    echo ${array[@]}
+
+    #get the mapping of host to host-string.
+    for node in "${array[@]}"
+    do
+        host=`echo $node | tr -d ""`
+        host_info=`grep "$host =" fabfile/testbeds/testbed.py | awk '{print $3}' | tr -d "'"`
+        exec_cmds -s $host_info -p 'c0ntrail123' -c "
+                find /opt/contrail -name "setup.sh" -exec {} \;" || debug_and_die "Failed while running setup.sh on openstack node"
+    done
+}
+
 get_testbed
 create_testbed || die "Failed to create required testbed details"
 echo "Running tests on $TBFILE_NAME .."
@@ -27,10 +56,11 @@ if [ -z $REDHAT_72 ]; then
 else
     fab install_rhosp8_repo || debug_and_die "Failed during installing rhosp8 repo"
 fi
-run_build_fab "install_pkg_all_without_openstack:${THIRD_PARTY_PKG_FILE}"  || debug_and_die "Task install_pkg_all_without_openstack failed!!"
+run_build_fab "install_pkg_all:${THIRD_PARTY_PKG_FILE}"  || debug_and_die "Task install_pkg_all failed!!"
 copy_fabric_test_artifacts
-run_build_fab "install_pkg_all_without_openstack:${PKG_FILE}" || debug_and_die "Task install_pkg_all_without_openstack failed!!"
+run_build_fab "install_pkg_all:${PKG_FILE}" || debug_and_die "Task install_pkg_all failed!!"
 run_setup_shell_script
+run_setup_shell_script_openstack_nodes
 
 if [ -z $REDHAT_72 ]; then
     if [ "$SKU" == icehouse ]; then
@@ -65,6 +95,7 @@ run_fab "update_keystone_admin_token"
 sshpass -p $API_SERVER_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/contrail-fabric-utils/fabfile/testbeds/testbed.py  ${API_SERVER_HOST_STRING}:$tbpath/testbed.py
 run_fab "setup_interface"
 run_fab "setup_without_openstack"  || debug_and_die "Setup failed!"
+run_fab install_provision_heat
 sleep 120
 
 if [[ $TEST_RUN_INFRA == 'docker' ]]; then
