@@ -6,6 +6,7 @@ host3 = 'root@10.204.217.135'
 host4 = 'root@10.204.217.136'
 host5 = 'root@10.204.217.137'
 host6 = 'root@10.204.217.138'
+host7 = 'root@10.204.216.39'
 
 ext_routers = [('hooper','10.204.217.240')]
 router_asn = 64512
@@ -16,18 +17,18 @@ host_build = 'stack@10.204.216.49'
 
 env.roledefs = {
     'all': [host1, host2, host3,host4,host5, host6],
-    'cfgm': [host1],
+    'cfgm': [host1, host2, host3],
     'webui': [host1],
-    'openstack': [host2],
-    'control': [host1, host3],
-    'collector': [host1],
-    'database': [host1],
+    'openstack': [host7],
+    'control': [host1, host2, host3],
+    'collector': [host1, host2, host3],
+    'database': [host1, host2, host3],
     'compute': [host4, host5, host6],
     'build': [host_build]
 }
 
 env.hostnames = {
-    'all': ['nodei21.englab.juniper.net', 'nodei22.englab.juniper.net', 'nodei23.englab.juniper.net', 'nodei24.englab.juniper.net', 'nodei25.englab.juniper.net', 'nodei26.englab.juniper.net']
+    'all': ['nodei21.englab.juniper.net', 'nodei22.englab.juniper.net', 'nodei23.englab.juniper.net', 'nodei24.englab.juniper.net', 'nodei25.englab.juniper.net', 'nodei26.englab.juniper.net', 'nodea1.englab.juniper.net']
 }
 env.interface_rename = True
 env.physical_routers={
@@ -58,6 +59,7 @@ env.passwords = {
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     host6: 'c0ntrail123',
+    host7: 'c0ntrail123',
     host_build: 'stack@123',
 }
 
@@ -68,11 +70,18 @@ env.ostypes = {
     host4:'centos65',
     host5:'centos65',
     host6:'centos65',
+    host7:'centos65'
 }
+
+env.ha = {
+    'contrail_internal_vip' : '10.204.217.170',
+    'contrail_internal_virtual_router_id' :  125
+}
+ha_setup = True
 
 env.openstack_admin_password = 'c0ntrail123'
 env.keystone = {
-    'keystone_ip'   : '10.204.217.134',
+    'keystone_ip'   : '10.204.216.39',
     'auth_protocol' : 'http',                  #Default is http
     'auth_port'     : '35357',                 #Default is 35357
     'admin_token' : 'caa9e2054d04497d87e2d6fb0b1edeea',
@@ -89,7 +98,7 @@ env.keystone = {
 
 env.openstack = {
     'service_token' : 'caa9e2054d04497d87e2d6fb0b1edeea',
-    'amqp_host' : '10.204.217.134',
+    'amqp_host' : '10.204.216.39',
 }
 
 
@@ -105,6 +114,6 @@ env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
 
 enable_ceilometer = True
 ceilometer_polling_interval = 60
-env.log_scenario='Multi-Node Sanity'
+env.log_scenario='Multi-Node Contrail-HA Sanity'
 #env.log_scenario='Multi-Interface Sanity[mgmt, ctrl=data]'
 env.enable_lbaas = True
