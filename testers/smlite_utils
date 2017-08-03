@@ -395,7 +395,7 @@ function run_smgr_task() {
     fi
     copy_smlite_pkg || die "copy of sm-lite packages failed"
     provision_using_SMLite || die "provision failed"
-    add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
+    #add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
     #check_kernel_upgrade || die "kernel upgrade failed"
 
     #add fab basic images.
