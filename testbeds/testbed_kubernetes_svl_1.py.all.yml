@@ -1,4 +1,3 @@
-docker_registry: 10.204.217.152:5000
 docker_registry_insecure: True
 docker_install_method: package
 ansible_user: root
@@ -14,5 +13,5 @@ kubernetes_public_fip_pool: {domain: default-domain, project: default, network: 
 controller_config: {bgp_asn: "64510"}
 webui_config: {http_listen_port: "10000"}
 vrouter_physical_interface: em1
-controller_ip: 10.204.217.51
+controller_ip: 10.87.121.34
 

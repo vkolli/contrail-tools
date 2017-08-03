@@ -22,7 +22,7 @@ public_vn_subnet = '10.204.219.48/29'
 host_build = 'stack@10.204.216.49'
 
 env.roledefs = {
-    'all': [host1, host2, host3, host4, host5, host6],
+    'all': [host1, host2, host3, host4, host5, host6, host7],
     'contrail-compute': [host5, host6, host7],
     'openstack': [host1],
     'contrail-controller': [host1, host2, host3],
