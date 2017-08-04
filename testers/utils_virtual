@@ -85,6 +85,11 @@ function check_SM_pkg_availability() {
     if [[ $DISTRO =~ ubuntu-16.04 ]]; then
         pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/mitaka/artifacts"
     fi
+    if [[ $CONTINUOUS_BUILD -eq 1 ]]; then
+        pkg_dir="/cs-shared/cb/jenkins-jobs/CB-R4.0-ubuntu14-mitaka/builds/${BUILDID}/archive/packages"
+    else
+        echo "Not continuous"
+    fi
     while [ "$count" -ne 36 ]; do
         if ls $pkg_dir/contrail-server-manager-installer*
         then
@@ -115,10 +120,8 @@ function bringup_SM_setup() {
     echo "Bringup/upgrade SM setup"
 
     #check if SM pkgs are available in artifacts before proceeding further.
-    if [ -z $CONTINUOUS_BUILD ]; then
-        check_SM_pkg_availability || die "SM pkg not available in artifacts"
-        cd $pkg_dir
-    fi
+    check_SM_pkg_availability || die "SM pkg not available in artifacts"
+    cd $pkg_dir
 
     #SM pkg name is different for centos & ubuntu, so set it accordingly.
     #multi-node uses ubuntu SM and single node uses centos SM.
@@ -133,13 +136,9 @@ function bringup_SM_setup() {
         SM_SERVER_PKG_FILE=`ls contrail-server-manager-installer_*\.*-${BUILDID}\~mitaka\_all.deb*`
     fi
     if [ $CONTINUOUS_BUILD -eq 1 ] ; then
-        pkg_dir=${TOOLS_WS}
-        cd $pkg_dir
-        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@10.84.22.50:/var/lib/jenkins/jobs/Continuous-Build-Ubuntu14/builds/lastStableBuild/archive/artifacts/contrail-server-manager-installer_*.deb ${TOOLS_WS}
         SM_SERVER_PKG_FILE=`ls contrail-server-manager-installer_*.deb`
     fi
     pkg_name="$pkg_dir/$SM_SERVER_PKG_FILE"
-
     sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SM_SERVER_IP " (
         mkdir /root/sm_files/
     ) " 
@@ -603,9 +602,10 @@ function add_server_cluster_SM() {
             SMID="combined_image_mainline"
         fi
         pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
-        if [ -z $CONTINUOUS_BUILD ]; then
-            cd $pkg_path
-        fi 
+        if [ $CONTINUOUS_BUILD -eq 1 ]  && [ $DISTRO =~ ubuntu-14.04 ]; then
+            pkg_path="/cs-shared/cb/jenkins-jobs/CB-R4.0-ubuntu14-mitaka/builds/${BUILDID}/archive/packages"
+        fi
+        cd $pkg_path
         if [ $USE_CLOUD_PKG -eq 1 ]; then
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.tgz`
             contrail_pkg_name=`ls contrail-install-packages*.tgz`
@@ -625,17 +625,15 @@ function add_server_cluster_SM() {
             contrail_pkg_name=`ls contrail-cloud-docker_*.tgz`
         fi
         if [ $CONTINUOUS_BUILD -eq 1 ]; then
-            pkg_path=$TOOLS_WS 
-            cd $pkg_path
-            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@10.84.22.50:/var/lib/jenkins/jobs/Continuous-Build-Ubuntu14/builds/lastStableBuild/archive/artifacts/contrail-cloud-docker_*.tgz ${TOOLS_WS} 
             contrail_pkg=`ls contrail-cloud-docker_*.tgz`
             contrail_pkg_name=`ls contrail-cloud-docker_*.tgz`
         fi
 
 
-        echo ${contrail_pkg}
+        PKG_FILE=${contrail_pkg}
+        export $PKG_FILE
         echo ${pkg_path} 
-
+     
         #SM pkg name is different for centos & ubuntu, so set it accordingly.
         #multi-node uses ubuntu SM and single node uses centos SM.
         #set the parameters for multi/single node setup
@@ -909,7 +907,9 @@ function run_smgr_virtual_task() {
         export API_SERVER_HOST_STRING="root@"`cat ${TOOLS_WS}/config-node-ip`
         
         if [[ $TEST_RUN_INFRA == 'docker' ]]; then
-            search_package
+            if [ -z $CONTINUOUS_BUILD ]; then
+                search_package
+            fi
             pkg_file_name=`basename $PKG_FILE`
             export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
             if [[ -z $TEST_HOST_STRING ]]; then
@@ -924,11 +924,10 @@ function run_smgr_virtual_task() {
             if [ -z $CONTINUOUS_BUILD ]; then
                 setup_testnode || debug_and_die "test node setup failed"
             else
-                sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@10.84.22.50:/var/lib/jenkins/jobs/Continuous-Build-Ubuntu14/builds/lastStableBuild/archive/artifacts/docker-image-contrail-test*.tar.gz ${TOOLS_WS} 
-                export TEST_CONTAINER_IMAGE_DIR=$TOOLS_WS 
+                export TEST_CONTAINER_IMAGE_DIR="/cs-shared/cb/jenkins-jobs/CB-R4.0-ubuntu14-mitaka/builds/${BUILDID}/archive/packages"
                 setup_testnode || debug_and_die "test node setup failed"
 	    fi
-            setup_testnode || debug_and_die "test node setup failed"
+           
             install_dep_pkgs_for_test
             run_sanity_simple || debug_and_die "run_sanity_simple failed"
         else
