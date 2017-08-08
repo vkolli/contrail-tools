@@ -111,11 +111,17 @@ env.vcenter_servers = {
         'username': 'administrator@vsphere.local',
         'password': 'Contrail123!',
         'auth': 'https',
-        'datacenter': 'a11a29',
-        'cluster': ['a11a29_blr'],
-        'dv_switch': { 'dv_switch_name': 'Distributed_Switch', 'nic': 'vmnic0', },
-       # 'dv_port_group': { 'dv_portgroup_name': 'c4k4u14_dvpg', 'number_of_ports': '3', },
-    },
+        'datacenters':{
+        'a11a29':{
+            'dv_switches': {
+                'Distributed_Switch':{
+                    'dv_switch_version': '5.5.0', 
+                'clusters': ['a11a29_blr'],
+             },
+     },
+   },
+  },
+ },
 }
 
 esxi_hosts = {
