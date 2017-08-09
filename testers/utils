@@ -1025,7 +1025,15 @@ EOF
         echo "Unknown Distro - $DISTRO"
         exit 1
     fi
-    container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
+    if [[ $CB_SANITY -eq 1 ]]; then
+        if [[ $DISTRO =~ ubuntu-16 ]]; then
+            container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/docker-image-*.tar.gz`
+        else
+            container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/docker-image-*.tar.gz`
+        fi
+    else
+        container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
+    fi
     container_image_file=`basename $container_image_path`
     if [[ ! -f $container_image_path ]]; then
         echo "ERROR!! Container image $container_image_path doesnt exist"
