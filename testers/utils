@@ -122,7 +122,8 @@ function search_package {
                 if [[ $DISTRO =~ ubuntu-16 ]]; then
                     PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/contrail-cloud-docker*.tgz`
                 else
-                    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-cloud-docker*.tgz`
+			PKG_FILE="$(ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-cloud-docker*.tgz)"
+                    #PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-cloud-docker*.tgz`
                 fi
             else
                 PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts/contrail-cloud-docker*.tgz`
@@ -383,7 +384,11 @@ function checkout_fab_repo_deprecated {
 
 function checkout_fab_repo {
     cd $TOOLS_WS
-    sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/contrail-fabric-utils*.tgz  . || die "Failed to copy fab artifacts to build host"
+    if [[ $CB_SANITY -eq 1 ]]; then
+        sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/contrail-fabric-utils*.tgz  . || die "Failed to copy fab artifacts to build host"
+    else
+        sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/contrail-fabric-utils*.tgz  . || die "Failed to copy fab artifacts to build host"
+    fi
     tar xzf contrail-fabric-utils*.tgz
     mv fabric-utils contrail-fabric-utils
 }
