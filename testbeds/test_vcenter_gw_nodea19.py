@@ -102,6 +102,13 @@ env.compute_as_gateway_mode = {
    host4 : 'server',
 }
 
+env.keystone = {
+            'admin_password': 'contrail123'
+         }
+env.openstack = {
+            'manage_amqp': "true"
+            }
+
 env.vcenter_servers = {
     'vcenter10': {
         'server':'10.204.217.189',
