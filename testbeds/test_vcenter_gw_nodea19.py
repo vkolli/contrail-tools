@@ -75,10 +75,10 @@ env.other_orchestrators={
 
 #env.slave_orchestrator = 'vcenter'
 control_data = {
-    host1 : { 'ip': '192.168.250.4/24', 'gw' : '192.168.250.254', 'device':'em1' },
-    host2 : { 'ip': '192.168.250.5/24', 'gw' : '192.168.250.254', 'device':'em1' },
+    host1 : { 'ip': '192.168.250.4/24', 'device':'em1' },
+    host2 : { 'ip': '192.168.250.5/24', 'device':'em1' },
    # host3 : { 'ip': '192.168.250.8/24', 'gw' : '192.168.250.254', 'device':'em2' },
-    host4 : { 'ip': '192.168.250.19/24', 'gw' : '192.168.250.254', 'device':'p6p2' },
+    host4 : { 'ip': '192.168.250.19/24', 'device':'p6p2' },
 }
 
 env.physical_routers={
