@@ -207,7 +207,11 @@ function SMLite_get_node_distro() {
         cat /etc/lsb-release"`
     if [[ $lsb_dist_output =~ Ubuntu ]]; then
         lsb_dist=Ubuntu
-        SERVER_MANAGER_INSTALLER="contrail-server-manager-installer_*\.*-${BUILDID}\~$SKU\_all.deb"
+        if [[ $CB_SANITY -eq 1 ]]; then
+            SERVER_MANAGER_INSTALLER="contrail-server-manager-installer_*.deb"
+        else
+            SERVER_MANAGER_INSTALLER="contrail-server-manager-installer_*\.*-${BUILDID}\~$SKU\_all.deb"
+        fi
         CONTRAIL_PACKAGE="contrail-cloud-docker_*.tgz"
     else
         lsb_dist=SomeOtherOS
