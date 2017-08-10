@@ -81,7 +81,18 @@ function check_SM_pkg_availability() {
     else
         pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/centos64_os/${SKU}/artifacts"
     fi
-    
+
+    if [[ $DISTRO =~ ubuntu-16.04 ]]; then
+        pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/mitaka/artifacts"
+    fi
+
+    if [[ $CB_SANITY -eq 1 ]]; then
+        if [[ $DISTRO =~ ubuntu-16 ]]; then
+            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages"
+        else
+            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages"
+        fi
+    fi
     while [ "$count" -ne 36 ]; do
         if ls $pkg_dir/contrail-server-manager-installer*
         then
@@ -113,20 +124,26 @@ function bringup_SM_setup() {
 
     #check if SM pkgs are available in artifacts before proceeding further.
     check_SM_pkg_availability || die "SM pkg not available in artifacts"
-
     cd $pkg_dir
 
     #SM pkg name is different for centos & ubuntu, so set it accordingly.
     #multi-node uses ubuntu SM and single node uses centos SM.
-    if [ $SM_TYPE -eq 1 ] #if multi node refer to ubuntu folder
+    if [ $SM_TYPE -eq 1 ] && [ -z $CB_SANITY ] #if multi node refer to ubuntu folder
     then
         SM_SERVER_PKG_FILE=`ls contrail-server-manager-installer_*\.*-${BUILDID}\~$SKU\_all.deb*`
     else
         SM_SERVER_PKG_FILE=`ls contrail-server-manager-installer-*\.*-${BUILDID}*.el6.noarch.rpm*`
         echo $SM_SERVER_PKG_FILE
     fi
-    pkg_name="$pkg_dir/$SM_SERVER_PKG_FILE"
+    if [[ $DISTRO =~ ubuntu-16.04 ]]; then
+        SM_SERVER_PKG_FILE=`ls contrail-server-manager-installer_*\.*-${BUILDID}\~mitaka\_all.deb*`
+    fi
+    if [ $CB_SANITY -eq 1 ] ; then
+        SM_SERVER_PKG_FILE=`ls contrail-server-manager-installer_*.deb`
+    fi
 
+
+    pkg_name="$pkg_dir/$SM_SERVER_PKG_FILE"
     sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SM_SERVER_IP " (
         mkdir /root/sm_files/
     ) " 
@@ -532,7 +549,10 @@ function add_server_cluster_SM() {
     then
         return 0
     fi
-
+    if [ $SKIP_BRINGUP -ne 0 ]
+    then
+        return 0
+    fi
     if [ $SMLITE_REGRESSION -eq 0 ]
     then
         # set the parameters required for reimage.
@@ -547,6 +567,13 @@ function add_server_cluster_SM() {
             iso_type="ubuntu"
             SMID=ubuntu14$SKU${BUILDID}
             iso_name="ubuntu-14-04"
+            isofile="/root/sm_files/image145.iso"
+        elif [[ $DISTRO =~ ubuntu-16.04 ]]; then
+            image="/cs-shared/images/ubuntu-14.04.5-server-amd64.iso"
+            pkg_type="contrail-ubuntu-package"
+            iso_type="ubuntu"
+            SMID=ubuntu16$SKU${BUILDID}
+            iso_name="ubuntu-16-04"
             isofile="/root/sm_files/image145.iso"
         elif [[ $DISTRO =~ centos64 ]]; then 
             image="/root/images/CentOS-6.4-x86_64-minimal.iso"
@@ -579,8 +606,15 @@ function add_server_cluster_SM() {
         then
             SMID="combined_image_mainline"
         fi
- 
         pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
+        if [[ $CB_SANITY -eq 1 ]]; then
+            if [[ $DISTRO =~ ubuntu-16 ]]; then
+                pkg_path="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages"
+            else
+                pkg_path="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages"
+            fi
+        fi
+
         cd $pkg_path
         if [ $USE_CLOUD_PKG -eq 1 ]; then
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.tgz`
@@ -597,13 +631,19 @@ function add_server_cluster_SM() {
         if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
         then
             SMID="combined_image_mainline"
-            contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker*.tgz`
-            contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
+            contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
+            contrail_pkg_name=`ls contrail-cloud-docker_*.tgz`
+        fi
+        if [ $CB_SANITY -eq 1 ]; then
+            contrail_pkg=`ls contrail-cloud-docker_*.tgz`
+            contrail_pkg_name=`ls contrail-cloud-docker_*.tgz`
         fi
 
-        echo ${contrail_pkg}
-        echo ${pkg_path} 
 
+        PKG_FILE=${contrail_pkg}
+        export $PKG_FILE
+        echo ${pkg_path} 
+     
         #SM pkg name is different for centos & ubuntu, so set it accordingly.
         #multi-node uses ubuntu SM and single node uses centos SM.
         #set the parameters for multi/single node setup
@@ -627,7 +667,12 @@ function add_server_cluster_SM() {
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${image} root@$SM_SERVER_IP:${isofile}
     
         echo "Connect to SM_SERVER to reimage and provision the targets"
-        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/sm_files/preconfig.py root@$SM_SERVER_IP:/opt/contrail/server_manager/client/preconfig.py
+        #if [[ $DISTRO =~ ubuntu-14.04 ]]; then
+        #    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/sm_files/preconfig.py root@$SM_SERVER_IP:/opt/contrail/server_manager/client/preconfig.py
+        #fi
+        #if [[ $DISTRO =~ ubuntu-16.04 ]]; then
+        #    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/sm_files/preconfig_1604.py root@$SM_SERVER_IP:/opt/contrail/server_manager/client/preconfig.py
+        #fi
         sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
             set -e
             echo "add required image/server/cluster for reimage and provision of the target"
@@ -636,26 +681,28 @@ function add_server_cluster_SM() {
             set -e
             echo "add required image/server/cluster for reimage and provision of the target"
 
-            echo "delete iso image if it exists"
-            server-manager-client delete image --image_id ${iso_name}
-
-            echo "add base ISO image to server manager database"
-            echo "add base ISO image to server manager database"
-            server-manager-client upload-image --id ${iso_name} --version ${BUILDID} --category image --type ${iso_type} --file_name ${isofile}
-            if [ $? == 0 ]
+            if [ ${SKIP_ADD_ISO} == 0 ]
             then
-                echo "Server-manager adding image command is successful"
-            else
-                echo "Server-manager adding image command failed, aborting the process"
-                exit 1
-            fi
+                echo "delete iso image if it exists"
+                server-manager-client delete image --image_id ${iso_name}
 
-            echo "check if the image was added successfully"
-            server-manager-client display image --json | grep ${iso_name}
-            if [ $? != 0 ]
-            then
-                echo "Adding Base ISO image failed"
-                exit 1
+                echo "add base ISO image to server manager database"
+                server-manager-client upload-image --id ${iso_name} --version ${BUILDID} --category image --type ${iso_type} --file_name ${isofile}
+                if [ $? == 0 ]
+                then
+                    echo "Server-manager adding image command is successful"
+                else
+                    echo "Server-manager adding image command failed, aborting the process"
+                    exit 1
+                fi
+            
+                echo "check if the image was added successfully"
+                server-manager-client display image --json | grep ${iso_name}
+                if [ $? != 0 ]
+                then
+                    echo "Adding Base ISO image failed"
+                    exit 1
+                fi
             fi
 
             echo "delete contrail package if it exists"
@@ -675,8 +722,14 @@ function add_server_cluster_SM() {
                 echo "Adding contrail package using upload_image command!"
                 server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
             fi
-            sleep 120
-            echo "Server-manager adding contrail-package command is successful"
+            /root/sm_files/check_image_add.sh $SMID
+            if [ $? == 0 ]
+            then
+                echo "Server-manager adding contrail-package command is successful!!!"
+            else
+                echo "Server-manager adding contrail-package command failed!!! aborting the process"
+                exit 1
+            fi
     
             echo "Clean up cluster and server from SM database before adding."
             server-manager delete server --cluster_id $CLUSTER_NAME
@@ -840,50 +893,67 @@ function run_smgr_virtual_task() {
         echo "CLUSTER_NAME env is not set, aborting the process"
         exit 1
     fi
+    
     create_testbed || die "Failed to create required testbed details"
     bringup_SM_setup || debug_and_die "Failed to bringup SM setup"
+    
     #Add server and cluster to the SM
     add_server_cluster_SM || debug_and_die "Failed to add server and cluster to SM"
 
-    if [[ ( ${BRANCH} > "R2.23" ) || ( ${BRANCH} == "mainline" ) ]]
+    if [ $SKIP_BRINGUP -eq 0 ]
     then
-        provision_using_SM_cliff_client || debug_and_die "provision failed"
-    else
-        provision_using_SM || debug_and_die "provision failed"
-    fi
-    #check_kernel_upgrade || die "kernel upgrade failed"
-    export API_SERVER_HOST_STRING="root@"`cat ${TOOLS_WS}/config-node-ip`
-    
-    if [[ $TEST_RUN_INFRA == 'docker' ]]; then
-        search_package
-        pkg_file_name=`basename $PKG_FILE`
-        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
-        if [[ -z $TEST_HOST_STRING ]]; then
-            export TEST_HOST_STRING=$API_SERVER_HOST_STRING
-            export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
+        if [[ ( ${BRANCH} > "R2.23" ) || ( ${BRANCH} == "mainline" ) ]]
+        then
+            provision_using_SM_cliff_client || debug_and_die "provision failed"
+        else
+            provision_using_SM || debug_and_die "provision failed"
         fi
-        export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
-        export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
-        #Copy testbed_file generated by build_infra.sh
-        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/testbed.py ${TOOLS_WS}/testbeds/${tb_filename}
-        setup_testnode || debug_and_die "test node setup failed"
-        install_dep_pkgs_for_test
-        run_sanity_simple || debug_and_die "run_sanity_simple failed"
-    else
-        add_sourcelist || die "source.list copy failed on all target nodes"
-        install_third_party_pkgs || die "installing GDB/ant failed"
-        install_dep_pkgs_for_test
-        run_sanity || debug_and_die "Run_sanity step failed"
-    fi
+        #check_kernel_upgrade || die "kernel upgrade failed"
+        export API_SERVER_HOST_STRING="root@"`cat ${TOOLS_WS}/config-node-ip`
+        
+        if [[ $TEST_RUN_INFRA == 'docker' ]]; then
+            search_package
+            pkg_file_name=`basename $PKG_FILE`
+            if [[ $USE_CLOUD_PKG -eq 1 ]]; then
+                if [[ $VCENTER_AS_COMPUTE_TESTBED -eq 1 || $VCENTER_ONLY_TESTBED -eq 1 ]]; then
+                    export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
+                else
+                    export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-cloud-docker[_]\([0-9\.\-]*\)-.*/\1/'`
+                fi
+            elif [[ $USE_NETWORKING_PKG -eq 1 ]]; then
+                export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-networking-docker[_]\([0-9\.\-]*\)_.*/\1/'`
+            else
+                export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-cloud-docker[_]\([0-9\.\-]*\)-.*/\1/'`
+            fi
+            if [[ -z $TEST_HOST_STRING ]]; then
+                export TEST_HOST_STRING=$API_SERVER_HOST_STRING
+                export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
+            fi
+            export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
+            export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
+            #Copy testbed_file generated by build_infra.sh
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/testbed.py ${TOOLS_WS}/testbeds/${tb_filename}
 
-    run_tempest || die "Run_Tempest step failed"
-    collect_tech_support || die "Task to collect logs/cores failed"
-    #delete_stacks || die "Failed to delete stacks"
-    echo "Ending test on "${AVAILABLE_TESTBEDS}
-    #Set the TBFILE_NAME to the one passed through jenkins job
-    export RUN_SUCCESSFUL=1
-    TBFILE_NAME=${AVAILABLE_TESTBEDS}
-    tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
+
+            setup_testnode || die "test node setup failed"
+            install_dep_pkgs_for_test
+            run_sanity_simple || die "run_sanity_simple failed"
+        else
+            add_sourcelist || die "source.list copy failed on all target nodes"
+            install_third_party_pkgs || die "installing GDB/ant failed"
+            install_dep_pkgs_for_test
+            run_sanity || debug_and_die "Run_sanity step failed"
+        fi
+
+        run_tempest || die "Run_Tempest step failed"
+        collect_tech_support || die "Task to collect logs/cores failed"
+        #delete_stacks || die "Failed to delete stacks"
+        echo "Ending test on "${AVAILABLE_TESTBEDS}
+        #Set the TBFILE_NAME to the one passed through jenkins job
+        export RUN_SUCCESSFUL=1
+        TBFILE_NAME=${AVAILABLE_TESTBEDS}
+        tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
+    fi
 }
 
 
@@ -924,6 +994,7 @@ function debug_and_die
     python ${TOOLS_WS}/testers/upload.py --pkg_name $PKG_FILE --jenkins_id $SCRIPT_TIMESTAMP
     exit 1
 }
+
 
 function cleanup() {
     #Set the TBFILE_NAME to the one passed through jenkins job

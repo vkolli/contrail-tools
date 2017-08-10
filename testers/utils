@@ -64,7 +64,6 @@ function install_third_party_pkgs() {
         do
             echo $word
             sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $word " {
-
                 cp /etc/apt/sources.list /etc/apt/sources.list.orig
                 cp /etc/apt/sources.list.save  /etc/apt/sources.list
                 if [ $? != 0 ]
@@ -74,11 +73,9 @@ function install_third_party_pkgs() {
                 else
                     echo "Copy of upstream source list is sucessfull"
                 fi
-
                 #remove mediubuntu entry from sources.list temporarily as it's causing apt-get update to fail.
                 sed -i".bak" '/packages.medibuntu.org/d' /etc/apt/sources.list
                 sed -i".bak" '/dl.google.com/d' /etc/apt/sources.list
-
                 apt-get update
                 apt-get -y install gdb
                 if [ $API_SERVER_IP == $word ]; then
@@ -86,7 +83,6 @@ function install_third_party_pkgs() {
                     #temporary fix to take care of issue due to different paramiko version
                     pip uninstall -y paramiko
                     pip install paramiko==1.17.0
-
                     echo $TEST_RUN_CMD
                     if [ $BGP_STRESS_TEST -eq 1 ]; then
                         apt-get -y --force-yes --allow-unauthenticated install libboost-chrono-dev
@@ -95,7 +91,6 @@ function install_third_party_pkgs() {
                 fi
                 cp /etc/apt/sources.list.orig /etc/apt/sources.list
                 apt-get update
-
             } "
         done
     fi
@@ -1009,7 +1004,6 @@ enabled=1
 gpgcheck=1
 gpgkey=https://yum.dockerproject.org/gpg
 EOF
-
         yum install -y docker-engine-1.8.3 ;\
         service docker start
         "
