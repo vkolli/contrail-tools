@@ -17,6 +17,12 @@ export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
 export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
 export RANDOM_DIR=$SCRIPT_TIMESTAMP
 
+# For CB_SANITY set Task runnner host to bangalore machine as packages are available locally.
+if [[ -z $CB_SANITY ]]; then
+    export TASK_RUNNER_HOST_STRING="stack@10.204.216.49"
+    export TASK_RUNNER_HOST_PASSWORD="stack@123"
+fi
+
 ##
 # try
 function try {
