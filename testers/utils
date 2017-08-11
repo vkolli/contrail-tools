@@ -878,7 +878,6 @@ function run_sanity_simple {
         return 0
     fi
     search_package
-    copy_fabric_test_artifacts
     setup_sanity_base_simple
 }
 
