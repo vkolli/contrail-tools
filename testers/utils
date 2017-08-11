@@ -147,7 +147,7 @@ function search_package {
         fi
         export PKG_FILE
         pkg_file_name=`basename $PKG_FILE`
-        re_pkg="contrail-install-packages_(.*)-(.*)~.*"
+        re_pkg="contrail-cloud-docker_(.*)-(.*)~.*"
         if [[ $pkg_file_name =~ $re_pkg ]]; then
             export CONTRAIL_RELEASE=${BASH_REMATCH[1]}
         else
