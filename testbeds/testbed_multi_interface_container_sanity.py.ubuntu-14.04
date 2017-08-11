@@ -4,8 +4,8 @@ os_username = 'admin'
 os_password = 'contrail123'
 os_tenant_name = 'admin'
 
-host1 = 'root@10.204.216.31'
-host2 = 'root@10.204.216.30'
+host1 = 'root@10.204.217.206'
+host2 = 'root@10.204.217.122'
 host3 = 'root@10.204.217.93'
 host4 = 'root@10.204.217.94'
 host5 = 'root@10.204.217.95'
@@ -39,13 +39,13 @@ env.physical_routers={
 }
 
 env.hostnames = {
-    'all': ['nodea35', 'nodea34', 'nodec53', 'nodec54', 'nodec55', 'nodec56']
+    'all': ['nodel1', 'nodei10', 'nodec53', 'nodec54', 'nodec55', 'nodec56']
 }
 
 control_data = {
 
-    host1: {'ip': '22.22.22.35/24', 'gw': '22.22.22.2', 'device': 'em1'},
-    host2: {'ip': '22.22.22.34/24', 'gw': '22.22.22.2', 'device': 'em1'},
+    host1: {'ip': '22.22.22.1/24', 'gw': '22.22.22.2', 'device': 'p514p2'},
+    host2: {'ip': '22.22.22.10/24', 'gw': '22.22.22.2', 'device': 'p6p2'},
     host3: {'ip': '22.22.22.53/24', 'gw': '22.22.22.2', 'device': 'p1p2'},
     host4: {'ip': '22.22.22.54/24', 'gw': '22.22.22.2', 'device': 'p1p2'},
     host5: {'ip': '22.22.22.55/24', 'gw': '22.22.22.2', 'device': 'p1p2'},
@@ -65,6 +65,16 @@ env.passwords = {
     host_build: 'stack@123',
 }
 
+env.kernel_upgrade=False
+env.openstack = {
+    'manage_amqp': "true"
+}
+
+env.keystone = {
+    'admin_password': 'contrail123'
+}
+
+
 env.ostypes = {
     host1: 'ubuntu',
     host2: 'ubuntu',
@@ -74,16 +84,19 @@ env.ostypes = {
     host6: 'ubuntu',
 }
 #use_devicemanager_for_md5 = True
-enable_ceilometer = True
-ceilometer_polling_interval = 60
 env.cluster_id='clusterc53c54c55c56l1i10'
 minimum_diskGB = 32
+env.encap_priority="VXLAN,MPLSoUDP,MPLSoGRE"
 env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
 env.test_repo_dir = '/home/stack/regression/contrail-test'
 env.mail_from = 'contrail-build@juniper.net'
 env.mail_to = 'dl-contrail-sw@juniper.net'
+env.xmpp_auth_enable=True
+env.xmpp_dns_auth_enable=True
+enable_ceilometer = True
+ceilometer_polling_interval = 60
 multi_tenancy = True
 env.interface_rename = True
-env.log_scenario = 'MultiNode Regression'
+env.log_scenario = 'MultiNode MulltiIntf SMLite Container Sanity'
 env.enable_lbaas = True
 do_parallel = True
