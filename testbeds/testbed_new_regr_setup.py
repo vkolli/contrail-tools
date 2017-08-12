@@ -12,7 +12,7 @@ host3 = 'root@10.204.216.97'
 host4 = 'root@10.204.216.98'
 host5 = 'root@10.204.216.99'
 host6 = 'root@10.204.216.103'
-host7 = 'root@10.204.216.152'
+host7 = 'root@10.204.216.160'
 
 
 ext_routers = [('blr-mx1', '10.10.10.101')]
@@ -28,8 +28,8 @@ env.roledefs = {
     'contrail-analytics': [host6, host2, host1],
     'contrail-analyticsdb': [host6, host2, host1],
     'openstack': [host6, host2, host1],
-    'contrail-compute': [host3, host4, host7],
-    'contrail-lb': [host5],
+    'contrail-compute': [host3, host4, host5],
+    'contrail-lb': [host7],
     'build': [host_build]
 }
 
@@ -88,8 +88,8 @@ control_data = {
 }
 
 env.ha = {
-    'contrail_internal_vip' : '10.10.10.10',
-    'contrail_external_vip' : '10.204.216.99',
+    'contrail_internal_vip' : '10.10.10.35',
+    'contrail_external_vip' : '10.204.216.160',
     'internal_vip' : '10.10.10.20',
     'external_vip' : '10.204.216.140',
 }
