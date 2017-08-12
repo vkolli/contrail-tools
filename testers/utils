@@ -6,16 +6,6 @@ source $TOOLS_WS/testers/smgr_utils
 declare -A BUILD_MAP
 export BUILD_MAP=( [ubuntu-12-04]=ubuntu-12.04.3 [centos64_os]=centos-6.4 [centos65]=centos-6.5 [ubuntu-14-04]=ubuntu-14.04 [ubuntu-16-04]=ubuntu-16.04 [ubuntu-14-04-1]=ubuntu-14.04.1 [redhat70]=redhat-7.1 [centos71]=centos-7.1  [ubuntu-16-04]=ubuntu-16.04 )
 export_variables_for_fab="export HA_TEST=$HA_TEST; export AUTH_PROTOCOL=$AUTH_PROTOCOL; export KEYSTONE_VERSION=$KEYSTONE_VERSION; export ENABLE_RBAC=$ENABLE_RBAC"
-export NEW_TEST_INFRA=1
-
-# Set the tester host 
-if [[ -z $TEST_HOST_STRING ]]; then
-    export TEST_HOST_STRING=$API_SERVER_HOST_STRING
-    export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
-fi
-export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
-export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
-export RANDOM_DIR=$SCRIPT_TIMESTAMP
 
 # For CB_SANITY set Task runnner host to bangalore machine as packages are available locally.
 if [[ -z $CB_SANITY ]]; then
@@ -147,7 +137,7 @@ function search_package {
         fi
         export PKG_FILE
         pkg_file_name=`basename $PKG_FILE`
-        re_pkg="contrail-install-packages_(.*)-(.*)~.*"
+        re_pkg="contrail-cloud-docker_(.*)-(.*)-.*"
         if [[ $pkg_file_name =~ $re_pkg ]]; then
             export CONTRAIL_RELEASE=${BASH_REMATCH[1]}
         else
@@ -888,7 +878,6 @@ function run_sanity_simple {
         return 0
     fi
     search_package
-    copy_fabric_test_artifacts
     setup_sanity_base_simple
 }
 

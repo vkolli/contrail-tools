@@ -83,7 +83,7 @@ env.ostypes = {
     host5: 'ubuntu',
     host6: 'ubuntu',
 }
-use_devicemanager_for_md5 = True
+#use_devicemanager_for_md5 = True
 env.cluster_id='clusterc53c54c55c56l1i10'
 minimum_diskGB = 32
 env.encap_priority="VXLAN,MPLSoUDP,MPLSoGRE"
