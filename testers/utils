@@ -54,14 +54,21 @@ function install_third_party_pkgs() {
             export BGP_STRESS_TEST=0
         fi
         echo "BGP_STRESS_TEST is set to $BGP_STRESS_TEST"
-
+	if [[ ${BUILD_MAP[${DISTRO}]} == ubuntu-16.04 ]]
+        then
+            sources="deb http://10.204.217.141/ubuntu xenial main restricted universe multiverse\
+                    \ndeb http://10.204.217.141/ubuntu xenial-security main restricted universe multiverse"
+        else
+            sources="deb http://10.204.217.141/ubuntu trusty main restricted universe multiverse\
+            \ndeb http://10.204.217.141/ubuntu trusty-security main restricted universe multiverse"
+        fi
         echo $HOSTS
         for word in $HOSTS
         do
             echo $word
             sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $word " {
                 cp /etc/apt/sources.list /etc/apt/sources.list.orig
-                cp /etc/apt/sources.list.save  /etc/apt/sources.list
+                echo -e \"$sources\" > /etc/apt/sources.list
                 if [ $? != 0 ]
                 then
                     echo "failed to copy upstream sources.list, cant install third_party pkgs on the node $word!!!"
@@ -70,8 +77,9 @@ function install_third_party_pkgs() {
                     echo "Copy of upstream source list is sucessfull"
                 fi
                 #remove mediubuntu entry from sources.list temporarily as it's causing apt-get update to fail.
-                sed -i".bak" '/packages.medibuntu.org/d' /etc/apt/sources.list
-                sed -i".bak" '/dl.google.com/d' /etc/apt/sources.list
+                #sed -i".bak" '/packages.medibuntu.org/d' /etc/apt/sources.list
+                #sed -i".bak" '/dl.google.com/d'' /etc/apt/sources.list
+
                 apt-get update
                 apt-get -y install gdb
                 if [ $API_SERVER_IP == $word ]; then
@@ -85,8 +93,8 @@ function install_third_party_pkgs() {
                         apt-get -y --force-yes --allow-unauthenticated install libgoogle-perftools4
                     fi
                 fi
-                cp /etc/apt/sources.list.orig /etc/apt/sources.list
-                apt-get update
+                #cp /etc/apt/sources.list.orig /etc/apt/sources.list
+                #apt-get update
             } "
         done
     fi
