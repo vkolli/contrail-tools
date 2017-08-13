@@ -13,6 +13,6 @@ kubernetes_public_fip_pool: {domain: default-domain, project: default, network: 
 # Testbed specific
 controller_config: {bgp_asn: "64510"}
 webui_config: {http_listen_port: "10000"}
-vrouter_physical_interface: em1
+vrouter_physical_interface: eno1
 controller_ip: 10.204.217.51
 
