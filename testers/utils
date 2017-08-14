@@ -404,7 +404,11 @@ function checkout_test_repo {
 	done
     else
 	for x in contrail-test contrail-test-ci ; do
-	    sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/${x}*.tgz  . || die "Failed to copy test artifacts to build host"
+            if [[ $CB_SANITY -eq 1 ]]; then
+                sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/${x}*.tgz  . || die "Failed to copy test artifacts to build host"
+            else
+                sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/${x}*.tgz  . || die "Failed to copy test artifacts to build host"
+            fi
 	    tar xzf ${x}*.tgz
 	done
     fi
