@@ -1470,6 +1470,7 @@ function run_task() {
             export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-cloud-docker[_]\([0-9\.\-]*\)-.*/\1/'`
         fi
         setup_testnode || die "test node setup failed"
+	install_third_party_pkgs
         install_dep_pkgs_for_test
         run_sanity_simple || die "run_sanity_simple failed"
     else
