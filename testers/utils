@@ -7,12 +7,6 @@ declare -A BUILD_MAP
 export BUILD_MAP=( [ubuntu-12-04]=ubuntu-12.04.3 [centos64_os]=centos-6.4 [centos65]=centos-6.5 [ubuntu-14-04]=ubuntu-14.04 [ubuntu-16-04]=ubuntu-16.04 [ubuntu-14-04-1]=ubuntu-14.04.1 [redhat70]=redhat-7.1 [centos71]=centos-7.1  [ubuntu-16-04]=ubuntu-16.04 )
 export_variables_for_fab="export HA_TEST=$HA_TEST; export AUTH_PROTOCOL=$AUTH_PROTOCOL; export KEYSTONE_VERSION=$KEYSTONE_VERSION; export ENABLE_RBAC=$ENABLE_RBAC"
 
-# For CB_SANITY set Task runnner host to bangalore machine as packages are available locally.
-if [[ -z $CB_SANITY ]]; then
-    export TASK_RUNNER_HOST_STRING="stack@10.204.216.49"
-    export TASK_RUNNER_HOST_PASSWORD="stack@123"
-fi
-
 ##
 # try
 function try {
