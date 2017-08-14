@@ -18,6 +18,8 @@
 
 [contrail-kubernetes]
 10.204.216.58
+10.204.216.59
+10.204.216.60
 
 [contrail-compute]
 10.204.216.221
