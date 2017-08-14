@@ -54,13 +54,13 @@ env.ostypes = {
     host2:'ubuntu',
     host3:'ubuntu',
     host4:'ubuntu',
-    contrail_vm2:'esxi-5.5',
-    contrail_vm3:'esxi-5.5',
+    contrail_vm2:'esxi-6.5',
+    contrail_vm3:'esxi-6.5',
 }
 
 env.vcenter_servers = {
        'Datacenter1': {
-            'server':'10.84.22.104',
+            'server':'10.87.131.15',
             'port': '443',
             'username': 'Administrator@vsphere.local',
             'password': 'Contrail123!',
@@ -69,6 +69,7 @@ env.vcenter_servers = {
             'vcenter_compute': '10.87.36.12',
             'cluster': ['cluster-1'],
             'dv_switch': { 'dv_switch_name': 'Sanity-dvswitch-1',
+                                  'dv_switch_version': '6.5.0',
                           },
             'dv_port_group': { 'dv_portgroup_name': 'Sanity-dvportgroup-1',
                               'number_of_ports': '1800',
