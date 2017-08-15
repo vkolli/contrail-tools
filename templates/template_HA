@@ -95,6 +95,7 @@
                         		"cluster_id": "test-cluster",
                         		"parameters": {
                                 		"domain": "englab.juniper.net",
+						"enable_lbaas": "True",
                                 		"provision":{
                                         		"contrail": {
                                                 		"minimum_disk_database": 32,

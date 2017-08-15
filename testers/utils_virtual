@@ -1,4 +1,4 @@
-!/usr/bin/env bash
+#!/usr/bin/env bash
 #!/usr/bin/awk -f
 TOOLS_WS=${TOOLS_WS:-$(pwd)}
 multi_node=0
@@ -77,7 +77,19 @@ function check_SM_pkg_availability() {
     count=0
     if [ $SM_TYPE -eq 1 ] 
     then
-        pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts"
+	if [[ $CB_SANITY -eq 1 ]]; then
+		if [[ $DISTRO =~ ubuntu-16 ]]; then
+			if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+				pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages"
+			fi
+		else
+			if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+				pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages"
+			fi
+		fi
+	else
+        	pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts"
+	fi
     else
         pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/centos64_os/${SKU}/artifacts"
     fi
@@ -85,8 +97,13 @@ function check_SM_pkg_availability() {
     while [ "$count" -ne 36 ]; do
         if ls $pkg_dir/contrail-server-manager-installer*
         then
-            echo "SM pkgs are present in artifacts"
-            break
+	    if [[ $CB_SANITY -eq 1 ]]; then
+	        echo "SM pkgs are present in /archive/packages"
+		break
+	    else
+                echo "SM pkgs are present in artifacts"
+                break
+	    fi
         else
             if [ "$count" -eq 35 ]
             then
@@ -597,8 +614,13 @@ function add_server_cluster_SM() {
         if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
         then
             SMID="combined_image_mainline"
-            contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker*.tgz`
-            contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
+	    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+	        contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+		contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
+	    else
+                contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker*.tgz`
+                contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
+	    fi
         fi
 
         echo ${contrail_pkg}
@@ -640,7 +662,7 @@ function add_server_cluster_SM() {
             server-manager-client delete image --image_id ${iso_name}
 
             echo "add base ISO image to server manager database"
-            echo "add base ISO image to server manager database"
+            #echo "add base ISO image to server manager database"
             server-manager-client upload-image --id ${iso_name} --version ${BUILDID} --category image --type ${iso_type} --file_name ${isofile}
             if [ $? == 0 ]
             then
@@ -676,7 +698,14 @@ function add_server_cluster_SM() {
                 server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
             fi
             sleep 120
-            echo "Server-manager adding contrail-package command is successful"
+	    /root/sm_files/check_image_add.sh $SMID
+	    if [ $? == 0 ]
+	    then
+                echo "Server-manager adding contrail-package command is successful"
+	    else
+	        echo "Server-manager adding contrail-package command failed!!! aborting the process"
+	        exit 1
+	    fi
     
             echo "Clean up cluster and server from SM database before adding."
             server-manager delete server --cluster_id $CLUSTER_NAME
@@ -857,7 +886,7 @@ function run_smgr_virtual_task() {
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         search_package
         pkg_file_name=`basename $PKG_FILE`
-        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
+        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-cloud-docker[-_]\([0-9\.\-]*\)-.*/\1/'`
         if [[ -z $TEST_HOST_STRING ]]; then
             export TEST_HOST_STRING=$API_SERVER_HOST_STRING
             export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
