@@ -12,6 +12,8 @@ cat /root/$1/input.json
 
 sed -i 's/project_uuid_val/'${dashed_project_uuid}'/' /root/$1/input.json
 python /root/$1/change_testbed_params.py /root/$1/input.json $ubuntu_image_name parse_openstack_image_list_command
+python /root/$1/change_testbed_params.py /root/$1/input.json vRE_17 get_vmx_images
+python /root/$1/change_testbed_params.py /root/$1/input.json vPFE_17 get_vmx_images
 sleep 5
 sed -i 's/image_val/'${ubuntu_image_name}'/' /root/$1/input.json
 fip_uuid="$(python /root/$1/change_testbed_params.py /root/$1/input.json $selected_config_node_ip get_fip_uuid)"
@@ -30,9 +32,9 @@ echo "Server Manager OS added"
 
 #Adding the recommended flavor for the VM on the base cluster
 python /root/$1/inp_to_yaml.py /root/$1/input.json check_and_create_required_flavor 
-
 python /root/$1/inp_to_yaml.py /root/$1/input.json create_network_yaml > /root/$1/final_network.yaml
 python /root/$1/inp_to_yaml.py /root/$1/input.json create_server_yaml > /root/$1/final_server.yaml
+python inp_to_yaml.py input.json produce_vmx_env_file > /root/$dashed_project_uuid/vin17.env
 echo " The Servere and Network YAML files are now created at location '/root/$1'"
 
 project_uuid=$(python -c 'import json; fd=json.loads(open("/root/'$1'/input.json").read()); print fd["inp_params"]["params"]["project_uuid"]')
@@ -44,6 +46,11 @@ server_stack_name='test_server_final'
 final_server_stack_name=$server_stack_name$project_uuid
 echo $final_server_stack_name
 echo $final_server_stack_name >> /root/$1/info.txt
+vmx_stack_name='test_vmx_final'
+final_vmx_stack_name=$vmx_stack_name$project_uuid
+echo $final_vmx_stack_name
+echo $final_vmx_stack_name >> /root/$1/info.txt
+
 
 #Lets Create the Network Stack
 heat stack-create -f /root/$1/final_network.yaml $final_network_stack_name
@@ -81,7 +88,7 @@ done
 if [ "$net_res" == 'success' ]
 then
 	heat stack-create -f /root/$1/final_server.yaml $final_server_stack_name
-	sleep 20
+	sleep 30
         while true
         do
 	python /root/$1/change_testbed_params.py /root/$1/input.json $final_server_stack_name get_stack_status > /root/$1/tmp.txt
@@ -96,9 +103,14 @@ then
                 fi
                 if [ "$ser_res" == 'failed' ]
                 then
-                        echo "Server Stack Creation Failed"
-			heat stack-show $final_server_stack_name
-			exit 0
+                        echo "Server Stack Creation Failed ,deleting the failed stack"
+			heat stack-delete $final_server_stack_name -y
+			echo "Resources not available to launch the stack, will retry launching the server stack after 10 minutes"
+			sleep 600
+			heat stack-create -f /root/$1/final_server.yaml $final_server_stack_name 
+			sleep 30
+			#heat stack-show $final_server_stack_name
+			#exit 0
                 fi
                 if [ "$ser_res" == 'inprogress' ]
                 then
@@ -111,6 +123,45 @@ then
                 break
         fi
         done
+	vmx_dec="$(python /root/$1/inp_to_yaml.py /root/$1/input.json is_vmx_true)"
+        if [ "$vmx_dec" == 'true' ]
+        then
+                wget -P /root/$1/ http://10.84.5.120/images/soumilk/vm_images/vmx_files/vmx_compress.tar.gz
+                tar -xvf /root/$1/vmx_compress.tar.gz -C /root/$1
+                echo "vMX Stack Name: $final_vmx_stack_name"
+                heat stack-create -f /root/$1/vmx_contrail.yaml -e /root/$1/vin17.env $final_vmx_stack_name
+                sleep 20
+                while true
+                do
+                        python /root/$1/change_testbed_params.py /root/$1/input.json $final_vmx_stack_name get_stack_status > /root/$1/tmp.txt
+                        chmod 777 /root/$1/tmp.txt
+                        vmx_res="$(cat /root/$1/tmp.txt)"
+                        if [ "$vmx_res" == 'success' ] || [ "$vmx_res" == 'failed' ] || [ "$vmx_res" == 'inprogress' ];
+                        then
+                                if [ "$vmx_res" == 'success' ]
+                                then
+                                        echo "VMX Stack Created Successfully"
+                                        break
+                                fi
+                                if [ "$vmx_res" == 'failed' ]
+                                then
+                                        echo "VMX Stack Creation Failed"
+                                fi
+                                if [ "$vmx_res" == 'inprogress' ]
+                                then
+                                        echo "VMX Stack Creation still in progress. Waiting for 30 more seconds"
+                                        heat stack-list | grep $final_vmx_stack_name
+                                        sleep 30
+                                fi
+                        else
+                                echo "VMX Stack Creation: get_stack_status function in change_testbed_params.py file did not return any thing"
+                                break
+                fi
+                done
+        else
+                echo "Not creating VMX Stack "
+        fi
+
 	echo " Final List of all Heat Stacks "
 	heat stack-list 
 	python /root/$1/inp_to_yaml.py /root/$1/input.json create_cluster_json_mainline > /root/$1/cluster.json

@@ -860,13 +860,13 @@ def create_server_json_mainline():
                     ip_add_with_mask = ip_add + '/' + mask
                     mac_address = fixed_ip_mac_mapping[ip_add]
                     role = network_dict[j]["role"]
+                    single_server_string = single_server_string + '\t\t\t\t{\n'
                     if role == "management":
                         int_name = cluster_dict[clus]["management_interface"]
+                    	single_server_string = single_server_string + \
+                        	'\t\t\t\t\t"default_gateway": "%s",\n' % gateway
                     else:
                         int_name = cluster_dict[clus]["control_data_iterface"]
-                    single_server_string = single_server_string + '\t\t\t\t{\n'
-                    single_server_string = single_server_string + \
-                        '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
                     single_server_string = single_server_string + \
@@ -1072,10 +1072,12 @@ def create_cluster_json_mainline():
         if "domain" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
-        if "enable_lbaas" in cluster_dict[clus]["parameters"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
-        for net in network_dict:
+
+        #if "enable_lbaas" in cluster_dict[clus]["parameters"]:
+        #    individual_clus_string = individual_clus_string + \
+        #        '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
+        
+	for net in network_dict:
             if network_dict[net]["role"] == "management":
                 individual_clus_string = individual_clus_string + \
                     '\t\t\t"gateway": "%s",\n' % network_dict[net]["default_gateway"]
@@ -1089,62 +1091,62 @@ def create_cluster_json_mainline():
             if "docker_registry" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
             	individual_clus_string = individual_clus_string + \
             	    '\t\t\t\t\t"docker_registry": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry"]
-        	if "docker_registry_insecure" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+            if "docker_registry_insecure" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+            	individual_clus_string = individual_clus_string + \
+       		    '\t\t\t\t\t"docker_registry_insecure": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry_insecure"]
+            if "controller_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"controller_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["controller_image"]
+            if "analytics_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"analytics_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["analytics_image"]	
+            if "lb_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"lb_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["lb_image"]
+            if "analyticsdb_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"analyticsdb_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["analyticsdb_image"]
+            if "agent_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"agent_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["agent_image"]
+            if "ssl_certs_src_dir" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"ssl_certs_src_dir": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["ssl_certs_src_dir"]
+            if "tor_ca_cert_file" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"tor_ca_cert_file": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tor_ca_cert_file"]
+            if "tor_ssl_certs_src_dir" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"tor_ssl_certs_src_dir": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tor_ssl_certs_src_dir"]
+            if "ctrl_data_network" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"ctrl_data_network": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["ctrl_data_network"]
+            if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"enable_lbaas": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["enable_lbaas"]
+            if "tsn_mode" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        	individual_clus_string = individual_clus_string + \
+        	    '\t\t\t\t\t"tsn_mode": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tsn_mode"]
+            if "rbac" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+                if cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["rbac"] == 'true':
         		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"docker_registry_insecure": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry_insecure"]
-        	if "controller_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        			'\t\t\t\t\t"api_config":{\n'
         		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"controller_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["controller_image"]
-        	if "analytics_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        			'\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
         		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"analytics_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["analytics_image"]	
-                if "lb_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        			'\t\t\t\t\t\t"aaa_mode": "rbac"\n'
         		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"lb_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["lb_image"]
-        	if "analyticsdb_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        			'\t\t\t\t\t},\n'
         		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"analyticsdb_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["analyticsdb_image"]
-        	if "agent_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        			'\t\t\t\t\t"analytics_api_config":{\n'
         		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"agent_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["agent_image"]
-        	if "ssl_certs_src_dir" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        			'\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
         		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"ssl_certs_src_dir": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["ssl_certs_src_dir"]
-        	if "tor_ca_cert_file" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        			'\t\t\t\t\t\t"log": "/var/log/contrail/contrail-analytics-api.log",\n'
         		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"tor_ca_cert_file": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tor_ca_cert_file"]
-        	if "tor_ssl_certs_src_dir" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+        			'\t\t\t\t\t\t"aaa_mode": "rbac"\n'
         		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"tor_ssl_certs_src_dir": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tor_ssl_certs_src_dir"]
-        	if "ctrl_data_network" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"ctrl_data_network": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["ctrl_data_network"]
-        	if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"enable_lbaas": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["enable_lbaas"]
-        	if "tsn_mode" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"tsn_mode": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tsn_mode"]
-        	if "rbac" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        		if cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["rbac"] == 'true':
-        			individual_clus_string = individual_clus_string + \
-        				'\t\t\t\t\t"api_config":{\n'
-        			individual_clus_string = individual_clus_string + \
-        				'\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
-        			individual_clus_string = individual_clus_string + \
-        				'\t\t\t\t\t\t"aaa_mode": "rbac"\n'
-        			individual_clus_string = individual_clus_string + \
-        				'\t\t\t\t\t},\n'
-        			individual_clus_string = individual_clus_string + \
-        				'\t\t\t\t\t"analytics_api_config":{\n'
-        			individual_clus_string = individual_clus_string + \
-        				'\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
-        			individual_clus_string = individual_clus_string + \
-        				'\t\t\t\t\t\t"log": "/var/log/contrail/contrail-analytics-api.log",\n'
-        			individual_clus_string = individual_clus_string + \
-        				'\t\t\t\t\t\t"aaa_mode": "rbac"\n'
-        			individual_clus_string = individual_clus_string + \
-        				'\t\t\t\t\t},\n'
+        			'\t\t\t\t\t},\n'
             if "global_config" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
             	individual_clus_string = individual_clus_string + \
                         '\t\t\t\t\t"global_config": {\n'
@@ -1298,6 +1300,20 @@ def create_cluster_json_mainline():
                     "parameters"]["provision"]["openstack"]["openstack_manage_amqp"]
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t\t"keystone": {\n'
+
+	if "keystone_version" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t\t"version": "%s",\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["openstack"]["keystone_version"]
+ 
+	if "keystone_auth_protocol" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t\t"auth_protocol": "%s",\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["openstack"]["keystone_auth_protocol"]
+	else:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t\t"auth_protocol": "http",\n'
+
         if "keystone_admin_token" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t"admin_token": "%s",\n' % cluster_dict[clus][
@@ -1354,12 +1370,6 @@ def create_cluster_json():
                 '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus][
                     "parameters"]["provision"]["contrail"]["minimum_disk_database"]
             individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
-
-	if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
-	    individual_clus_string = individual_clus_string + \
-		'\t\t\t\t\t"enable_lbaas": %s,\n' % cluster_dict[clus]["parameters"][
-		    "provision"]["contrail"]["enable_lbaas"]
-
         if "enable_rabbitmq_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"amqp_ssl":"%s",\n' % cluster_dict[clus][
@@ -1432,7 +1442,7 @@ def create_testbedpy_file():
     dict_of_testbed_files = {}
     for clus in testbed_py_dict:
         file_str = ""
-        file_str = file_str + "from fabric.api import env \nimport os\n\nnext_routers = []\n"
+        file_str = file_str + "from fabric.api import env \nimport os\n\next_routers = []\n"
         if "router_asn" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "router_asn = %s\n\n" % testbed_py_dict[clus]["router_asn"]
@@ -1746,7 +1756,7 @@ def create_testbedpy_file_mainline():
     dict_of_testbed_files = {}
     for clus in testbed_py_dict:
         file_str = ""
-        file_str = file_str + "from fabric.api import env \nimport os\n\nnext_routers = []\n"
+        file_str = file_str + "from fabric.api import env \nimport os\n\next_routers = []\n"
         if "router_asn" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "router_asn = %s\n\n" % testbed_py_dict[clus]["router_asn"]
@@ -2019,6 +2029,10 @@ def create_testbedpy_file_mainline():
         if "ipmi_password" in testbed_py_dict[clus]:
             file_str = file_str + \
                 "ipmi_password = '%s'\n\n" % testbed_py_dict[clus]["ipmi_password"]
+	if "openstack_manage_amqp" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+            if cluster_dict[clus]["parameters"]["provision"]["openstack"]["openstack_manage_amqp"] == "false":
+		file_str = file_str + \
+		    "env.openstack = {\n"+"    'manage_amqp' : 'no'\n" + "}\n"
         file_str = file_str + \
             "env.cluster_id='%s'\n" % cluster_dict[clus]["cluster_id"]
         if "minimum_diskGB" in testbed_py_dict[clus]:

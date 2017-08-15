@@ -95,10 +95,10 @@
                         		"cluster_id": "test-cluster",
                         		"parameters": {
                                 		"domain": "englab.juniper.net",
+						"enable_lbaas": "True",
                                 		"provision":{
                                         		"contrail": {
                                                 		"minimum_disk_database": 32,
-								"enable_lbaas": "true",
                                                 		"kernel_upgrade": "true"
                                         		},
                                         		"openstack":{
@@ -114,7 +114,6 @@
 				"testbed_py_params": {
 					"env_password": "c0ntrail123",
 					"env_ostypes" : "ubuntu",
-					"enable_rbac": "true",
 					"openstack_admin_password" : "c0ntrail123",
 					"minimum_diskGB" : 32,
 					"env.test_repo_dir": "/home/stack/centos_sanity/contrail-test",
