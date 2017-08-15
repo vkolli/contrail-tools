@@ -77,8 +77,7 @@ def create_vm(name , image , ram = '4096',network = {} , vcpus = '2', disk_forma
         --disk %s \
         %s\
         --vcpus %s \
-        --import \
-        --graphics vnc' %(name,ram,disk_string,full_network_arg,vcpus)
+        --import --noautoconsole' %(name,ram,disk_string,full_network_arg,vcpus)
 
     run (cmd)
 
