@@ -1,4 +1,4 @@
-!/usr/bin/env bash
+#!/usr/bin/env bash
 #!/usr/bin/awk -f
 TOOLS_WS=${TOOLS_WS:-$(pwd)}
 multi_node=0
