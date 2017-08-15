@@ -615,11 +615,11 @@ function add_server_cluster_SM() {
         then
             SMID="combined_image_mainline"
 	    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-	        contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
-		contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
+	        contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages*.deb`
+		contrail_pkg_name=`ls contrail-install-packages*.deb`
 	    else
-                contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker*.tgz`
-                contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
+                contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-install-packages*.deb`
+                contrail_pkg_name=`ls contrail-install-packages*.deb`
 	    fi
         fi
 
@@ -886,7 +886,7 @@ function run_smgr_virtual_task() {
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         search_package
         pkg_file_name=`basename $PKG_FILE`
-        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-cloud-docker[-_]\([0-9\.\-]*\)-.*/\1/'`
+        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
         if [[ -z $TEST_HOST_STRING ]]; then
             export TEST_HOST_STRING=$API_SERVER_HOST_STRING
             export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
