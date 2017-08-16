@@ -107,7 +107,7 @@ function search_package {
                 if [[ $CB_SANITY -eq 1 ]]; then
 		    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-installer-packages*${pkg_suffix}`
 		    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-   			PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-installer-packages*${pkg_suffix}`
+   			PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-installer-packages*${pkg_suffix}`
 		    fi
 		fi
             else
@@ -115,7 +115,7 @@ function search_package {
                 if [[ $CB_SANITY -eq 1 ]]; then
 		    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-installer-packages*${pkg_suffix}`
 		    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-   			PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-installer-packages*${pkg_suffix}`
+   			PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-installer-packages*${pkg_suffix}`
 		    fi
 		fi
             fi
@@ -124,7 +124,7 @@ function search_package {
             if [[ $CB_SANITY -eq 1 ]]; then
 	  	PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-installer-packages*${pkg_suffix}`
 	   	if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-   		    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-installer-packages*${pkg_suffix}`
+   		    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-installer-packages*${pkg_suffix}`
 		fi
 	    fi
         fi
