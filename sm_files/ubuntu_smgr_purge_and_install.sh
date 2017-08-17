@@ -1,7 +1,7 @@
 #!/bin/sh
 set -x -v
 
-if [[ "$2" != "fresh" ]];then
+if [ "$2" != "fresh" ];then
   service contrail-server-manager stop
   dpkg -l | grep contrail | awk -F ' ' '{print $2}' | xargs dpkg -P
   dpkg -l | grep puppet | awk -F ' ' '{print $2}' | xargs dpkg -P
