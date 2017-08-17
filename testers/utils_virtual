@@ -601,17 +601,24 @@ function add_server_cluster_SM() {
         fi
  
         pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
-        cd $pkg_path
+        #cd $pkg_path
         if [ $USE_CLOUD_PKG -eq 1 ]; then
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.tgz`
-            contrail_pkg_name=`ls contrail-install-packages*.tgz`
+            contrail_pkg_name=`basename $contrail_pkg`
         else
             if [[ $DISTRO =~ centos71 ]]; then
                 contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
-                contrail_pkg_name=`ls contrail-install-packages*.rpm`
+                contrail_pkg_name=`basename $contrail_pkg`
             else
                 contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.deb`
-                contrail_pkg_name=`ls contrail-install-packages*.deb`
+                contrail_pkg_name=`basename $contrail_pkg`
+	        if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+	            contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages*.deb`
+                    contrail_pkg_name=`basename $contrail_pkg`
+	        else
+                    contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-install-packages*.deb`
+                    contrail_pkg_name=`basename $contrail_pkg`
+	        fi
             fi
         fi
         if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
@@ -619,10 +626,10 @@ function add_server_cluster_SM() {
             SMID="combined_image_mainline"
 	    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
 	        contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages*.deb`
-		contrail_pkg_name=`ls contrail-install-packages*.deb`
+                contrail_pkg_name=`basename $contrail_pkg`
 	    else
                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-install-packages*.deb`
-                contrail_pkg_name=`ls contrail-install-packages*.deb`
+                contrail_pkg_name=`basename $contrail_pkg`
 	    fi
         fi
 
