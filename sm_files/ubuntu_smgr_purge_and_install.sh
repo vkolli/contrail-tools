@@ -17,6 +17,7 @@ if [ "$2" != "fresh" ];then
   dpkg -l | grep cobbler
   rm -rf /var/lib/cobbler /var/lib/puppet /etc/puppet /etc/cobbler /etc/contrail* /opt/contrail/contrail_server_manager /opt/contrail/server_manager/sm-config.ini
 fi
+while [ "`lsof /var/lib/dpkg/lock`" ];do echo "waiting for dpkg lock to get freed"; sleep 5; done
 dpkg -i $1
 cd /opt/contrail/contrail_server_manager/
 ./setup.sh --all 
