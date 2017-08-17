@@ -406,6 +406,9 @@ function reimage_using_SM_cliff_client() {
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
         else
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.deb`
+	    if [[ $CB_SANITY -eq 1 ]];then
+		contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages*.deb`
+	    fi
         fi
     fi
 
