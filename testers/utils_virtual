@@ -591,37 +591,31 @@ function add_server_cluster_SM() {
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
             isofile="/root/sm_files/centos71.json"
         fi
-   
-        if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
-        then
-            SMID="combined_image_mainline"
-        fi
- 
+  
         pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
-        cd $pkg_path
+        SMID="combined_image_mainline"
         if [ $USE_CLOUD_PKG -eq 1 ]; then
-            contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.tgz`
-            contrail_pkg_name=`ls contrail-install-packages*.tgz`
+           if [[ $CB_SANITY -eq 1 ]];then
+              if [[ $DISTRO =~ ubuntu-14 ]];then
+                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+              elif [[ $DISTRO =~ ubuntu-16 ]];then
+                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+              fi
+           else
+              contrail_pkg=`ls $pkg_path/contrail-cloud-docker*.tgz`
+           fi
         else
-            if [[ $DISTRO =~ centos71 ]]; then
-                contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
-                contrail_pkg_name=`ls contrail-install-packages*.rpm`
-            else
-                contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.deb`
-                contrail_pkg_name=`ls contrail-install-packages*.deb`
-            fi
+           if [[ $CB_SANITY -eq 1 ]];then
+              if [[ $DISTRO =~ ubuntu-14 ]];then
+                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-networking-docker*.tgz`
+              elif [[ $DISTRO =~ ubuntu-16 ]];then
+                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-networking-docker*.tgz`
+              fi
+           else
+              contrail_pkg=`ls $pkg_path/contrail-networking-docker*.tgz`
+           fi
         fi
-        if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
-        then
-            SMID="combined_image_mainline"
-	    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-	        contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
-		contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
-	    else
-                contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker*.tgz`
-                contrail_pkg_name=`ls contrail-cloud-docker*.tgz`
-	    fi
-        fi
+        contrail_pkg_name=`basename $contrail_pkg`
 
         echo ${contrail_pkg}
         echo ${pkg_path} 
