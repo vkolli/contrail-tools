@@ -703,12 +703,14 @@ function add_server_cluster_SM() {
             then
                 ifconfig eth1 ${SM_CONTROL_IP}
                 server-manager add image -f image.json
+                sleep 120
+	        /root/sm_files/check_image_add.sh $SMID
             else
                 echo "Adding contrail package using upload_image command!"
                 server-manager upload_image $SMID ${BUILDID} $pkg_type $contrail_pkg_name
+                sleep 120
+	        /root/sm_files/check_image_add_Pre-R4.0.sh $SMID
             fi
-            sleep 120
-	    /root/sm_files/check_image_add.sh $SMID
 	    if [ $? == 0 ]
 	    then
                 echo "Server-manager adding contrail-package command is successful"
