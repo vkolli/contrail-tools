@@ -10,6 +10,7 @@
 # By default, it assumes that openstack, contrail is running on local node
 # Target node where Openstack/Contrail is setup can be any node(local/remote)
 # If remote, set the below environment variables appropriately
+set -x
 
 export TEMPEST_WS=${TEMPEST_WS:-$(pwd)}
 BUILD_STRING_FILE="build_id.txt"
@@ -69,18 +70,31 @@ export CONTRAIL_BUILD_STRING
 api_server_distro=`get_api_server_distro` 
 echo $api_server_distro $CONTRAIL_BUILD_STRING > ${BUILD_STRING_FILE}
 
-rm -f $TEMPEST_DIR/result*.xml
+function report_gen {
+    TEST_CONFIG_FILE="sanity_params.ini"
+    REPORT_INI_FILE="tempest_report.ini"
+    TMP_REPORT_FILE="report/junit-noframes.html"
+    REPORT_FILE="report/tempest_report.html"
+    cd /contrail-test
+    export PYTHONPATH=$PYTHONPATH:$PWD/scripts:$PWD/fixtures:$PWD
+    python tools/report_gen.py $TEST_CONFIG_FILE $REPORT_INI_FILE
+    python tools/update_testsuite_properties.py $REPORT_INI_FILE $RESULT_XML
+    cp $RESULT_XML ./result.xml
+    ant || die "ant job failed!"
+    cp $TMP_REPORT_FILE $REPORT_FILE
+    cp $TEMPEST_DIR/*.log ./logs/
+    python tools/upload_to_webserver.py $TEST_CONFIG_FILE $REPORT_INI_FILE $REPORT_FILE
+    sleep 2
+    if [ -f $REPORT_FILE ]; then
+        export EMAIL_SUBJECT="Tempest Report"
+        python tools/send_mail.py $TEST_CONFIG_FILE $REPORT_FILE $REPORT_INI_FILE
+    fi
+    cd -
+}
 
-# Run Tempest tests
-if [ $PUBLIC_ACCESS_AVAILABLE -eq 1 ];
-then
-    tests="tempest.api.network.test_networks tempest.api.network.test_routers tempest.api.network.test_ports.PortsTestJSON tempest.api.network.test_ports.PortsTestXML tempest.scenario.test_network_advanced_server_ops tempest.scenario.test_network_basic_ops tempest.api.network.test_security_groups tempest.api.network.test_floating_ips tempest.api.network.admin.test_floating_ips_admin_actions tempest.api.network.test_security_groups_negative tempest.api.network.test_extra_dhcp_options  tempest.api.network.test_networks_negative tempest.api.network.test_routers_negative tempest.api.compute.servers.test_attach_interfaces tempest.api.compute.servers.test_server_metadata tempest.api.compute.servers.test_server_addresses tempest.api.compute.servers.test_server_addresses_negative tempest.api.compute.servers.test_multiple_create tempest.api.network.admin.test_load_balancer_admin_actions"
-else
-    tests="tempest.api.network.test_networks tempest.api.network.test_ports.PortsTestJSON tempest.api.network.test_ports.PortsTestXML  tempest.api.network.test_security_groups tempest.api.network.test_floating_ips tempest.api.network.admin.test_floating_ips_admin_actions tempest.api.network.test_security_groups_negative tempest.api.network.test_extra_dhcp_options  tempest.api.network.test_networks_negative tempest.api.network.test_routers_negative tempest.api.compute.servers.test_attach_interfaces tempest.api.compute.servers.test_server_metadata tempest.api.compute.servers.test_server_addresses tempest.api.compute.servers.test_server_addresses_negative tempest.api.compute.servers.test_multiple_create tempest.api.network.admin.test_load_balancer_admin_actions tempest.api.network.test_routers.RoutersTest.test_add_multiple_router_interfaces tempest.api.network.test_routers.RoutersTest.test_add_remove_router_interface_with_port_id tempest.api.network.test_routers.RoutersTest.test_add_remove_router_interface_with_subnet_id tempest.api.network.test_routers.RoutersTest.test_create_router_setting_tenant_id tempest.api.network.test_routers.RoutersTest.test_create_show_list_update_delete_router tempest.api.network.test_routers.RoutersTest.test_update_router_admin_state tempest.api.network.test_routers.RoutersTest.test_update_router_unset_gateway"
-fi
-
-cd $TEMPEST_DIR 
-bash -x $TEMPEST_DIR/run_contrail_tempest.sh -p -V -r $TEMPEST_DIR/result.xml -t -- $tests
+RESULT_XML=$TEMPEST_DIR/result.xml
+cd $TEMPEST_DIR
+bash -x $TEMPEST_DIR/run_contrail_tempest.sh -p -V -r $RESULT_XML
+report_gen
 retval=$?
-
 exit $retval
