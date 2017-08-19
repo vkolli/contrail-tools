@@ -549,7 +549,6 @@ function add_server_cluster_SM() {
     then
         return 0
     fi
-    SMIF="eth1"
     if [ $SMLITE_REGRESSION -eq 0 ]
     then
         # set the parameters required for reimage.
@@ -572,7 +571,6 @@ function add_server_cluster_SM() {
             SMID=ubuntu16$SKU${BUILDID}
             iso_name="ubuntu-16-04"
             isofile="/root/sm_files/image162.iso"
-            SMIF="ens3"
         elif [[ $DISTRO =~ centos64 ]]; then 
             image="/root/images/CentOS-6.4-x86_64-minimal.iso"
             pkg_type="contrail-centos-package"
@@ -693,7 +691,7 @@ function add_server_cluster_SM() {
 
             if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
             then
-                ifconfig ${SMIF} ${SM_CONTROL_IP}
+                #ifconfig ${SMIF} ${SM_CONTROL_IP}
                 server-manager add image -f image.json
             else
                 echo "Adding contrail package using upload_image command!"
