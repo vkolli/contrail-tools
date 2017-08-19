@@ -19,14 +19,19 @@ ext_routers = []
 router_asn = 64512
 public_vn_rtgt = 10000
 public_vn_subnet = "10.84.41.0/24"
+host_build = 'stack@10.204.216.49'
 
 env.roledefs = {
     'all': [host1, host2, host3, host4, host5],
-    'contrail-controller': [host2],
+    'cfgm': [host2],
     'openstack': [host1],
-    'contrail-analytics': [host1],
-    'contrail-analyticsdb': [host1, host2, host3],
-    'contrail-compute': [host4, host5],
+    'collector': [host1],
+    'webui': [host2],
+    'control': [host2],
+    'compute': [host4, host5],
+    'database': [host1, host2, host3],
+    'build': [host_build],
+
 }
 
 env.hostnames = {
