@@ -57,8 +57,6 @@ env.ostypes = {
 #Openstack admin password
 env.openstack_admin_password = 'contrail123'
 
-env.kernel_upgrade=False
-
 env.openstack = {
     'manage_amqp': "true"
 }
@@ -69,5 +67,5 @@ env.keystone = {
 
 minimum_diskGB=32
 env.mail_from='musharani@juniper.net'
-env.mail_to='musharani@juniper.net'
+env.mail_to='dl-contrail-sw@juniper.net'
 env.log_scenario ='Multi Node Webui Sanity'
