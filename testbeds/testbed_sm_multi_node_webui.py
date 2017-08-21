@@ -44,6 +44,7 @@ env.passwords = {
     host3: 'c0ntrail123',
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
+    host_build: 'stack@123',
 }
 
 env.ostypes = {
@@ -66,6 +67,6 @@ env.keystone = {
 }
 
 minimum_diskGB=32
-env.mail_from='musharani@juniper.net'
+env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'
 env.log_scenario ='Multi Node Webui Sanity'
