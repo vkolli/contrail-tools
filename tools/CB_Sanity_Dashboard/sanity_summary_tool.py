@@ -24,9 +24,31 @@ import urllib
 from optparse import OptionParser
 import json
 
+
+def check_if_object_downloaded(file=''):
+	temp = False
+	while(temp == False):
+		time.sleep(5)
+		a_tmp = subprocess.Popen('ls | grep %s' %file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True).communicate() 
+		if a_tmp[0] != '':
+			temp = True
+		else:
+			print "Waiting for some more time for the file to get downloaded : %s" % file
+	
+def check_if_object_deleted(file=''):
+	temp = False
+	while (temp == False):
+		time.sleep(5)
+		a_tmp = subprocess.Popen('ls | grep %s' %file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True).communicate()
+		if a_tmp[0] == '':
+			temp = True
+		else:
+			print "Waiting for some more time for the file to get deleted : %s" % file
+
 def get_summary_from_html_file(html_file_link):
-	os.system('wget -q %s' %html_file_link)
-	time.sleep(5)
+	os.system('wget -q %s -O junit-noframes.html' %html_file_link)
+	time.sleep(10)
+	check_if_object_downloaded(file='junit-noframes.html')
 	file = open('junit-noframes.html', 'r')
 	soup = BeautifulSoup(file)
 	#print soup	
@@ -47,7 +69,9 @@ def get_summary_from_html_file(html_file_link):
 		b = str(a).replace('</td>', '')
 		final_td_tags_1.append(b)
 	return_dict["values"] = final_td_tags_1
-	os.system('rm /root/sanity_dashboard_data/process_results/junit-noframes.html')
+	file.close()
+	os.system('rm -f /root/sanity_dashboard_data/process_results/junit-noframes.html')
+	check_if_object_deleted(file='junit-noframes.html')
 	return return_dict
 
 
@@ -342,7 +366,8 @@ def get_detailed_data_from_ini_files(branch='', build='', openstack_version=''):
 					print new_path
                                 	#print "Downloading the following file: ",new_path
                                 	os.system('sshpass -p "bhu@123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
-					time.sleep(5)
+					time.sleep(10)
+					check_if_object_downloaded(file=i)
                                 	Dict_1 = get_data_from_ini_file(i)
 			
 					test_num_dict = get_summary_from_html_file(Dict_1['report'])
@@ -391,7 +416,8 @@ def get_detailed_data_from_ini_files(branch='', build='', openstack_version=''):
 							if temp_success_rate > final_success_rate_liberty:
 								final_success_rate_liberty = temp_success_rate
 								info_dict['liberty_jobs'][build] = Dict_1
-                                	os.system('rm %s' %i)
+                                	os.system('rm -f %s' %i)
+					check_if_object_deleted(file=i)	
                                 	#print "Done %d " %num
                                 	num += 1
 
@@ -444,7 +470,8 @@ def get_detailed_data_from_ini_files(branch='', build='', openstack_version=''):
 				for i in ini_list:
 					new_path = path + '/' + i
 					os.system('sshpass -p "bhu@123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
-					time.sleep(5)
+					time.sleep(10)
+					check_if_object_downloaded(file=i)
 					Dict_1 = get_data_from_ini_file(i)
 					
 					test_num_dict = get_summary_from_html_file(Dict_1['report'])
@@ -484,7 +511,8 @@ def get_detailed_data_from_ini_files(branch='', build='', openstack_version=''):
 							if temp_success_rate > final_success_rate_newton:
 								temp_success_rate = temp_success_rate
 								info_dict["R4.0_newton_jobs"][build] = Dict_1
-					os.system('rm %s' %i)
+					os.system('rm -f %s' %i)
+					check_if_object_deleted(file=i)
 					num += 1
 			print "\n"
 			print "Adding the summary data to the already collected data from the ini files"
@@ -520,7 +548,8 @@ def get_detailed_data_from_ini_files(branch='', build='', openstack_version=''):
 				for i in ini_list:
 					new_path = path + '/' + i
 					os.system('sshpass -p "bhu@123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
-					time.sleep(5)
+					time.sleep(10)
+					check_if_object_downloaded(file=i)
 					Dict_1 = get_data_from_ini_file(i)
 
 					test_num_dict = get_summary_from_html_file(Dict_1['report'])
@@ -553,7 +582,8 @@ def get_detailed_data_from_ini_files(branch='', build='', openstack_version=''):
 								final_success_rate_newton = temp_success_rate
 								info_dict["mainline_newton_jobs"][build] = Dict_1
 
-					os.system('rm %s' %i)
+					os.system('rm -f %s' %i)
+					check_if_object_deleted(file=i)
 					num += 1
 			print "\n"
 			print "Adding the summary data to the already collected data from the ini files"
@@ -775,7 +805,7 @@ def get_build_date_from_jenkins_server(branch='', build='', openstack_version=''
 		elif openstack_version == 'newton':
 			path = path + 'CB-mainline-ubuntu16-newton/builds/%s' %build
 	print path
-	if (int(build) < 0):
+	if (int(build) <= 0):
 		return "Build Not Found"
 	else:
 		client = paramiko.SSHClient()
@@ -856,8 +886,11 @@ def get_all_branch_final_dict(build=''):
 	int_build_number_liberty = get_latest_build_number_individual(branch='R3.2', openstack_version = 'liberty')
 	for i in range(5):
 		info_dict_combined['R3.2_data'].update(get_detailed_data_from_ini_files(branch='R3.2', build=int_build_number_mitaka, openstack_version='mitaka'))
+		time.sleep(2)
 		info_dict_combined['R3.2_data'].update(get_detailed_data_from_ini_files(branch='R3.2', build=int_build_number_kilo, openstack_version='kilo'))
+		time.sleep(2)
 		info_dict_combined['R3.2_data'].update(get_detailed_data_from_ini_files(branch='R3.2', build=int_build_number_liberty, openstack_version='liberty'))
+		time.sleep(2)
 		int_build_number_mitaka = str(int(int_build_number_mitaka)-1)
 		int_build_number_kilo = str(int(int_build_number_kilo) -1)
 		int_build_number_liberty = str(int(int_build_number_liberty) -1)
@@ -869,8 +902,10 @@ def get_all_branch_final_dict(build=''):
 	for i in range(5):
 		#int_build_number = get_latest_build_number_individual(branch='R4.2', openstack_version = 'mitaka')
 		info_dict_combined['R4.0_data'].update(get_detailed_data_from_ini_files(branch='R4.0', build=int_build_number_r4_mitaka, openstack_version='mitaka'))
+		time.sleep(2)
 		#int_build_number = get_latest_build_number_individual(branch='R4.0', openstack_version = 'newton')
 		info_dict_combined['R4.0_data'].update(get_detailed_data_from_ini_files(branch='R4.0', build=int_build_number_r4_newton, openstack_version='newton'))
+		time.sleep(2)
 		#int_build_number = str(int(int_build_number)-1)
 		int_build_number_r4_mitaka = str(int(int_build_number_r4_mitaka) - 1)
 		int_build_number_r4_newton = str(int(int_build_number_r4_newton) - 1)
@@ -882,8 +917,10 @@ def get_all_branch_final_dict(build=''):
 	for i in range(5):
 		#int_build_number = get_latest_build_number_individual(branch='mainline', openstack_version = 'mitaka')
 		info_dict_combined['mainline_data'].update(get_detailed_data_from_ini_files(branch='mainline', build=int_build_number_mainline_mitaka, openstack_version='mitaka'))
+		time.sleep(2)
 		#int_build_number = get_latest_build_number_individual(branch='mainline', openstack_version = 'newton')
 		info_dict_combined['mainline_data'].update(get_detailed_data_from_ini_files(branch='mainline', build=int_build_number_mainline_newton, openstack_version='newton'))
+		time.sleep(2)
 		#int_build_number = str(int(int_build_number)-1)
 		int_build_number_mainline_mitaka = str(int(int_build_number_mainline_mitaka) - 1)
 		int_build_number_mainline_newton = str(int(int_build_number_mainline_newton) - 1)
@@ -1098,10 +1135,10 @@ def build_final_json(dict_1):
 		#print i
 		individual_info_dict = {}
 		if i == 'mainline_mitaka':
-			individual_info_dict['JobName'] = 'Mainline-Mitaka'
+			individual_info_dict['JobName'] = 'R4.1-Mitaka'
 			Ostack_ver = 'mitaka'
 		elif i == 'mainline_newton':
-			individual_info_dict['JobName'] = 'Mainline-Newton'
+			individual_info_dict['JobName'] = 'R4.1-Newton'
 			Ostack_ver = 'newton'
 
 		all_build_list = []
