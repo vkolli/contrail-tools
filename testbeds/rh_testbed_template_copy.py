@@ -22,7 +22,7 @@ host11 = 'heat-admin@openstack2'
 host12 = 'heat-admin@openstack3'
  
 # Contrail WebUI
-host13 = 'heat-admin@CONFIG1'
+host13 = 'heat-admin@10.87.67.11'
 
 #Contrail-Analytics
 host14 = 'heat-admin@analytics1'
@@ -33,15 +33,7 @@ host16 = 'heat-admin@analytics3'
 host17 = 'heat-admin@analytics-db1'
 host18 = 'heat-admin@analytics-db2'
 host19 = 'heat-admin@analytics-db3'
-
-test_vm  = 'root@10.87.67.85' 
-undercloud_host = 'root@10.87.67.42'
-hypervisor_host = 'root@10.87.67.2'
-
-rh_username = 'aranjan.redhat'
-rh_password = 'H3Ub9pth3x'
-rh_pool_id = '8a85f98154747c980154787ef75a30af'
-
+ 
 #External routers if any
 #for eg.
 #ext_routers = [('mx1', '10.204.216.253')]
@@ -63,10 +55,7 @@ env.roledefs = {
 	'collector': [host14, host15, host16],
 	'webui': [host13],
 	'database': [host17, host18, host19],
-        'undercloud' : [undercloud_host],
-        'rh_hypervisor' : [ hypervisor_host ],
-        'build' : [host1],
-        'test_vm' : [test_vm]
+	'build': [host_build],
 }
  
 #Hostnames
@@ -85,10 +74,7 @@ env.hostnames = {
         host17: 'overcloud-contrailanalyticsdatabase-0.localdomain',
         host18: 'overcloud-contrailanalyticsdatabase-1.localdomain',
         host19: 'overcloud-contrailanalyticsdatabase-2.localdomain',
-        host_build: 'host1',
-        undercloud_host: 'undercloud.example.com',
-        hypervisor_host: '5b9s38',
-        test_vm: 'ctest-pt-svm0-27350666'
+
 
 }
  
@@ -113,21 +99,12 @@ env.passwords = {
         host18: 'SSH-KEY-SHARED',
         host19: 'SSH-KEY-SHARED',
 	host_build: 'SSH-KEY-SHARED',
-        undercloud_host: 'c0ntrail123',
-        hypervisor_host: 'c0ntrail123',
-        test_vm:'c0ntrail123',
 }
  
  
 #Openstack admin password. Retrieve OVERCLOUD_ADMIN_PASSWORD from /home/stack/tripleo-overcloud-passwords in undercloud node
-env.openstack_admin_password = 'ADMIN_PASSWORD'
+env.openstack_admin_password = 'PASSWORD_ADMIN'
  
-# Passwords of each host
-# for passwordless login's no need to set env.passwords,
-# instead populate env.key_filename in testbed.py with public key.
-#env.key_filename = '/root/.ssh/id_rsa.pub'
- 
-#For reimage purpose
 env.ostypes = {
 	host1: 'redhat',
 	host2: 'redhat',
@@ -145,50 +122,35 @@ minimum_diskGB = 5
 #OPTIONAL SEPARATION OF MANAGEMENT AND CONTROL + DATA and OPTIONAL VLAN INFORMATION
 #==================================================================================
 control_data = {
-	host1  : { 'ip': 'int_api_ip7/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-	host2  : { 'ip': 'int_api_ip8/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-	host3  : { 'ip': 'int_api_ip9/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-	host7  : { 'ip': 'int_api_vhost/24', 'gw' : '10.0.0.1', 'device':'vhost0' },
-	host10  : { 'ip': 'int_api_ipa10/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-        host11  : { 'ip': 'int_api_ipad11/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-        host12  : { 'ip': 'int_api_ipadd12/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-##	host13  : { 'ip': '10.0.0.22/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-        host14  : { 'ip': 'int_api_ip1/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-        host15  : { 'ip': 'int_api_ip2/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-        host16  : { 'ip': 'int_api_ip3/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-        host17  : { 'ip': 'int_api_ip4/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-        host18  : { 'ip': 'int_api_ip5/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-        host19  : { 'ip': 'int_api_ip6/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+	host1  : { 'ip': '10.0.0.40/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+	host2  : { 'ip': '10.0.0.41/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+	host3  : { 'ip': '10.0.0.42/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+	host7  : { 'ip': '10.0.0.30/24', 'gw' : '10.0.0.1', 'device':'vhost0' },
+	host10  : { 'ip': '10.0.0.20/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+        host11  : { 'ip': '10.0.0.21/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+        host12  : { 'ip': '10.0.0.22/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+	host13  : { 'ip': '10.0.0.22/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+        host14  : { 'ip': '10.0.0.50/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+        host15  : { 'ip': '10.0.0.51/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+        host16  : { 'ip': '10.0.0.52/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+        host17  : { 'ip': '10.0.0.60/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+        host18  : { 'ip': '10.0.0.61/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+        host19  : { 'ip': '10.0.0.62/24', 'gw' : '10.0.0.1', 'device':'eth2' },
 
 }
  
-#To disable installing contrail interface rename package
 env.interface_rename = False
  
- 
-#In environments where keystone is deployed outside of Contrail provisioning
-#scripts , you can use the below options
-#
-# Note :
-# "insecure" is applicable only when protocol is https
-# The entries in env.keystone overrides the below options which used
-# to be supported earlier :
-#  service_token
-#  keystone_ip
-#  keystone_admin_user
-#  keystone_admin_password
-#  region_name
-#
 env.keystone = {
-	'keystone_ip' 	: 'KEYSTONE_IP',            # Keystone external VIP
+	'keystone_ip' 	: 'IP_KEYSTONE',            # Keystone external VIP
 	'auth_protocol'   : 'http',              	#Default is http
 	'auth_port'   	: '35357',             	#Default is 35357
-	'admin_token' 	: 'ADMIN_TOKEN',  #OVERCLOUD_ADMIN_TOKEN
+	'admin_token' 	: 'TOKEN_ADMIN',  #OVERCLOUD_ADMIN_TOKEN
 	'admin_user'  	: 'admin',             	#Default is admin
-	'admin_password'  : 'ADMIN_PASSWORD',   #OVERCLOUD_ADMIN_PASSWORD
+	'admin_password'  : 'overcloud_admin_pass',   #OVERCLOUD_ADMIN_PASSWORD
 
-	'nova_password'   : 'NOVA_PASSWORD', #OVERCLOUD_NOVA_PASSWORD
-	'neutron_password': 'NEUTRON_PASSWORD', #OVERCLOUD_NEUTRON_PASSWORD
+	'nova_password'   : 'PASSWORD_NOVA', #OVERCLOUD_NOVA_PASSWORD
+	'neutron_password': 'PASSWORD_NEUTRON', #OVERCLOUD_NEUTRON_PASSWORD
 	'service_tenant'  : 'service',           	# Service tenant name of services like nova
 	'admin_tenant'	: 'admin',             	# Admin tenant name of keystone admin user
 	'region_name' 	: 'regionOne',         	#Default is RegionOne
@@ -198,14 +160,14 @@ env.keystone = {
 }
  
 env.ha = {
-    'contrail_internal_vip'   : 'KEYSTONE_IP',   	#Internal Virtual IP of the contrail HA Nodes.
+    'contrail_internal_vip'   : 'IP_KEYSTONE',   	#Internal Virtual IP of the contrail HA Nodes.
     #'contrail_external_vip'   : '10.87.67.11',   	#External Virtual IP of the contrail HA Nodes.
 }
  
 
 env.openstack = {
- 	'service_token' : 'ADMIN_TOKEN', # OVERCLOUD_ADMIN_TOKEN
- 	'amqp_hosts' : 'openstack1',  # IP of AMQP Server in first openstack node
+ 	'service_token' : 'TOKEN_ADMIN', # OVERCLOUD_ADMIN_TOKEN
+# 	'amqp_hosts' : '10.87.67.20',  # IP of AMQP Server in first openstack node
  	'manage_amqp' : 'no',             	# Manage seperate AMQP for openstack services in openstack nodes.
      'osapi_compute_workers' : 40,         # Default 40, For low memory system reduce the osapi compute workers thread.
  	'conductor_workers' : 40,         	# Default 40, For low memory system reduce the conductor workers thread.
@@ -215,8 +177,20 @@ env.openstack = {
 #amqp_hosts : List of customer deployed AMQP servers to be used by config services.
 #amqp_port : Port of the customer deployed AMQP servers.
 env.cfgm = {
-    'amqp_hosts' : ['int_api_ipa10','int_api_ipad11', 'int_api_ipadd12' ],
+##    'amqp_hosts' : ['10.0.0.20', ],
     'amqp_port' : '5672',
-    'amqp_password' : 'RABBITMQ_PASSWORD' # OVERCLOUD_RABBITMQ_PASSWORD
+    'amqp_password' : 'PASSWORD_RABBITMQ' # OVERCLOUD_RABBITMQ_PASSWORD
 }
-env.test_repo_dir='/home/stack/jenkins/workspace/redhat_multi_node_osp10/contrail-tools/contrail-test'
+
+env.test = {
+    'mail_from' : 'shajuvk@juniper.net',
+    'mail_to' : 'shajuvk@juniper.net',
+    'mail_server' : '10.84.24.64',
+    'mail_port' : '4000',
+    'enable_lbaas' : True,
+    'enable_ceilometer' : True,
+    'ceilometer_polling_interval' : '60',
+    'image_web_server' : '10.84.5.120',
+    'testbed_location' : 'US',
+    'ntp_server' : '10.84.5.100',
+}
