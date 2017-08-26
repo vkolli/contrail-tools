@@ -33,7 +33,13 @@ host16 = 'heat-admin@analytics3'
 host17 = 'heat-admin@analytics-db1'
 host18 = 'heat-admin@analytics-db2'
 host19 = 'heat-admin@analytics-db3'
- 
+
+hypervisor_host = 'root@10.87.67.142'
+hypervisor_host_stack = 'stack@10.87.67.1'
+undercloud_host = 'root@10.87.67.42'
+undercloud_host_stack = 'stack@10.87.67.42'
+test_vm_ip = 'root@10.87.67.85' 
+
 #External routers if any
 #for eg.
 #ext_routers = [('mx1', '10.204.216.253')]
@@ -57,6 +63,8 @@ env.roledefs = {
 	'collector': [host14, host15, host16],
 	'webui': [host13],
 	'database': [host17, host18, host19],
+        'undercloud' : [undercloud_host],
+        'rh_hypervisor' : [ hypervisor_host ],
 	'build': [host_build],
 }
  
@@ -76,7 +84,10 @@ env.hostnames = {
         host17: 'overcloud-contrailanalyticsdatabase-0.localdomain',
         host18: 'overcloud-contrailanalyticsdatabase-1.localdomain',
         host19: 'overcloud-contrailanalyticsdatabase-2.localdomain',
-
+        undercloud_host: 'undercloud.example.com',
+        undercloud_host_stack:'undercloud.example.com',
+        hypervisor_host: 'a5d07e09-4',
+        test_vm_ip: 'test_vm_sanity'
 
 }
  
@@ -101,6 +112,12 @@ env.passwords = {
         host18: 'SSH-KEY-SHARED',
         host19: 'SSH-KEY-SHARED',
 	host_build: 'SSH-KEY-SHARED',
+        host_build: 'contrail123',
+        undercloud_host: 'c0ntrail123',
+        hypervisor_host: 'c0ntrail123',
+        hypervisor_host_stack: 'c0ntrail123',
+        test_vm_ip: 'c0ntrail123',
+        undercloud_host_stack: 'c0ntrail123',
 }
  
  
