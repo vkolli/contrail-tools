@@ -112,7 +112,6 @@ env.passwords = {
         host18: 'SSH-KEY-SHARED',
         host19: 'SSH-KEY-SHARED',
 	host_build: 'SSH-KEY-SHARED',
-        host_build: 'contrail123',
         undercloud_host: 'c0ntrail123',
         hypervisor_host: 'c0ntrail123',
         hypervisor_host_stack: 'c0ntrail123',
