@@ -38,7 +38,9 @@ host19 = 'heat-admin@analytics-db3'
 #for eg.
 #ext_routers = [('mx1', '10.204.216.253')]
 ext_routers = []
- 
+rh_username = 'aranjan.redhat'
+rh_password = 'H3Ub9pth3x'
+rh_pool_id = '8a85f9895cce2f3a015ccf0eb79749f8' 
 #Autonomous system number
 router_asn = 64512
  
