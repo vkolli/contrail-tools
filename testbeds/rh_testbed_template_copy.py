@@ -51,7 +51,7 @@ rh_pool_id = '8a85f9895cce2f3a015ccf0eb79749f8'
 router_asn = 64512
  
 #Host from which the fab commands are triggered to install and provision
-host_build = host1
+host_build = test_vm
  
 #Role definition of the hosts.
 env.roledefs = {
@@ -65,7 +65,7 @@ env.roledefs = {
 	'database': [host17, host18, host19],
         'undercloud' : [undercloud_host, undercloud_host_stack],
         'rh_hypervisor' : [ hypervisor_host ],
-	'build': [host_build],
+	'build': [test_vm],
         'test_vm' : [test_vm ],
 }
  
