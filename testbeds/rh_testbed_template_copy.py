@@ -63,7 +63,7 @@ env.roledefs = {
 	'collector': [host14, host15, host16],
 	'webui': [host13],
 	'database': [host17, host18, host19],
-        'undercloud' : [undercloud_host],
+        'undercloud' : [undercloud_host, undercloud_host_stack],
         'rh_hypervisor' : [ hypervisor_host ],
 	'build': [host_build],
         'test_vm' : [test_vm ],
