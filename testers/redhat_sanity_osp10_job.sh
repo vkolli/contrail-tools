@@ -16,6 +16,8 @@ search_third_party_package
 
 OSP_VERSION=$OSP_VERSION
 TEST_HOST_IP=$TEST_VM_HOST_STRING
+TEST_HOST_HOME='/root/'
+OSP_TESTBED_TEMPALTE=$OSP_TESTBED_TEMPALTE
 UNDERCLOUD_IP=$UNDERCLOUD_IP
 UNDERCLOUD_HOST_STRING=$UNDERCLOUD_HOST_STRING
 OSP_TEMPLATES=$TOOLS_WS/contrail-tripleo-heat-templates-sanity
@@ -28,7 +30,7 @@ UNDERCLOUD_NODEHOME='/home/stack/'
 #run_build_fab "install_hypervisor_pkg"
 #run_build_fab "undercloud_setup"
 #run_build_fab "overcloud_configs"
-sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${$TOOLS_WS/testbeds/rh_testbed_template_copy.py} ${TEST_VM_HOST_STRING}:
+sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${OSP_TESTBED_TEMPALTE} ${TEST_VM_HOST_STRING}:${TEST_HOST_HOME}
 run_build_fab "osp10_sanity" || debug_and_die "Failed during osp10 provisioning"
 
 #fab configure_bridges || debug_and_die "Failed during hypervisor configuration"
