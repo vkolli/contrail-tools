@@ -51,7 +51,7 @@ rh_pool_id = '8a85f9895cce2f3a015ccf0eb79749f8'
 router_asn = 64512
  
 #Host from which the fab commands are triggered to install and provision
-host_build = test_vm
+host_build = 'root@10.87.67.85'
  
 #Role definition of the hosts.
 env.roledefs = {
@@ -65,7 +65,7 @@ env.roledefs = {
 	'database': [host17, host18, host19],
         'undercloud' : [undercloud_host, undercloud_host_stack],
         'rh_hypervisor' : [ hypervisor_host ],
-	'build': [test_vm],
+	'build': [host_build],
         'test_vm' : [test_vm ],
 }
  
@@ -86,6 +86,7 @@ env.hostnames = {
         host18: 'overcloud-contrailanalyticsdatabase-1.localdomain',
         host19: 'overcloud-contrailanalyticsdatabase-2.localdomain',
         undercloud_host: 'undercloud.example.com',
+        build: 'test-vm-osp10-5b9s38-sanity',
         undercloud_host_stack:'undercloud.example.com',
         hypervisor_host: '5b9s38',
         test_vm: 'test-vm-osp10-5b9s38-sanity',
@@ -112,7 +113,7 @@ env.passwords = {
         host17: 'SSH-KEY-SHARED',
         host18: 'SSH-KEY-SHARED',
         host19: 'SSH-KEY-SHARED',
-	host_build: 'c0ntrail123',
+	build: 'c0ntrail123',
         undercloud_host: 'c0ntrail123',
         hypervisor_host: 'c0ntrail123',
         hypervisor_host_stack: 'c0ntrail123',
