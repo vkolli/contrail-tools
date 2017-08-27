@@ -38,7 +38,7 @@ hypervisor_host = 'root@10.87.67.142'
 hypervisor_host_stack = 'stack@10.87.67.1'
 undercloud_host = 'root@10.87.67.42'
 undercloud_host_stack = 'stack@10.87.67.42'
-test_vm_ip = 'root@10.87.67.85' 
+test_vm = 'root@10.87.67.85' 
 
 #External routers if any
 #for eg.
@@ -66,6 +66,7 @@ env.roledefs = {
         'undercloud' : [undercloud_host],
         'rh_hypervisor' : [ hypervisor_host ],
 	'build': [host_build],
+        'test_vm_sanity' : [test_vm ]
 }
  
 #Hostnames
@@ -86,8 +87,8 @@ env.hostnames = {
         host19: 'overcloud-contrailanalyticsdatabase-2.localdomain',
         undercloud_host: 'undercloud.example.com',
         undercloud_host_stack:'undercloud.example.com',
-        hypervisor_host: 'a5d07e09-4',
-        test_vm_ip: 'test_vm_sanity'
+        hypervisor_host: '5b9s38',
+        test_vm: 'test-vm-osp10-5b9s38-sanity'
 
 }
  
@@ -115,7 +116,7 @@ env.passwords = {
         undercloud_host: 'c0ntrail123',
         hypervisor_host: 'c0ntrail123',
         hypervisor_host_stack: 'c0ntrail123',
-        test_vm_ip: 'c0ntrail123',
+        test_vm: 'c0ntrail123',
         undercloud_host_stack: 'c0ntrail123',
 }
  
