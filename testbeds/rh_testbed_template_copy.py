@@ -22,7 +22,7 @@ host11 = 'heat-admin@openstack2'
 host12 = 'heat-admin@openstack3'
  
 # Contrail WebUI
-host13 = 'heat-admin@10.87.67.11'
+#host13 = 'heat-admin@10.87.67.11'
 
 #Contrail-Analytics
 host14 = 'heat-admin@analytics1'
@@ -55,13 +55,13 @@ host_build = 'root@10.87.67.85'
  
 #Role definition of the hosts.
 env.roledefs = {
-	'all': [host1, host2, host3, host7, host10, host13, host14, host15, host16, host17, host18, host19],
+	'all': [host1, host2, host3, host7, host10, host14, host15, host16, host17, host18, host19],
 	'openstack': [host10, host11, host12],
 	'cfgm': [host1, host2, host3],
 	'control': [host1, host2, host3],
 	'compute': [host7],
 	'collector': [host14, host15, host16],
-	'webui': [host13],
+#	'webui': [host13],
 	'database': [host17, host18, host19],
         'undercloud' : [undercloud_host, undercloud_host_stack],
         'rh_hypervisor' : [ hypervisor_host ],
@@ -78,7 +78,7 @@ env.hostnames = {
 	host10: 'overcloud-controller-0.localdomain',
         host11: 'overcloud-controller-1.localdomain',
         host12: 'overcloud-controller-2.localdomain',
-	host13: 'overcloud-controller-2.localdomain',
+#	host13: 'overcloud-controller-2.localdomain',
         host14: 'overcloud-contrailanalytics-0.localdomain',
         host15: 'overcloud-contrailanalytics-1.localdomain',
         host16: 'overcloud-contrailanalytics-2.localdomain',
@@ -106,7 +106,7 @@ env.passwords = {
 	host10: 'SSH-KEY-SHARED',
 	host11: 'SSH-KEY-SHARED',
 	host12: 'SSH-KEY-SHARED',
-	host13: 'SSH-KEY-SHARED',
+	#host13: 'SSH-KEY-SHARED',
         host14: 'SSH-KEY-SHARED',
         host15: 'SSH-KEY-SHARED',
         host16: 'SSH-KEY-SHARED',
@@ -149,7 +149,7 @@ control_data = {
 	host10  : { 'ip': '10.0.0.20/24', 'gw' : '10.0.0.1', 'device':'eth2' },
         host11  : { 'ip': '10.0.0.21/24', 'gw' : '10.0.0.1', 'device':'eth2' },
         host12  : { 'ip': '10.0.0.22/24', 'gw' : '10.0.0.1', 'device':'eth2' },
-	host13  : { 'ip': '10.0.0.22/24', 'gw' : '10.0.0.1', 'device':'eth2' },
+#	host13  : { 'ip': '10.0.0.22/24', 'gw' : '10.0.0.1', 'device':'eth2' },
         host14  : { 'ip': '10.0.0.50/24', 'gw' : '10.0.0.1', 'device':'eth2' },
         host15  : { 'ip': '10.0.0.51/24', 'gw' : '10.0.0.1', 'device':'eth2' },
         host16  : { 'ip': '10.0.0.52/24', 'gw' : '10.0.0.1', 'device':'eth2' },
