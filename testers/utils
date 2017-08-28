@@ -436,9 +436,10 @@ function use_testbed_file {
     cp -f $folder_path/$TBFILE_NAME $dest_folder_path/testbed.py || die "Failed to copy $TBFILE_NAME to  $dest_folder_path/testbed.py"
 
     rm -f $TOOLS_WS/contrail-fabric-utils/testbed_env
-    ( cd ${TOOLS_WS}/contrail-fabric-utils;
-      fab export_testbed_details:testbed_env || echo "fab export_testbed_details failed")
-
+    if [ ! ${OSP10} == "OSP10" ]; then
+       ( cd ${TOOLS_WS}/contrail-fabric-utils;
+          fab export_testbed_details:testbed_env || echo "fab export_testbed_details failed")
+    fi
     if [ -f ${TOOLS_WS}/contrail-fabric-utils/testbed_env ]; then
         source ${TOOLS_WS}/contrail-fabric-utils/testbed_env
         sed 's/export //' ${TOOLS_WS}/contrail-fabric-utils/testbed_env > ${TOOLS_WS}/contrail-fabric-utils/plain_testbed_env
