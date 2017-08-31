@@ -2,7 +2,7 @@ from fabric.api import env
 import os
 
 
-host1 = 'root@10.204.216.15'
+host1 = 'root@10.204.216.201'
 host2 = 'root@10.204.216.10'
 #host3 = 'root@10.204.217.209'
 host4 = 'root@10.204.217.121'
@@ -40,7 +40,7 @@ if os.getenv('AUTH_PROTOCOL',None) == 'https':
 
 env.hostnames = {
     #'all': ['nodea19', 'nodea14','nodel3','nodei9']
-    'all': ['nodea19', 'nodea14','nodei9']
+    'all': ['nodeb8', 'nodea14','nodei9']
 }
 
 env.password = 'c0ntrail123'
