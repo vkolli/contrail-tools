@@ -31,6 +31,7 @@ env.roledefs = {
     'webui': [host1, host2, host3],
     'database': [host1, host2, host3],
     'build': [host_build],
+    'contrail-kubernetes': [host1, host2, host3],
 }
 
 env.hostnames = {

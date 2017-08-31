@@ -3,6 +3,9 @@ set -x
 set -e
 cluster_name=$1
 count=0
+cat /etc/ntp.conf | sed -e '/.*pool.ntp.org.*/s/^/#/g' | sed -e '/.*ntp.ubuntu.com.*/s/^/#/g' > /tmp/ntp.conf
+rm -f /etc/ntp.conf
+mv /tmp/ntp.conf /etc/ntp.conf
 echo "server ntp.juniper.net" >> /etc/ntp.conf
 service ntp restart
 while [ $(server-manager status server --cluster_id $cluster_name | grep -c  id) -ne $(server-manager status server --cluster_id $cluster_name | grep -c  provision_completed)  ]; do

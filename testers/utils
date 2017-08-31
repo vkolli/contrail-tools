@@ -7,12 +7,6 @@ declare -A BUILD_MAP
 export BUILD_MAP=( [ubuntu-12-04]=ubuntu-12.04.3 [centos64_os]=centos-6.4 [centos65]=centos-6.5 [ubuntu-14-04]=ubuntu-14.04 [ubuntu-16-04]=ubuntu-16.04 [ubuntu-14-04-1]=ubuntu-14.04.1 [redhat70]=redhat-7.1 [centos71]=centos-7.1  [ubuntu-16-04]=ubuntu-16.04 )
 export_variables_for_fab="export HA_TEST=$HA_TEST; export AUTH_PROTOCOL=$AUTH_PROTOCOL; export KEYSTONE_VERSION=$KEYSTONE_VERSION; export ENABLE_RBAC=$ENABLE_RBAC"
 
-# For CB_SANITY set Task runnner host to bangalore machine as packages are available locally.
-if [[ -z $CB_SANITY ]]; then
-    export TASK_RUNNER_HOST_STRING="stack@10.204.216.49"
-    export TASK_RUNNER_HOST_PASSWORD="stack@123"
-fi
-
 ##
 # try
 function try {
@@ -118,8 +112,14 @@ function search_package {
                 if [[ $CB_SANITY -eq 1 ]]; then
                     if [[ $DISTRO =~ ubuntu-16 ]]; then
                         PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/contrail-cloud-docker*.tgz`
+			if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+			    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+			fi
                     else
                         PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-cloud-docker*.tgz`
+			if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+			    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+			fi
                     fi
                 else
                     PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts/contrail-cloud-docker*.tgz`
@@ -131,9 +131,15 @@ function search_package {
             if [[ $CB_SANITY -eq 1 ]]; then
                 if [[ $DISTRO =~ ubuntu-16 ]]; then
                     PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/contrail-cloud-docker*.tgz`
+			if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+			    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+			fi
                 else
-			PKG_FILE="$(ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-cloud-docker*.tgz)"
+		    PKG_FILE="$(ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-cloud-docker*.tgz)"
                     #PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-cloud-docker*.tgz`
+			if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+				PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+			fi
                 fi
             else
                 PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts/contrail-cloud-docker*.tgz`
@@ -410,7 +416,11 @@ function checkout_test_repo {
 	done
     else
 	for x in contrail-test contrail-test-ci ; do
-	    sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/${x}*.tgz  . || die "Failed to copy test artifacts to build host"
+            if [[ $CB_SANITY -eq 1 ]]; then
+                sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/${x}*.tgz  . || die "Failed to copy test artifacts to build host"
+            else
+                sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/${x}*.tgz  . || die "Failed to copy test artifacts to build host"
+            fi
 	    tar xzf ${x}*.tgz
 	done
     fi
@@ -1025,8 +1035,14 @@ EOF
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
             container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/docker-image-*.tar.gz`
+	    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+		container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/docker-image-*.tar.gz`
+	    fi
         else
             container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/docker-image-*.tar.gz`
+	    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+		container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/docker-image-*.tar.gz`
+	    fi
         fi
     else
         container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
@@ -1472,6 +1488,7 @@ function run_task() {
             export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-cloud-docker[_]\([0-9\.\-]*\)-.*/\1/'`
         fi
         setup_testnode || die "test node setup failed"
+	install_third_party_pkgs
         install_dep_pkgs_for_test
         run_sanity_simple || die "run_sanity_simple failed"
     else
