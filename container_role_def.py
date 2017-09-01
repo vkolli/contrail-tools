@@ -76,6 +76,22 @@ def add_fixed_role_host_list (host_role_list=None, fixed_role_list=None):
         host_role_list[ i ].extend ( fixed_role_list ) 
     return host_role_list 
 
+def one_or_more_filter (host_role_list=None, role_name=None):
+    if host_role_list is None:
+        return []
+    if role_name is None:
+        return host_role_list
+    new_role_host_list = []
+    for i in range (len (host_role_list)):
+        for j in range (len (role_name)): 
+        # host_role_list[ i ] = list (host_role_list[ i ])
+            role_count = get_role_count ( host_role_list=host_role_list[ i ], role_name=role_name[j] )
+        # print "role_count = ["+repr (role_count)+"] "
+            if ( role_count>1 ):
+                new_role_host_list.append ( host_role_list[ i ] )
+    return new_role_host_list
+
+
 def one_or_three_filter (host_role_list=None, role_name=None): 
     if host_role_list is None: 
         return [] 
@@ -205,8 +221,10 @@ def get_combination_list ():
     role_list_dynamic_fixed = add_fixed_role_host_list (host_role_list=host_role_list, fixed_role_list=fixed_role_list) 
     # print "role_list_dynamic_fixed = ["+json.dumps ( role_list_dynamic_fixed, sort_keys=True, indent=4 )+"] " 
     
-    
-    role_list_final = one_or_three_filter (host_role_list=role_list_dynamic_fixed, role_name="contrail-analyticsdb") 
+
+    role_list_final = one_or_more_filter (host_role_list=role_list_dynamic_fixed, role_name=["contrail-controller","contrail-analytics"])
+ 
+    role_list_final = one_or_three_filter (host_role_list=role_list_final, role_name="contrail-analyticsdb") 
     # print "role_list_final = ["+json.dumps ( role_list_final, sort_keys=True, indent=4 )+"] " 
     
     role_list_final = one_filter (host_role_list=role_list_final, role_name="openstack") 
