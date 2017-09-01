@@ -170,9 +170,9 @@ function SMLite_check_SM_pkg_availability() {
     SMLite_get_node_distro
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
-            smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}"
+            smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
         else
-            smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}"
+            smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
         fi
     else
         smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts"
@@ -228,9 +228,9 @@ function copy_smlite_pkg() {
 
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
-            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}"
+            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
         else
-            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}"
+            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
         fi
     else
         pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}"
@@ -304,9 +304,9 @@ function provision_using_SMLite() {
 
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
-            cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/contrail-cloud-docker_*.tgz`
+            cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
         else
-            cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-cloud-docker_*.tgz`
+            cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
         fi
     else
         cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
