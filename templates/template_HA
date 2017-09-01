@@ -95,9 +95,9 @@
                         		"cluster_id": "test-cluster",
                         		"parameters": {
                                 		"domain": "englab.juniper.net",
-						"enable_lbaas": "True",
                                 		"provision":{
                                         		"contrail": {
+						                "enable_lbaas": "True",
                                                 		"minimum_disk_database": 32,
                                                                 "kernel_upgrade": "true",
                                                                 "kernel_version": "3.13.0-110"

@@ -1355,9 +1355,9 @@ def create_cluster_json():
         if "domain" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
-        if "enable_lbaas" in cluster_dict[clus]["parameters"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
+        #if "enable_lbaas" in cluster_dict[clus]["parameters"]:
+        #    individual_clus_string = individual_clus_string + \
+        #        '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
         individual_clus_string = individual_clus_string + \
             '\t\t\t"provision":{\n'
         # Lets start the contrail Part
@@ -1374,6 +1374,10 @@ def create_cluster_json():
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"amqp_ssl":"%s",\n' % cluster_dict[clus][
                     "parameters"]["provision"]["contrail"]["enable_rabbitmq_ssl"]
+	if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t"enable_lbaas":"%s",\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["contrail"]["enable_lbaas"]
         if "kernel_version" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"kernel_version":"%s",\n' % cluster_dict[clus][
