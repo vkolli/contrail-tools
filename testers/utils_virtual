@@ -275,7 +275,7 @@ function provision_using_SM() {
         sleep 100
 
         #check provisioing status.
-        /root/sm_files/check_provision.sh $CLUSTER_NAME
+        /root/sm_files/check_provision.sh $CLUSTER_NAME $TESTBED_LOCATION_US
         if [ $? == 0 ]
         then
             echo "Provisioning of the target/cluster is sucessfull!!!"
