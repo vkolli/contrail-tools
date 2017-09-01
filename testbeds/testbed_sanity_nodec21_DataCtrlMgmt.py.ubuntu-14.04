@@ -60,7 +60,7 @@ env.physical_routers={
 }
 
 env.hostnames = {
-    'all': ['nodec19', 'nodec20', 'nodec21', 'nodea35', 'nodei16', 'nodei18', 'nodea4']
+    'all': ['nodec21', 'nodec19', 'nodec20', 'nodea35', 'nodei16', 'nodei18', 'nodea4']
 }
 
 bond= {
