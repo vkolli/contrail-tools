@@ -105,7 +105,7 @@ function search_package {
             if [[ $VCENTER_AS_COMPUTE_TESTBED -eq 1 || $VCENTER_ONLY_TESTBED -eq 1 ]]; then
                 PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-package*${pkg_suffix}`
                 if [[ $CB_SANITY -eq 1 ]]; then
-		    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-installer-packages*${pkg_suffix}`
+		    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-installer-packages*${pkg_suffix}`
 		    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
    			PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-installer-packages*${pkg_suffix}`
 		    fi
@@ -113,7 +113,7 @@ function search_package {
             else
                 PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/contrail-installer-packages*${pkg_suffix}`
                 if [[ $CB_SANITY -eq 1 ]]; then
-		    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-installer-packages*${pkg_suffix}`
+		    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-installer-packages*${pkg_suffix}`
 		    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
    			PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-installer-packages*${pkg_suffix}`
 		    fi
@@ -122,7 +122,7 @@ function search_package {
         else
             PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*${pkg_suffix}`
             if [[ $CB_SANITY -eq 1 ]]; then
-	  	PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-install-packages*${pkg_suffix}`
+	  	PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-install-packages*${pkg_suffix}`
 	   	if [[ $TESTBED_LOCATION_US -eq 1 ]];then
    		    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages*${pkg_suffix}`
 		fi
@@ -339,7 +339,7 @@ function copy_fabric_test_artifacts {
                if [[ $TESTBED_LOCATION_US -eq 1 ]];then
                    FAB_UTILS=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-fabric-utils*.tgz`
 	        else
-                   FAB_UTILS=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-fabric-utils*.tgz`
+                   FAB_UTILS=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-fabric-utils*.tgz`
                 fi 
                 exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp ${SSHOPT} $FAB_UTILS ${API_SERVER_HOST_STRING}:" || die "Failed to copy fab artifacts to $API_SERVER_HOST_STRING:"
 	    else
