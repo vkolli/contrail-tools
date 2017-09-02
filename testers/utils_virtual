@@ -229,7 +229,7 @@ function provision_using_SM_cliff_client() {
         sleep 100
 
         #check provisioing status.
-        /root/sm_files/check_provision_cliff.sh $CLUSTER_NAME
+        /root/sm_files/check_provision_cliff.sh $CLUSTER_NAME $TESTBED_LOCATION_US
         if [ $? == 0 ]
         then
             echo "Provisioning of the target/cluster is sucessfull!!!"
