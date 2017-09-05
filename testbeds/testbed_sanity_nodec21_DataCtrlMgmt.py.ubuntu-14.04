@@ -23,17 +23,17 @@ host_build = 'stack@10.204.216.49'
 
 env.roledefs = {
     'all': [host1, host2, host3, host4, host5, host6, host7],
-    'contrail-compute': [host5, host6, host7],
-    'openstack': [host1],
+    'contrail-compute': [host5, host6],
+    'openstack': [host1, host2, host3],
     'contrail-controller': [host1, host2, host3],
     'contrail-analytics': [host1, host2, host3],
     'contrail-analyticsdb': [host1, host2, host3],
-    'contrail-lb':[host4],
+    'contrail-lb':[host7],
     'build': [host_build],
 }
 
 if os.getenv('AUTH_PROTOCOL',None) == 'https':
-    env.log_scenario = 'Multi-Interface contrail HA Sanity[mgmt, ctrl=data, SSL]'
+    env.log_scenario = 'Multi-Interface openstack HA Sanity[mgmt, ctrl=data, SSL]'
     env.keystone = {
         'auth_protocol': 'https'
     }
@@ -41,7 +41,7 @@ if os.getenv('AUTH_PROTOCOL',None) == 'https':
         'auth_protocol': 'https'
     }
 else:
-    env.log_scenario = 'Multi-Interface contrail HA Sanity[mgmt, ctrl=data]'
+    env.log_scenario = 'Multi-Interface openstack HA Sanity[mgmt, ctrl=data]'
 
 if os.getenv('ENABLE_RBAC',None) == 'true':
     cloud_admin_role = 'admin'
@@ -60,7 +60,7 @@ env.physical_routers={
 }
 
 env.hostnames = {
-    'all': ['nodec19', 'nodec20', 'nodec21', 'nodea35', 'nodei16', 'nodei18', 'nodea4']
+    'all': ['nodec21', 'nodec19', 'nodec20', 'nodea35', 'nodei16', 'nodei18', 'nodea4']
 }
 
 bond= {
@@ -70,10 +70,10 @@ bond= {
 
 control_data= {
 
-    host1 : { 'ip': '192.168.10.1/24', 'gw' : '192.168.10.254', 'device':'p1p2' },
-    host2 : { 'ip': '192.168.10.2/24', 'gw' : '192.168.10.254', 'device':'p1p2' },
-    host3 : { 'ip': '192.168.10.3/24', 'gw' : '192.168.10.254', 'device':'p1p2' },
-    host4 : { 'ip': '192.168.10.4/24', 'gw' : '192.168.10.254', 'device':'em1' },
+    host1 : { 'ip': '192.168.10.1/24', 'gw' : '192.168.10.254', 'device':'enp1s0f1' },
+    host2 : { 'ip': '192.168.10.2/24', 'gw' : '192.168.10.254', 'device':'enp1s0f1' },
+    host3 : { 'ip': '192.168.10.3/24', 'gw' : '192.168.10.254', 'device':'enp1s0f1' },
+    host4 : { 'ip': '192.168.10.4/24', 'gw' : '192.168.10.254', 'device':'eno1' },
     host5 : { 'ip': '192.168.10.5/24', 'gw' : '192.168.10.254', 'device':'bond0' },
     host6 : { 'ip': '192.168.10.6/24', 'gw' : '192.168.10.254', 'device':'bond0' },
     host7 : { 'ip': '192.168.10.7/24', 'gw' : '192.168.10.254', 'device':'p2p4' }
