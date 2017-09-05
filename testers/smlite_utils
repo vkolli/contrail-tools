@@ -305,8 +305,10 @@ function provision_using_SMLite() {
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
             cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
-        else
+        if [[ $DISTRO =~ ubuntu-14 ]]; then
             cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
+        if [[ $DISTRO =~ vcenter ]]; then
+            cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}/contrail-vcenter-docker_*.tgz`
         fi
     else
         cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
@@ -433,6 +435,15 @@ function run_smgr_task() {
         echo "JSON will be used to provision the setup."
 	set_json_file_path || die "setting json file path for cluster and server failed"
     fi
+
+    #if esxi/vcenter setup, cleanup vcenter and dockers
+    if [ $VCENTER_ONLY -eq 1 ]; then
+        (cd ${TOOLS_WS}/contrail-fabric-utils
+         fab cleanup_vcenter)
+        (cd ${TOOLS_WS}/contrail-fabric-utils
+         fab cleanup_dockers)
+    fi
+
     copy_smlite_pkg || die "copy of sm-lite packages failed"
     provision_using_SMLite || die "provision failed"
     #add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
