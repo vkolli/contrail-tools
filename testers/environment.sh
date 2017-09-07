@@ -31,7 +31,7 @@ export TEST_CONTAINER_IMAGE=${TEST_CONTAINER_IMAGE:-''}
 export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts/"}
 if [[ $CB_SANITY -eq 1 ]];then
     if [[ $DISTRO =~ "ubuntu-14" ]];then
-        export TEST_CONTAINER_IMAGE_DIR="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/"
+        export TEST_CONTAINER_IMAGE_DIR="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
         if [[ $TESTBED_LOCATION_US -eq 1 ]];then
             export TEST_CONTAINER_IMAGE_DIR="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/"
         fi
