@@ -398,7 +398,7 @@ function checkout_fab_repo {
         sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/contrail-fabric-utils*.tgz  . || die "Failed to copy fab artifacts to build host"
     else
         #sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$PKG_FILE_DIR/artifacts_extra/contrail-fabric-utils*.tgz  . || die "Failed to copy fab artifacts to build host"
-        sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$TEST_CONTAINER_IMAGE_DIR/contrail-fabric-utils*.tgz  . || die "Failed to copy fab artifacts to build host"
+        sshpass -p $TASK_RUNNER_HOST_PASSWORD scp ${SSHOPT} $TASK_RUNNER_HOST_STRING:$TEST_CONTAINER_IMAGE_DIR/artifacts_extra/contrail-fabric-utils*.tgz  . || die "Failed to copy fab artifacts to build host"
     fi
     tar xzf contrail-fabric-utils*.tgz
     rm -rf contrail-fabric-utils
