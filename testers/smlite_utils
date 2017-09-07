@@ -475,6 +475,6 @@ function run_smgr_task() {
     install_dep_pkgs_for_test
     run_sanity_simple || die "run_sanity_simple failed"
     run_tempest || die "Run_Tempest step failed"
-    #collect_tech_support || die "Task to collect logs/cores failed"
+    collect_tech_support || die "Task to collect logs/cores failed"
     echo "Ending test on $1"
 }
