@@ -88,7 +88,17 @@ function check_SM_pkg_availability() {
 			fi
 		fi
 	else
-        	pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts"
+        	#pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts"
+                if [[ $DISTRO =~ ubuntu-16 ]]; then
+                        if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                                pkg_dir="/github-build/${BRANCH}/${BUILDID}/ubuntu-16-04/${SKU}/artifacts"
+                        fi
+                else
+                        if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                                pkg_dir="/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts"
+                        fi
+                fi
+
 	fi
     else
         pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/centos64_os/${SKU}/artifacts"
