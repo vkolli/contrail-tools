@@ -78,9 +78,18 @@
                                                 "server_manager" : "false",
                                                 "roles" : ["compute"]
                                         },
+                                        "server6":{
+                                                "name":"server6" ,
+                                                "ip_address" : { "final_test_network_1":"10.0.0.9", "final_test_network_2":"10.10.0.9"},
+                                                "flavor" : "m1.xxlarge",
+                                                "image" : "image_val",
+                                                "floating_ip" : "true",
+                                                "server_manager" : "false",
+                                                "roles" : ["compute"]
+                                        },
 					"servermanager":{
                                 		"name":"servermanager" ,
-                                		"ip_address" : { "final_test_network_1":"10.0.0.9", "final_test_network_2":"10.10.0.9"},
+                                		"ip_address" : { "final_test_network_1":"10.0.0.10", "final_test_network_2":"10.10.0.10"},
                                 		"flavor" : "m1.xxlarge",
                                 		"image" : "image_val",
                                 		"floating_ip" : "true",
