@@ -114,9 +114,18 @@
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-compute"]
                                         },
+                                        "server10":{
+                                                "name":"server10" ,
+                                                "ip_address" : { "final_test_network_1":"10.0.0.13", "final_test_network_2":"10.10.0.13"},
+                                                "flavor" : "m1.xxlarge",
+                                                "image" : "image_val",
+                                                "floating_ip" : "true",
+                                                "server_manager" : "flase",
+                                                "roles" : ["contrail-compute"]
+                                        },
 					"servermanager":{
                                 		"name":"servermanager" ,
-                                		"ip_address" : { "final_test_network_1":"10.0.0.13", "final_test_network_2":"10.10.0.13"},
+                                		"ip_address" : { "final_test_network_1":"10.0.0.14", "final_test_network_2":"10.10.0.14"},
                                 		"flavor" : "m1.xxlarge",
                                 		"image" : "image_val",
                                 		"floating_ip" : "true",
