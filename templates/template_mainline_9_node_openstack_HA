@@ -158,7 +158,7 @@
                                                                                 "log_level": "SYS_NOTICE",
                                                                                 "log": "/var/log/contrail/contrail-analytics-api.log",
                                                                                 "aaa_mode": "rbac"
-                                                                },
+                                                                }
 							},
                                         		"contrail": {
 								"contrail_external_vip": "10.0.0.200",
