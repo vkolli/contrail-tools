@@ -147,7 +147,18 @@
 							"contrail_4": {
 								"enable_lbaas": "true",
 								"global_config": {
-								}
+								},
+                                                                "api_config": {
+                                                                            "log_level": "SYS_NOTICE",
+                                                                                "aaa_mode": "rbac",
+                                                                                "cloud_admin_role": "admin",
+                                                                                "global_read_only_role": ""
+                                                                },
+                                                                "analytics_api_config": {
+                                                                                "log_level": "SYS_NOTICE",
+                                                                                "log": "/var/log/contrail/contrail-analytics-api.log",
+                                                                                "aaa_mode": "rbac"
+                                                                }
 							},
                                         		"contrail": {
 								"contrail_external_vip": "10.0.0.200",
