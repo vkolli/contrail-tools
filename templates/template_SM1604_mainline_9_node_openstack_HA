@@ -4,7 +4,7 @@
 			"msg" : "9 node cluster for mainline build with multiple interfaces and Openstack  HA"
 		},
 		"params":{
-			"no_of_servers" : 10,
+			"no_of_servers" : 11,
 			"no_of_networks" : 2,
 			"network_stack_name" : "test_network_final",
 			"server_stack_name" : "test_server_final",
@@ -146,18 +146,8 @@
                                 		"provision":{
 							"contrail_4": {
 								"enable_lbaas": "true",
+                                                                "rbac": "true",
 								"global_config": {
-								},
-                                                                "api_config": {
-                                                                                "log_level": "SYS_NOTICE",
-                                                                                "aaa_mode": "rbac",
-                                                                                "cloud_admin_role": "admin",
-                                                                                "global_read_only_role": ""
-                                                                },
-                                                                "analytics_api_config": {
-                                                                                "log_level": "SYS_NOTICE",
-                                                                                "log": "/var/log/contrail/contrail-analytics-api.log",
-                                                                                "aaa_mode": "rbac"
                                                                 }
 							},
                                         		"contrail": {
