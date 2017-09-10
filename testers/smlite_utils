@@ -330,9 +330,17 @@ function provision_using_SMLite() {
             echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
             if [ $SKIP_SMLITE_INSTALL -ne 0 ]
             then
-                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
+                if [[ $SKU =~ ocata ]]; then
+                    /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON} -sku ${SKU}
+                else
+                    /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
+                fi
             else
-                /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON}
+                if [[ $SKU =~ ocata ]]; then
+                    /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON} -sku ${SKU}
+                else
+                    /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON}
+                fi
             fi
         fi
 
