@@ -860,13 +860,18 @@ def create_server_json_mainline():
                     ip_add_with_mask = ip_add + '/' + mask
                     mac_address = fixed_ip_mac_mapping[ip_add]
                     role = network_dict[j]["role"]
-                    if role == "management":
+                    single_server_string = single_server_string + '\t\t\t\t{\n'
+		    if role == "management":
                         int_name = cluster_dict[clus]["management_interface"]
+			single_server_string = single_server_string + \
+			    '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
+		    elif role == "kolla-network":
+			int_name = cluster_dict[clus]["kolla_network_interface"]
                     else:
                         int_name = cluster_dict[clus]["control_data_iterface"]
-                    single_server_string = single_server_string + '\t\t\t\t{\n'
-                    single_server_string = single_server_string + \
-                        '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
+                    #single_server_string = single_server_string + '\t\t\t\t{\n'
+                    #single_server_string = single_server_string + \
+                    #    '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
                     single_server_string = single_server_string + \
@@ -1297,6 +1302,12 @@ def create_cluster_json_mainline():
 		if "network_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
 			individual_clus_string = individual_clus_string + \
 			    '\t\t\t\t\t"network_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["network_interface"]
+		if "kolla_external_vip_address" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"kolla_external_vip_address": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_external_vip_address"]
+		if "kolla_external_vip_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"kolla_external_vip_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_external_vip_interface"]
 		if "neutron_external_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
 			individual_clus_string = individual_clus_string + \
 			    '\t\t\t\t\t"neutron_external_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["neutron_external_interface"]
