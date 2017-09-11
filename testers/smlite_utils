@@ -199,6 +199,7 @@ function SMLite_check_SM_pkg_availability() {
 
 
 function SMLite_get_node_distro() {
+    sleep 10
     lsb_dist_output=`exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
         cat /etc/lsb-release"`
     if [[ $lsb_dist_output =~ Ubuntu ]]; then
