@@ -2,7 +2,7 @@ from fabric.api import env
 import os
 
 
-host1 = 'root@10.204.216.15'
+host1 = 'root@10.204.216.201'
 host2 = 'root@10.204.216.10'
 #host3 = 'root@10.204.217.209'
 host4 = 'root@10.204.217.121'
@@ -40,7 +40,7 @@ if os.getenv('AUTH_PROTOCOL',None) == 'https':
 
 env.hostnames = {
     #'all': ['nodea19', 'nodea14','nodel3','nodei9']
-    'all': ['nodea19', 'nodea14','nodei9']
+    'all': ['nodeb8', 'nodea14','nodei9']
 }
 
 env.password = 'c0ntrail123'
@@ -75,7 +75,7 @@ env.other_orchestrators={
 
 #env.slave_orchestrator = 'vcenter'
 control_data = {
-    host1 : { 'ip': '192.168.250.4/24', 'gw' : '192.168.250.254', 'device':'em1' },
+    host1 : { 'ip': '192.168.250.4/24', 'gw' : '192.168.250.254', 'device':'eth1' },
     host2 : { 'ip': '192.168.250.5/24', 'gw' : '192.168.250.254', 'device':'em1' },
    # host3 : { 'ip': '192.168.250.8/24', 'gw' : '192.168.250.254', 'device':'em2' },
     host4 : { 'ip': '192.168.250.19/24', 'gw' : '192.168.250.254', 'device':'p6p2' },
