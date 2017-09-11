@@ -403,13 +403,6 @@ function provision_using_SMLite() {
 function run_smgr_task() {
     echo "Running tests on $1.."
 
-    if [ -z $CB_SANITY ]
-    then
-        export CB_SANITY=0
-    else
-        export CB_SANITY=1
-    fi
-
     if [ ${TEST_SETUP} == "SINGLENODE" ]
     then
         multi_node=0
