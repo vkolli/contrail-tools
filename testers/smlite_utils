@@ -306,10 +306,14 @@ function provision_using_SMLite() {
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
             cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
+            if [[ $SKU =~ vcenter ]]; then
+                cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-ocata/${BUILDID}/contrail-vcenter-docker_*.tgz`
+            fi
         elif [[ $DISTRO =~ ubuntu-14 ]]; then
             cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
-        elif [[ $DISTRO =~ vcenter ]]; then
-            cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}/contrail-vcenter-docker_*.tgz`
+            if [[ $SKU =~ vcenter ]]; then
+                cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}/contrail-vcenter-docker_*.tgz`
+            fi
         fi
     else
         cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
