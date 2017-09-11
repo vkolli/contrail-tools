@@ -876,7 +876,10 @@ def create_server_json_mainline():
                         '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"mac_address": "%s",\n' % mac_address
-                    if "server_json_dhcp" in cluster_dict[clus]:
+                    if "mtu" in cluster_dict[clus]:
+			single_server_string = single_server_string + \
+			    '\t\t\t\t\t"mtu": %s,\n' % cluster_dict[clus]["mtu"]
+		    if "server_json_dhcp" in cluster_dict[clus]:
                         single_server_string = single_server_string + \
                             '\t\t\t\t\t"dhcp": %s,\n' % cluster_dict[clus]["server_json_dhcp"]
                     else:
