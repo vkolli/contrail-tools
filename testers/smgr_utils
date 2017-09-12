@@ -8,7 +8,11 @@ function check_SM_pkg_availability() {
     count=0
     if [ $SM_TYPE -eq 1 ] 
     then
-        pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts"
+        if [[ $CB_SANITY -eq 1 ]]; then
+            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
+        else
+            pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts"
+	fi
     else
         pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/centos64_os/${SKU}/artifacts"
     fi
@@ -192,13 +196,17 @@ function reimage_using_SM() {
         return 0
     fi
     # set the parameters required for reimage.
-    if [[ $DISTRO =~ ubuntu-14.04 ]]; then
+    if [[ $DISTRO =~ ubuntu-16 ]]; then
+        isofile="/root/images/image-16.04.2-dheeraj.json"
+        SMID="container_image"
+	pkg_type="contrail-ubuntu-package"
+    elif [[ $DISTRO =~ ubuntu-14.04 ]]; then
         image="/cs-shared/images/ubuntu-14.04.5-server-amd64.iso"
         pkg_type="contrail-ubuntu-package"
         iso_type="ubuntu"
         SMID=ubuntu14$SKU${BUILDID}
         isofile="/root/images/image145.json"
-    elif [[ ${CENTOS_72} -eq 1 ]];then
+    elif [[ ${CENTOS_72} -eq 1 ]]; then
 	image="/root/images/CentOS-7-x86_64-Minimal-1511.iso"
 	pkg_type="contrail-centos-package"
 	iso_type="redhat"
@@ -213,10 +221,17 @@ function reimage_using_SM() {
         contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
 	isofile="/root/images/centos71.json"
     fi
-
+    
     pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
+    
     if [[ $DISTRO =~ ubuntu ]]; then
-        contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
+        if [[ $CB_SANITY -eq 1 ]]; then
+            if [[ $DISTRO =~ ubuntu-16 ]]; then
+                contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
+            fi
+        else
+            contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
+	fi
     else
         if [[ $DISTRO =~ centos71 ]]; then
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
@@ -229,6 +244,9 @@ function reimage_using_SM() {
     CLUSTER_FILE_NAME=${CLUSTER_FILE_NAME}_container
     SERVER_FILE_NAME=${SERVER_FILE_NAME}_container
     if [[ $DISTRO =~ ubuntu-14.04 ]]; then
+        cluster_json="/root/sm_files/$CLUSTER_FILE_NAME.json"
+        server_json="/root/sm_files/$SERVER_FILE_NAME.json"
+    elif [[ $DISTRO =~ ubuntu-16 ]] ; then
         cluster_json="/root/sm_files/$CLUSTER_FILE_NAME.json"
         server_json="/root/sm_files/$SERVER_FILE_NAME.json"
     else
@@ -248,7 +266,7 @@ function reimage_using_SM() {
         server-manager-client delete image --image_id ${DISTRO}
 
         echo "add base ISO image to server manager database"
-        server-manager-client add image -f  $isofile 
+        server-manager-client add image -f  $isofile
         if [ $? == 0 ]
         then
             echo "Server-manager adding image command is successful"
@@ -281,6 +299,7 @@ function reimage_using_SM() {
 
 	sleep 180
         echo "check if the package was added successfully"
+        /root/sm_files/check_add_image_cliff.sh $SMID
         server-manager-client display image --json | grep $SMID
         if [ $? != 0 ]
         then
@@ -450,3 +469,4 @@ function run_smgr_task() {
     fi
     echo "Ending test on $1"
 }
+
