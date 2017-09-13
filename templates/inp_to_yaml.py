@@ -361,8 +361,10 @@ def create_server_yaml():
             for j in network_dict:
                 if network_dict[j]["role"] == "management":
                     ip_num = 0
-                else:
+                elif network_dict[j]["role"] == "control-data":
                     ip_num = 1
+		else:
+		    ip_num = 2
                 net_name = network_dict[j]["name"]
                 port_name = name + "_port_" + str(ip_num)
                 server_string = server_string + "  " + port_name + ":\n"

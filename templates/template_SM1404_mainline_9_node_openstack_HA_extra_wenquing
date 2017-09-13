@@ -164,6 +164,7 @@
 								"openstack_manage_amqp": "true",
 								"keystone_admin_password": "c0ntrail123",
 								"keystone_version": "v3.0",
+								"keystone_auth_protocol": "https",
 								"keystone_admin_token": "c0ntrail123"
                                         		}
                                 		}
