@@ -1,10 +1,10 @@
 {
 	"inp_params": {
 		"description":{
-			"msg" : "9 node cluster for mainline build with multiple interfaces and Openstack  HA"
+			"msg" : "10 node cluster for mainline build with multiple interfaces and Openstack  HA"
 		},
 		"params":{
-			"no_of_servers" : 10,
+			"no_of_servers" : 11,
 			"no_of_networks" : 2,
 			"network_stack_name" : "test_network_final",
 			"server_stack_name" : "test_server_final",
@@ -37,7 +37,7 @@
 						"name":"server1" , 
 						"ip_address" : { "final_test_network_1":"10.0.0.4", "final_test_network_2":"10.10.0.4"},
 						"flavor" : "m1.xxlarge",
-						"image" : "160402-iso.qcow2",
+						"image" : "image_val",
 						"floating_ip" : "true",
 						"server_manager" : "flase",
 						"roles" : ["openstack"]
@@ -46,7 +46,7 @@
                                                 "name":"server2" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.5", "final_test_network_2":"10.10.0.5"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["openstack"]
@@ -55,7 +55,7 @@
                                                 "name":"server3" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.6", "final_test_network_2":"10.10.0.6"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["openstack"]
@@ -64,7 +64,7 @@
                                                 "name":"server4" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.7", "final_test_network_2":"10.10.0.7"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-controller", "contrail-analytics", "contrail-analyticsdb"]
@@ -73,7 +73,7 @@
                                                 "name":"server5" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.8", "final_test_network_2":"10.10.0.8"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-controller", "contrail-analytics", "contrail-analyticsdb"]
@@ -82,7 +82,7 @@
                                                 "name":"server6" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.9", "final_test_network_2":"10.10.0.9"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-controller", "contrail-analytics", "contrail-analyticsdb"]
@@ -91,7 +91,7 @@
                                                 "name":"server7" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.10", "final_test_network_2":"10.10.0.10"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-lb"]
@@ -100,7 +100,7 @@
                                                 "name":"server8" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.11", "final_test_network_2":"10.10.0.11"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-compute"]
@@ -109,16 +109,25 @@
                                                 "name":"server9" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.12", "final_test_network_2":"10.10.0.12"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "160402-iso.qcow2",
+                                                "image" : "image_val",
+                                                "floating_ip" : "true",
+                                                "server_manager" : "flase",
+                                                "roles" : ["contrail-compute"]
+                                        },
+                                        "server10":{
+                                                "name":"server10" ,
+                                                "ip_address" : { "final_test_network_1":"10.0.0.13", "final_test_network_2":"10.10.0.13"},
+                                                "flavor" : "m1.xxlarge",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-compute"]
                                         },
 					"servermanager":{
                                 		"name":"servermanager" ,
-                                		"ip_address" : { "final_test_network_1":"10.0.0.13", "final_test_network_2":"10.10.0.13"},
+                                		"ip_address" : { "final_test_network_1":"10.0.0.14", "final_test_network_2":"10.10.0.14"},
                                 		"flavor" : "m1.xxlarge",
-                                		"image" : "ubuntu-14-04",
+                                		"image" : "image_val",
                                 		"floating_ip" : "true",
                                 		"roles" : ["sm"],
 						"server_manager" : "true"
@@ -128,31 +137,33 @@
 					"server_password" : "c0ntrail123",
 					"keystone_admin_password": "c0ntrail123",
 					"keystone_admin_token": "c0ntrail123",
-					"management_interface": "ens3",
-					"control_data_iterface": "ens4",
+					"management_interface": "eth0",
+					"control_data_iterface": "eth1",
                         		"cluster_id": "test-cluster",
 					"provisioning_type": "kickstart",
                         		"parameters": {
-						"enable_lbaas": "True",
                                 		"domain": "englab.juniper.net",
                                 		"provision":{
+							"contrail_4": {
+								"enable_lbaas": "true",
+                                                                "rbac": "true",
+								"global_config": {
+                                                                        "xmpp_auth_ssl": "true",
+                                                                        "sandesh_ssl": "true"
+								}
+							},
                                         		"contrail": {
 								"contrail_external_vip": "10.0.0.200",
 								"contrail_internal_vip": "10.10.0.200",
+                                                		"kernel_upgrade": "true",
 								"manage_neutron": "false"
                                         		},
-							"contrail_4": {
-                                                                "global_config": {
-                                                                        "xmpp_auth_ssl": "true",
-                                                                        "sandesh_ssl": "true"
-                                                                },
-                                                                "rbac": "true"
-                                                        },
                                         		"openstack":{
 								"external_vip": "10.0.0.100",
 								"internal_vip": "10.10.0.100",
-								"openstack_manage_amqp": "false",
+								"openstack_manage_amqp": "true",
 								"keystone_admin_password": "c0ntrail123",
+								"keystone_version": "v3.0",
 								"keystone_admin_token": "c0ntrail123"
                                         		}
                                 		}
