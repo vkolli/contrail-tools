@@ -140,6 +140,7 @@
 					"management_interface": "ens3",
 					"control_data_iterface": "ens4",
                         		"cluster_id": "test-cluster",
+					"mtu": "1400",
 					"provisioning_type": "kickstart",
                         		"parameters": {
                                 		"domain": "englab.juniper.net",
