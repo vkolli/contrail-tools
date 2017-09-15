@@ -746,7 +746,7 @@ function add_server_cluster_SM() {
             echo "Preconfigure the servers"
 	    if [ $SKU == "ocata"]
 	    then 
-		python /opt/contrail/server_manager/client/preconfig.py —sku ocata --server-json $server_json  --server-manager-ip $SM_SERVER_IP --server-manager-repo-port 80
+		python /opt/contrail/server_manager/client/preconfig.py --sku ocata --server-json $server_json  --server-manager-ip $SM_SERVER_IP --server-manager-repo-port 80
 	    else
             	python /opt/contrail/server_manager/client/preconfig.py --server-json $server_json  --server-manager-ip $SM_SERVER_IP --server-manager-repo-port 80
 	    fi    
