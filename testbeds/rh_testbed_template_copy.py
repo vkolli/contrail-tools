@@ -34,8 +34,8 @@ host17 = 'heat-admin@analytics-db1'
 host18 = 'heat-admin@analytics-db2'
 host19 = 'heat-admin@analytics-db3'
 
-hypervisor_host = 'root@10.87.67.142'
-hypervisor_host_stack = 'stack@10.87.67.1'
+hypervisor_host = 'root@10.87.67.2'
+hypervisor_host_stack = 'stack@10.87.67.2'
 undercloud_host = 'root@10.87.67.42'
 undercloud_host_stack = 'stack@10.87.67.42'
 test_vm = 'root@10.87.67.85' 
@@ -202,6 +202,21 @@ env.cfgm = {
     'amqp_password' : 'PASSWORD_RABBITMQ' # OVERCLOUD_RABBITMQ_PASSWORD
 }
 
+env.osp = {
+    'osp_version' : '10',
+    'rh_username' : 'aranjan.redhat',
+    'rh_password' : 'H3Ub9pth3x',
+    'rh_pool_id' : '8a85f9895cce2f3a015ccf0eb79749f8',
+    'NtpServer' : '10.84.5.100',
+    'DnsServers' : '10.84.5.100',
+    'ExternalNetCidr' : '10.87.67.0/25',
+    'ExternalAllocationPools' : "[{'start': '10.87.67.10', 'end': '10.87.67.24'}]",
+    'VrouterPhysicalInterface' : 'eno1',
+    'PublicVirtualInterface' : 'eth1',
+    'ExternalInterfaceDefaultRoute' : '10.87.67.126',
+    'ControlPlaneIp' : 'enp131s0f1',
+    'ExternalIP' : 'enp131s0f0',
+}
 env.test = {
     'mail_from' : 'shajuvk@juniper.net',
     'mail_to' : 'shajuvk@juniper.net',
