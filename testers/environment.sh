@@ -35,6 +35,9 @@ if [ ${OSP10} == "OSP10" ]; then
 else
    export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts/"}
 fi
+if [ ${OSP10} == "OSP10" ]; then
+   export CONTRAIL_NETWORKING_DOCKER_IMG='ocata'
+   export CONTRAIL_NETWORKING_DOCKER_IMG_DIR=${CONTRAIL_NETWORKING_DOCKER_IMG_DIR:-"/github-build/${BRANCH}/${BUILDID}/redhat70/ocata/artifacts/"} 
 
 # If BRANCH, BUILID, DISTRO, SKU are not defined,
 # PKG_FILE path needs to be set
