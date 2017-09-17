@@ -114,7 +114,8 @@
 					"control_data_iterface": "eth1",
                         		"cluster_id": "test-cluster",
 					"provisioning_type": "kickstart",
-                        		"parameters": {
+                        		"mtu": "1400",
+					"parameters": {
 						"enable_lbaas": "True",
                                 		"domain": "englab.juniper.net",
                                 		"provision":{

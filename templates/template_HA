@@ -92,7 +92,8 @@
 					"server_password" : "c0ntrail123",
 					"management_interface": "eth0",
 					"control_data_iterface": "eth1",
-                        		"cluster_id": "test-cluster",
+                        		"mtu": "1400",
+					"cluster_id": "test-cluster",
                         		"parameters": {
                                 		"domain": "englab.juniper.net",
 						"enable_lbaas": "True",
