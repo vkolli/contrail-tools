@@ -361,8 +361,10 @@ def create_server_yaml():
             for j in network_dict:
                 if network_dict[j]["role"] == "management":
                     ip_num = 0
-                else:
+                elif network_dict[j]["role"] == "control-data":
                     ip_num = 1
+		else:
+		    ip_num = 2
                 net_name = network_dict[j]["name"]
                 port_name = name + "_port_" + str(ip_num)
                 server_string = server_string + "  " + port_name + ":\n"
@@ -861,17 +863,25 @@ def create_server_json_mainline():
                     mac_address = fixed_ip_mac_mapping[ip_add]
                     role = network_dict[j]["role"]
                     single_server_string = single_server_string + '\t\t\t\t{\n'
-                    if role == "management":
+		    if role == "management":
                         int_name = cluster_dict[clus]["management_interface"]
-                    	single_server_string = single_server_string + \
-                        	'\t\t\t\t\t"default_gateway": "%s",\n' % gateway
+			single_server_string = single_server_string + \
+			    '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
+		    elif role == "kolla-network":
+			int_name = cluster_dict[clus]["kolla_network_interface"]
                     else:
                         int_name = cluster_dict[clus]["control_data_iterface"]
+                    #single_server_string = single_server_string + '\t\t\t\t{\n'
+                    #single_server_string = single_server_string + \
+                    #    '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"mac_address": "%s",\n' % mac_address
-                    if "server_json_dhcp" in cluster_dict[clus]:
+                    if "mtu" in cluster_dict[clus]:
+			single_server_string = single_server_string + \
+			    '\t\t\t\t\t"mtu": %s,\n' % cluster_dict[clus]["mtu"]
+		    if "server_json_dhcp" in cluster_dict[clus]:
                         single_server_string = single_server_string + \
                             '\t\t\t\t\t"dhcp": %s,\n' % cluster_dict[clus]["server_json_dhcp"]
                     else:
@@ -1269,6 +1279,61 @@ def create_cluster_json_mainline():
                     "parameters"]["provision"]["contrail"]["manage_neutron"]
         individual_clus_string = individual_clus_string + '\t\t\t\t\t}\n'
         individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
+	
+	if "kolla_globals" in cluster_dict[clus]["parameters"]["provision"]:
+		individual_clus_string = individual_clus_string + \
+		    '\t\t\t\t"kolla_globals": {\n'
+		if "kolla_base_distro" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"kolla_base_distro" :"%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_base_distro"]
+		if "openstack_release" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"openstack_release": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["openstack_release"]
+		if "enable_nova_compute" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"enable_nova_compute": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["enable_nova_compute"]
+		if "keystone_admin_user" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"keystone_admin_user": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["keystone_admin_user"]
+		individual_clus_string = individual_clus_string + \
+		    '\t\t\t\t\t"keystone_admin_url": "{{ admin_protocol }}://{{ kolla_internal_fqdn }}:{{ keystone_admin_port }}",\n'
+		individual_clus_string = individual_clus_string + \
+		    '\t\t\t\t\t"keystone_internal_url": "{{ internal_protocol }}://{{ kolla_internal_fqdn }}:{{ keystone_public_port }}",\n'
+		individual_clus_string = individual_clus_string + \
+		    '\t\t\t\t\t"keystone_public_url": "{{ public_protocol }}://{{ kolla_external_fqdn }}:{{ keystone_public_port }}",\n'
+		if "kolla_internal_vip_address" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"kolla_internal_vip_address": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_internal_vip_address"]
+		if "network_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"network_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["network_interface"]
+		if "kolla_external_vip_address" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"kolla_external_vip_address": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_external_vip_address"]
+		if "kolla_external_vip_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"kolla_external_vip_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_external_vip_interface"]
+		if "neutron_external_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"neutron_external_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["neutron_external_interface"]
+		if "neutron_plugin_agent" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"neutron_plugin_agent": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["neutron_plugin_agent"]
+		if "enable_neutron_opencontrail" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"enable_neutron_opencontrail": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["enable_neutron_opencontrail"]
+ 		if "keepalived_virtual_router_id" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"keepalived_virtual_router_id": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["keepalived_virtual_router_id"]
+		if "contrail_api_interface_address" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+			individual_clus_string = individual_clus_string + \
+			    '\t\t\t\t\t"contrail_api_interface_address": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["contrail_api_interface_address"]	
+		individual_clus_string = individual_clus_string + \
+		    '\t\t\t\t\t"haproxy_password": "c0ntrail123",\n'
+		individual_clus_string = individual_clus_string + \
+		    '\t\t\t\t\t"keepalived_password": "c0ntrail123"\n'	
+		individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
+
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t"openstack": {\n'
         if "external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
@@ -1321,6 +1386,11 @@ def create_cluster_json_mainline():
         else:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t"admin_token": "c0ntrail123",\n'
+
+	if "keystone_ip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t\t"ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_ip"]
+
         if "keystone_admin_password" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus][
@@ -1328,7 +1398,7 @@ def create_cluster_json_mainline():
         else:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t\t"admin_password": "c0ntrail123"\n'
-        individual_clus_string = individual_clus_string + '\t\t\t\t\t}\n'
+        individual_clus_string = individual_clus_string + '\t\t\t\t\t}\n'		
         individual_clus_string = individual_clus_string + '\t\t\t\t}\n'
         individual_clus_string = individual_clus_string + '\t\t\t}\n'
         individual_clus_string = individual_clus_string + '\t\t}\n'
