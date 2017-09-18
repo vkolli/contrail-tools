@@ -38,7 +38,7 @@ fi
 if [ ${OSP10} == "OSP10" ]; then
    export CONTRAIL_NETWORKING_DOCKER_IMG='ocata'
    export CONTRAIL_NETWORKING_DOCKER_IMG_DIR=${CONTRAIL_NETWORKING_DOCKER_IMG_DIR:-"/github-build/${BRANCH}/${BUILDID}/redhat70/ocata/artifacts/"} 
-
+fi
 # If BRANCH, BUILID, DISTRO, SKU are not defined,
 # PKG_FILE path needs to be set
 export PKG_FILE
