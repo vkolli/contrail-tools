@@ -186,7 +186,7 @@
                                                                 "neutron_plugin_agent": "opencontrail",
                                                                 "enable_neutron_opencontrail": "yes",
                                                                 "keepalived_virtual_router_id": "102",
-                                                                "contrail_api_interface_address": "10.10.0.100"
+                                                                "contrail_api_interface_address": "10.10.0.200"
                                                         }
                                 		}
                         		}
