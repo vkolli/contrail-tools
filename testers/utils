@@ -1052,7 +1052,9 @@ EOF
         echo "ERROR!! Container image $container_image_path doesnt exist"
         exit 1
     fi
-    sshpass -p $TEST_HOST_PASSWORD scp $SSHOPT $container_image_path $TEST_HOST_STRING:/tmp/
+    random_str=${RANDOM}
+    tmp_container_image_file="/tmp/${random_str}_${container_image_file}"
+    sshpass -p $TEST_HOST_PASSWORD scp $SSHOPT $container_image_path $TEST_HOST_STRING:${tmp_container_image_file}
     exec_cmds -s $TEST_HOST_STRING -p $TEST_HOST_PASSWORD -c "(
         docker  -v &> /dev/null ; rv=\$?
         if [ \$rv -ne 0 ]; then
@@ -1062,7 +1064,8 @@ EOF
         wget -O /usr/local/bin/testrunner.sh https://raw.githubusercontent.com/Juniper/contrail-test-ci/master/testrunner.sh
         chmod +x /usr/local/bin/testrunner.sh
         if [ \$s -eq 0 ]; then
-            testrunner.sh load  /tmp/${container_image_file}
+            testrunner.sh load  ${tmp_container_image_file}
+	    rm -f ${tmp_container_image_file}
         fi
         mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
     )"
