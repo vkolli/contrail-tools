@@ -84,14 +84,22 @@ function reimage_setup_using_SM {
 	image="/cs-shared/images/ubuntu-14.04.5-server-amd64.iso"
         pkg_type="contrail-ubuntu-package"
         iso_type="ubuntu"
-        SMID=ubuntu14$SKU${BUILDID}
+        if [[ $SKU =~ vcenter ]]; then
+            SMID=ubuntu14mitaka${BUILDID}
+        else
+            SMID=ubuntu14$SKU${BUILDID}
+        fi
         isofile="/root/images/image145.json"
     elif [[ $DISTRO =~ ubuntu-16.04 ]]; then
         image_id="ubuntu-16.04.2.minimal"
 	image="/cs-shared/images/ubuntu-16.04.2-server-amd64.iso"
         pkg_type="contrail-ubuntu-package"
         iso_type="ubuntu"
-        SMID=ubuntu16$SKU${BUILDID}
+        if [[ $SKU =~ vcenter ]]; then
+            SMID=ubuntu16ocata${BUILDID}
+        else
+            SMID=ubuntu16$SKU${BUILDID}
+        fi
         isofile="/root/images/image-16.04.2-minimal-ks.json"
     elif [[ ${CENTOS_72} -eq 1 ]];then
         image_id="centos-7.2"
@@ -170,9 +178,17 @@ function SMLite_check_SM_pkg_availability() {
     SMLite_get_node_distro
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
-            smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
+            if [[ $SKU =~ vcenter ]]; then
+                smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-ocata/${BUILDID}"
+            else
+                smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
+            fi
         else
-            smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
+            if [[ $SKU =~ vcenter ]]; then
+                smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}"
+            else
+                smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
+            fi
         fi
     else
         smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts"
@@ -220,6 +236,20 @@ function SMLite_get_node_distro() {
     export CONTRAIL_PACKAGE
 }
 
+#Remove existing SM config
+function purge_sm_config() {
+    exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
+        dpkg -l | grep contrail | awk '{ print \$2 }' | xargs dpkg -P;
+        dpkg -l | grep puppet | awk '{ print \$2 }' | xargs dpkg -P;
+        dpkg -l | grep cobbler | awk '{ print \$2 }' | xargs dpkg -P;
+        dpkg -l | grep passenger | awk '{ print \$2 }' | xargs dpkg -P;
+        rm -rf /var/www/html/thirdparty_packages /opt/contrail/ /etc/puppet/ /var/lib/puppet /usr/share/puppet;
+        rm -rf /etc/apt/sources.list.d/*.list;
+        a2dismod passenger;
+        apt-get update > /dev/null 2>&1;
+        "
+}
+
 #copy SM-lite and contrail-packages to CFGM&SM-Lite server
 function copy_smlite_pkg() {
 
@@ -229,9 +259,17 @@ function copy_smlite_pkg() {
 
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
-            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
+            if [[ $SKU =~ vcenter ]]; then
+                pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-ocata/${BUILDID}"
+            else
+                pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
+            fi
         else
-            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
+            if [[ $SKU =~ vcenter ]]; then
+                pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}"
+            else
+                pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
+            fi
         fi
     else
         pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}"
@@ -305,14 +343,16 @@ function provision_using_SMLite() {
 
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
-            cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
             if [[ $SKU =~ vcenter ]]; then
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-ocata/${BUILDID}/contrail-vcenter-docker_*.tgz`
+            else
+                cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
             fi
         elif [[ $DISTRO =~ ubuntu-14 ]]; then
-            cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
             if [[ $SKU =~ vcenter ]]; then
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}/contrail-vcenter-docker_*.tgz`
+            else
+                cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
             fi
         fi
     else
@@ -443,11 +483,12 @@ function run_smgr_task() {
     fi
 
     #if esxi/vcenter setup, cleanup vcenter and dockers
-    if [ $VCENTER_ONLY -eq 1 ]; then
+    if [[ $VCENTER_ONLY_TESTBED -eq 1 ]]; then
         (cd ${TOOLS_WS}/contrail-fabric-utils
          fab cleanup_vcenter)
         (cd ${TOOLS_WS}/contrail-fabric-utils
          fab cleanup_dockers)
+        purge_sm_config || die "removing existing SM config failed"
     fi
 
     copy_smlite_pkg || die "copy of sm-lite packages failed"
