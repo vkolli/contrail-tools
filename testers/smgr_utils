@@ -263,7 +263,7 @@ function reimage_using_SM() {
         echo "add required image/server/cluster for reimage and provision of the target"
 
         echo "delete iso image if it exists"
-        server-manager-client delete image --image_id ${DISTRO}
+        server-manager-client delete image --image_id ${REIMAGE_PARAM}
 
         echo "add base ISO image to server manager database"
         server-manager-client add image -f  $isofile
@@ -276,7 +276,7 @@ function reimage_using_SM() {
         fi
 
         echo "check if the image was added successfully"
-        server-manager-client display image --json | grep ${DISTRO}
+        server-manager-client display image --json | grep ${REIMAGE_PARAM}
         if [ $? != 0 ]
         then
             echo "Adding Base ISO image failed"
@@ -338,7 +338,7 @@ function reimage_using_SM() {
         server-manager-client display server --detail
 
         echo "reimage the target setup"
-        server-manager-client reimage -F --cluster_id $CLUSTER_NAME ${DISTRO}
+        server-manager-client reimage -F --cluster_id $CLUSTER_NAME ${REIMAGE_PARAM}
         if [ $? == 0 ]
         then
             echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
