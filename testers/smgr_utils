@@ -11,7 +11,7 @@ function check_SM_pkg_availability() {
         if [[ $CB_SANITY -eq 1 ]]; then
             pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
         else
-            pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts"
+            pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts"
 	fi
     else
         pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/centos64_os/${SKU}/artifacts"
