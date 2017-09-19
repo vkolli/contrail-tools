@@ -171,16 +171,16 @@ host_build = 'root@10.87.121.77'
 #Role definition of the hosts.
 env.roledefs = {
     'all': [host1,host2,host3,host4,host5,host6,host7,host8,host9,host10,host11,host12,host13,host14,host15,host16,host17,host18,host19,host20],
-    'cfgm': [host1,host4,host7],
+    #'cfgm': [host1,host4,host7],
     'openstack': [host10,host18,host19],
-    'webui': [host1,host4,host7],
-    'control': [host1,host4,host7],
-    'compute': [host11,host12,host13,host14,host15,host16,host17],
+    #'webui': [host1,host4,host7],
+    'contrail-controller': [host1,host4,host7],
+    'contrail-compute': [host11,host12,host13,host14,host15,host16,host17],
     'tsn': [host11,host12,host13,host14],
     #'toragent': [host11,host12,host13,host14],
     'contrail-lb': [host20],
-    'collector': [host2,host5,host8],
-    'database': [host3,host6,host9],
+    'contrail-analytics': [host2,host5,host8],
+    'contrail-analyticsdb': [host3,host6,host9],
     'build': [host_build],
 }
 
@@ -217,6 +217,7 @@ env.passwords = {
     host17: 'c0ntrail123',
     host18: 'c0ntrail123',
     host19: 'c0ntrail123',
+    host20: 'c0ntrail123',
     host_build: 'c0ntrail123',
 }
 
@@ -504,8 +505,8 @@ static_route  = {
 
 # VIP
 env.ha = {
-    #'contrail_internal_vip' : '172.17.90.90',
-    #'contrail_external_vip' : '10.87.121.90',
+    'contrail_internal_vip' : '172.17.90.20',
+    'contrail_external_vip' : '10.87.121.89',
     'internal_vip' : '172.17.90.91',
     'external_vip' : '10.87.121.91'
 }
@@ -546,7 +547,7 @@ env.tor_agent = {host11:[{
                     'tor_ovs_protocol':'pssl',
                     'tor_tsn_ip':'172.17.90.11',
                     'tor_tsn_name':'5b7s4',
-		    'tor_agent_name':'5b7s4-1',
+		    'tor_agent_name':'5b7s4-2',
                     'tor_name':'5b7-qfx3',
                     'tor_tunnel_ip':'33.33.33.33',
                     'tor_vendor_name':'Juniper',
@@ -580,7 +581,7 @@ env.tor_agent = {host11:[{
                     'tor_ovs_protocol':'pssl',
                     'tor_tsn_ip':'172.17.90.12',
                     'tor_tsn_name':'5b7s5',
-		    'tor_agent_name':'5b7s5-1',
+		    'tor_agent_name':'5b7s5-2',
                     'tor_name':'5b7-qfx3',
                     'tor_tunnel_ip':'33.33.33.33',
                     'tor_vendor_name':'Juniper',
@@ -613,7 +614,7 @@ env.tor_agent = {host11:[{
                     'tor_ovs_protocol':'pssl',
                     'tor_tsn_ip':'172.17.90.13',
                     'tor_tsn_name':'5b7s6',
-		    'tor_agent_name':'5b7s6-1',
+		    'tor_agent_name':'5b7s6-2',
                     'tor_name':'5b7-qfx5',
                     'tor_tunnel_ip':'31.31.31.31',
                     'tor_vendor_name':'Juniper',
@@ -647,7 +648,7 @@ env.tor_agent = {host11:[{
                     'tor_ovs_protocol':'pssl',
                     'tor_tsn_ip':'172.17.90.14',
                     'tor_tsn_name':'5b7s7',
-		    'tor_agent_name':'5b7s7-1',
+		    'tor_agent_name':'5b7s7-2',
                     'tor_name':'5b7-qfx5',
                     'tor_tunnel_ip':'31.31.31.31',
                     'tor_vendor_name':'Juniper',
@@ -682,6 +683,62 @@ env.tor_agent = {host11:[{
 #                     'type'  : 'tor',
 #}
 #}
+
+env.tor_hosts={
+'172.18.90.1': [{'tor_port': 'xe-0/0/46',
+                    'host_port' : 'p2p2',
+                    'mgmt_ip' : '10.87.65.144',
+                    'username' : 'root',
+                    'password' : 'c0ntrail123',
+                  }],
+'172.18.90.2': [{'tor_port': 'xe-0/0/46',
+                    'host_port' : 'p2p1',
+                    'mgmt_ip' : '10.87.65.144',
+                    'username' : 'root',
+                    'password' : 'c0ntrail123',
+                  }]
+}
+
+env.physical_routers={
+'5b7-mx80-2'          : {
+                     'vendor': 'juniper',
+                     'model' : 'mx',
+                     'asn'   : '64513',
+                     'name'  : '5b7-mx80-2',
+                     'ssh_username' : 'root',
+                     'ssh_password' : 'Embe1mpls',
+                     'mgmt_ip'   : '172.18.90.77',
+                     'tunnel_ip' : '7.7.7.77',
+                     'ports' : [],
+                     'type'  : 'router',
+                 },
+'5b7-qfx2'       : {
+                     'vendor': 'juniper',
+                     'model' : 'qfx5100',
+                     'asn'   : '64513',
+                     'name'  : '5b7-qfx2',
+                     'ssh_username' : 'root',
+                     'ssh_password' : 'Embe1mpls',
+                     'mgmt_ip'  : '172.18.90.1',
+                     'tunnel_ip' : '34.34.34.34',
+                     'ports' : ['xe-0/0/46'],
+                     'type'  : 'tor',
+},
+'5b7-qfx3'       : {
+                     'vendor': 'juniper',
+                     'model' : 'qfx5100',
+                     'asn'   : '64513',
+                     'name'  : '5b7-qfx3',
+                     'ssh_username' : 'root',
+                     'ssh_password' : 'Embe1mpls',
+                     'mgmt_ip'  : '172.18.90.2',
+                     'tunnel_ip' : '33.33.33.33',
+                     'ports' : ['xe-0/0/46'],
+                     'type'  : 'tor',
+},
+}
+
+
 
 do_parallel = True
 env.mail_from='manishkn@juniper.net'
