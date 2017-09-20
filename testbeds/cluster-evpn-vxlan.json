@@ -113,7 +113,6 @@
                 "contrail-analytics",
                 "contrail-analyticsdb",
                 "contrail-compute",
-                "contrail-agent"
             ],
             "ipmi_address": "10.87.122.33",
             "ipmi_username": "ADMIN",
@@ -143,7 +142,7 @@
             },
             "network": {
                 "interfaces": [{
-                        "name": "em2",
+                        "name": "em1",
                         "dhcp": true,
                         "mac_address": "0c:c4:7a:a8:a0:3e",
                         "ip_address": "10.87.69.2/25",
@@ -156,7 +155,7 @@
                         "ip_address": "172.16.180.102/24"
                     }
                 ],
-                "management_interface": "em2",
+                "management_interface": "em1",
                 "provisioning": "kickstart",
                 "routes": [{
                         "gateway": "172.16.180.254",
@@ -199,7 +198,6 @@
             "password": "c0ntrail123",
             "roles": [
                 "contrail-compute",
-                "contrail-agent"
             ],
             "ipmi_address": "10.87.122.34",
             "ipmi_username": "ADMIN",
@@ -287,7 +285,6 @@
             "password": "c0ntrail123",
             "roles": [
                 "contrail-compute",
-                "contrail-agent"
             ],
             "ipmi_address": "10.87.122.239",
             "ipmi_username": "ADMIN",
