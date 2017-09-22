@@ -484,11 +484,13 @@ function run_smgr_task() {
 
     #if esxi/vcenter setup, cleanup vcenter and dockers
     if [[ $VCENTER_ONLY_TESTBED -eq 1 ]]; then
-        (cd ${TOOLS_WS}/contrail-fabric-utils
-         fab cleanup_vcenter)
-        (cd ${TOOLS_WS}/contrail-fabric-utils
-         fab cleanup_dockers)
-        purge_sm_config || die "removing existing SM config failed"
+        if [[ $SKIP_REIMAGE -eq 1 ]]; then
+            (cd ${TOOLS_WS}/contrail-fabric-utils
+             fab cleanup_vcenter)
+            (cd ${TOOLS_WS}/contrail-fabric-utils
+             fab cleanup_dockers)
+            purge_sm_config
+        fi
     fi
 
     copy_smlite_pkg || die "copy of sm-lite packages failed"
