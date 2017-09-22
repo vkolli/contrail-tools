@@ -117,6 +117,7 @@ env.interface_rename = True
 env.encap_priority =  "VXLAN,MPLSoUDP,MPLSoGRE"
 env.enable_lbaas = True
 do_parallel = True
-
+env.xmpp_auth_enable=True		
+env.xmpp_dns_auth_enable=True
 enable_ceilometer = True
 ceilometer_polling_interval = 60
