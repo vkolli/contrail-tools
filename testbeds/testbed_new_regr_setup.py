@@ -19,6 +19,7 @@ ext_routers = [('blr-mx1', '10.10.10.101')]
 router_asn = 64510
 public_vn_rtgt = 19005
 public_vn_subnet = "10.204.219.120/29"
+use_devicemanager_for_md5 = True
 
 host_build = 'stack@10.204.216.49'
 
@@ -41,6 +42,18 @@ env.physical_routers={
                      'ssh_username' : 'root',
                      'ssh_password' : 'c0ntrail123',
                      'mgmt_ip'  : '10.204.216.253',
+             }
+}
+
+env.dm_mx={
+'yuvaraj'     : {       'vendor': 'juniper',
+                     'model' : 'mx',
+                     'asn'   : '64510',
+                     'name'  : 'yuvaraj',
+                     'control_ip' : '10.10.10.100',
+                     'ssh_username' : 'root',
+                     'ssh_password' : 'c0ntrail123',
+                     'mgmt_ip'  : '10.204.217.190',
              }
 }
 
