@@ -68,7 +68,7 @@ env.ostypes = {
     host5:'ubuntu',
 }
 
-reimage_param = os.getenv('REIMAGE_PARAM', 'ubuntu-14.04.2')
+reimage_param = os.getenv('REIMAGE_PARAM', 'ubuntu-14.04.5')
 
 vm_node_details = {
     'default': {
