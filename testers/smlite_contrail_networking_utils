@@ -81,11 +81,8 @@ function reimage_setup_using_SM {
 
     if [[ $DISTRO =~ ubuntu-14.04 ]]; then
         image_id="ubuntu-14.04.5"
-	image="/cs-shared/images/ubuntu-14.04.5-server-amd64.iso"
-        pkg_type="contrail-ubuntu-package"
-        iso_type="ubuntu"
-        SMID=ubuntu14$SKU${BUILDID}
-        isofile="/root/images/image145.json"
+    elif [[ $DISTRO =~ ubuntu-16 ]]; then
+        image_id="ubuntu-16.04.2.minimal"
     elif [[ ${CENTOS_72} -eq 1 ]];then
         image_id="centos-7.2"
 	image="/root/images/CentOS-7-x86_64-Minimal-1511.iso"
@@ -196,7 +193,7 @@ function SMLite_get_node_distro() {
         lsb_dist=Ubuntu
         SERVER_MANAGER_INSTALLER="contrail-server-manager-installer_*\.*-${BUILDID}\~$SKU\_all.deb"
         CONTRAIL_NW_PACKAGE="contrail-networking-docker_*.tgz"
-	OPENSTACK_PACKAGE="contrail-install-packages_*.deb"
+	OPENSTACK_PACKAGE="contrail-cloud-docker_*.tgz"
     else
         lsb_dist=SomeOtherOS
         SERVER_MANAGER_INSTALLER="contrail-server-manager-installer-*\.*-${BUILDID}*.el6.noarch.rpm"
@@ -208,7 +205,7 @@ function SMLite_get_node_distro() {
     export CONTRAIL_NW_PACKAGE
 }
 
-#copy SM-lite and contrail-packages to CFGM&SM-Lite server
+#copy SM-lite and contrail-packages to SM-Lite server
 function copy_smlite_pkg() {
 
     set -x
@@ -221,13 +218,8 @@ function copy_smlite_pkg() {
     echo $CONTRAIL_NW_PACKAGE
     echo $SERVER_MANAGER_INSTALLER
     sleep 30
-    if [ -z $JSON ]; then
-        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${nw_pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${nw_pkg_dir}/artifacts/${CONTRAIL_NW_PACKAGE} ${sku_pkg_dir}/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
-        exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${API_SERVER_HOST_STRING}:/root/"
-    else
-        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${nw_pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${nw_pkg_dir}/artifacts/${CONTRAIL_NW_PACKAGE} ${sku_pkg_dir}/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
-        exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${API_SERVER_HOST_STRING}:/root/"
-    fi
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${nw_pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${nw_pkg_dir}/artifacts/${CONTRAIL_NW_PACKAGE} ${sku_pkg_dir}/artifacts/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
+    exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${API_SERVER_HOST_STRING}:/root/"
     if [ $? == 0 ]
     then
         echo "Copy of ${SERVER_MANAGER_INSTALLER}, ${OPENSTACK_PACKAGE} and ${CONTRAIL_NW_PACKAGE} to SMLITE server is successfull"
@@ -248,13 +240,18 @@ function provision_using_SMLite() {
         return 0
     fi
   
-    if [[ $DISTRO =~ ubuntu-14.04 ]]; then
+    if [[ $DISTRO =~ ubuntu ]]; then
         pkg_type="contrail-ubuntu-package"
         iso_type="ubuntu"
         SMID=ubuntu14$SKU${BUILDID}
-	OPENSTACK=${OPENSTACK_SKU}
+	if [[ $DISTRO =~ ubuntu-16 ]]; then
+            SMID=ubuntu16$SKU${BUILDID}
+        fi
+        OPENSTACK=${OPENSTACK_SKU}
         if [[ $SKU =~ mitaka ]]; then
             ubuntu_rel="trusty"
+        elif [[ $SKU =~ ocata ]]; then
+            ubuntu_rel="xenial"
         fi
     elif [[ ${CENTOS_72} -eq 1 ]];then
         pkg_type="contrail-centos-package"
@@ -272,7 +269,7 @@ function provision_using_SMLite() {
 
     cntl_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-networking-docker_*.tgz`
     cntl_pkg=/root/${cntl_pkg_path##*/}
-    openstk_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${OPENSTACK_SKU}/contrail-install-packages_*.deb`
+    openstk_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${OPENSTACK_SKU}/artifacts/contrail-cloud-docker_*.tgz`
     openstk_pkg=/root/${openstk_pkg_path##*/}
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
         set -e
@@ -280,23 +277,21 @@ function provision_using_SMLite() {
         echo "Install SM-Lite and provision the target setup"
         dpkg -i /root/${SERVER_MANAGER_INSTALLER}
         sed -i '/server-manager provision -F/d' /opt/contrail/contrail_server_manager/provision_containers.sh
-        if [ -z $JSON ]; then
-            if [ $SKIP_SMLITE_INSTALL -ne 0 ]
-            then
-                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -c /root/${CONTRAIL_NW_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
+        echo '\"image\":[{\"category\": \"package\", \"id\": \"openstack_image\", \"type\": \"$pkg_type\", \"path\": \"$openstk_pkg\", \"version\":\"$BUILDID\"},{\"category\": \"package\", \"id\": \"networking_image\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\", \"parameters\": {\"openstack_sku\": \"${OPENSTACK_SKU}\"}}]}' >> /root/${JSON}
+        if [ $SKIP_SMLITE_INSTALL -ne 0 ]
+        then
+            if [[ $SKU =~ ocata ]]; then
+                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON} -sku ocata
             else
-                /opt/contrail/contrail_server_manager/provision_containers.sh -c /root/${CONTRAIL_NW_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
-            fi
-        else
-            echo '\"image\":[{\"category\": \"package\", \"id\": \"openstack_image\", \"type\": \"$pkg_type\", \"path\": \"$openstk_pkg\", \"version\":\"$BUILDID\"},{\"category\": \"package\", \"id\": \"networking_image\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\", \"parameters\": {\"openstack_sku\": \"${OPENSTACK_SKU}\"}}]}' >> /root/${JSON}
-            sed -i '/server-manager provision -F/d' /opt/contrail/contrail_server_manager/provision_containers.sh
-            if [ $SKIP_SMLITE_INSTALL -ne 0 ]
-            then
                 /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
+            fi
+	else
+            if [[ $SKU =~ ocata ]]; then
+                /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON} -sku ocata
             else
                 /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON}
             fi
-        fi
+	fi
         server-manager provision -F --cluster_id ${OS_CLUSTER_NAME} openstack_image
     ) "
     sleep 600 
@@ -371,15 +366,15 @@ function run_smgr_task() {
         exit 1
     fi
 
-    if [ -z $OS_CLUSTER_NAME ] && [ -z $CLUSTER_NAME ] && [ -z $SERVER_NAME ]; then
-        echo "CLUSTER_NAME/SERVER_NAME env is not set, aborting the process"
+    if [ -z $OS_CLUSTER_NAME ] && [ -z $CLUSTER_NAME ]; then
+        echo "Contrail and Openstack CLUSTER_NAME env is not set, aborting the process"
         exit 1
     fi
     create_testbed || die "Failed to create required testbed details"
     reimage_setup_using_SM || debug_and_die "reimage failed"
     if [ -z JSON ]; then
         echo "JSON env variables is not set."
-	echo "testbed.py will be used to provision the setup."
+        exit 1
     else
         echo "JSON will be used to provision the setup."
 	set_json_file_path || die "setting json file path for cluster and server failed"
