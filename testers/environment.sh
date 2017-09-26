@@ -31,7 +31,9 @@ export TEST_RUN=${TEST_RUN:-'contrail-test'}
 export TEST_CONTAINER_IMAGE=${TEST_CONTAINER_IMAGE:-''}
 if [ ${OSP10} == "OSP10" ]; then
    export TEST_SKU='mitaka'
-   export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/mitaka/artifacts/"}
+   # the below line is not needed only export test_sku without else command.
+   echo 'Redhat not using contrail-test docker , merging copyed tgz of  test-ci and test tgz'
+   export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts_extra/"}
 else
    export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts/"}
 fi
