@@ -57,7 +57,6 @@ env.test = {
   'webserver_user' : 'bhushana',
   'webserver_password' : 'bhu@123',
   'webserver_log_path' :  '/home/bhushana/Documents/technical/logs',
-  'webserver_report_path': '/home/bhushana/Documents/technical/sanity',
   'webroot' : 'Docs/logs',
   'mail_server' :  '10.204.216.49',
   'mail_port' : '25',
