@@ -34,11 +34,12 @@ host17 = 'heat-admin@analytics-db1'
 host18 = 'heat-admin@analytics-db2'
 host19 = 'heat-admin@analytics-db3'
 
-hypervisor_host = 'root@10.87.67.2'
-hypervisor_host_stack = 'stack@10.87.67.2'
-undercloud_host = 'root@10.87.67.42'
-undercloud_host_stack = 'stack@10.87.67.42'
-test_vm = 'root@10.87.67.85' 
+# TWO HYPERVIOSR 140 and 139 needs to add 139
+hypervisor_host = 'root@10.87.67.140'
+hypervisor_host_stack = 'stack@10.87.67.140'
+undercloud_host = 'root@10.87.67.231'
+undercloud_host_stack = 'stack@10.87.67.231'
+test_vm = 'root@10.87.67.232' 
 
 #External routers if any
 #for eg.
