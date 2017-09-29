@@ -19,6 +19,8 @@ host6 = 'root@1.87.141.212'
 host10 = 'heat-admin@19.0.2.7'
 host11 = 'heat-admin@19.0.2.6'
 host12 = 'heat-admin@19.0.2.8'
+
+test_vm = 'root@10.87.67.85'
  
 # Contrail WebUI
 host13 = 'root@1.87.141.213'
@@ -60,6 +62,7 @@ env.roledefs = {
 	'build': [host_build],
         'undercloud' : [undercloud_host], 
         'rh_hypervisor' : [ hypervisor_host ], 
+        'test_vm_sanity' : [test_vm ]
 }
  
 #Hostnames
@@ -80,6 +83,7 @@ env.hostnames = {
         undercloud_host: 'undercloud.example.com',
         undercloud_host_stack:'contrail123',
         hypervisor_host: 'a5d07e09-4',
+        test_vm: 'test-vm-osp10-5b9s38-sanity'
 }
  
 env.passwords = {
@@ -101,6 +105,7 @@ env.passwords = {
         hypervisor_host: 'c0ntrail123',
         hypervisor_host_stack: 'c0ntrail123', 
         undercloud_host_stack: 'c0ntrail123',
+        test_vm:'c0ntrail123',
 }
  
  
