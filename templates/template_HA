@@ -107,8 +107,7 @@
                                 		"provision":{
                                         		"contrail": {
 						                "enable_lbaas": "True",
-                                                                "xmpp_auth_enable": true,
-                                                                "xmpp_dns_auth_enable": true,
+								“xmpp_auth_ssl”: “true”
                                                 		"minimum_disk_database": 32,
                                                                 "kernel_upgrade": "true",
                                                                 "kernel_version": "3.13.0-110"
