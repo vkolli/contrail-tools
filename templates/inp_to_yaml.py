@@ -810,6 +810,8 @@ def create_server_json_mainline():
     for clus in server_dict:
         total_server_number = total_server_number + len(server_dict[clus])
     total_server_number = total_server_number - 1
+    all_server_fip_dict = get_all_fip_dict()
+    #print all_server_fip_dict
     for clus in server_dict:
         for i in server_dict[clus]:
             if server_dict[clus][i]["server_manager"] != "true":
@@ -876,6 +878,23 @@ def create_server_json_mainline():
                     #    '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
+		    # If this an Ocata Job, MAC Address should be extracted in a different way.
+		    if "kolla_network_interface" in cluster_dict[clus]:
+			temp_server_name = server_dict[clus][i]["name"] 
+		        temp_fip_server = all_server_fip_dict[temp_server_name]
+			client = paramiko.SSHClient()
+			client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+			client.connect(temp_fip_server, username = 'root', password = 'c0ntrail123')
+			stdin, stdout, stderr = client.exec_command('ifconfig -a | grep %s' % int_name)
+			temp_out_string = stdout.readlines()
+			#print temp_out_string
+			#print "____________"	
+			temp_str_split = temp_out_string[0].split("HWaddr")
+			#print temp_str_split[1]
+			temp_str_1 = temp_str_split[1].replace(' ', '')
+			temp_str_2 = temp_str_1.replace('\n', '')
+			#print temp_str_2
+			mac_address = temp_str_2
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"mac_address": "%s",\n' % mac_address
                     if "mtu" in cluster_dict[clus]:
@@ -1444,7 +1463,14 @@ def create_cluster_json():
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"amqp_ssl":"%s",\n' % cluster_dict[clus][
                     "parameters"]["provision"]["contrail"]["enable_rabbitmq_ssl"]
-        if "kernel_version" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+        if "xmpp_auth_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t"xmpp_auth_enable":"%s",\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["contrail"]["xmpp_auth_ssl"]
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t"xmpp_dns_auth_enable":"%s",\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["contrail"]["xmpp_auth_ssl"]
+	if "kernel_version" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"kernel_version":"%s",\n' % cluster_dict[clus][
                     "parameters"]["provision"]["contrail"]["kernel_version"]
