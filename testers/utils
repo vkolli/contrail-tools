@@ -137,19 +137,30 @@ function search_package {
         else
             if [[ $CB_SANITY -eq 1 ]]; then
                 if [[ $DISTRO =~ ubuntu-16 ]]; then
-                    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker*.tgz`
-			if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-			    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
-			fi
+                    if [[ $SKU =~ vcenter ]]; then
+                        PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-ocata/${BUILDID}/contrail-vcenter-docker_*.tgz`
+                    else
+                        PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker*.tgz`
+			    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+			        PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+			    fi
+	            fi
                 else
-		    PKG_FILE="$(ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker*.tgz)"
-                    #PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-cloud-docker*.tgz`
+                    if [[ $SKU =~ vcenter ]]; then
+                        PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}/contrail-vcenter-docker_*.tgz`
+                    else
+		        PKG_FILE="$(ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker*.tgz)"
 			if [[ $TESTBED_LOCATION_US -eq 1 ]];then
 				PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
 			fi
+	            fi
                 fi
             else
-                PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts/contrail-cloud-docker*.tgz`
+                if [[ $SKU =~ vcenter ]]; then
+                    PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts/contrail-vcenter-docker_*.tgz`
+                else
+                    PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts/contrail-cloud-docker*.tgz`
+		fi
             fi
         fi
 
