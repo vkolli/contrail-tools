@@ -191,7 +191,15 @@ function SMLite_check_SM_pkg_availability() {
             fi
         fi
     else
-        smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts"
+        if [[ $SKU =~ vcenter ]]; then
+            if [[ $DISTRO =~ ubuntu-16 ]]; then
+                smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/ocata/artifacts"
+            elif [[ $DISTRO =~ ubuntu-14 ]]; then
+                smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/mitaka/artifacts"
+            fi
+        else
+            smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts"
+        fi
     fi
     echo $SERVER_MANAGER_INSTALLER
 
@@ -225,7 +233,11 @@ function SMLite_get_node_distro() {
         else
             SERVER_MANAGER_INSTALLER="contrail-server-manager-installer_*\.*-${BUILDID}\~$SKU\_all.deb"
         fi
-        CONTRAIL_PACKAGE="contrail-cloud-docker_*.tgz"
+        if [[ $SKU =~ vcenter ]]; then
+            CONTRAIL_PACKAGE="contrail-vcenter-docker_*.tgz"
+        else
+            CONTRAIL_PACKAGE="contrail-cloud-docker_*.tgz"
+        fi
     else
         lsb_dist=SomeOtherOS
         SERVER_MANAGER_INSTALLER="contrail-server-manager-installer-*\.*-${BUILDID}*.el6.noarch.rpm"
@@ -356,9 +368,18 @@ function provision_using_SMLite() {
             fi
         fi
     else
-        cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
+        if [[ $SKU =~ vcenter ]]; then
+            if [[ $DISTRO =~ ubuntu-16 ]]; then
+                cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/ocata/artifacts/contrail-vcenter-docker_*.tgz`
+            elif [[ $DISTRO =~ ubuntu-14 ]]; then
+                cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/mitaka/artifacts/contrail-vcenter-docker_*.tgz`
+            fi
+        else
+            cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
+        fi
     fi
     cntl_pkg=/root/${cntl_cloud_pkg_path##*/}
+    vcenter_param=`{"openstack_sku": "vcenter"}`
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
         set -e
         set -x
@@ -372,7 +393,11 @@ function provision_using_SMLite() {
                 /opt/contrail/contrail_server_manager/provision_containers.sh -c /root/${CONTRAIL_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
             fi
         else
-            echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
+            if [[ $SKU =~ vcenter ]]; then
+                echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"parameters\":\"$vcenter_param\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
+            else
+                echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
+            fi
             if [ $SKIP_SMLITE_INSTALL -ne 0 ]
             then
                 if [[ $SKU =~ ocata ]]; then
