@@ -433,7 +433,7 @@ function use_testbed_file {
     fi
 
     dest_folder_path=${TOOLS_WS}/contrail-fabric-utils/fabfile/testbeds
-    cp -f $folder_path/$TBFILE_NAME $dest_folder_path/testbed.py || die "Failed to copy $TBFILE_NAME to  $dest_folder_path/testbed.py"
+    yes | cp -f $folder_path/$TBFILE_NAME $dest_folder_path/testbed.py || die "Failed to copy $TBFILE_NAME to  $dest_folder_path/testbed.py"
 
     rm -f $TOOLS_WS/contrail-fabric-utils/testbed_env
     if [ ! ${OSP10} == "OSP10" ]; then
