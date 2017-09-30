@@ -61,12 +61,12 @@ run_build_fab "osp10_sanity" || debug_and_die "Failed during osp10 provisioning"
 exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/artifacts/contrail-install-packages*.tgz  ${UNDERCLOUD_HOST_STRING}:/var/www/html/contrail/" || die "Failed to copy contrail-install-packages  tgz to $UNDERCLOUD_NODEHOME:"
 
 echo 'copying contrail-test-ci to test_vm'
-
 sshpass -p 'c0ntrail123' scp -r ${SSHOPT} $TEST_CONTAINER_IMAGE_DIR/contrail-test-ci-*.tgz ${TEST_VM_HOST_STRING}:${TEST_HOST_HOME}
-#sshpass -p 'c0ntrail123' scp -r ${SSHOPT} $PKG_FILE_DIR/artifacts_extra/contrail-test-*.tgz ${TEST_VM_HOST_STRING}:${TEST_HOST_HOME}
 echo 'copying contrail-test to test_vm'
 sshpass -p 'c0ntrail123' scp -r ${SSHOPT} $TEST_CONTAINER_IMAGE_DIR/contrail-test-*.tgz ${TEST_VM_HOST_STRING}:${TEST_HOST_HOME}
-
+#sshpass -p 'c0ntrail123'  scp ${SSHOPT} $TOOLS_WS/contrail-test.tar  ${API_SERVER_HOST_STRING}:
+#        exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
+#            tar xf contrail-test.tar"
 #run_build_fab "osp10_instack_and_templates"
 # ***Enbale copying of docker image once we support contrainer in redhat****
 #exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp $CONTRAIL_NETWORKING_DOCKER_IMG_DIR/contrail-docker-images_*.tgz  ${UNDERCLOUD_HOST_STRING}:/var/www/html/contrail/" || die "Failed to copy contrail-install-packages  tgz to $CONTRAIL_REPO_UNDERCLOUD:"
