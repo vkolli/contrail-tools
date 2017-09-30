@@ -1280,7 +1280,8 @@ function create_testbed {
     fi
 
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
-        checkout_fab_repo || die "Unable to checkout fab/test repos" # No need to checkout test repo for container
+        echo "need to remove below comment from checkout  after commiting rh changes in fab"
+        #checkout_fab_repo || die "Unable to checkout fab/test repos" # No need to checkout test repo for container
         echo "remove this commented line  git checkout checkout_fab_repo ==="
     else
         checkout_repo
