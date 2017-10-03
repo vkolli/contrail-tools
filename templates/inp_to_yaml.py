@@ -810,6 +810,8 @@ def create_server_json_mainline():
     for clus in server_dict:
         total_server_number = total_server_number + len(server_dict[clus])
     total_server_number = total_server_number - 1
+    all_server_fip_dict = get_all_fip_dict()
+    #print all_server_fip_dict
     for clus in server_dict:
         for i in server_dict[clus]:
             if server_dict[clus][i]["server_manager"] != "true":
@@ -876,6 +878,23 @@ def create_server_json_mainline():
                     #    '\t\t\t\t\t"default_gateway": "%s",\n' % gateway
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
+		    # If this an Ocata Job, MAC Address should be extracted in a different way.
+		    if "kolla_network_interface" in cluster_dict[clus]:
+			temp_server_name = server_dict[clus][i]["name"] 
+		        temp_fip_server = all_server_fip_dict[temp_server_name]
+			client = paramiko.SSHClient()
+			client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+			client.connect(temp_fip_server, username = 'root', password = 'c0ntrail123')
+			stdin, stdout, stderr = client.exec_command('ifconfig -a | grep %s' % int_name)
+			temp_out_string = stdout.readlines()
+			#print temp_out_string
+			#print "____________"	
+			temp_str_split = temp_out_string[0].split("HWaddr")
+			#print temp_str_split[1]
+			temp_str_1 = temp_str_split[1].replace(' ', '')
+			temp_str_2 = temp_str_1.replace('\n', '')
+			#print temp_str_2
+			mac_address = temp_str_2
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"mac_address": "%s",\n' % mac_address
                     if "mtu" in cluster_dict[clus]:
@@ -1425,15 +1444,16 @@ def create_cluster_json():
         if "domain" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
-        if "enable_lbaas" in cluster_dict[clus]["parameters"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
         individual_clus_string = individual_clus_string + \
             '\t\t\t"provision":{\n'
         # Lets start the contrail Part
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t"contrail":{\n'
-        if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+        if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["contrail"]["enable_lbaas"]
+	if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"database":{\n'
             individual_clus_string = individual_clus_string + \
@@ -1465,13 +1485,24 @@ def create_cluster_json():
         # Now Lets start the openstack part
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t"openstack":{\n'
+	if "openstack_manage_amqp" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t"openstack_manage_amqp":"%s",\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["openstack"]["openstack_manage_amqp"] 
         if "keystone_admin_password" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"keystone":{\n'
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus][
+                '\t\t\t\t\t\t"admin_password": "%s",\n' % cluster_dict[clus][
                     "parameters"]["provision"]["openstack"]["keystone_admin_password"]
-            #individual_clus_string = individual_clus_string + '					},\n'
+            #individual_clus_string = individual_clus_string + '},\n'
+	if "keystone_ssl" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t\t"auth_protocol": "https", \n'
+	if "keystone_version" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t\t"version": "%s"\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["openstack"]["keystone_version"] 
         if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
                 "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"])):
             vip_string = ""
