@@ -64,7 +64,10 @@ sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${tbfile_hyper} ${TEST_VM_HOST_STRING}
 echo 'copying contrail-test-ci to test_vm'
 sshpass -p 'c0ntrail123' scp -r ${SSHOPT} $TEST_CONTAINER_IMAGE_DIR/contrail-test-ci-*.tgz ${TEST_VM_HOST_STRING}:${TEST_HOST_HOME}
 echo 'copying contrail-test to test_vm'
-sshpass -p 'c0ntrail123' scp -r ${SSHOPT} $TEST_CONTAINER_IMAGE_DIR/contrail-test-*.tgz ${TEST_VM_HOST_STRING}:${TEST_HOST_HOME}
+# remove below comment ********* after ixing configure.py**
+
+#sshpass -p 'c0ntrail123' scp -r ${SSHOPT} $TEST_CONTAINER_IMAGE_DIR/contrail-test-*.tgz ${TEST_VM_HOST_STRING}:${TEST_HOST_HOME}
+
 #sshpass -p 'c0ntrail123'  scp ${SSHOPT} $TOOLS_WS/contrail-test.tar  ${API_SERVER_HOST_STRING}:
 #        exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
 #            tar xf contrail-test.tar"
