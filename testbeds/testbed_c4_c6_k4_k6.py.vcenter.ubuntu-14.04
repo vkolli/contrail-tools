@@ -88,17 +88,33 @@ env.orchestrator = 'vcenter'
 
 env.vcenter_servers = {
      'vcenter1':{
-        'server':'10.204.217.189',
+        'server':'10.204.217.246',
         'port': '443',
         'username': 'administrator@vsphere.local',
         'password': 'Contrail123!',
         'auth': 'https',
-        'datacenter': 'BANGALORE c4k4u14',
-        'cluster': ['BANGALORE c4k4rack14'],
-        'dv_switch': { 'dv_switch_name': 'c4k4u14_dvs', 'nic': 'vmnic0', },
-        'dv_port_group': { 'dv_portgroup_name': 'c4k4u14_dvpg', 'number_of_ports': '3', },
+         'datacenters' : {
+             'c4k4u14' : {
+                 'datacenter_mtu': '1500',
+                 'dv_switches': {
+                     'dvs1': {
+                         'dv_switch_version': '5.5.0',
+                         'dv_port_group': {
+                             'dv_portgroup_name': 'c4k4u14_dvpg',
+                             'number_of_ports': '3', },
+                     'clusters': ['c4k4rack14'],
+                   },
+               },
+
+        'dv_switch-fab': {
+            'dv_switch_name': 'fab_dvs',
+            'dv_port_group_fab': { 'dv_portgroup_name': 'fab-pg', 'number_of_ports': '3', },
+            },
+          },
+         },
+        },
     }
-}
+
 
 esxi_hosts = {
     'nodek4' : {
@@ -106,13 +122,14 @@ esxi_hosts = {
         'vcenter_server':'vcenter1',
         'username' : 'root',
         'password' : 'c0ntrail123',
-        'cluster' : 'c4k4rack14',
         'datastore' : '/vmfs/volumes/k4-ds',
+        'datacenter': 'c4k4u14',
+        'cluster': 'c4k4rack14',
         'contrail_vm' : {
             'name' : 'nodek4-compute-vm',
             'mac' : '00:50:56:aa:aa:03',
             'host' : host4,
-            'cluster' : 'c4k4rack14',
+            'mode': 'vcenter',
             'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
     },
@@ -121,12 +138,14 @@ esxi_hosts = {
         'ip' : k5,
         'username' : 'root',
         'password' : 'c0ntrail123',
+        'datacenter': 'c4k4u14',
         'cluster' : 'c4k4rack14',
-        'datastore' : '/vmfs/volumes/k5 ds',
+        'datastore' : '/vmfs/volumes/k5-ds',
         'contrail_vm' : {
             'name' : 'nodek5-compute-vm',
             'mac' : '00:50:56:aa:aa:04',
             'host' : host5,
+            'mode': 'vcenter',
             'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
     },
@@ -136,11 +155,13 @@ esxi_hosts = {
         'username' : 'root',
         'password' : 'c0ntrail123',
         'cluster' : 'c4k4rack14',
+        'datacenter': 'c4k4u14',
         'datastore' : '/vmfs/volumes/k6-ds',
         'contrail_vm' : {
             'name' : 'nodek6-compute-vm',
             'mac' : '00:50:56:aa:aa:05',
             'host' : host6,
+            'mode': 'vcenter',
             'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
     },
