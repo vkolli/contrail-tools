@@ -227,6 +227,13 @@ env.osp = {
     'ExternalIP' : 'eno1',
 }
 env.test = {
+    'webserver_user' : 'bhushana',
+    'webserver_password' : 'bhu@123',
+    'webserver_report_path': '/home/bhushana/Documents/technical/sanity',
+    'webroot' : 'Docs/logs',
+    'mail_sender': 'contrailbuild@juniper.net',
+    'webserver_log_path' :  '/home/bhushana/Documents/technical/logs',
+    'webserver_host': '10.204.216.50',
     'mail_from' : 'shajuvk@juniper.net',
     'mail_to' : 'shajuvk@juniper.net',
     'mail_server' : '10.84.24.64',
