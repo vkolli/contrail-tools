@@ -76,6 +76,7 @@ echo 'copying contrail-test to test_vm'
 #exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp $CONTRAIL_NETWORKING_DOCKER_IMG_DIR/contrail-docker-images_*.tgz  ${UNDERCLOUD_HOST_STRING}:/var/www/html/contrail/" || die "Failed to copy contrail-install-packages  tgz to $CONTRAIL_REPO_UNDERCLOUD:"
 run_build_fab "osp10_sanity_undercloud_tasks" || debug_and_die "osp deployment task failed"
 run_build_fab "osp_deploy" || debug_and_die "osp deployment task failed"
+install_dep_pkgs_for_test
 run_sanity
 collect_tech_support || die "Task to collect logs/cores failed"
 #run_task  
