@@ -145,9 +145,9 @@ env.qos_niantic = {host3:[
 
 #env.cluster_id='clusterm5m6m7m8m9m10'
 minimum_diskGB = 32
-#env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
-#env.test_repo_dir = '/home/stack/regression/contrail-test'
-env.encap_priority =  "'MPLSoUDP','MPLSoGRE','VXLAN'"
+env.xmpp_auth_enable=True
+env.xmpp_dns_auth_enable=True
+env.encap_priority =  "'VXLAN', 'MPLSoUDP','MPLSoGRE'"
 env.mail_from = 'contrail-build@juniper.net'
 env.mail_to = 'dl-contrail-sw@juniper.net'
 multi_tenancy = True
