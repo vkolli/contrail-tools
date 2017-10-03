@@ -59,7 +59,8 @@ run_build_fab "osp10_sanity" || debug_and_die "Failed during osp10 provisioning"
 #sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} ${TEST_HOST_STRING}:tempest/result*.xml $TOOLS_WS/results
 
 exec_cmds -s ${TASK_RUNNER_HOST_STRING} -p ${TASK_RUNNER_HOST_PASSWORD} -c "sshpass -p $API_SERVER_HOST_PASSWORD scp $PKG_FILE_DIR/artifacts/contrail-install-packages*.tgz  ${UNDERCLOUD_HOST_STRING}:/var/www/html/contrail/" || die "Failed to copy contrail-install-packages  tgz to $UNDERCLOUD_NODEHOME:"
-
+echo 'copying testbed to testvm testbed directory'
+sshpass -p 'c0ntrail123' scp -r ${SSHOPT} ${tbfile_hyper} ${TEST_VM_HOST_STRING}:${tbpath}/testbed.py
 echo 'copying contrail-test-ci to test_vm'
 sshpass -p 'c0ntrail123' scp -r ${SSHOPT} $TEST_CONTAINER_IMAGE_DIR/contrail-test-ci-*.tgz ${TEST_VM_HOST_STRING}:${TEST_HOST_HOME}
 echo 'copying contrail-test to test_vm'
