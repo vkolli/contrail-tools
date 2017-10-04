@@ -251,6 +251,10 @@ function SMLite_get_node_distro() {
 #Remove existing SM config
 function purge_sm_config() {
     exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
+        server-manager delete server --cluster_id $CLUSTER_NAME
+        server-manager delete cluster --cluster_id $CLUSTER_NAME
+        server-manager delete image --image_id $SMID
+        service contrail-server-manager stop
         rm /root/contrail-server-manager-installer_*;
         rm /root/contrail-vcenter-docker_*;
         dpkg -l | grep contrail | awk '{ print \$2 }' | xargs dpkg -P;
@@ -381,7 +385,7 @@ function provision_using_SMLite() {
         fi
     fi
     cntl_pkg=/root/${cntl_cloud_pkg_path##*/}
-    vcenter_param='{"openstack_sku": "vcenter"}'
+    vcenter_param='openstack_sku: vcenter'
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
         set -e
         set -x
@@ -396,7 +400,7 @@ function provision_using_SMLite() {
             fi
         else
             if [[ $SKU =~ vcenter ]]; then
-                echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"parameters\":\"$vcenter_param\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
+                echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"parameters\":{\"$vcenter_param\"}, \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
             else
                 echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
             fi
