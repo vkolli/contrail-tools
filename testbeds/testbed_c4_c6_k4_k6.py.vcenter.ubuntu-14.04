@@ -88,7 +88,7 @@ env.orchestrator = 'vcenter'
 
 env.vcenter_servers = {
      'vcenter1':{
-        'server':'10.204.217.189',
+        'server':'10.204.217.246',
         'port': '443',
         'username': 'administrator@vsphere.local',
         'password': 'Contrail123!',
