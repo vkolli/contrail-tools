@@ -94,7 +94,7 @@ env.vcenter_servers = {
         'password': 'Contrail123!',
         'auth': 'https',
          'datacenters' : {
-             'c4k4u14' : {
+             'BANGALORE c4k4u14' : {
                  'datacenter_mtu': '1500',
                  'dv_switches': {
                      'dvs1': {
@@ -102,7 +102,7 @@ env.vcenter_servers = {
                          'dv_port_group': {
                              'dv_portgroup_name': 'c4k4u14_dvpg',
                              'number_of_ports': '3', },
-                     'clusters': ['c4k4rack14'],
+                     'clusters': ['BANGALORE c4k4rack14'],
                    },
                },
 
@@ -130,7 +130,7 @@ esxi_hosts = {
             'mac' : '00:50:56:aa:aa:03',
             'host' : host4,
             'mode': 'vcenter',
-            'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
+            'vmdk' : '/cs-shared/images/vcenter-vmdk/14.04/vmdk/ContrailVM-disk1.vmdk',
         }
     },
     'nodek5' : {
@@ -146,7 +146,7 @@ esxi_hosts = {
             'mac' : '00:50:56:aa:aa:04',
             'host' : host5,
             'mode': 'vcenter',
-            'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
+            'vmdk' : '/cs-shared/images/vcenter-vmdk/14.04/vmdk/ContrailVM-disk1.vmdk',
         }
     },
     'nodek6' : {
@@ -162,7 +162,7 @@ esxi_hosts = {
             'mac' : '00:50:56:aa:aa:05',
             'host' : host6,
             'mode': 'vcenter',
-            'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
+            'vmdk' : '/cs-shared/images/vcenter-vmdk/14.04/vmdk/ContrailVM-disk1.vmdk',
         }
     },
 
