@@ -1444,15 +1444,16 @@ def create_cluster_json():
         if "domain" in cluster_dict[clus]["parameters"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
-        if "enable_lbaas" in cluster_dict[clus]["parameters"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
         individual_clus_string = individual_clus_string + \
             '\t\t\t"provision":{\n'
         # Lets start the contrail Part
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t"contrail":{\n'
-        if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+        if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["contrail"]["enable_lbaas"]
+	if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"database":{\n'
             individual_clus_string = individual_clus_string + \
@@ -1484,13 +1485,24 @@ def create_cluster_json():
         # Now Lets start the openstack part
         individual_clus_string = individual_clus_string + \
             '\t\t\t\t"openstack":{\n'
+	if "openstack_manage_amqp" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t"openstack_manage_amqp":"%s",\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["openstack"]["openstack_manage_amqp"] 
         if "keystone_admin_password" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             individual_clus_string = individual_clus_string + \
                 '\t\t\t\t\t"keystone":{\n'
             individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus][
+                '\t\t\t\t\t\t"admin_password": "%s",\n' % cluster_dict[clus][
                     "parameters"]["provision"]["openstack"]["keystone_admin_password"]
-            #individual_clus_string = individual_clus_string + '					},\n'
+            #individual_clus_string = individual_clus_string + '},\n'
+	if "keystone_ssl" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t\t"auth_protocol": "https", \n'
+	if "keystone_version" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+	    individual_clus_string = individual_clus_string + \
+		'\t\t\t\t\t\t"version": "%s"\n' % cluster_dict[clus][
+		    "parameters"]["provision"]["openstack"]["keystone_version"] 
         if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
                 "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"])):
             vip_string = ""
