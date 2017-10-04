@@ -98,7 +98,7 @@ env.vcenter_servers = {
                  'datacenter_mtu': '1500',
                  'dv_switches': {
                      'dvs1': {
-                         'dv_switch_version': '5.5.0',
+                         'dv_switch_version': '6.5.0',
                          'dv_port_group': {
                              'dv_portgroup_name': 'c4k4u14_dvpg',
                              'number_of_ports': '3', },
