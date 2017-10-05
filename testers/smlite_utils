@@ -268,6 +268,32 @@ function purge_sm_config() {
         "
 }
 
+#Copy vmdk image onto the node
+function copy_vmdk() {
+
+    if [[ $DISTRO =~ ubuntu-14 ]]; then
+        distro_vmdk="14.04"
+        vmdk_folder="vmdk"
+    elif [[ $DISTRO =~ ubuntu-16 ]]; then
+        distro_vmdk="16.04"
+        vmdk_folder="vmdk_new"
+    fi
+
+    vmdk_path="/cs-shared/images/vcenter-vmdk/$distro_vmdk/$vmdk_folder"
+
+    exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "mkdir -p /root/${vmdk_folder}"
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${vmdk_path}/vmdk.tar ${API_SERVER_HOST_STRING}:/root/${vmdk_folder}/
+
+    if [ $? == 0 ]
+    then
+        echo "Copying of vmdk is successfull"
+    else
+        echo "Copying of vmdk failed!"
+        exit 1
+    fi
+
+}
+
 #copy SM-lite and contrail-packages to CFGM&SM-Lite server
 function copy_smlite_pkg() {
 
@@ -515,12 +541,14 @@ function run_smgr_task() {
 
     #if esxi/vcenter setup, cleanup vcenter and dockers
     if [[ $VCENTER_ONLY_TESTBED -eq 1 ]]; then
+        (cd ${TOOLS_WS}/contrail-fabric-utils
+         fab cleanup_vcenter)
         if [[ $SKIP_REIMAGE -eq 1 ]]; then
-            (cd ${TOOLS_WS}/contrail-fabric-utils
-             fab cleanup_vcenter)
             (cd ${TOOLS_WS}/contrail-fabric-utils
              fab cleanup_dockers)
             purge_sm_config
+        else
+            copy_vmdk || die "copy of vmdk image failed"
         fi
     fi
 
