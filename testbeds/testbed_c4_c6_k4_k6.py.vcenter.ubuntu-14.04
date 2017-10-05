@@ -88,14 +88,14 @@ env.orchestrator = 'vcenter'
 
 env.vcenter_servers = {
      'vcenter1':{
-        'server':'10.204.217.246',
+        'server':'10.204.217.189',
         'port': '443',
         'username': 'administrator@vsphere.local',
         'password': 'Contrail123!',
         'auth': 'https',
         'datacenter': 'BANGALORE c4k4u14',
         'cluster': ['BANGALORE c4k4rack14'],
-        'dv_switch': { 'dv_switch_name': 'c4k4u14_dvs', 'nic': 'vmnic0', 'dv_switch_version': '6.5.0' },
+        'dv_switch': { 'dv_switch_name': 'c4k4u14_dvs', 'nic': 'vmnic0' },
         'dv_port_group': { 'dv_portgroup_name': 'c4k4u14_dvpg', 'number_of_ports': '3' },
     }
 }
