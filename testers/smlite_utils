@@ -251,6 +251,12 @@ function SMLite_get_node_distro() {
 #Remove existing SM config
 function purge_sm_config() {
     exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "
+        server-manager delete server --cluster_id $CLUSTER_NAME
+        server-manager delete cluster --cluster_id $CLUSTER_NAME
+        server-manager delete image --image_id $SMID
+        service contrail-server-manager stop
+        rm /root/contrail-server-manager-installer_*;
+        rm /root/contrail-vcenter-docker_*;
         dpkg -l | grep contrail | awk '{ print \$2 }' | xargs dpkg -P;
         dpkg -l | grep puppet | awk '{ print \$2 }' | xargs dpkg -P;
         dpkg -l | grep cobbler | awk '{ print \$2 }' | xargs dpkg -P;
@@ -260,6 +266,32 @@ function purge_sm_config() {
         a2dismod passenger;
         apt-get update > /dev/null 2>&1;
         "
+}
+
+#Copy vmdk image onto the node
+function copy_vmdk() {
+
+    if [[ $DISTRO =~ ubuntu-14 ]]; then
+        distro_vmdk="14.04"
+        vmdk_folder="vmdk"
+    elif [[ $DISTRO =~ ubuntu-16 ]]; then
+        distro_vmdk="16.04"
+        vmdk_folder="vmdk_new"
+    fi
+
+    vmdk_path="/cs-shared/images/vcenter-vmdk/$distro_vmdk/$vmdk_folder"
+
+    exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "mkdir -p /root/${vmdk_folder}"
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${vmdk_path}/vmdk.tar ${API_SERVER_HOST_STRING}:/root/${vmdk_folder}/
+
+    if [ $? == 0 ]
+    then
+        echo "Copying of vmdk is successfull"
+    else
+        echo "Copying of vmdk failed!"
+        exit 1
+    fi
+
 }
 
 #copy SM-lite and contrail-packages to CFGM&SM-Lite server
@@ -379,7 +411,7 @@ function provision_using_SMLite() {
         fi
     fi
     cntl_pkg=/root/${cntl_cloud_pkg_path##*/}
-    vcenter_param=`{"openstack_sku": "vcenter"}`
+    vcenter_param='openstack_sku": "vcenter'
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
         set -e
         set -x
@@ -394,7 +426,7 @@ function provision_using_SMLite() {
             fi
         else
             if [[ $SKU =~ vcenter ]]; then
-                echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"parameters\":\"$vcenter_param\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
+                echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"parameters\":{\"$vcenter_param\"}, \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
             else
                 echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
             fi
@@ -509,12 +541,14 @@ function run_smgr_task() {
 
     #if esxi/vcenter setup, cleanup vcenter and dockers
     if [[ $VCENTER_ONLY_TESTBED -eq 1 ]]; then
+        (cd ${TOOLS_WS}/contrail-fabric-utils
+         fab cleanup_vcenter)
         if [[ $SKIP_REIMAGE -eq 1 ]]; then
-            (cd ${TOOLS_WS}/contrail-fabric-utils
-             fab cleanup_vcenter)
             (cd ${TOOLS_WS}/contrail-fabric-utils
              fab cleanup_dockers)
             purge_sm_config
+        else
+            copy_vmdk || die "copy of vmdk image failed"
         fi
     fi
 
