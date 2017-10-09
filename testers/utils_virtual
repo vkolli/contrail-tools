@@ -408,6 +408,8 @@ function reimage_using_SM_cliff_client() {
             contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.deb`
 	    if [[ $CB_SANITY -eq 1 ]];then
 		contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages*.deb`
+            else
+                contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-install-packages*.deb`
 	    fi
         fi
     fi
@@ -612,11 +614,11 @@ function add_server_cluster_SM() {
             else
                 contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.deb`
                 contrail_pkg_name=`basename $contrail_pkg`
-	        if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+	        if [[ $CB_SANITY -eq 1 ]];then
 	            contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages*.deb`
                     contrail_pkg_name=`basename $contrail_pkg`
 	        else
-                    contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-install-packages*.deb`
+                    contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-install-packages*.deb`
                     contrail_pkg_name=`basename $contrail_pkg`
 	        fi
             fi
@@ -624,11 +626,11 @@ function add_server_cluster_SM() {
         if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
         then
             SMID="combined_image_mainline"
-	    if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+	    if [[ $CB_SANITY -eq 1 ]];then
 	        contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages*.deb`
                 contrail_pkg_name=`basename $contrail_pkg`
 	    else
-                contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-install-packages*.deb`
+                contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-install-packages*.deb`
                 contrail_pkg_name=`basename $contrail_pkg`
 	    fi
         fi
