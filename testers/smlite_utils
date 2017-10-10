@@ -432,13 +432,17 @@ function provision_using_SMLite() {
             fi
             if [ $SKIP_SMLITE_INSTALL -ne 0 ]
             then
-                if [[ $SKU =~ ocata ]]; then
+                if [[ ( $SKU =~ vcenter ) && ( $VCENTER_TEST_SKU != "mitaka" ) ]]; then
+                    /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON} -sku ${VCENTER_TEST_SKU}
+                elif [[ $SKU =~ ocata ]]; then
                     /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON} -sku ${SKU}
                 else
                     /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
                 fi
             else
-                if [[ $SKU =~ ocata ]]; then
+                if [[ ( $SKU =~ vcenter ) && ( $VCENTER_TEST_SKU != "mitaka" ) ]]; then
+                    /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON} -sku ${VCENTER_TEST_SKU}
+                elif [[ $SKU =~ ocata ]]; then
                     /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON} -sku ${SKU}
                 else
                     /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON}
