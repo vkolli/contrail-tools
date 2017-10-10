@@ -432,16 +432,20 @@ function provision_using_SMLite() {
             fi
             if [ $SKIP_SMLITE_INSTALL -ne 0 ]
             then
-                if [[ ( $SKU =~ vcenter ) && ( $VCENTER_TEST_SKU =~ ocata ) ]]; then
-                    /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON} -sku ${VCENTER_TEST_SKU}
+                if [ ! -z $VCENTER_TEST_SKU ]; then
+                    if [[ ( $SKU =~ vcenter ) && ( $VCENTER_TEST_SKU =~ ocata ) ]]; then
+                        /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON} -sku ${VCENTER_TEST_SKU}
+                    fi
                 elif [[ $SKU =~ ocata ]]; then
                     /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON} -sku ${SKU}
                 else
                     /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
                 fi
             else
-                if [[ ( $SKU =~ vcenter ) && ( $VCENTER_TEST_SKU =~ ocata ) ]]; then
-                    /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON} -sku ${VCENTER_TEST_SKU}
+                if [ ! -z $VCENTER_TEST_SKU ]; then
+                    if [[ ( $SKU =~ vcenter ) && ( $VCENTER_TEST_SKU =~ ocata ) ]]; then
+                        /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON} -sku ${VCENTER_TEST_SKU}
+                    fi
                 elif [[ $SKU =~ ocata ]]; then
                     /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON} -sku ${SKU}
                 else
