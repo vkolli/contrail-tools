@@ -461,18 +461,21 @@ def create_server_yaml():
         port_for_floating_ip = []
         ip_address_dict = server_dict[clus][i]["ip_address"]
         ip_list = ip_address_dict.values()
-        # print ip_list[1]
+        #print ip_list
+	#print ip_address_dict
         for key, value in ip_address_dict.items():
             if value in ip_list:
                 if network_dict[key]["role"] == "management":
                     ip_association_floating.append(value)
+		    #print ip_port_dict[value]
                     server_string = server_string + \
                         "        - port: { get_resource:  %s}\n" % ip_port_dict[value]
                     ip_list.remove(value)
         if len(ip_list) > 0:
             # print ip_association_floating
+	    ip_list.sort()
             for j in ip_list:
-                # print ip_list
+                #print ip_list
                 server_string = server_string + \
                     "        - port: { get_resource:  %s}\n" % ip_port_dict[j]
                 if len(port_for_floating_ip) == 0:
@@ -879,22 +882,23 @@ def create_server_json_mainline():
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"ip_address": "%s",\n' % ip_add_with_mask
 		    # If this an Ocata Job, MAC Address should be extracted in a different way.
-		    if "kolla_network_interface" in cluster_dict[clus]:
-			temp_server_name = server_dict[clus][i]["name"] 
-		        temp_fip_server = all_server_fip_dict[temp_server_name]
-			client = paramiko.SSHClient()
-			client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-			client.connect(temp_fip_server, username = 'root', password = 'c0ntrail123')
-			stdin, stdout, stderr = client.exec_command('ifconfig -a | grep %s' % int_name)
-			temp_out_string = stdout.readlines()
+		    
+		    #if "kolla_network_interface" in cluster_dict[clus]:
+		    	#temp_server_name = server_dict[clus][i]["name"] 
+		        #temp_fip_server = all_server_fip_dict[temp_server_name]
+		    	#client = paramiko.SSHClient()
+		    	#client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+		    	#client.connect(temp_fip_server, username = 'root', password = 'c0ntrail123')
+		    	#stdin, stdout, stderr = client.exec_command('ifconfig -a | grep %s' % int_name)
+		    	#temp_out_string = stdout.readlines()
 			#print temp_out_string
 			#print "____________"	
-			temp_str_split = temp_out_string[0].split("HWaddr")
+			#temp_str_split = temp_out_string[0].split("HWaddr")
 			#print temp_str_split[1]
-			temp_str_1 = temp_str_split[1].replace(' ', '')
-			temp_str_2 = temp_str_1.replace('\n', '')
+			#temp_str_1 = temp_str_split[1].replace(' ', '')
+			#temp_str_2 = temp_str_1.replace('\n', '')
 			#print temp_str_2
-			mac_address = temp_str_2
+			#mac_address = temp_str_2
                     single_server_string = single_server_string + \
                         '\t\t\t\t\t"mac_address": "%s",\n' % mac_address
                     if "mtu" in cluster_dict[clus]:
@@ -1120,6 +1124,10 @@ def create_cluster_json_mainline():
             if "docker_registry" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
             	individual_clus_string = individual_clus_string + \
             	    '\t\t\t\t\t"docker_registry": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry"]
+	    if "api_server_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+		if cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["api_server_ssl"] == "true":
+		    individual_clus_string = individual_clus_string + \
+			'\t\t\t\t\t"apiserver_auth_protocol": "https",\n'
             if "docker_registry_insecure" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
             	individual_clus_string = individual_clus_string + \
        		    '\t\t\t\t\t"docker_registry_insecure": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry_insecure"]
