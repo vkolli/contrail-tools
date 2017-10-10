@@ -148,6 +148,7 @@
 							"contrail_4": {
 								"enable_lbaas": "true",
                                                                 "rbac": "true",
+								"api_server_ssl": "true",
 								"global_config": {
                                                                         "xmpp_auth_ssl": "true",
                                                                         "sandesh_ssl": "true"

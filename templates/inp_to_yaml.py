@@ -1120,6 +1120,10 @@ def create_cluster_json_mainline():
             if "docker_registry" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
             	individual_clus_string = individual_clus_string + \
             	    '\t\t\t\t\t"docker_registry": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry"]
+	    if "api_server_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+		if cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["api_server_ssl"] == "true":
+		    individual_clus_string = individual_clus_string + \
+			'\t\t\t\t\t"apiserver_auth_protocol": "https",\n'
             if "docker_registry_insecure" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
             	individual_clus_string = individual_clus_string + \
        		    '\t\t\t\t\t"docker_registry_insecure": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry_insecure"]
