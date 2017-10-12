@@ -85,7 +85,7 @@ function reimage_setup_using_SM {
         pkg_type="contrail-ubuntu-package"
         iso_type="ubuntu"
         if [[ $SKU =~ vcenter ]]; then
-            SMID=ubuntu14mitaka${BUILDID}
+            SMID=ubuntu14$VCENTER_TEST_SKU${BUILDID}
         else
             SMID=ubuntu14$SKU${BUILDID}
         fi
@@ -96,7 +96,7 @@ function reimage_setup_using_SM {
         pkg_type="contrail-ubuntu-package"
         iso_type="ubuntu"
         if [[ $SKU =~ vcenter ]]; then
-            SMID=ubuntu16ocata${BUILDID}
+            SMID=ubuntu16$VCENTER_TEST_SKU${BUILDID}
         else
             SMID=ubuntu16$SKU${BUILDID}
         fi
@@ -179,24 +179,20 @@ function SMLite_check_SM_pkg_availability() {
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
             if [[ $SKU =~ vcenter ]]; then
-                smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-ocata/${BUILDID}"
+                smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${VCENTER_TEST_SKU}/${BUILDID}"
             else
                 smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
             fi
         else
             if [[ $SKU =~ vcenter ]]; then
-                smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}"
+                smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${VCENTER_TEST_SKU}/${BUILDID}"
             else
                 smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
             fi
         fi
     else
         if [[ $SKU =~ vcenter ]]; then
-            if [[ $DISTRO =~ ubuntu-16 ]]; then
-                smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/ocata/artifacts"
-            elif [[ $DISTRO =~ ubuntu-14 ]]; then
-                smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/mitaka/artifacts"
-            fi
+            smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${VCENTER_TEST_SKU}/artifacts"
         else
             smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts"
         fi
@@ -231,7 +227,11 @@ function SMLite_get_node_distro() {
         if [[ $CB_SANITY -eq 1 ]]; then
             SERVER_MANAGER_INSTALLER="contrail-server-manager-installer_*.deb"
         else
-            SERVER_MANAGER_INSTALLER="contrail-server-manager-installer_*\.*-${BUILDID}\~$SKU\_all.deb"
+            if [[ $SKU =~ vcenter ]]; then
+                SERVER_MANAGER_INSTALLER="contrail-server-manager-installer_*\.*-${BUILDID}\~$VCENTER_TEST_SKU\_all.deb"
+            else
+                SERVER_MANAGER_INSTALLER="contrail-server-manager-installer_*\.*-${BUILDID}\~$SKU\_all.deb"
+            fi
         fi
         if [[ $SKU =~ vcenter ]]; then
             CONTRAIL_PACKAGE="contrail-vcenter-docker_*.tgz"
@@ -304,13 +304,13 @@ function copy_smlite_pkg() {
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
             if [[ $SKU =~ vcenter ]]; then
-                pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-ocata/${BUILDID}"
+                pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${VCENTER_TEST_SKU}/${BUILDID}"
             else
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
             fi
         else
             if [[ $SKU =~ vcenter ]]; then
-                pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}"
+                pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${VCENTER_TEST_SKU}/${BUILDID}"
             else
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
             fi
@@ -388,24 +388,20 @@ function provision_using_SMLite() {
     if [[ $CB_SANITY -eq 1 ]]; then
         if [[ $DISTRO =~ ubuntu-16 ]]; then
             if [[ $SKU =~ vcenter ]]; then
-                cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-ocata/${BUILDID}/contrail-vcenter-docker_*.tgz`
+                cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${VCENTER_TEST_SKU}/${BUILDID}/contrail-vcenter-docker_*.tgz`
             else
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
             fi
         elif [[ $DISTRO =~ ubuntu-14 ]]; then
             if [[ $SKU =~ vcenter ]]; then
-                cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}/contrail-vcenter-docker_*.tgz`
+                cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${VCENTER_TEST_SKU}/${BUILDID}/contrail-vcenter-docker_*.tgz`
             else
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
             fi
         fi
     else
         if [[ $SKU =~ vcenter ]]; then
-            if [[ $DISTRO =~ ubuntu-16 ]]; then
-                cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/ocata/artifacts/contrail-vcenter-docker_*.tgz`
-            elif [[ $DISTRO =~ ubuntu-14 ]]; then
-                cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/mitaka/artifacts/contrail-vcenter-docker_*.tgz`
-            fi
+            cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${VCENTER_TEST_SKU}/artifacts/contrail-vcenter-docker_*.tgz`
         else
             cntl_cloud_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-cloud-docker_*.tgz`
         fi
