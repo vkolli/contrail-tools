@@ -273,16 +273,16 @@ function copy_vmdk() {
 
     if [[ $DISTRO =~ ubuntu-14 ]]; then
         distro_vmdk="14.04"
-        vmdk_folder="vmdk"
+        vmdk_image="ContrailVM1404-ovf.tar"
     elif [[ $DISTRO =~ ubuntu-16 ]]; then
         distro_vmdk="16.04"
-        vmdk_folder="vmdk_new"
+        vmdk_image="ContrailVM1604-ovf.tar"
     fi
 
-    vmdk_path="/cs-shared/images/vcenter-vmdk/$distro_vmdk/$vmdk_folder"
+    vmdk_path="/cs-shared/contrail-vcenter/vmdk/$distro_vmdk/LATEST"
 
-    exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "mkdir -p /root/${vmdk_folder}"
-    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${vmdk_path}/vmdk.tar ${API_SERVER_HOST_STRING}:/root/${vmdk_folder}/
+    exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "mkdir -p /root/vmdk"
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${vmdk_path}/${vmdk_image} ${API_SERVER_HOST_STRING}:/root/vmdk/vmdk.tar
 
     if [ $? == 0 ]
     then
