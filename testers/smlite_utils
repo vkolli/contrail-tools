@@ -316,7 +316,11 @@ function copy_smlite_pkg() {
             fi
         fi
     else
-        pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}"
+        if [[ $SKU =~ vcenter ]]; then
+            pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${VCENTER_TEST_SKU}"
+        else
+            pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}"
+        fi
     fi
 
     echo $CONTRAIL_PACKAGE
