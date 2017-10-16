@@ -168,7 +168,7 @@ def print_summary():
 def get_exact_path(branch='', build='', openstack_version=''):
 	host = host = '10.204.216.50'
 	username = 'bhushana'
-	password = 'bhu@123'
+	password = 'c0ntrail!23'
 	ini_list = []
 	err_list = []
 	path = "/var/www/html/sanity/cb-sanity/"
@@ -212,7 +212,7 @@ def get_exact_path(branch='', build='', openstack_version=''):
 def get_all_ini_files(branch='', build='', openstack_version=''):
 	host = '10.204.216.50'
 	username = 'bhushana'
-	password = 'bhu@123'
+	password = 'c0ntrail!23'
 	ini_list = []
 	final_ini_list  = []
 	error_list = []
@@ -332,7 +332,7 @@ info_dict = {"mitaka_jobs": {}, "kilo_jobs": {}, "liberty_jobs": {}, "R4.0_mitak
 def get_detailed_data_from_ini_files(branch='', build='', openstack_version=''):
 	host = '10.204.216.50'
 	username = 'bhushana'
-	password = 'bhu@123'
+	password = 'c0ntrail!23'
 	#info_dict = {"mitaka_jobs": {}, "kilo_jobs": {}, "liberty_jobs": {}}
 	path = str(get_exact_path(branch=branch, build=build, openstack_version=openstack_version))
 	print path
@@ -365,7 +365,7 @@ def get_detailed_data_from_ini_files(branch='', build='', openstack_version=''):
                                 	new_path = path + '/'+ i
 					print new_path
                                 	#print "Downloading the following file: ",new_path
-                                	os.system('sshpass -p "bhu@123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
+                                	os.system('sshpass -p "c0ntrail!23" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
 					time.sleep(10)
 					check_if_object_downloaded(file=i)
                                 	Dict_1 = get_data_from_ini_file(i)
@@ -469,7 +469,7 @@ def get_detailed_data_from_ini_files(branch='', build='', openstack_version=''):
 				final_success_rate_newton = 0
 				for i in ini_list:
 					new_path = path + '/' + i
-					os.system('sshpass -p "bhu@123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
+					os.system('sshpass -p "c0ntrail!23" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
 					time.sleep(10)
 					check_if_object_downloaded(file=i)
 					Dict_1 = get_data_from_ini_file(i)
@@ -547,7 +547,7 @@ def get_detailed_data_from_ini_files(branch='', build='', openstack_version=''):
 				final_success_rate_newton = 0
 				for i in ini_list:
 					new_path = path + '/' + i
-					os.system('sshpass -p "bhu@123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
+					os.system('sshpass -p "c0ntrail!23" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
 					time.sleep(10)
 					check_if_object_downloaded(file=i)
 					Dict_1 = get_data_from_ini_file(i)
