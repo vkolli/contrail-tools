@@ -7,6 +7,7 @@ host2 = 'root@10.204.217.197'
 host3 = 'root@10.204.217.198'
 host4 = 'root@10.204.218.100'
 host5 = 'root@10.204.218.101'
+host6 = 'root@10.204.218.102'
 
 kvm_nodei33 = '10.204.217.145'
 kvm_nodel2 = '10.204.218.50'
@@ -25,7 +26,7 @@ host_build = 'root@10.204.217.187'
 
 #Role definition of the hosts.
 env.roledefs = {
-    'all': [host1, host2, host3, host4, host5],
+    'all': [host1, host2, host3, host4, host5, host6],
     'cfgm': [host1, host4, host5],
     'control': [host1, host4, host5],
     'compute': [host2, host3],
@@ -52,6 +53,7 @@ env.passwords = {
     host3: 'c0ntrail123',
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
+    host6: 'c0ntrail123',
     kvm_nodei33 : 'c0ntrail123',
     kvm_nodel2 : 'c0ntrail123',
 
@@ -90,7 +92,8 @@ vm_node_details = {
     host1 : {
                 'name' : 'testbed-1-vm1',
                 'server': kvm_nodei33,
-                'network' : [{'bridge' : 'br1', 'mac':'52:54:00:01:00:01'}
+                'network' : [{'bridge' : 'br1', 'mac':'52:54:00:01:00:01'},
+                             {'bridge' : 'br0', 'mac':'52:54:00:02:00:01'}
                             ],
                 'ram' : '16384',
                 'vcpus' : '8',
@@ -98,7 +101,8 @@ vm_node_details = {
     host2 : {
                 'name' : 'testbed-1-vm2',
                 'server': kvm_nodei33,
-                'network' : [{'bridge' : 'br1', 'mac':'52:54:00:01:00:02'}
+                'network' : [{'bridge' : 'br1', 'mac':'52:54:00:01:00:02'},
+                             {'bridge' : 'br0', 'mac':'52:54:00:02:00:02'}
                             ],
                 'ram' : '8192',
                 'vcpus' : '4',
@@ -106,7 +110,8 @@ vm_node_details = {
     host3 : {
                 'name' : 'testbed-1-vm3',
                 'server': kvm_nodei33,
-                'network' : [{'bridge' : 'br1', 'mac':'52:54:00:01:00:03'}
+                'network' : [{'bridge' : 'br1', 'mac':'52:54:00:01:00:03'},
+                             {'bridge' : 'br0', 'mac':'52:54:00:02:00:03'}
                             ],
                 'ram' : '8192',
                 'vcpus' : '4',
@@ -114,7 +119,8 @@ vm_node_details = {
     host4 : {
                 'name' : 'testbed-1-vm4',
                 'server': kvm_nodel2,
-                'network' : [{'bridge' : 'br0', 'mac':'52:54:00:01:00:06'}
+                'network' : [{'bridge' : 'br0', 'mac':'52:54:00:01:00:06'},
+                             {'bridge' : 'br1', 'mac':'52:54:00:02:00:04'}
                             ],
                 'ram' : '16384',
                 'vcpus' : '8',
@@ -123,10 +129,21 @@ vm_node_details = {
     host5 : {
                 'name' : 'testbed-1-vm5',
                 'server': kvm_nodel2,
-                'network' : [{'bridge' : 'br0', 'mac':'52:54:00:01:00:07'}
+                'network' : [{'bridge' : 'br0', 'mac':'52:54:00:01:00:07'},
+                             {'bridge' : 'br1', 'mac':'52:54:00:02:00:05'}
                             ],
                 'ram' : '16384',
                 'vcpus' : '8',
+                'image_dest' : '/var/lib/libvirt/images/',
+            },
+    host6 : {
+                'name' : 'testbed-1-vm6',
+                'server': kvm_nodel2,
+                'network' : [{'bridge' : 'br0', 'mac':'52:54:00:01:00:08'},
+#                             {'bridge' : 'br1', 'mac':'52:54:00:02:00:06'}
+                            ],
+                'ram' : '8192',
+                'vcpus' : '4',
                 'image_dest' : '/var/lib/libvirt/images/',
             },
 }
@@ -138,4 +155,18 @@ env.kubernetes = {
 'mode' : 'baremetal',
 'master': host1,
 'slaves': [host2, host3]
+}
+
+control_data = {
+    host1 : { 'ip': '192.168.1.5/24', 'gw' : '192.168.1.254', 'device':'ens4' },
+    host2 : { 'ip': '192.168.1.6/24', 'gw' : '192.168.1.254', 'device':'ens4' },
+    host3 : { 'ip': '192.168.1.7/24', 'gw' : '192.168.1.254', 'device':'ens4' },
+    host4 : { 'ip': '192.168.1.8/24', 'gw' : '192.168.1.254', 'device':'ens4' },
+    host5 : { 'ip': '192.168.1.9/24', 'gw' : '192.168.1.254', 'device':'ens4' },
+#    host6 : { 'ip': '192.168.1.9/24', 'gw' : '192.168.1.254', 'device':'ens4' },
+}
+
+# 10.204.218.102 is the lb node testbed-1-vm6
+env.ha = {
+    'contrail_external_vip' : '10.204.218.102'
 }
