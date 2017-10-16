@@ -56,7 +56,7 @@ def _parse_args( args_str):
     Eg. python upload.py 
                                     --web_server_ip 127.0.0.1
                                     --web_server_user bhushana
-                                    --web_server_password bhu@123
+                                    --web_server_password c0ntrail!23
                                     --web_server_path <Path> 
     '''
 
@@ -71,7 +71,7 @@ def _parse_args( args_str):
     defaults = {
         'web_server_ip': '10.204.216.50',
         'web_server_user': 'bhushana',
-        'web_server_password': 'bhu@123',
+        'web_server_password': 'c0ntrail!23',
         'web_server_path': '/home/bhushana/Documents/technical/sanity/daily',
     }
 

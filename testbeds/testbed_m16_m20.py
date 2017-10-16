@@ -55,7 +55,7 @@ env.test = {
   'mail_to' : 'dl-contrail-sw@juniper.net',
   'webserver_host': '10.204.216.50',
   'webserver_user' : 'bhushana',
-  'webserver_password' : 'bhu@123',
+  'webserver_password' : 'c0ntrail!23',
   'webserver_log_path' :  '/home/bhushana/Documents/technical/logs',
   'webroot' : 'Docs/logs',
   'mail_server' :  '10.204.216.49',
