@@ -145,7 +145,7 @@ def get_exact_path(branch='', build=''):
 	build = build
 	host = '10.204.216.50'
 	username = 'bhushana'
-	password = 'bhu@123'
+	password = 'c0ntrail!23'
 	ini_list = []
 	err_list = []
 	path = "/var/www/html/sanity/daily/"
@@ -191,7 +191,7 @@ def get_exact_path(branch='', build=''):
 def get_all_ini_files(branch='', build=''):
 	host = '10.204.216.50'
 	username = 'bhushana'
-	password = 'bhu@123'
+	password = 'c0ntrail!23'
 	ini_list = []
 	final_ini_list  = []
 	error_list = []
@@ -221,7 +221,7 @@ def get_all_ini_files(branch='', build=''):
 def get_detailed_data_from_ini_files(branch='', build=''):
 	host = '10.204.216.50'
 	username = 'bhushana'
-	password = 'bhu@123'
+	password = 'c0ntrail!23'
 	info_dict = {}
 	path = str(get_exact_path(branch=branch, build=build))
 	#print path
@@ -240,7 +240,7 @@ def get_detailed_data_from_ini_files(branch='', build=''):
 			for i in ini_list:
 				new_path = path + '/'+ i
 				#print "Downloading the following file: ",new_path
-				os.system('sshpass -p "bhu@123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
+				os.system('sshpass -p "c0ntrail!23" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %new_path)
 				Dict_1 = get_data_from_ini_file(i)
 				info_dict[num] = Dict_1
 				os.system('rm %s' %i)
