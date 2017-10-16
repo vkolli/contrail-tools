@@ -573,6 +573,8 @@ function run_smgr_task() {
         export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-cloud-docker[_]\([0-9\.\-]*\)-.*/\1/'`
     elif [[ $USE_NETWORKING_PKG -eq 1 ]]; then
         export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-networking-docker[_]\([0-9\.\-]*\)_.*/\1/'`
+    elif [[ $SKU =~ vcenter ]]; then
+        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-vcenter-docker[_]\([0-9\.\-]*\).*/\1/'`
     else
         export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-cloud-docker[_]\([0-9\.\-]*\)-.*/\1/'`
     fi
