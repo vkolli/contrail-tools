@@ -123,6 +123,7 @@ function reimage_setup_using_SM {
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
         set -e
         echo "reimage the target setup"
+        server-manager-client reimage -F --cluster_id $CLUSTER_NAME ${image_id}
         if [ $? == 0 ]
         then
             echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
@@ -145,7 +146,6 @@ function reimage_setup_using_SM {
         fi
 
     ) "
-
     if [ $? == 0 ]
     then
         echo "reimaged the target $CLUSTER_NAME successfully"
