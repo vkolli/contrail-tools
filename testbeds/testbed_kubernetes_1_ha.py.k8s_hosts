@@ -19,3 +19,4 @@
 10.204.217.198 interface="ens4" address="192.168.1.7" netmask="255.255.255.0" bootproto="static"
 10.204.218.100 interface="ens4" address="192.168.1.8" netmask="255.255.255.0" bootproto="static"
 10.204.218.101 interface="ens4" address="192.168.1.9" netmask="255.255.255.0" bootproto="static"
+10.204.218.102 interface="ens4" address="192.168.1.10" netmask="255.255.255.0" bootproto="static"
