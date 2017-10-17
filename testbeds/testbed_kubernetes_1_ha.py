@@ -140,7 +140,7 @@ vm_node_details = {
                 'name' : 'testbed-1-vm6',
                 'server': kvm_nodel2,
                 'network' : [{'bridge' : 'br0', 'mac':'52:54:00:01:00:08'},
-#                             {'bridge' : 'br1', 'mac':'52:54:00:02:00:06'}
+                             {'bridge' : 'br1', 'mac':'52:54:00:02:00:06'}
                             ],
                 'ram' : '8192',
                 'vcpus' : '4',
