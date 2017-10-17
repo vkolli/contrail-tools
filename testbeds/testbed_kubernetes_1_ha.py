@@ -39,7 +39,7 @@ env.roledefs = {
 
 env.hostnames = {
     'all': ['testbed-1-vm1', 'testbed-1-vm2', 'testbed-1-vm3',
-             'testbed-1-vm4', 'testbed-1-vm5']
+             'testbed-1-vm4', 'testbed-1-vm5', 'testbed-1-vm6']
 }
 
 #Openstack admin password
