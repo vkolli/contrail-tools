@@ -120,21 +120,9 @@ function reimage_setup_using_SM {
     fi
 
     echo "Cconnect to SM_SERVER to reimage the targets"
-
-    # check whether skip_reimage of servers set
-    reimage_flag=$(sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP '/usr/bin/server-manager-client display server --detail --json | grep -A2 tag | grep skip_reimage | grep -c true')
-
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
         set -e
         echo "reimage the target setup"
-        if [ $reimage_flag > 1 ]
-        then
-            echo "use tag to avoid reimaging servers which dont need it"
-            server-manager reimage -F --tag skip_reimage=false ${image_id}
-        else
-            server-manager-client reimage -F --cluster_id $CLUSTER_NAME ${image_id}
-        fi
-
         if [ $? == 0 ]
         then
             echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
@@ -147,19 +135,12 @@ function reimage_setup_using_SM {
         sleep 10
 
         #check if reimage is completed.
-        if [ $reimage_flag > 1 ]
-        then
-            echo "check only those servers issued reimage based on tags"
-            /root/sm_files/check_reimage_tags_cliff.sh "skip_reimage=false"
-        else
-            /root/sm_files/check_reimage_cliff.sh $CLUSTER_NAME
-        fi
-
+        /root/sm_files/check_reimage_cliff.sh $CLUSTER_NAME
         if [ $? == 0 ]
         then
-            echo "reimaged the target nodes successfully"
+            echo "reimaged the target $CLUSTER_NAME successfully"
         else
-            echo "reimage of target nodes failed!!!"
+            echo "reimage of target $CLUSTER_NAME failed!!!"
             exit 1
         fi
 
@@ -167,10 +148,10 @@ function reimage_setup_using_SM {
 
     if [ $? == 0 ]
     then
-        echo "reimaged the target nodes successfully"
+        echo "reimaged the target $CLUSTER_NAME successfully"
         sleep 150
     else
-        echo "reimage of target nodes failed!!!"
+        echo "reimage of target $CLUSTER_NAME failed!!!"
         exit 1
     fi
 
