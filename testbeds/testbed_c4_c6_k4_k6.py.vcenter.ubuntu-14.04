@@ -108,6 +108,7 @@ esxi_hosts = {
         'password' : 'c0ntrail123',
         'cluster' : 'BANGALORE c4k4rack14',
         'datastore' : '/vmfs/volumes/k4-ds',
+        'skip_reimage'  : 'true'
         'contrail_vm' : {
             'name' : 'nodek4-compute-vm',
             'mac' : '00:50:56:aa:aa:03',
@@ -123,6 +124,7 @@ esxi_hosts = {
         'password' : 'c0ntrail123',
         'cluster' : 'BANGALORE c4k4rack14',
         'datastore' : '/vmfs/volumes/k5-ds',
+        'skip_reimage'  : 'true'
         'contrail_vm' : {
             'name' : 'nodek5-compute-vm',
             'mac' : '00:50:56:aa:aa:04',
@@ -137,6 +139,7 @@ esxi_hosts = {
         'password' : 'c0ntrail123',
         'cluster' : 'BANGALORE c4k4rack14',
         'datastore' : '/vmfs/volumes/k6-ds',
+        'skip_reimage'  : 'true'
         'contrail_vm' : {
             'name' : 'nodek6-compute-vm',
             'mac' : '00:50:56:aa:aa:05',
