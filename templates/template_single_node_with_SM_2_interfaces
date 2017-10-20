@@ -65,7 +65,8 @@
                                                 		"kernel_upgrade": "true"
                                         		},
                                         		"openstack":{
-								"keystone_admin_password": "c0ntrail123"
+								"keystone_admin_password": "c0ntrail123",
+								"keystone_version": "v2.0"
                                         		}
                                 		}
                         		}
