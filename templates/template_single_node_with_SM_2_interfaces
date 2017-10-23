@@ -40,7 +40,7 @@
 						"image" : "image_val",
 						"floating_ip" : "true",
 						"server_manager" : "flase",
-						"roles" : ["config", "openstack", "webui", "control", "collector", "conpute", "database"]
+						"roles" : ["config", "openstack", "webui", "control", "collector", "compute", "database"]
 					},
 					"servermanager":{
                                 		"name":"servermanager" ,
