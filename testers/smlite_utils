@@ -118,12 +118,12 @@ function reimage_setup_using_SM {
         contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
         isofile="/root/images/centos71.json"
     fi
-    echo "Cconnect to SM_SERVER to reimage the targets"
 
     # check whether skip_reimage of servers set
     reimage_flag=0
     reimage_flag=$(sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP '/usr/bin/server-manager-client display server --detail --json | grep -A2 tag | grep skip_reimage | grep -c true')
 
+    echo "Cconnect to SM_SERVER to reimage the targets"
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
         set -e
         echo "reimage the target setup"
