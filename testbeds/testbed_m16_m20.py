@@ -23,7 +23,7 @@ host_build = 'stack@10.204.216.49'
 env.roledefs = {
     'all': [host1, host2, host3, host4, host5, host6],
     'contrail-controller': [host1,host2,host3],
-    'openstack': [host1],
+    'openstack': [host1,host2,host3],
     'contrail-analytics': [host1,host2,host3],
     'contrail-analyticsdb': [host1,host2,host3],
     'contrail-lb': [host6],
@@ -47,7 +47,9 @@ env.hostnames = {
 
 env.ha = {
     'contrail_internal_vip' : '10.204.216.48',
-    'contrail_external_vip' : '10.204.216.48', 
+    'contrail_external_vip' : '10.204.216.48',
+    'internal_vip' : '10.204.216.141',
+    'external_vip' : '10.204.216.141',
 }
 
 
