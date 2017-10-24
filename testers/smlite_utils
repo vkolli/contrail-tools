@@ -130,17 +130,23 @@ function reimage_setup_using_SM {
         if [ $reimage_flag == 0 ]
         then
             server-manager-client reimage -F --cluster_id $CLUSTER_NAME ${image_id}
+            if [ $? == 0 ]
+            then
+               echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
+            else
+               echo "Issue of Reimage command to reimage target nodes failed, aborting the process"
+               exit 1
+            fi
         else
             echo "use tag to avoid reimaging servers which dont need it"
             server-manager reimage -F --tag skip_reimage=false ${image_id}
-        fi
-
-        if [ $? == 0 ]
-        then
-            echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
-        else
-            echo "Issue of Reimage command to reimage target nodes failed, aborting the process"
-            exit 1
+            if [ $? == 0 ]
+            then
+               echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
+            else
+               echo "Issue of Reimage command to reimage target nodes failed, aborting the process"
+               exit 1
+            fi
         fi
 
         echo "reimage in progress please wait ..."
@@ -150,17 +156,23 @@ function reimage_setup_using_SM {
         if [ $reimage_flag == 0 ]
         then
             /root/sm_files/check_reimage_cliff.sh $CLUSTER_NAME
+            if [ $? == 0 ]
+            then
+               echo "reimaged the target nodes successfully"
+            else
+               echo "reimage of target nodes failed!!!"
+               exit 1
+            fi
         else
             echo "check only those servers issued reimage based on tags"
             /root/sm_files/check_reimage_tags_cliff.sh "skip_reimage=false"
-        fi
-
-        if [ $? == 0 ]
-        then
-            echo "reimaged the target nodes successfully"
-        else
-            echo "reimage of target nodes failed!!!"
-            exit 1
+            if [ $? == 0 ]
+            then
+               echo "reimaged the target nodes successfully"
+            else
+               echo "reimage of target nodes failed!!!"
+               exit 1
+            fi
         fi
 
     ) "
