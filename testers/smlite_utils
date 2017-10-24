@@ -118,12 +118,23 @@ function reimage_setup_using_SM {
         contrail_pkg=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/contrail-install-packages*.rpm`
         isofile="/root/images/centos71.json"
     fi
-
     echo "Cconnect to SM_SERVER to reimage the targets"
+
+    # check whether skip_reimage of servers set
+    reimage_flag=0
+    reimage_flag=$(sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP '/usr/bin/server-manager-client display server --detail --json | grep -A2 tag | grep skip_reimage | grep -c true')
+
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
         set -e
         echo "reimage the target setup"
-        server-manager-client reimage -F --cluster_id $CLUSTER_NAME ${image_id}
+        if [ $reimage_flag == 0 ]
+        then
+            server-manager-client reimage -F --cluster_id $CLUSTER_NAME ${image_id}
+        else
+            echo "use tag to avoid reimaging servers which dont need it"
+            server-manager reimage -F --tag skip_reimage=false ${image_id}
+        fi
+
         if [ $? == 0 ]
         then
             echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
@@ -136,12 +147,19 @@ function reimage_setup_using_SM {
         sleep 10
 
         #check if reimage is completed.
-        /root/sm_files/check_reimage_cliff.sh $CLUSTER_NAME
+        if [ $reimage_flag == 0 ]
+        then
+            /root/sm_files/check_reimage_cliff.sh $CLUSTER_NAME
+        else
+            echo "check only those servers issued reimage based on tags"
+            /root/sm_files/check_reimage_tags_cliff.sh "skip_reimage=false"
+        fi
+
         if [ $? == 0 ]
         then
-            echo "reimaged the target $CLUSTER_NAME successfully"
+            echo "reimaged the target nodes successfully"
         else
-            echo "reimage of target $CLUSTER_NAME failed!!!"
+            echo "reimage of target nodes failed!!!"
             exit 1
         fi
 
