@@ -343,12 +343,18 @@ function copy_smlite_pkg() {
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${VCENTER_TEST_SKU}/${BUILDID}"
             else
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
+                if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                    pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}"
+                fi
             fi
         else
             if [[ $SKU =~ vcenter ]]; then
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${VCENTER_TEST_SKU}/${BUILDID}"
             else
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
+                if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                    pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}"
+                fi
             fi
         fi
     else
@@ -431,12 +437,18 @@ function provision_using_SMLite() {
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${VCENTER_TEST_SKU}/${BUILDID}/contrail-vcenter-docker_*.tgz`
             else
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
+                if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                    cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/contrail-cloud-docker_*.tgz`
+                fi
             fi
         elif [[ $DISTRO =~ ubuntu-14 ]]; then
             if [[ $SKU =~ vcenter ]]; then
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${VCENTER_TEST_SKU}/${BUILDID}/contrail-vcenter-docker_*.tgz`
             else
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
+                if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                    cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/contrail-cloud-docker_*.tgz`
+                fi
             fi
         fi
     else
