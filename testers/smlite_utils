@@ -213,7 +213,7 @@ function SMLite_check_SM_pkg_availability() {
             else
                 smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
 		if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-		    smpkg_dir=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages`
+		    smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages"
 		fi
             fi
         else
@@ -222,7 +222,7 @@ function SMLite_check_SM_pkg_availability() {
             else
                 smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
                 if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-                    smpkg_dir=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages`
+                    smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages"
                 fi      
             fi
         fi
