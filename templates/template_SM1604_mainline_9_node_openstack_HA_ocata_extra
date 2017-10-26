@@ -163,7 +163,7 @@
                                         		"contrail": {
 								"contrail_external_vip": "10.0.0.10",
 								"contrail_internal_vip": "10.10.0.10",
-                                                		"kernel_upgrade": "true",
+                                                		"kernel_upgrade": "false",
 								"manage_neutron": "false"
                                         		},
                                         		"openstack":{
