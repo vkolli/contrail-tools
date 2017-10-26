@@ -344,7 +344,7 @@ function copy_smlite_pkg() {
             else
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
                 if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-                    pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}"
+                    pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages"
                 fi
             fi
         else
@@ -353,7 +353,7 @@ function copy_smlite_pkg() {
             else
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
                 if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-                    pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}"
+                    pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages"
                 fi
             fi
         fi
