@@ -438,7 +438,7 @@ function provision_using_SMLite() {
             else
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
                 if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-                    cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/contrail-cloud-docker_*.tgz`
+                    cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker_*.tgz`
                 fi
             fi
         elif [[ $DISTRO =~ ubuntu-14 ]]; then
@@ -447,7 +447,7 @@ function provision_using_SMLite() {
             else
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
                 if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-                    cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/contrail-cloud-docker_*.tgz`
+                    cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker_*.tgz`
                 fi
             fi
         fi
