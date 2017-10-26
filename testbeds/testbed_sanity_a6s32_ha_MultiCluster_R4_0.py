@@ -252,7 +252,7 @@ env.mx_gw_test=True
 env.testbed_location='US'
 env.interface_rename = False 
 env.image_web_server = '10.84.5.120'
-env.log_scenario='Vcenter-Compute MultiDC, Multi-Cluster, MultiNode Single Intf Sanity'
+env.log_scenario='Vcenter-Compute Multi-Cluster, MultiNode(Esxi/Kvm) Single Intf Sanity'
 env.enable_lbaas = True
 
 env.ntp_server = '10.84.5.100'
@@ -261,7 +261,7 @@ env.test = {
      'mail_server': '10.84.24.64',
      'mail_port': '4000',
      'image_web_server': '10.84.5.120',
-     'log_scenario': 'Vcenter-Compute MultiDC, Multi-Cluster, MultiNode Single Intf Sanity',
+     'log_scenario': 'Vcenter-Compute Multi-Cluster, MultiNode(Esxi/Kvm) Single Intf Sanity',
            }
 #enable_ceilometer = True
 #ceilometer_polling_interval = 60c0ntrail123
