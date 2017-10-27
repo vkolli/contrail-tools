@@ -540,10 +540,11 @@ function use_testbed_file {
     rm -f $TOOLS_WS/contrail-fabric-utils/testbed_env
     ( cd ${TOOLS_WS}/contrail-fabric-utils;
       fab export_testbed_details:testbed_env || echo "fab export_testbed_details failed")
-
-    if [ -f ${TOOLS_WS}/contrail-fabric-utils/testbed_env ]; then
-        source ${TOOLS_WS}/contrail-fabric-utils/testbed_env
-        sed 's/export //' ${TOOLS_WS}/contrail-fabric-utils/testbed_env > ${TOOLS_WS}/contrail-fabric-utils/plain_testbed_env
+    if [[ $SKU != 'ocata' ]];then
+        if [ -f ${TOOLS_WS}/contrail-fabric-utils/testbed_env ]; then
+            source ${TOOLS_WS}/contrail-fabric-utils/testbed_env
+            sed 's/export //' ${TOOLS_WS}/contrail-fabric-utils/testbed_env > ${TOOLS_WS}/contrail-fabric-utils/plain_testbed_env
+        fi
     fi
     if [ $TESTBED_LOCATION != "LOCAL" ]; then
         export USE_TASK_RUNNER_HOST=1
