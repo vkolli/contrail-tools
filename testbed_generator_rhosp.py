@@ -130,7 +130,8 @@ def create_testbed_file(pargs, hosts, openrc_dict):
         control_data_ip=api_int_ip.split('\n')[0]
         #control_data.append(control_data_ip)
         ctrl_int_cmd = "/usr/sbin/route -n | grep 10.0.0 | awk '{print $8}'"
-        gw_ip = subprocess.check_output("sshpass ssh -o StrictHostKeyChecking=no heat-admin@%s %s"                                                                                % (node_vm_ip, ctrl_int_cmd), shell=True)
+        gw_ip = subprocess.check_output("sshpass ssh -o StrictHostKeyChecking=no heat-admin@%s %s" 
+                 % (node_vm_ip, ctrl_int_cmd), shell=True)
         ctrl_gw = gw_ip.split('\n')[0]
         control_data.update({host_name : {'ip': control_data_ip + '/24', 'gw': '10.0.0.1', 'device':ctrl_gw},})
         if 'openstack' == host['role']:
