@@ -1,0 +1,195 @@
+#!/usr/bin/env bash
+#!/usr/bin/awk -f
+TOOLS_WS=${TOOLS_WS:-$(pwd)}
+multi_node=0
+
+function setup_testnode {
+    if [[ $DISTRO =~ ^(centos|redhat) ]]; then
+        PACKAGE_INSTALL_CMD="
+        tee /etc/yum.repos.d/docker.repo <<-'EOF'
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/\$releasever/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+
+        yum install -y docker-engine-1.8.3 ;\
+        service docker start
+        "
+    elif [[ $DISTRO =~ 'ubuntu' ]]; then
+        PACKAGE_INSTALL_CMD="
+        DEBIAN_FRONTEND=noninteractive ; \
+        apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D && \
+        echo 'deb https://apt.dockerproject.org/repo ubuntu-trusty main'  > /etc/apt/sources.list.d/docker.list && \
+        echo 'deb http://cz.archive.ubuntu.com/ubuntu trusty main'  > /etc/apt/sources.list.d/ubuntu-archive.list && \
+        apt-get -y update; apt-get install -y --force-yes docker-engine
+        "
+    else
+        echo "Unknown Distro - $DISTRO"
+        exit 1
+    fi
+    #container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
+    container_image_path=$TEST_DOCKER_PATH
+    container_image_file=`basename $container_image_path`
+    if [[ ! -f $container_image_path ]]; then
+        echo "ERROR!! Container image $container_image_path doesnt exist"
+        exit 1
+    fi
+    sshpass -p $TEST_HOST_PASSWORD scp $SSHOPT $container_image_path $TEST_HOST_STRING:/tmp/
+    exec_cmds -s $TEST_HOST_STRING -p $TEST_HOST_PASSWORD -c "(
+        docker  -v &> /dev/null ; rv=\$?
+        if [ \$rv -ne 0 ]; then
+            $PACKAGE_INSTALL_CMD
+        fi
+        s=$(docker images -q ${TEST_RUN}-${TEST_SKU}:${PACKAGE_VERSION} | grep -c [a-z])
+        wget -O /usr/local/bin/testrunner.sh https://raw.githubusercontent.com/Juniper/contrail-test-ci/master/testrunner.sh
+        chmod +x /usr/local/bin/testrunner.sh
+        if [ \$s -eq 0 ]; then
+            testrunner.sh load  /tmp/${container_image_file}
+        fi
+        mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
+    )"
+    sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l stack $UNDERCLOUD_IP "(
+        cp $HOME/testbed.py $HOME/contrail-test-runs/$SCRIPT_TIMESTAMP/testbed.py
+    )"
+}
+
+function run_ansible_playbook() {
+    if [ $SKIP_BRINGUP -ne 0 ]
+    then
+        return 0
+    fi
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $HYPERVISOR_IP "(
+	cd /root/contrail-ooo-deployer/ 
+        ./run_ansible.sh 
+    )"
+}
+
+function update_all_yml() {
+    cp ${TOOLS_WS}/templates/all.yml.$AVAILABLE_TESTBEDS ${TOOLS_WS}/all.yml
+    sed -i 's/contrail_version/'${BRANCH}'/g' ${TOOLS_WS}/all.yml
+    sed -i 's/contrail_exact_version/'${EXACT_BRANCH}'/g' ${TOOLS_WS}/all.yml
+    sed -i 's/build_id/'${BUILDID}'/g' ${TOOLS_WS}/all.yml
+    #sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/all.yml root@$HYPERVISOR_IP:/root/contrail-ooo-deployer.3.2.6/inventory/group_vars/all.yml
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/all.yml root@$HYPERVISOR_IP:/root/contrail-ooo-deployer/inventory/group_vars/all.yml
+}
+
+function create_testbed_py() {
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/testbed_generator_rhosp.py stack@$UNDERCLOUD_IP:/home/stack/
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l stack $UNDERCLOUD_IP "(
+        cd /home/stack/
+        source stackrc
+        python testbed_generator_rhosp.py --overcloudrc overcloudrc
+    )"
+}
+
+function run_redhat_task() {
+    echo "Running tests on $1.."
+    export HYPERVISOR_IP=$HYPERVISOR_IP
+    if [ ${TEST_SETUP} == "SINGLENODE" ]
+    then
+        multi_node=0
+    elif [ ${TEST_SETUP} == "MULTINODE" ]
+    then
+        multi_node=1
+    elif [ ${TEST_SETUP} == "MULTIINTERFACE" ]
+    then
+        multi_node=1
+    else
+        echo "TEST_SETUP is not defined, abort the process"
+        exit 1
+    fi
+    update_all_yml           #TBD 
+    run_ansible_playbook || debug_and_die "Failed to run ansible"
+#    get_undercloud_ip || debug_and_die "Failed to get undercloud IP"
+    export UNDERCLOUD_IP=$UNDERCLOUD_IP
+#    create_redhat_stack || die "Failed to deploy cluster"
+    create_testbed_py || die "Failed to create required testbed details" #Shaju's function
+    create_testbed || die "Failed to create required testbed details" 
+   
+    if [[ $TEST_RUN_INFRA == 'docker' ]]; then
+        search_package
+        pkg_file_name=`basename $PKG_FILE`
+        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
+        if [[ -z $TEST_HOST_STRING ]]; then
+            export TEST_HOST_STRING="root@"$UNDERCLOUD_IP
+            export TEST_HOST_PASSWORD=$UNDERCLOUD_PASSWORD
+        fi
+        export API_SERVER_HOST_STRING=$TEST_HOST_STRING
+        export TEST_HOST_IP=`echo $TEST_HOST_STRING | cut -d @ -f2`
+        export TEST_HOST_USER=`echo $TEST_HOST_STRING | cut -d @ -f1`
+        #Copy testbed_file generated by build_infra.sh
+        setup_testnode || debug_and_die "test node setup failed"
+        install_dep_pkgs_for_test
+        run_sanity_simple || debug_and_die "run_sanity_simple failed"
+    else
+        add_sourcelist || die "source.list copy failed on all target nodes"
+        install_third_party_pkgs || die "installing GDB/ant failed"
+        install_dep_pkgs_for_test
+        run_sanity || debug_and_die "Run_sanity step failed"
+    fi
+
+    run_tempest || die "Run_Tempest step failed"
+    collect_tech_support || die "Task to collect logs/cores failed"
+    #delete_stacks || die "Failed to delete stacks"
+    echo "Ending test on "${AVAILABLE_TESTBEDS}
+    #Set the TBFILE_NAME to the one passed through jenkins job
+    export RUN_SUCCESSFUL=1
+    TBFILE_NAME=${AVAILABLE_TESTBEDS}
+    tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
+}
+
+
+function debug_and_die
+{
+    local message=$1
+    #Set the TBFILE_NAME to the one passed through jenkins job
+    TBFILE_NAME=${AVAILABLE_TESTBEDS}
+    tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
+    if [ $LOCK_TESTBED_ON_FAILURE -eq 1 ]; then
+        echo "Testbed is set to be locked on failure and add stack info to lock file"
+        #Store stack info in testbed lock file
+        cat ${TOOLS_WS}/info.txt >> ${tb_lock_file} 
+        if [[ $message =~ 'Test failures exceed' ]]; then
+            collect_tech_support
+        fi
+        export RELEASE_TESTBED=0
+        lockfile ${LOCK_FILE_DIR}/lockfile1
+
+        set -x
+        echo "Locking testbed $tb_lock_file for debugging"
+        echo "Testbed locked..Unlock when debug complete" >> $tb_lock_file
+        cat $tb_lock_file
+
+        remove_lock_file
+    else
+        collect_tech_support
+        echo "Testbed stack delete!!!"
+        delete_stacks || die "Failed to delete stacks"
+        if [[ $VCENTER_ONLY_TESTBED -eq 1  || $VCENTER_AS_COMPUTE_TESTBED -eq 1 ]]; then
+            # deregister the setup from vcenter server
+            run_fab cleanup_vcenter
+        fi
+    fi
+    [ -z "$message" ] && message="Died"
+    echo "${BASH_SOURCE[1]}: line ${BASH_LINENO[0]}: ${FUNCNAME[1]}: $message." >&2
+    cat $tb_lock_file
+    python ${TOOLS_WS}/testers/upload.py --pkg_name $PKG_FILE --jenkins_id $SCRIPT_TIMESTAMP
+    exit 1
+}
+
+function cleanup() {
+    #Set the TBFILE_NAME to the one passed through jenkins job
+    TBFILE_NAME=${AVAILABLE_TESTBEDS}
+    tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
+    if [ $LOCK_TESTBED_ON_FAILURE -eq 0 ] && [ $RUN_SUCCESSFUL -eq 1 ]; then
+        delete_stacks || die "Failed to delete stacks"
+    else
+        #Store stack info in testbed lock file
+        cat ${TOOLS_WS}/info.txt >> ${tb_lock_file} 
+    fi
+    unlock_testbed $TBFILE_NAME || die "Failed to unlock testbed $TBFILE_NAME"
+}
