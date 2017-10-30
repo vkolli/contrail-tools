@@ -22,8 +22,7 @@ public_vn_subnet = "10.84.51.96/27"
 
 host_build = 'root@10.87.36.10'
 
-if os.getenv('HA_TEST',None) == 'True':
-    env.roledefs = {
+env.roledefs = {
         'all': [host1, host2, host3, host4, contrail_vm11a, contrail_vm11b, contrail_vm12a, host0],
         'cfgm': [host1, host2, host3],
         'openstack': [host1, host2, host3],
@@ -34,20 +33,8 @@ if os.getenv('HA_TEST',None) == 'True':
         'webui': [host1, host2, host3],
         'database': [host1, host2, host3],
         'build': [host_build],
-    }
-else:
-    env.roledefs = {
-        'all': [host1, host2, host3, host4, contrail_vm11a, contrail_vm11b, contrail_vm12a, host0],
-        'cfgm': [host1, host2],
-        'openstack': [host1],
-        'control': [host1, host3],
-        'compute': [host4, contrail_vm11a, contrail_vm11b, contrail_vm12a],
-        'vcenter_compute':[host3, host0],
-        'collector': [host1],
-        'webui': [host1],
-        'database': [host1, host2, host3],
-        'build': [host_build],
-    }
+}
+
 env.hostnames = {
     'all': ['5a10s31', '5a10s30', '5a10s29', '5a10s23', 'ContrailVM-5a10s27', 'ContrailVM-5a10s25', 'ContrailVM-5a10s31', '5a10s26']
 }
@@ -208,7 +195,6 @@ esxi_hosts = {
             'vmdk_download_path': "http://10.84.5.120/cs-shared/contrail-vcenter/vmdk/14.04/LATEST/ContrailVM-disk1.vmdk",
         }
     },
-
 }
 
 #control_data= {
@@ -221,25 +207,25 @@ esxi_hosts = {
 #}
 
 # VIP cofiguration for HA
-if os.getenv('HA_TEST',None) == 'True':
-    env.ha = {
+env.ha = {
         'internal_vip' : '10.87.36.25',
         'external_vip' : '10.87.36.25',
         'contrail_internal_vip' : '10.87.36.27',
         'contrail_external_vip' : '10.87.36.27'
-    }
+}
+
 # HA Test configuration
-    ha_setup = 'True'
-    ipmi_username = 'ADMIN'
-    ipmi_password = 'ADMIN'
-    env.hosts_ipmi = {
+ha_setup = 'True'
+ipmi_username = 'ADMIN'
+ipmi_password = 'ADMIN'
+env.hosts_ipmi = {
         '10.87.36.10': '10.87.36.1',
         '10.87.36.11': '10.87.36.2',
         '10.87.36.12': '10.87.36.3',
         '10.87.36.14': '10.87.36.5',
         '10.87.36.16': '10.87.36.7',
         '10.87.36.18': '10.87.36.9',
-    }
+}
 #do_parallel=True
 minimum_diskGB=32
 env.test_repo_dir="/home/stack/ubuntu_sanity/contrail-test"
@@ -264,4 +250,4 @@ env.test = {
      'log_scenario': 'Vcenter-Compute Multi-Cluster, MultiNode(Esxi/Kvm) Single Intf Sanity',
            }
 #enable_ceilometer = True
-#ceilometer_polling_interval = 60c0ntrail123
+#ceilometer_polling_interval = 60
