@@ -119,30 +119,60 @@ function reimage_setup_using_SM {
         isofile="/root/images/centos71.json"
     fi
 
-    echo "Connect to SM_SERVER to reimage the targets"
+    # check whether skip_reimage of servers set
+    reimage_flag=0
+    reimage_flag=$(sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP '/usr/bin/server-manager-client display server --detail --json | grep -A2 tag | grep skip_reimage | grep -c true')
+
+    echo "Cconnect to SM_SERVER to reimage the targets"
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
         set -e
         echo "reimage the target setup"
-        server-manager-client reimage -F --cluster_id $CLUSTER_NAME ${image_id}
-        if [ $? == 0 ]
+        if [ $reimage_flag == 0 ]
         then
-            echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
+            server-manager-client reimage -F --cluster_id $CLUSTER_NAME ${image_id}
+            if [ $? == 0 ]
+            then
+               echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
+            else
+               echo "Issue of Reimage command to reimage target nodes failed, aborting the process"
+               exit 1
+            fi
         else
-            echo "Issue of Reimage command to reimage target nodes failed, aborting the process"
-            exit 1
+            echo "use tag to avoid reimaging servers which dont need it"
+            server-manager reimage -F --tag skip_reimage=false ${image_id}
+            if [ $? == 0 ]
+            then
+               echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
+            else
+               echo "Issue of Reimage command to reimage target nodes failed, aborting the process"
+               exit 1
+            fi
         fi
 
         echo "reimage in progress please wait ..."
         sleep 10
 
         #check if reimage is completed.
-        /root/sm_files/check_reimage_cliff.sh $CLUSTER_NAME
-        if [ $? == 0 ]
+        if [ $reimage_flag == 0 ]
         then
-            echo "reimaged the target $CLUSTER_NAME successfully"
+            /root/sm_files/check_reimage_cliff.sh $CLUSTER_NAME
+            if [ $? == 0 ]
+            then
+               echo "reimaged the target nodes successfully"
+            else
+               echo "reimage of target nodes failed!!!"
+               exit 1
+            fi
         else
-            echo "reimage of target $CLUSTER_NAME failed!!!"
-            exit 1
+            echo "check only those servers issued reimage based on tags"
+            /root/sm_files/check_reimage_tags_cliff.sh "skip_reimage=false"
+            if [ $? == 0 ]
+            then
+               echo "reimaged the target nodes successfully"
+            else
+               echo "reimage of target nodes failed!!!"
+               exit 1
+            fi
         fi
 
     ) "
@@ -182,12 +212,18 @@ function SMLite_check_SM_pkg_availability() {
                 smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${VCENTER_TEST_SKU}/${BUILDID}"
             else
                 smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
+		if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+		    smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages"
+		fi
             fi
         else
             if [[ $SKU =~ vcenter ]]; then
                 smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${VCENTER_TEST_SKU}/${BUILDID}"
             else
                 smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
+                if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                    smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages"
+                fi      
             fi
         fi
     else
@@ -307,12 +343,18 @@ function copy_smlite_pkg() {
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${VCENTER_TEST_SKU}/${BUILDID}"
             else
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
+                if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                    pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages"
+                fi
             fi
         else
             if [[ $SKU =~ vcenter ]]; then
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${VCENTER_TEST_SKU}/${BUILDID}"
             else
                 pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
+                if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                    pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages"
+                fi
             fi
         fi
     else
@@ -395,12 +437,18 @@ function provision_using_SMLite() {
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${VCENTER_TEST_SKU}/${BUILDID}/contrail-vcenter-docker_*.tgz`
             else
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
+                if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                    cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker_*.tgz`
+                fi
             fi
         elif [[ $DISTRO =~ ubuntu-14 ]]; then
             if [[ $SKU =~ vcenter ]]; then
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${VCENTER_TEST_SKU}/${BUILDID}/contrail-vcenter-docker_*.tgz`
             else
                 cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
+                if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                    cntl_cloud_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker_*.tgz`
+                fi
             fi
         fi
     else
@@ -543,8 +591,8 @@ function run_smgr_task() {
 	set_json_file_path || die "setting json file path for cluster and server failed"
     fi
 
-    #if esxi/vcenter setup, cleanup vcenter and dockers
-    if [[ $VCENTER_ONLY_TESTBED -eq 1 ]]; then
+    # esxi/vcenter setup, cleanup vcenter and dockers
+    if [[ ( $VCENTER_ONLY_TESTBED -eq 1 ) || ( $VCENTER_AS_COMPUTE_TESTBED -eq 1 ) ]]; then
         (cd ${TOOLS_WS}/contrail-fabric-utils
          fab cleanup_vcenter)
         if [[ $SKIP_REIMAGE -eq 1 ]]; then
