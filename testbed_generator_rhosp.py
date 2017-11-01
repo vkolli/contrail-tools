@@ -80,7 +80,7 @@ def parse_openrc(filename):
     openrc_dict['admin_tenant'] = openrc_values.get('OS_PROJECT_NAME', '')
     openrc_dict['admin_user'] = openrc_values.get('OS_USERNAME', '')
     openrc_dict['admin_password'] = openrc_values.get('OS_PASSWORD', '')
-
+    openrc_dict['region_name'] = openrc_values.get('OS_REGION_NAME', 'regionOne')
     url = openrc_values['OS_AUTH_URL']
     obj = re.match("(?P<protocol>\w+)://(?P<ip>\S+):(?P<port>\d+)", url)
     if obj:
@@ -156,7 +156,7 @@ def create_testbed_file(pargs, hosts, openrc_dict):
     env_keystone.update({'admin_user': openrc_dict['admin_user']})
     env_keystone.update({'admin_password': openrc_dict['admin_password']})
     env_keystone.update({'admin_tenant': openrc_dict['admin_tenant']})
-    env_keystone.update({'region_name': 'regionOne'})
+    env_keystone.update({'region_name': openrc_dict.get('region_name', 'regionOne')})
     env_keystone.update({'insecure': 'True'})
 
 #    update mail and web server detail under env_test
