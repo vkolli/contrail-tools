@@ -23,7 +23,7 @@ function setup_sanity_base_simple {
         copy_bgp_stress_test_binary # This is not going to work in container, this will need to happen while building the container
     fi
     #Hardcoded test docker version from 4.0.2
-    sanity_cmd="bash -x /usr/local/bin/testrunner.sh run -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-${TEST_SKU}:4.0.2.0-35"
+    sanity_cmd="bash -x /usr/local/bin/testrunner.sh run -k /root/.ssh/id_rsa -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-${TEST_SKU}:4.0.2.0-35"
     if [ $PARALLEL_RUN -eq 1 ]; then
          EXTRA_RUN_TEST_ARGS="$EXTRA_RUN_TEST_ARGS -t "
     fi
