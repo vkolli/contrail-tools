@@ -156,6 +156,7 @@ def create_testbed_file(pargs, hosts, openrc_dict):
     env_keystone.update({'admin_user': openrc_dict['admin_user']})
     env_keystone.update({'admin_password': openrc_dict['admin_password']})
     env_keystone.update({'admin_tenant': openrc_dict['admin_tenant']})
+    env_keystone.update({'region_name': 'regionOne'})
     env_keystone.update({'insecure': 'True'})
 
 #    update mail and web server detail under env_test
