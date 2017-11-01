@@ -54,7 +54,7 @@ EOF
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l stack $UNDERCLOUD_IP "(
         sudo cp $HOME/testbed.py $HOME/contrail-test-runs/$SCRIPT_TIMESTAMP/testbed.py
     )"
-    sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}$TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TOOLS_WS}/testbeds/${tb_filename}
+    sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}$TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TOOLS_WS}/contrail-fabric-utils/fabfile/testbeds/testbed.py
 }
 
 function run_ansible_playbook() {
