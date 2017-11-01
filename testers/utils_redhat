@@ -44,16 +44,16 @@ EOF
             $PACKAGE_INSTALL_CMD
         fi
         s=$(docker images -q ${TEST_RUN}-${TEST_SKU}:${PACKAGE_VERSION} | grep -c [a-z])
-        wget -O /usr/local/bin/testrunner.sh https://raw.githubusercontent.com/Juniper/contrail-test-ci/master/testrunner.sh
-        chmod +x /usr/local/bin/testrunner.sh
+        sudo curl -o /usr/local/bin/testrunner.sh https://raw.githubusercontent.com/Juniper/contrail-test-ci/master/testrunner.sh
+        sudo chmod +x /usr/local/bin/testrunner.sh
         if [ \$s -eq 0 ]; then
-            testrunner.sh load  /tmp/${container_image_file}
+            sudo testrunner.sh load  /tmp/${container_image_file}
         fi
-        mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
+        sudo mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
     )"
     sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l stack $UNDERCLOUD_IP "(
-        cp $HOME/testbed.py $HOME/contrail-test-runs/$SCRIPT_TIMESTAMP/testbed.py
+        sudo cp $HOME/testbed.py $HOME/contrail-test-runs/$SCRIPT_TIMESTAMP/testbed.py
     )"
 }
 
