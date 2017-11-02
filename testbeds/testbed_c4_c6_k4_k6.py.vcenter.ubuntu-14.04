@@ -88,21 +88,21 @@ env.orchestrator = 'vcenter'
 
 env.vcenter_servers = {
      'vcenter1':{
-        'server':'10.204.217.189',
+        'server':'10.204.217.246',
         'port': '443',
         'username': 'administrator@vsphere.local',
         'password': 'Contrail123!',
         'auth': 'https',
          'datacenters' : {
-             'c4k4u14' : {
+             'c4_datacenter11' : {
                  'datacenter_mtu': '1500',
                  'dv_switches': {
-                     'dvs1': {
-                         'dv_switch_version': '5.5.0',
+                     'c4k4_dvs': {
+                         'dv_switch_version': '6.5.0',
                          'dv_port_group': { 
                              'dv_portgroup_name': 'c4k4u14_dvpg', 
                              'number_of_ports': '3', },
-                     'clusters': ['c4k4rack14'],
+                     'clusters': ['c4_cluster11', 'c4_cluster12'],
                    },
                },
 
@@ -123,8 +123,8 @@ esxi_hosts = {
         'username' : 'root',
         'password' : 'c0ntrail123',
         'datastore' : '/vmfs/volumes/k4-ds',
-        'datacenter': 'c4k4u14',
-        'cluster': 'c4k4rack14',
+        'datacenter': 'c4_datacenter11',
+        'cluster': 'c4_cluster11',
         'contrail_vm' : {
             'name' : 'nodek4-compute-vm',
             'mac' : '00:50:56:aa:aa:03',
@@ -138,8 +138,8 @@ esxi_hosts = {
         'ip' : k5,
         'username' : 'root',
         'password' : 'c0ntrail123',
-        'datacenter': 'c4k4u14',
-        'cluster' : 'c4k4rack14',
+        'datacenter': 'c4_datacenter11',
+        'cluster' : 'c4_cluster11',
         'datastore' : '/vmfs/volumes/k5-ds',
         'contrail_vm' : {
             'name' : 'nodek5-compute-vm',
@@ -154,8 +154,8 @@ esxi_hosts = {
         'ip' : k6,
         'username' : 'root',
         'password' : 'c0ntrail123',
-        'cluster' : 'c4k4rack14',
-        'datacenter': 'c4k4u14',
+        'cluster' : 'c4_cluster11',
+        'datacenter': 'c4_datacenter11',
         'datastore' : '/vmfs/volumes/k6-ds',
         'contrail_vm' : {
             'name' : 'nodek6-compute-vm',
