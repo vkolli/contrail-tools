@@ -97,7 +97,7 @@
                                 		"domain": "englab.juniper.net",
                                 		"provision":{
                                         		"contrail": {
-								"enable_lbaas": "true",
+								"enable_lbaas": true,
                                                 		"minimum_disk_database": 32,
 								"xmpp_auth_ssl": "true",
                                                 		"kernel_upgrade": "true"
