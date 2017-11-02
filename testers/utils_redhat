@@ -103,7 +103,7 @@ EOF
         sudo curl -o /usr/local/bin/testrunner.sh https://raw.githubusercontent.com/Juniper/contrail-test-ci/master/testrunner.sh
         sudo chmod +x /usr/local/bin/testrunner.sh
         if [ \$s -eq 0 ]; then
-            testrunner.sh load  /tmp/${container_image_file}
+            sudo /usr/local/bin/testrunner.sh load  /tmp/${container_image_file}
         fi
         sudo mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
     )"
