@@ -1022,25 +1022,49 @@ def create_server_json():
                     else:
                         int_name = cluster_dict[clus]["control_data_iterface"]
                     if total_server_interfaces > 1:
-                        single_server_string = single_server_string + '''
-						{
-							"default_gateway": "%s",
-							"dhcp": false,
-							"ip_address": "%s/%s",
-							"mac_address": "%s",
-							"name": "%s"
-						},
-						''' % (gateway, ip_add, mask, mac_address, int_name)
+			if "mtu" in cluster_dict[clus]:
+                                single_server_string = single_server_string + '''
+                                        {
+                                                        "default_gateway": "%s",
+                                                        "dhcp": false,
+                                                        "ip_address": "%s/%s",
+                                                        "mac_address": "%s",
+                                                        "name": "%s",
+                                                        "mtu": "%s"
+                                                },
+                                                ''' % (gateway, ip_add, mask, mac_address, int_name, cluster_dict[clus]["mtu"])
+                        else:
+                        	single_server_string = single_server_string + '''
+							{
+								"default_gateway": "%s",
+								"dhcp": false,
+								"ip_address": "%s/%s",
+								"mac_address": "%s",
+								"name": "%s"
+							},
+							''' % (gateway, ip_add, mask, mac_address, int_name)
                     else:
-                        single_server_string = single_server_string + '''
-	                                	{
-	                                        	"default_gateway": "%s",
-	                                        	"dhcp": false,
-	                                        	"ip_address": "%s/%s",
-	                                        	"mac_address": "%s",
-	                                        	"name": "%s"
-	                                	}
-	                                	''' % (gateway, ip_add, mask, mac_address, int_name)
+			if "mtu" in cluster_dict[clus]:
+                                single_server_string = single_server_string + '''
+                                        {
+                                                        "default_gateway": "%s",
+                                                        "dhcp": false,
+                                                        "ip_address": "%s/%s",
+                                                        "mac_address": "%s",
+                                                        "name": "%s",
+                                                        "mtu": "%s"
+                                                }
+                                                ''' % (gateway, ip_add, mask, mac_address, int_name, cluster_dict[clus]["mtu"])
+                        else:
+                        	single_server_string = single_server_string + '''
+	                                		{
+	                                        		"default_gateway": "%s",
+	                                        		"dhcp": false,
+	                                        		"ip_address": "%s/%s",
+	                                        		"mac_address": "%s",
+	                                        		"name": "%s"
+	                                		}
+	                                		''' % (gateway, ip_add, mask, mac_address, int_name)
                     total_server_interfaces = total_server_interfaces - 1
                 single_server_string = single_server_string + "],"
                 single_server_string = single_server_string + \
