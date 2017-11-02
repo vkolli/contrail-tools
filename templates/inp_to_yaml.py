@@ -324,207 +324,137 @@ def change_floatingip_pool_params():
         floating_ip_network_dict["param"]["name"] = new_name
     return floating_ip_network_dict
 
+
 # A Method to create a yaml file to create servers using the heat
 # component of the openstack
-
-
 def create_server_yaml():
-    for clus in server_dict:
-        port_string = ""
-        server_string = ""
-        server_string = server_string + "heat_template_version: 2015-04-30\n\ndescription: " + \
-            description + "\n\n" + "resources:\n"
-        ip_port_dict = {}
-        # Change the contents of the Server_dict
-        change_server_dict()
-        # Change the contets of the Network_dict
-        change_network_dict()
-        # Change the contents Cluster Names
-        change_stack_names()
-        # Change the contents of the floating_ip_network_dict
-        floating_ip_network_dict = change_floatingip_pool_params()
-        # Create required ports for all the VMs
-
-        for i in server_dict[clus]:
-            # print server_dict[i]
-            name = server_dict[clus][i]["name"]
-            # The internal dictionary that contains the mapping of the network
-            # name to the fixed ip should also be chnaged. The next 5 lines are
-            # doing that
-            ip_address_dict = server_dict[clus][i]["ip_address"]
-            project_uuid = general_params_dict["project_uuid"]
-            for k in ip_address_dict:
-                new_key = k + "_" + project_uuid
-                #ip_address_dict[new_key] = ip_address_dict.pop(k)
-            # print ip_address_dict
-            #ip_num = 0
-            for j in network_dict:
-                if network_dict[j]["role"] == "management":
-                    ip_num = 0
-                elif network_dict[j]["role"] == "control-data":
-                    ip_num = 1
-		else:
-		    ip_num = 2
-                net_name = network_dict[j]["name"]
-                port_name = name + "_port_" + str(ip_num)
-                server_string = server_string + "  " + port_name + ":\n"
-                server_string = server_string + "    type: OS::Neutron::Port\n"
-                server_string = server_string + "    properties:\n"
-                server_string = server_string + "      network: %s\n" % net_name
-                server_string = server_string + "      name: %s\n" % port_name
-                #server_string = server_string + "      tenant_id: %s\n" %project_uuid
-                if "mac_address" in server_dict[clus][i]:
-                    server_string = server_string + \
-                        "      mac_address: %s\n" % (
-                            server_dict[clus][i]["mac_address"][net_name])
-                server_string = server_string + "      fixed_ips:\n"
-                server_string = server_string + \
-                    "        - ip_address: %s\n" % ip_address_dict[net_name]
-                """
-		if network_dict[j]["role"] == "management":
-                    if ("external_vip" in cluster_dict[clus]
-                            ["parameters"]["provision"]["openstack"]):
-                        server_string = server_string + "      allowed_address_pairs:\n"
-                        server_string = server_string + \
-                            "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
-                    if ("contrail_external_vip" in cluster_dict[clus]
-                            ["parameters"]["provision"]["contrail"]):
-                        server_string = server_string + "      allowed_address_pairs:\n"
-                        server_string = server_string + \
-                            "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
-                if network_dict[j]["role"] == "control-data":
-                    if ("internal_vip" in cluster_dict[clus]
-                            ["parameters"]["provision"]["openstack"]):
-                        server_string = server_string + "      allowed_address_pairs:\n"
-                        server_string = server_string + \
-                            "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
-                    if ("contrail_internal_vip" in cluster_dict[clus]
-                            ["parameters"]["provision"]["contrail"]):
-                        server_string = server_string + "      allowed_address_pairs:\n"
-                        server_string = server_string + \
-                            "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
-		"""
-                if network_dict[j]["role"] == "management":
-                    server_string = server_string + "      allowed_address_pairs:\n"
-                    if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or (
-                            "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                        if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
-                                "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
-                            server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
-                                    "provision"]["contrail"]["contrail_external_vip"]
-                        elif (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
-                        elif (("external_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
-                                    "provision"]["contrail"]["contrail_external_vip"]
-                if network_dict[j]["role"] == "control-data":
-                    server_string = server_string + "      allowed_address_pairs:\n"
-                    if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or (
-                            "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                        if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and (
-                                "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
-                            server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
-                                    "provision"]["contrail"]["contrail_internal_vip"]
-                        elif (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
-                        elif (("internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            server_string = server_string + \
-                                "        - ip_address: %s\n" % cluster_dict[clus]["parameters"][
-                                    "provision"]["contrail"]["contrail_internal_vip"]
-                ip_port_dict[(ip_address_dict[net_name])] = port_name
-            #ip_num += 1
-    # Launch the VMs
-    ip_association_floating = []
-    for i in server_dict[clus]:
-        name = server_dict[clus][i]["name"]
-        server_string = server_string + "  " + name + ":\n"
-        server_string = server_string + "    type: OS::Nova::Server\n"
-        server_string = server_string + "    properties:\n      name: " + name + "\n"
-        server_string = server_string + \
-            "      flavor: %s\n" % server_dict[clus][i]["flavor"]
-        server_string = server_string + \
-            "      image: %s\n" % server_dict[clus][i]["image"]
-        if "user_data_file_name" in server_dict[clus][i]:
-            server_string = server_string + "      user_data:\n"
-            server_string = server_string + \
-                "        get_file: %s\n" % server_dict[clus][i]["user_data_file_name"]
-        server_string = server_string + "      networks:\n"
-        port_for_floating_ip = []
-        ip_address_dict = server_dict[clus][i]["ip_address"]
-        ip_list = ip_address_dict.values()
-        #print ip_list
-	#print ip_address_dict
-        for key, value in ip_address_dict.items():
-            if value in ip_list:
-                if network_dict[key]["role"] == "management":
-                    ip_association_floating.append(value)
-		    #print ip_port_dict[value]
-                    server_string = server_string + \
-                        "        - port: { get_resource:  %s}\n" % ip_port_dict[value]
-                    ip_list.remove(value)
-        if len(ip_list) > 0:
-            # print ip_association_floating
-	    ip_list.sort()
-            for j in ip_list:
-                #print ip_list
-                server_string = server_string + \
-                    "        - port: { get_resource:  %s}\n" % ip_port_dict[j]
-                if len(port_for_floating_ip) == 0:
-                    port_for_floating_ip.append(ip_port_dict[j])
-            server_string = server_string + "\n"
-    # If Floating IP Pool present in the given Json tanslate it into the yaml
-    # file
+    final_server_yaml_string = ""
+    final_server_yaml_string = final_server_yaml_string + "heat_template_version: 2015-04-30 \n"
+    final_server_yaml_string = final_server_yaml_string + "description: " + description + "\n\n"
+    final_server_yaml_string = final_server_yaml_string + "resources:\n"
+    change_server_dict()
+    #print server_dict
+    change_network_dict()
+    change_stack_names()
+    floating_ip_network_dict = change_floatingip_pool_params()
+    #print floating_ip_network_dict
     if "floating_ip_network" in parsed_json["inp_params"]:
-        # Change the name of the floatingip pool. Add the porject uuid to the
-        # name.
-        change_floatingip_pool_params()
         name = floating_ip_network_dict["param"]["name"]
-        server_string = server_string + "  " + name + ":\n"
-        server_string = server_string + "    type: OS::ContrailV2::FloatingIpPool\n"
-        server_string = server_string + "    properties:\n"
-        server_string = server_string + "      name: %s\n" % name
-        server_string = server_string + \
-            "      virtual_network: %s\n\n" % floating_ip_network_dict[
-                "param"]["floating_ip_network_uuid"]
-        #server_string = server_string + "      virtual_network: public\n\n"
-    # creating floating IP from the above created pool for the VMs
-    for i in server_dict[clus]:
-        if server_dict[clus][i]["floating_ip"] == "true":
-            name = server_dict[clus][i]["name"] + "_floating_ip"
-            server_string = server_string + "  " + name + ":\n"
-            server_string = server_string + "    type: OS::ContrailV2::FloatingIp\n"
-            server_string = server_string + "    properties:\n"
-            #floating_ip = server_dict[i]["floating_ip"]
-            #server_string = server_string + "      floating_ip_address: %s\n"%floating_ip
-            abc = ip_association_floating[0]
-            port_to_associate = ip_port_dict[abc]
-            # print ip_port_dict
-            # print port_to_associate
-            ip_association_floating.pop(0)
-            #server_string = server_string + "      virtual_machine_interface_refs: [{ get_resource : %s}]\n"%port_for_floating_ip[0]
-            server_string = server_string + \
-                "      virtual_machine_interface_refs: [{ get_resource : %s}]\n" % port_to_associate
-            floating_ip_network_dict = parsed_json["inp_params"]["floating_ip_network"]["param"]
-            server_string = server_string + \
-                "      floating_ip_pool: { get_resource: %s }\n" % floating_ip_network_dict[
-                    "name"]
-            server_string = server_string + "      floating_ip_fixed_ip_address: %s \n" % abc
-            server_string = server_string + \
-                "      project_refs: [ %s ]\n\n" % general_params_dict["project_uuid"]
-        else:
-            pass
+        fip_uuid = floating_ip_network_dict["param"]["floating_ip_network_uuid"]
+        final_server_yaml_string = final_server_yaml_string + "  %s:\n" %name
+        final_server_yaml_string = final_server_yaml_string + "    type: OS::ContrailV2::FloatingIpPool\n"
+        final_server_yaml_string = final_server_yaml_string + "    properties:\n"
+        final_server_yaml_string = final_server_yaml_string + "      name: %s\n" % name
+        final_server_yaml_string = final_server_yaml_string + "      virtual_network: %s\n" %fip_uuid
+    ip_port_dict = {}
+    for clus in server_dict:
+        server_string = ""
+        for i in server_dict[clus]:
+            #lets create ports for the server according to the template given
+            indi_server_string = ""
+            name = server_dict[clus][i]["name"]
+            individual_ip_address_dict = server_dict[clus][i]["ip_address"]
+            project_uuid = general_params_dict["project_uuid"]
+            #print individual_ip_address_dict
+            networks_connected_server = individual_ip_address_dict.keys()
+            for net in networks_connected_server:
+                if network_dict[net]["role"] == "management":
+                    ip_num = 0
+                elif network_dict[net]["role"] == "control-data":
+                    ip_num = 1
+                else:
+                    ip_num = 2
+                net_name = net
+                port_name = name + "_port_" + str(ip_num)
+                final_server_yaml_string = final_server_yaml_string + "  %s:\n" % port_name
+                final_server_yaml_string = final_server_yaml_string + "    type: OS::Neutron::Port\n"
+                final_server_yaml_string = final_server_yaml_string + "    properties:\n"
+                final_server_yaml_string = final_server_yaml_string + "      network: %s\n" % net_name
+                final_server_yaml_string = final_server_yaml_string + "      name: %s\n" %port_name
+                if "mac_address" in server_dict[clus][i]:
+                    final_server_yaml_string = final_server_yaml_string + "      mac_address: %s\n" %server_dict[clus][i]["mac_address"][net_name]
+                final_server_yaml_string = final_server_yaml_string + "      fixed_ips:\n"
+                final_server_yaml_string = final_server_yaml_string + "      - ip_address: %s\n" %individual_ip_address_dict[net_name]
+                if network_dict[net]["role"] == "management":
+                    final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
+                    if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or ("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                        if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
+                        elif (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                        elif (("external_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
 
-    print server_string
-    # print ip_association_floating
+                if network_dict[net]["role"] == "control-data":
+                    final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
+                    if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or ("contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                        if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                        elif (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+                        elif (("internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                ip_port_dict[individual_ip_address_dict[net_name]] = port_name
+            # lets create the servers according to the teplate given
+            final_server_yaml_string = final_server_yaml_string + "  " + name + ":\n"
+            final_server_yaml_string = final_server_yaml_string + "    type: OS::Nova::Server\n"
+            final_server_yaml_string = final_server_yaml_string + "    properties:\n"
+            final_server_yaml_string = final_server_yaml_string + "      name: %s\n" %name
+            final_server_yaml_string = final_server_yaml_string + "      flavor: %s\n" %server_dict[clus][i]["flavor"]
+            final_server_yaml_string = final_server_yaml_string + "      image: %s\n" %server_dict[clus][i]["image"]
+            if "user_data_file_name" in server_dict[clus][i]:
+                final_server_yaml_string = final_server_yaml_string + "      user_data:\n"
+                final_server_yaml_string = final_server_yaml_string + "        get_file: %s\n" %server_dict[clus][i]["user_data_file_name"]
+            final_server_yaml_string = final_server_yaml_string + "      networks:\n"
+            ip_list = individual_ip_address_dict.values()
+            ip_for_floating_ip_association = []
+            ip_list.sort()
+            #print ip_port_dict
+            for key, value in individual_ip_address_dict.items():
+                if value in ip_list:
+                    if network_dict[key]["role"] == "management":
+                        ip_for_floating_ip_association.append(value)
+                        final_server_yaml_string = final_server_yaml_string + "        - port: { get_resource:  %s}\n" %ip_port_dict[value]
+                        ip_list.remove(value)
+                        #print ip_list
+            if len(ip_list) > 0: 
+                for j in ip_list:
+                    final_server_yaml_string = final_server_yaml_string + "        - port: { get_resource:  %s}\n" %ip_port_dict[j]
+
+            # lets create attach fip to the portif configured in the template
+            if server_dict[clus][i]["floating_ip"] == "true":
+                name = name + "_floating_ip"
+                final_server_yaml_string = final_server_yaml_string + "  %s:\n" %name
+                final_server_yaml_string = final_server_yaml_string + "    type: OS::ContrailV2::FloatingIp\n"
+                final_server_yaml_string = final_server_yaml_string + "    properties:\n"
+                port_for_association = ip_port_dict[ip_for_floating_ip_association[0]]
+                #print port_for_association
+                final_server_yaml_string = final_server_yaml_string + "      virtual_machine_interface_refs: [{ get_resource : %s}]\n" % port_for_association
+                final_server_yaml_string = final_server_yaml_string + "      floating_ip_pool: { get_resource: %s }\n" %floating_ip_network_dict["param"]["name"]
+                final_server_yaml_string = final_server_yaml_string + "      floating_ip_fixed_ip_address: %s\n" % ip_for_floating_ip_association[0]
+                final_server_yaml_string = final_server_yaml_string + "      project_refs: [ %s ]\n" %project_uuid
+            else:
+                continue
+
+	    # Lets create and attach extra volumes to the server is configured in the template
+	    if "attach_extra_volume" in server_dict[clus][i]:
+		name_volume = server_dict[clus][i]["name"] + "_cinder_volume"
+		final_server_yaml_string = final_server_yaml_string + "  %s:\n" %name_volume
+		final_server_yaml_string = final_server_yaml_string + "    type: OS::Cinder::Volume\n"
+		final_server_yaml_string = final_server_yaml_string + "    properties:\n"
+		final_server_yaml_string = final_server_yaml_string + "      size: %d\n" %server_dict[clus][i]["attach_extra_volume"]
+		final_server_yaml_string = final_server_yaml_string + "      name: %s\n" %name_volume
+		name_attachment = server_dict[clus][i]["name"] + "_volume_attachment"
+		final_server_yaml_string = final_server_yaml_string + "  %s:\n" %name_attachment
+		final_server_yaml_string = final_server_yaml_string + "    type: OS::Cinder::VolumeAttachment\n"
+		final_server_yaml_string = final_server_yaml_string + "    properties:\n"
+		final_server_yaml_string = final_server_yaml_string + "      volume_id: { get_resource: %s }\n" %name_volume
+		final_server_yaml_string = final_server_yaml_string + "      instance_uuid: { get_resource: %s }\n" %server_dict[clus][i]["name"]
+
+    print final_server_yaml_string
+
 
 
 # Method for Parsing Openstack Resource output
@@ -1022,25 +952,49 @@ def create_server_json():
                     else:
                         int_name = cluster_dict[clus]["control_data_iterface"]
                     if total_server_interfaces > 1:
-                        single_server_string = single_server_string + '''
-						{
-							"default_gateway": "%s",
-							"dhcp": false,
-							"ip_address": "%s/%s",
-							"mac_address": "%s",
-							"name": "%s"
-						},
-						''' % (gateway, ip_add, mask, mac_address, int_name)
+			if "mtu" in cluster_dict[clus]:
+                                single_server_string = single_server_string + '''
+                                        {
+                                                        "default_gateway": "%s",
+                                                        "dhcp": false,
+                                                        "ip_address": "%s/%s",
+                                                        "mac_address": "%s",
+                                                        "name": "%s",
+                                                        "mtu": "%s"
+                                                },
+                                                ''' % (gateway, ip_add, mask, mac_address, int_name, cluster_dict[clus]["mtu"])
+                        else:
+                        	single_server_string = single_server_string + '''
+							{
+								"default_gateway": "%s",
+								"dhcp": false,
+								"ip_address": "%s/%s",
+								"mac_address": "%s",
+								"name": "%s"
+							},
+							''' % (gateway, ip_add, mask, mac_address, int_name)
                     else:
-                        single_server_string = single_server_string + '''
-	                                	{
-	                                        	"default_gateway": "%s",
-	                                        	"dhcp": false,
-	                                        	"ip_address": "%s/%s",
-	                                        	"mac_address": "%s",
-	                                        	"name": "%s"
-	                                	}
-	                                	''' % (gateway, ip_add, mask, mac_address, int_name)
+			if "mtu" in cluster_dict[clus]:
+                                single_server_string = single_server_string + '''
+                                        {
+                                                        "default_gateway": "%s",
+                                                        "dhcp": false,
+                                                        "ip_address": "%s/%s",
+                                                        "mac_address": "%s",
+                                                        "name": "%s",
+                                                        "mtu": "%s"
+                                                }
+                                                ''' % (gateway, ip_add, mask, mac_address, int_name, cluster_dict[clus]["mtu"])
+                        else:
+                        	single_server_string = single_server_string + '''
+	                                		{
+	                                        		"default_gateway": "%s",
+	                                        		"dhcp": false,
+	                                        		"ip_address": "%s/%s",
+	                                        		"mac_address": "%s",
+	                                        		"name": "%s"
+	                                		}
+	                                		''' % (gateway, ip_add, mask, mac_address, int_name)
                     total_server_interfaces = total_server_interfaces - 1
                 single_server_string = single_server_string + "],"
                 single_server_string = single_server_string + \
@@ -1459,7 +1413,7 @@ def create_cluster_json():
             '\t\t\t\t"contrail":{\n'
         if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
 	    individual_clus_string = individual_clus_string + \
-		'\t\t\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus][
+		'\t\t\t\t\t"enable_lbaas": %s,\n' % cluster_dict[clus][
 		    "parameters"]["provision"]["contrail"]["enable_lbaas"]
 	if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
             individual_clus_string = individual_clus_string + \
