@@ -630,101 +630,6 @@ def get_config_node_ip():
                                                                                     [i]["ip_address"][j]]
     print ret_dict["config"]
 
-
-"""
-# A Method for gettinf the config node ip
-def get_config_node_ip_mainline():
-    a = subprocess.Popen(
-        'neutron floatingip-list -f json',
-        shell=True,
-        stdout=subprocess.PIPE)
-    a_tmp = a.stdout.read()
-    a_tmp = str(a_tmp)
-    fip_neutron_dict = eval(a_tmp)
-    project_uuid = general_params_dict["project_uuid"]
-    config_node_ip_dict = {}
-    change_network_dict()
-    net_name = []
-    for i in network_dict:
-        net_name.append(network_dict[i]["name"])
-    for clus in server_dict:
-        for i in server_dict[clus]:
-            if server_dict[clus][i]["server_manager"] != "true":
-                if "contrail-controller" in server_dict[clus][i]["roles"]:
-                    for j in server_dict[clus][i]["ip_address"]:
-                        for k in range(len(fip_neutron_dict)):
-                            if fip_neutron_dict[k]["fixed_ip_address"] == server_dict[clus][i]["ip_address"][j]:
-                                b = subprocess.Popen(
-                                    'neutron port-show %s -f json' %
-                                    fip_neutron_dict[k]["port_id"],
-                                    shell=True,
-                                    stdout=subprocess.PIPE)
-                                b_tmp = b.stdout.read()
-                                b_tmp = str(b_tmp)
-                                current_port_dict = json.loads(b_tmp)
-                                current_network_id = current_port_dict["network_id"]
-                                c = subprocess.Popen(
-                                    'neutron net-list -f json', shell=True, stdout=subprocess.PIPE)
-                                c_tmp = c.stdout.read()
-                                c_tmp = str(c_tmp)
-                                all_net_dict = json.loads(c_tmp)
-                                for net in all_net_dict:
-                                    if current_network_id == net["id"] and net["name"] in net_name:
-                                        config_node_ip_dict[clus] = (
-                                            fip_neutron_dict[k]["floating_ip_address"])
-    for cfgmip in config_node_ip_dict:
-        print config_node_ip_dict[cfgmip]
-"""
-
-# Method for getting the floating ip of the config node so that the
-# testbed.py can be transferred to this server and the tests can run from
-# here.
-
-
-"""
-def get_config_node_ip():
-    a = subprocess.Popen(
-        'neutron floatingip-list -f json',
-        shell=True,
-        stdout=subprocess.PIPE)
-    a_tmp = a.stdout.read()
-    a_tmp = str(a_tmp)
-    fip_neutron_dict = eval(a_tmp)
-    project_uuid = general_params_dict["project_uuid"]
-    config_node_ip_dict = {}
-    change_network_dict()
-    net_name = []
-    for i in network_dict:
-        net_name.append(network_dict[i]["name"])
-    for clus in server_dict:
-        for i in server_dict[clus]:
-            if server_dict[clus][i]["server_manager"] != "true":
-                if "config" in server_dict[clus][i]["roles"]:
-                    for j in server_dict[clus][i]["ip_address"]:
-                        for k in range(len(fip_neutron_dict)):
-                            if fip_neutron_dict[k]["fixed_ip_address"] == server_dict[clus][i]["ip_address"][j]:
-                                b = subprocess.Popen(
-                                    'neutron port-show %s -f json' %
-                                    fip_neutron_dict[k]["port_id"],
-                                    shell=True,
-                                    stdout=subprocess.PIPE)
-                                b_tmp = b.stdout.read()
-                                b_tmp = str(b_tmp)
-                                current_port_dict = json.loads(b_tmp)
-                                current_network_id = current_port_dict["network_id"]
-                                c = subprocess.Popen(
-                                    'neutron net-list -f json', shell=True, stdout=subprocess.PIPE)
-                                c_tmp = c.stdout.read()
-                                c_tmp = str(c_tmp)
-                                all_net_dict = json.loads(c_tmp)
-                                for net in all_net_dict:
-                                    if current_network_id == net["id"] and net["name"] in net_name:
-                                        config_node_ip_dict[clus] = (
-                                            fip_neutron_dict[k]["floating_ip_address"])
-    for cfgmip in config_node_ip_dict:
-        print config_node_ip_dict[cfgmip]
-"""
-
 # Method for creatng server.json required for the mainline build
 
 
@@ -742,8 +647,14 @@ def create_server_json_mainline():
     total_server_number = 0
     for clus in server_dict:
         total_server_number = total_server_number + len(server_dict[clus])
-    total_server_number = total_server_number - 1
+    total_server_number = total_server_number
+    for clus in server_dict:
+	for i in server_dict[clus]:
+	    if server_dict[clus][i]["server_manager"] == "true":
+		total_server_number = total_server_number - 1 
     all_server_fip_dict = get_all_fip_dict()
+    #print total_server_number
+    #sys.exit(0)
     #print all_server_fip_dict
     for clus in server_dict:
         for i in server_dict[clus]:
@@ -882,6 +793,7 @@ def create_server_json_mainline():
                     total_server_number = total_server_number - 1
                 else:
                     single_server_string = single_server_string + '\t\t}\n'
+		#print total_server_number
                 server_json_string = server_json_string + single_server_string
     server_json_string = server_json_string + '\t]\n'
     server_json_string = server_json_string + '}\n'
@@ -960,7 +872,7 @@ def create_server_json():
                                                         "ip_address": "%s/%s",
                                                         "mac_address": "%s",
                                                         "name": "%s",
-                                                        "mtu": "%s"
+                                                        "mtu": %s
                                                 },
                                                 ''' % (gateway, ip_add, mask, mac_address, int_name, cluster_dict[clus]["mtu"])
                         else:
@@ -982,7 +894,7 @@ def create_server_json():
                                                         "ip_address": "%s/%s",
                                                         "mac_address": "%s",
                                                         "name": "%s",
-                                                        "mtu": "%s"
+                                                        "mtu": %s
                                                 }
                                                 ''' % (gateway, ip_add, mask, mac_address, int_name, cluster_dict[clus]["mtu"])
                         else:
@@ -1042,152 +954,90 @@ def create_server_json():
         print server_json_string
 
 # Method for Creating Cluster.json for the Server Manager Mainline Build
-
-
-
 def create_cluster_json_mainline():
     change_stack_names()
-    clus_json_string = '{\n\t"cluster":[\n'
-    no_of_clusters = len(cluster_dict)
+    final_cluster_json_string = '{\n\t"cluster": [\n'
+    number_of_clusters = len(cluster_dict)
     for clus in cluster_dict:
-        individual_clus_string = '\t\t{\n'
+        final_cluster_json_string = final_cluster_json_string + "\t\t{\n"
         if "cluster_id" in cluster_dict[clus]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t"id": "%s",\n' % cluster_dict[clus]["cluster_id"]
-        individual_clus_string = individual_clus_string + \
-            '\t\t"parameters":{\n'
-        if "domain" in cluster_dict[clus]["parameters"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t"domain": "%s",\n' % cluster_dict[clus]["parameters"]["domain"]
-
-        #if "enable_lbaas" in cluster_dict[clus]["parameters"]:
-        #    individual_clus_string = individual_clus_string + \
-        #        '\t\t\t"enable_lbaas": "%s",\n' % cluster_dict[clus]["parameters"]["enable_lbaas"]
-        
-	for net in network_dict:
-            if network_dict[net]["role"] == "management":
-                individual_clus_string = individual_clus_string + \
-                    '\t\t\t"gateway": "%s",\n' % network_dict[net]["default_gateway"]
-                individual_clus_string = individual_clus_string + \
-                    '\t\t\t"subnet_mask": "255.255.255.0",\n'
-        individual_clus_string = individual_clus_string + \
-            '\t\t\t"provision":{\n'
-        if "contrail_4" in cluster_dict[clus]["parameters"]["provision"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t"contrail_4": {\n'
+            final_cluster_json_string = final_cluster_json_string + '\t\t"id": "%s",\n' %cluster_dict[clus]["cluster_id"]
+        final_cluster_json_string = final_cluster_json_string + '\t\t"parameters":{\n'
+        if 'domain' in cluster_dict[clus]['parameters']:
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t"domain": "%s",\n' %cluster_dict[clus]["parameters"]['domain']
+        for net in network_dict:
+            if network_dict[net]['role'] == 'management':
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t"gateway": "%s",\n' %network_dict[net]['default_gateway']
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t"subnet_mask": "255.255.255.0",\n'
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t"provision":{\n'
+        if 'contrail_4' in cluster_dict[clus]["parameters"]["provision"]:
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t"contrail_4": {\n'
             if "docker_registry" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-            	individual_clus_string = individual_clus_string + \
-            	    '\t\t\t\t\t"docker_registry": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry"]
-	    if "api_server_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-		if cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["api_server_ssl"] == "true":
-		    individual_clus_string = individual_clus_string + \
-			'\t\t\t\t\t"apiserver_auth_protocol": "https",\n'
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"docker_registry": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry"]
+            if "api_server_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"apiserver_auth_protocol": "https",\n'
             if "docker_registry_insecure" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-            	individual_clus_string = individual_clus_string + \
-       		    '\t\t\t\t\t"docker_registry_insecure": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry_insecure"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"docker_registry_insecure": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["docker_registry_insecure"]
             if "controller_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"controller_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["controller_image"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"controller_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["controller_image"]
             if "analytics_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"analytics_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["analytics_image"]	
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"analytics_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["analytics_image"]
             if "lb_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"lb_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["lb_image"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"lb_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["lb_image"]
             if "analyticsdb_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"analyticsdb_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["analyticsdb_image"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"analyticsdb_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["analyticsdb_image"]
             if "agent_image" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"agent_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["agent_image"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"agent_image": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["agent_image"]
             if "ssl_certs_src_dir" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"ssl_certs_src_dir": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["ssl_certs_src_dir"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"ssl_certs_src_dir": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["ssl_certs_src_dir"]
             if "tor_ca_cert_file" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"tor_ca_cert_file": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tor_ca_cert_file"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"tor_ca_cert_file": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tor_ca_cert_file"]
             if "tor_ssl_certs_src_dir" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"tor_ssl_certs_src_dir": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tor_ssl_certs_src_dir"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"tor_ssl_certs_src_dir": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tor_ssl_certs_src_dir"]
             if "ctrl_data_network" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"ctrl_data_network": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["ctrl_data_network"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"ctrl_data_network": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["ctrl_data_network"]
             if "enable_lbaas" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"enable_lbaas": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["enable_lbaas"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"enable_lbaas": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["enable_lbaas"]
             if "tsn_mode" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-        	individual_clus_string = individual_clus_string + \
-        	    '\t\t\t\t\t"tsn_mode": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tsn_mode"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"tsn_mode": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["tsn_mode"]
             if "rbac" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
                 if cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["rbac"] == 'true':
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"api_config":{\n'
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t\t"aaa_mode": "rbac"\n'
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t},\n'
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t"analytics_api_config":{\n'
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t\t"log": "/var/log/contrail/contrail-analytics-api.log",\n'
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t\t"aaa_mode": "rbac"\n'
-        		individual_clus_string = individual_clus_string + \
-        			'\t\t\t\t\t},\n'
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"api_config":{\n'
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"aaa_mode": "rbac"\n'
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t},\n'
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"analytics_api_config":{\n'
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"log_level": "SYS_NOTICE",\n'
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"log": "/var/log/contrail/contrail-analytics-api.log",\n'
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"aaa_mode": "rbac"\n'
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t},\n'
             if "global_config" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]:
-            	individual_clus_string = individual_clus_string + \
-                        '\t\t\t\t\t"global_config": {\n'
-            	if "cloud_orchestrator" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
-            		individual_clus_string = individual_clus_string + \
-            			'\t\t\t\t\t\t"cloud_orchestrator": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["cloud_orchestrator"]	
-            	if "external_lb" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
-            		individual_clus_string = individual_clus_string + \
-            			'\t\t\t\t\t\t"external_lb": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_lb"]
-            	if "external_rabbitmq_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
-            		individual_clus_string = individual_clus_string + \
-            			'\t\t\t\t\t\t"external_rabbitmq_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_rabbitmq_servers"]
-            	if "external_zookeeper_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
-            		individual_clus_string = individual_clus_string + \
-            			'\t\t\t\t\t\t"external_zookeeper_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_zookeeper_servers"]
-            	if "external_cassandra_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
-            		individual_clus_string = individual_clus_string + \
-            			'\t\t\t\t\t\t"external_cassandra_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_cassandra_servers"]
-            	if "external_configdb_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
-            		individual_clus_string = individual_clus_string + \
-            			'\t\t\t\t\t\t"external_configdb_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_configdb_servers"]
-            	if "xmpp_auth_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
-            		individual_clus_string = individual_clus_string + \
-            			'\t\t\t\t\t\t"xmpp_auth_enable": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
-            		individual_clus_string = individual_clus_string + \
-            			'\t\t\t\t\t\t"xmpp_dns_auth_enable": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
-            	if "sandesh_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
-            		individual_clus_string = individual_clus_string + \
-            			'\t\t\t\t\t\t"sandesh_ssl_enable": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["sandesh_ssl"]	
-            	individual_clus_string = individual_clus_string + \
-            		'\t\t\t\t\t\t"log_level": "SYS_INFO"\n'	
-            	individual_clus_string = individual_clus_string + \
-            		'\t\t\t\t\t}\n'	
-		individual_clus_string = individual_clus_string + \
-	    	    '\t\t\t\t},\n'
-        individual_clus_string = individual_clus_string + \
-            '\t\t\t\t"contrail": {\n'
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"global_config": {\n'
+                if "cloud_orchestrator" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"cloud_orchestrator": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["cloud_orchestrator"]
+                if "external_lb" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"external_lb": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_lb"]
+                if "external_rabbitmq_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"external_rabbitmq_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_rabbitmq_servers"]
+                if "external_zookeeper_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"external_zookeeper_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_zookeeper_servers"]
+                if "external_cassandra_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+                    final_cluster_json_string =  final_cluster_json_string + '\t\t\t\t\t\t"external_cassandra_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_cassandra_servers"]
+                if "external_configdb_servers" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"external_configdb_servers": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["external_configdb_servers"]
+                if "xmpp_auth_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"xmpp_auth_enable": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"xmpp_dns_auth_enable": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["xmpp_auth_ssl"]
+                if "sandesh_ssl" in cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]:
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"sandesh_ssl_enable": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail_4"]["global_config"]["sandesh_ssl"]
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"log_level": "SYS_INFO"\n'
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t}\n'
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t},\n'
+        # Contrail Part of the cluster.json
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t"contrail": {\n'
         if "kernel_upgrade" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"kernel_upgrade": %s,\n' % cluster_dict[clus][
-                    "parameters"]["provision"]["contrail"]["kernel_upgrade"]
-        """
-	if "minimum_disk_database" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"database": {\n'
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"minimum_diskGB": %d\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["minimum_disk_database"]
-            individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
-        """
-	for server in server_dict[clus]:
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"kernel_upgrade": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["kernel_upgrade"]
+        for server in server_dict[clus]:
             if "contrail-lb" in server_dict[clus][server]["roles"]:
                 lb_external = ''
                 lb_internal = ''
@@ -1196,51 +1046,25 @@ def create_cluster_json_mainline():
                         lb_external = server_dict[clus][server]["ip_address"][n]
                     if network_dict[n]["role"] == "control-data":
                         lb_internal = server_dict[clus][server]["ip_address"][n]
-                #individual_clus_string = individual_clus_string + \
-                #    '\t\t\t\t\t\t\t"config_ip": "%s",\n' % lb_external
-                #individual_clus_string = individual_clus_string + \
-                #    '\t\t\t\t\t\t\t"controller_ip": "%s",\n' % lb_external
-                #individual_clus_string = individual_clus_string + \
-                #    '\t\t\t\t\t\t\t"analytics_ip": "%s",\n' % lb_external
-        for server in server_dict[clus]:
-            if "contrail-lb" in server_dict[clus][server]["roles"]:
                 if len(lb_external) != 0:
-                    individual_clus_string = individual_clus_string + \
-                        '\t\t\t\t\t"ha": {\n'
+                    final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"ha": {\n'
                     if len(lb_internal) != 0:
-                        individual_clus_string = individual_clus_string + \
-                            '\t\t\t\t\t\t"contrail_external_vip": "%s",\n' % lb_external
-                        individual_clus_string = individual_clus_string + \
-                            '\t\t\t\t\t\t"contrail_internal_vip": "%s"\n' % lb_internal
-                        individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
+                        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"contrail_external_vip": "%s",\n' % lb_external
+                        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"contrail_internal_vip": "%s"\n' % lb_internal
+                        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t},\n'
                     else:
-                        individual_clus_string = individual_clus_string + \
-                            '\t\t\t\t\t\t"contrail_external_vip": "%s"\n' % lb_external
-                        individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
-        '''
-		if "contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
-			if "contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
-				individual_clus_string = individual_clus_string + '\t\t\t\t\t"ha": {\n'
-				individual_clus_string = individual_clus_string + '\t\t\t\t\t\t"contrail_external_vip": "%s",\n'%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
-				individual_clus_string = individual_clus_string + '\t\t\t\t\t\t"contrail_internal_vip": "%s"\n'%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
-				individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
-			else:
-				individual_clus_string = individual_clus_string + '\t\t\t\t\t"ha": {\n'
-				individual_clus_string = individual_clus_string + '\t\t\t\t\t\t"contrail_external_vip": "%s",\n'%cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
-				individual_clus_string = individual_clus_string + '\t\t\t\t\t},\n'
-		'''
+                        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"contrail_external_vip": "%s"\n' % lb_external
+                        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t},\n'
         config_node_control_data_ip_list = []
         for server in server_dict[clus]:
             if "contrail-controller" in server_dict[clus][server]["roles"]:
                 if len(server_dict[clus][server]["ip_address"]) == 1:
                     for temp in server_dict[clus][server]["ip_address"]:
-                        config_node_control_data_ip_list.append(
-                            str(server_dict[clus][server]["ip_address"][temp]))
+                        config_node_control_data_ip_list.append(str(server_dict[clus][server]["ip_address"][temp]))
                 else:
                     for temp in server_dict[clus][server]["ip_address"]:
                         if network_dict[temp]["role"] == "control-data":
-                            config_node_control_data_ip_list.append(
-                                str(server_dict[clus][server]["ip_address"][temp]))
+                            config_node_control_data_ip_list.append(str(server_dict[clus][server]["ip_address"][temp]))
         config_ip_list_string = '[ '
         ip_tot = len(config_node_control_data_ip_list)
         for ip in config_node_control_data_ip_list:
@@ -1250,144 +1074,97 @@ def create_cluster_json_mainline():
                 config_ip_list_string = config_ip_list_string + '"%s" ' % ip
             ip_tot = ip_tot - 1
         config_ip_list_string = config_ip_list_string + ']'
-        individual_clus_string = individual_clus_string + \
-            '\t\t\t\t\t"config": {\n'
-        individual_clus_string = individual_clus_string + \
-            '\t\t\t\t\t\t"config_ip_list": %s,\n' % config_ip_list_string
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"config": {\n'
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"config_ip_list": %s,\n' % config_ip_list_string
         if "manage_neutron" in cluster_dict[clus]["parameters"]["provision"]["contrail"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"manage_neutron": %s\n' % cluster_dict[clus][
-                    "parameters"]["provision"]["contrail"]["manage_neutron"]
-        individual_clus_string = individual_clus_string + '\t\t\t\t\t}\n'
-        individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
-	
-	if "kolla_globals" in cluster_dict[clus]["parameters"]["provision"]:
-		individual_clus_string = individual_clus_string + \
-		    '\t\t\t\t"kolla_globals": {\n'
-		if "kolla_base_distro" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"kolla_base_distro" :"%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_base_distro"]
-		if "openstack_release" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"openstack_release": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["openstack_release"]
-		if "enable_nova_compute" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"enable_nova_compute": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["enable_nova_compute"]
-		if "keystone_admin_user" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"keystone_admin_user": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["keystone_admin_user"]
-		individual_clus_string = individual_clus_string + \
-		    '\t\t\t\t\t"keystone_admin_url": "{{ admin_protocol }}://{{ kolla_internal_fqdn }}:{{ keystone_admin_port }}",\n'
-		individual_clus_string = individual_clus_string + \
-		    '\t\t\t\t\t"keystone_internal_url": "{{ internal_protocol }}://{{ kolla_internal_fqdn }}:{{ keystone_public_port }}",\n'
-		individual_clus_string = individual_clus_string + \
-		    '\t\t\t\t\t"keystone_public_url": "{{ public_protocol }}://{{ kolla_external_fqdn }}:{{ keystone_public_port }}",\n'
-		if "kolla_internal_vip_address" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"kolla_internal_vip_address": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_internal_vip_address"]
-		if "network_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"network_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["network_interface"]
-		if "kolla_external_vip_address" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"kolla_external_vip_address": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_external_vip_address"]
-		if "kolla_external_vip_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"kolla_external_vip_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_external_vip_interface"]
-		if "neutron_external_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"neutron_external_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["neutron_external_interface"]
-		if "neutron_plugin_agent" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"neutron_plugin_agent": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["neutron_plugin_agent"]
-		if "enable_neutron_opencontrail" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"enable_neutron_opencontrail": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["enable_neutron_opencontrail"]
- 		if "keepalived_virtual_router_id" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"keepalived_virtual_router_id": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["keepalived_virtual_router_id"]
-		if "contrail_api_interface_address" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
-			individual_clus_string = individual_clus_string + \
-			    '\t\t\t\t\t"contrail_api_interface_address": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["contrail_api_interface_address"]	
-		individual_clus_string = individual_clus_string + \
-		    '\t\t\t\t\t"haproxy_password": "c0ntrail123",\n'
-		individual_clus_string = individual_clus_string + \
-		    '\t\t\t\t\t"keepalived_password": "c0ntrail123"\n'	
-		individual_clus_string = individual_clus_string + '\t\t\t\t},\n'
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"manage_neutron": %s\n' % cluster_dict[clus]["parameters"]["provision"]["contrail"]["manage_neutron"]
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t}\n'
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t},\n'
 
-        individual_clus_string = individual_clus_string + \
-            '\t\t\t\t"openstack": {\n'
+        # Kolla Globals part of the cluster.json
+        if "kolla_globals" in cluster_dict[clus]["parameters"]["provision"]:
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t"kolla_globals": {\n'
+            if "kolla_base_distro" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"kolla_base_distro" :"%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_base_distro"]
+            if "openstack_release" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"openstack_release": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["openstack_release"]
+            if "enable_nova_compute" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"enable_nova_compute": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["enable_nova_compute"]
+            if "keystone_admin_user" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"keystone_admin_user": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["keystone_admin_user"]
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"keystone_admin_url": "{{ admin_protocol }}://{{ kolla_internal_fqdn }}:{{ keystone_admin_port }}",\n'
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"keystone_internal_url": "{{ internal_protocol }}://{{ kolla_internal_fqdn }}:{{ keystone_public_port }}",\n'
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"keystone_public_url": "{{ public_protocol }}://{{ kolla_external_fqdn }}:{{ keystone_public_port }}",\n'
+            if "kolla_internal_vip_address" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"kolla_internal_vip_address": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_internal_vip_address"]
+            if "network_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"network_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["network_interface"]
+            if "kolla_external_vip_address" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"kolla_external_vip_address": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_external_vip_address"]
+            if "kolla_external_vip_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"kolla_external_vip_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["kolla_external_vip_interface"]
+            if "neutron_external_interface" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"neutron_external_interface": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["neutron_external_interface"]
+            if "neutron_plugin_agent" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"neutron_plugin_agent": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["neutron_plugin_agent"]
+            if "enable_neutron_opencontrail" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"enable_neutron_opencontrail": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["enable_neutron_opencontrail"]
+            if "keepalived_virtual_router_id" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"keepalived_virtual_router_id": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["keepalived_virtual_router_id"]
+            if "contrail_api_interface_address" in cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]:
+                final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"contrail_api_interface_address": "%s",\n' %cluster_dict[clus]["parameters"]["provision"]["kolla_globals"]["contrail_api_interface_address"]
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"haproxy_password": "c0ntrail123",\n'
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"keepalived_password": "c0ntrail123"\n'
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t},\n'
+
+        # Openstack part of the cluster.json
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t"openstack": {\n'
         if "external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
             if "internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
                 openstack_ha_string = '\t\t\t\t\t"ha": {\n'
-                openstack_ha_string = openstack_ha_string + \
-                    '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus][
-                        "parameters"]["provision"]["openstack"]["external_vip"]
-                openstack_ha_string = openstack_ha_string + \
-                    '\t\t\t\t\t\t"external_virtual_router_id": 101,\n'
-                openstack_ha_string = openstack_ha_string + \
-                    '\t\t\t\t\t\t"internal_virtual_router_id": 102,\n'
-                openstack_ha_string = openstack_ha_string + \
-                    '\t\t\t\t\t\t"internal_vip": "%s"\n' % cluster_dict[clus][
-                        "parameters"]["provision"]["openstack"]["internal_vip"]
+                openstack_ha_string = openstack_ha_string + '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                openstack_ha_string = openstack_ha_string + '\t\t\t\t\t\t"external_virtual_router_id": 101,\n'
+                openstack_ha_string = openstack_ha_string + '\t\t\t\t\t\t"internal_virtual_router_id": 102,\n'
+                openstack_ha_string = openstack_ha_string + '\t\t\t\t\t\t"internal_vip": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
                 openstack_ha_string = openstack_ha_string + "\t\t\t\t\t},\n"
             else:
                 openstack_ha_string = '\t\t\t\t\t"ha": {\n'
-                openstack_ha_string = openstack_ha_string + \
-                    '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus][
-                        "parameters"]["provision"]["openstack"]["external_vip"]
-                openstack_ha_string = openstack_ha_string + \
-                    '\t\t\t\t\t\t"external_virtual_router_id": 101\n'
+                openstack_ha_string = openstack_ha_string + '\t\t\t\t\t\t"external_vip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+                openstack_ha_string = openstack_ha_string + '\t\t\t\t\t\t"external_virtual_router_id": 101\n' 
                 openstack_ha_string = openstack_ha_string + "\t\t\t\t\t},\n"
-            individual_clus_string = individual_clus_string + openstack_ha_string
+            final_cluster_json_string =  final_cluster_json_string + openstack_ha_string
         if "openstack_manage_amqp" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t"openstack_manage_amqp": %s,\n' % cluster_dict[clus][
-                    "parameters"]["provision"]["openstack"]["openstack_manage_amqp"]
-        individual_clus_string = individual_clus_string + \
-            '\t\t\t\t\t"keystone": {\n'
-
-	if "keystone_version" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
-	    individual_clus_string = individual_clus_string + \
-		'\t\t\t\t\t\t"version": "%s",\n' % cluster_dict[clus][
-		    "parameters"]["provision"]["openstack"]["keystone_version"]
- 
-	if "keystone_auth_protocol" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
-	    individual_clus_string = individual_clus_string + \
-		'\t\t\t\t\t\t"auth_protocol": "%s",\n' % cluster_dict[clus][
-		    "parameters"]["provision"]["openstack"]["keystone_auth_protocol"]
-	else:
-	    individual_clus_string = individual_clus_string + \
-		'\t\t\t\t\t\t"auth_protocol": "http",\n'
-
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"openstack_manage_amqp": %s,\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["openstack_manage_amqp"]
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t"keystone": {\n'
+        if "keystone_version" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"version": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_version"]
+        if "keystone_auth_protocol" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"auth_protocol": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_auth_protocol"]
+        else:
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"auth_protocol": "http",\n'
         if "keystone_admin_token" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"admin_token": "%s",\n' % cluster_dict[clus][
-                    "parameters"]["provision"]["openstack"]["keystone_admin_token"]
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"admin_token": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_token"]
         else:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"admin_token": "c0ntrail123",\n'
-
-	if "keystone_ip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
-	    individual_clus_string = individual_clus_string + \
-		'\t\t\t\t\t\t"ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_ip"]
-
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"admin_token": "c0ntrail123",\n'
+        if "keystone_ip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"ip": "%s",\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_ip"]
         if "keystone_admin_password" in cluster_dict[clus]["parameters"]["provision"]["openstack"]:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus][
-                    "parameters"]["provision"]["openstack"]["keystone_admin_password"]
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"admin_password": "%s"\n' % cluster_dict[clus]["parameters"]["provision"]["openstack"]["keystone_admin_password"]
         else:
-            individual_clus_string = individual_clus_string + \
-                '\t\t\t\t\t\t"admin_password": "c0ntrail123"\n'
-        individual_clus_string = individual_clus_string + '\t\t\t\t\t}\n'		
-        individual_clus_string = individual_clus_string + '\t\t\t\t}\n'
-        individual_clus_string = individual_clus_string + '\t\t\t}\n'
-        individual_clus_string = individual_clus_string + '\t\t}\n'
-        individual_clus_string = individual_clus_string + '\t}\n'
-    clus_json_string = clus_json_string + individual_clus_string
-    clus_json_string = clus_json_string + '\t]\n'
-    clus_json_string = clus_json_string + '}\n'
-    print clus_json_string
+            final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t\t"admin_password": "c0ntrail123"\n'
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t\t}\n'
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t\t}\n'
+        final_cluster_json_string = final_cluster_json_string + '\t\t\t}\n'
+        final_cluster_json_string = final_cluster_json_string + '\t\t}\n'
+        number_of_clusters = number_of_clusters - 1
+        if number_of_clusters > 0:
+            final_cluster_json_string = final_cluster_json_string + '\t},\n'
+        else:
+            final_cluster_json_string = final_cluster_json_string + '\t}\n'
+    final_cluster_json_string = final_cluster_json_string + '\t]\n'
+    final_cluster_json_string = final_cluster_json_string + '}\n'
+    print final_cluster_json_string
+
 
 # Method for creating cluster json for the server manager
 
