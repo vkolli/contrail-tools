@@ -630,101 +630,6 @@ def get_config_node_ip():
                                                                                     [i]["ip_address"][j]]
     print ret_dict["config"]
 
-
-"""
-# A Method for gettinf the config node ip
-def get_config_node_ip_mainline():
-    a = subprocess.Popen(
-        'neutron floatingip-list -f json',
-        shell=True,
-        stdout=subprocess.PIPE)
-    a_tmp = a.stdout.read()
-    a_tmp = str(a_tmp)
-    fip_neutron_dict = eval(a_tmp)
-    project_uuid = general_params_dict["project_uuid"]
-    config_node_ip_dict = {}
-    change_network_dict()
-    net_name = []
-    for i in network_dict:
-        net_name.append(network_dict[i]["name"])
-    for clus in server_dict:
-        for i in server_dict[clus]:
-            if server_dict[clus][i]["server_manager"] != "true":
-                if "contrail-controller" in server_dict[clus][i]["roles"]:
-                    for j in server_dict[clus][i]["ip_address"]:
-                        for k in range(len(fip_neutron_dict)):
-                            if fip_neutron_dict[k]["fixed_ip_address"] == server_dict[clus][i]["ip_address"][j]:
-                                b = subprocess.Popen(
-                                    'neutron port-show %s -f json' %
-                                    fip_neutron_dict[k]["port_id"],
-                                    shell=True,
-                                    stdout=subprocess.PIPE)
-                                b_tmp = b.stdout.read()
-                                b_tmp = str(b_tmp)
-                                current_port_dict = json.loads(b_tmp)
-                                current_network_id = current_port_dict["network_id"]
-                                c = subprocess.Popen(
-                                    'neutron net-list -f json', shell=True, stdout=subprocess.PIPE)
-                                c_tmp = c.stdout.read()
-                                c_tmp = str(c_tmp)
-                                all_net_dict = json.loads(c_tmp)
-                                for net in all_net_dict:
-                                    if current_network_id == net["id"] and net["name"] in net_name:
-                                        config_node_ip_dict[clus] = (
-                                            fip_neutron_dict[k]["floating_ip_address"])
-    for cfgmip in config_node_ip_dict:
-        print config_node_ip_dict[cfgmip]
-"""
-
-# Method for getting the floating ip of the config node so that the
-# testbed.py can be transferred to this server and the tests can run from
-# here.
-
-
-"""
-def get_config_node_ip():
-    a = subprocess.Popen(
-        'neutron floatingip-list -f json',
-        shell=True,
-        stdout=subprocess.PIPE)
-    a_tmp = a.stdout.read()
-    a_tmp = str(a_tmp)
-    fip_neutron_dict = eval(a_tmp)
-    project_uuid = general_params_dict["project_uuid"]
-    config_node_ip_dict = {}
-    change_network_dict()
-    net_name = []
-    for i in network_dict:
-        net_name.append(network_dict[i]["name"])
-    for clus in server_dict:
-        for i in server_dict[clus]:
-            if server_dict[clus][i]["server_manager"] != "true":
-                if "config" in server_dict[clus][i]["roles"]:
-                    for j in server_dict[clus][i]["ip_address"]:
-                        for k in range(len(fip_neutron_dict)):
-                            if fip_neutron_dict[k]["fixed_ip_address"] == server_dict[clus][i]["ip_address"][j]:
-                                b = subprocess.Popen(
-                                    'neutron port-show %s -f json' %
-                                    fip_neutron_dict[k]["port_id"],
-                                    shell=True,
-                                    stdout=subprocess.PIPE)
-                                b_tmp = b.stdout.read()
-                                b_tmp = str(b_tmp)
-                                current_port_dict = json.loads(b_tmp)
-                                current_network_id = current_port_dict["network_id"]
-                                c = subprocess.Popen(
-                                    'neutron net-list -f json', shell=True, stdout=subprocess.PIPE)
-                                c_tmp = c.stdout.read()
-                                c_tmp = str(c_tmp)
-                                all_net_dict = json.loads(c_tmp)
-                                for net in all_net_dict:
-                                    if current_network_id == net["id"] and net["name"] in net_name:
-                                        config_node_ip_dict[clus] = (
-                                            fip_neutron_dict[k]["floating_ip_address"])
-    for cfgmip in config_node_ip_dict:
-        print config_node_ip_dict[cfgmip]
-"""
-
 # Method for creatng server.json required for the mainline build
 
 
@@ -742,8 +647,14 @@ def create_server_json_mainline():
     total_server_number = 0
     for clus in server_dict:
         total_server_number = total_server_number + len(server_dict[clus])
-    total_server_number = total_server_number - 1
+    total_server_number = total_server_number
+    for clus in server_dict:
+	for i in server_dict[clus]:
+	    if server_dict[clus][i]["server_manager"] == "true":
+		total_server_number = total_server_number - 1 
     all_server_fip_dict = get_all_fip_dict()
+    #print total_server_number
+    #sys.exit(0)
     #print all_server_fip_dict
     for clus in server_dict:
         for i in server_dict[clus]:
@@ -882,6 +793,7 @@ def create_server_json_mainline():
                     total_server_number = total_server_number - 1
                 else:
                     single_server_string = single_server_string + '\t\t}\n'
+		#print total_server_number
                 server_json_string = server_json_string + single_server_string
     server_json_string = server_json_string + '\t]\n'
     server_json_string = server_json_string + '}\n'
