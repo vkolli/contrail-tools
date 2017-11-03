@@ -960,7 +960,7 @@ def create_server_json():
                                                         "ip_address": "%s/%s",
                                                         "mac_address": "%s",
                                                         "name": "%s",
-                                                        "mtu": "%s"
+                                                        "mtu": %s
                                                 },
                                                 ''' % (gateway, ip_add, mask, mac_address, int_name, cluster_dict[clus]["mtu"])
                         else:
@@ -982,7 +982,7 @@ def create_server_json():
                                                         "ip_address": "%s/%s",
                                                         "mac_address": "%s",
                                                         "name": "%s",
-                                                        "mtu": "%s"
+                                                        "mtu": %s
                                                 }
                                                 ''' % (gateway, ip_add, mask, mac_address, int_name, cluster_dict[clus]["mtu"])
                         else:
