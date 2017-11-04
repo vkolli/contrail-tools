@@ -1022,6 +1022,9 @@ function install_dep_pkgs_for_test {
     # Installing this on contrail R4.x or higher only 
     if [[ $INSTALL_EXTRA_PKG_ON_NODES -eq 1 ]] ; then
         run_build_fab install_pkgs_on_roles:compute,"fabric"
+	if [ $SKIP_TEMPEST -eq 0 ] ; then
+           run_build_fab install_pkgs_on_roles:compute,"dosfstools"
+	fi
     fi
 }
 
