@@ -14,7 +14,7 @@ host6 = 'root@10.204.216.223'
 ext_routers = [('mx1', '10.204.216.253')]
 router_asn = 64510
 public_vn_rtgt = 10003
-public_vn_subnet = "10.204.219.64/29"
+public_vn_subnet = "10.204.219.64/28"
 
 
 #Host from which the fab commands are triggered to install and provision
