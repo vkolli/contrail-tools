@@ -23,7 +23,7 @@ function setup_sanity_base_simple {
         copy_bgp_stress_test_binary # This is not going to work in container, this will need to happen while building the container
     fi
     #Hardcoded test docker version from 4.0.2
-    sanity_cmd="sudo bash -x /usr/local/bin/testrunner.sh run -k /home/stack/.ssh/id_rsa -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-${TEST_SKU}:4.0.2.0-35"
+    sanity_cmd="sudo bash -x /usr/local/bin/testrunner.sh run -k /home/stack/.ssh/id_rsa -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-mitaka:${PACKAGE_VERSION}"
     if [ $PARALLEL_RUN -eq 1 ]; then
          EXTRA_RUN_TEST_ARGS="$EXTRA_RUN_TEST_ARGS -t "
     fi
@@ -108,6 +108,7 @@ EOF
         sudo mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
     )"
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l stack $UNDERCLOUD_IP "(
+        sed 's/x.x.x.x/$UNDERCLOUD_IP/' $HOME/testbed.py
         sudo cp $HOME/testbed.py $HOME/contrail-test-runs/$SCRIPT_TIMESTAMP/testbed.py
     )"
     sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}$TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TOOLS_WS}/contrail-fabric-utils/fabfile/testbeds/testbed.py
@@ -130,6 +131,9 @@ function run_ansible_playbook() {
     then
         return 0
     fi
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l stack $UNDERCLOUD_IP "(
+        sudo heat stack-delete undercloud 
+    )"
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $HYPERVISOR_IP "(
 	cd /root/contrail-ooo-deployer/ 
         ./run_ansible.sh 
@@ -150,7 +154,7 @@ function create_testbed_py() {
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l stack $UNDERCLOUD_IP "(
         cd /home/stack/
         source stackrc
-        python testbed_generator_rhosp.py --overcloudrc overcloudrc
+        python tools/testbed_generator_rhosp-host-build.py --overcloudrc overcloudrc
     )"
 }
 
@@ -195,7 +199,6 @@ function run_redhat_task() {
         if [ $SKIP_SANITY -ne 0 ]; then
             return 0
         fi
-        search_package
         setup_sanity_base_simple
     else
         add_sourcelist || die "source.list copy failed on all target nodes"
