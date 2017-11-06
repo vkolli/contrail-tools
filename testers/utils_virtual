@@ -661,7 +661,7 @@ function add_server_cluster_SM() {
         sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${image} root@$SM_SERVER_IP:${isofile}
     
         echo "Connect to SM_SERVER to reimage and provision the targets"
-        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/sm_files/preconfig.py root@$SM_SERVER_IP:/opt/contrail/server_manager/client/preconfig.py
+        #sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/sm_files/preconfig.py root@$SM_SERVER_IP:/opt/contrail/server_manager/client/preconfig.py
         sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $SM_SERVER_IP " (
             set -e
             echo "add required image/server/cluster for reimage and provision of the target"
