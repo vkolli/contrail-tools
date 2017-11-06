@@ -210,3 +210,6 @@ export USE_LATEST_ANSIBLE_CODE=${USE_LATEST_ANSIBLE_CODE:-0}
 # CONTRAIL_TEST_CODE_PATH is the folder where both contrail-test and
 # contrail-test-ci repo folder are present
 export CONTRAIL_TEST_CODE_PATH=${CONTRAIL_TEST_CODE_PATH:-$TOOLS_WS}
+
+# Tempest repo to use
+export TEMPEST_REPO=${TEMPEST_REPO:-"https://github.com/Juniper/tempest.git"}
