@@ -370,18 +370,18 @@ function copy_smlite_pkg() {
     sleep 30
     if [ -z $JSON ]; then
         if [[ $CB_SANITY -eq 1 ]]; then
-            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         else
-            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         fi
-	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${API_SERVER_HOST_STRING}:/root/"
+	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${SMLITE_SERVER}:/root/"
     else
         if [[ $CB_SANITY -eq 1 ]]; then
-            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         else
-            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         fi
-	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${API_SERVER_HOST_STRING}:/root/"
+	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${SMLITE_SERVER}:/root/"
     fi
     if [ $? == 0 ]
     then
@@ -409,7 +409,7 @@ function provision_using_SMLite() {
         SMID=ubuntu14$SKU${BUILDID}
         if [[ $SKU =~ mitaka ]]; then
 	    ubuntu_rel="trusty"
-        elif [[ $SKU =~ neuton ]]; then
+        elif [[ $SKU =~ newton ]]; then
             ubuntu_rel="xenial"
         fi
     elif [[ $DISTRO =~ ubuntu-16 ]]; then
@@ -460,7 +460,7 @@ function provision_using_SMLite() {
     fi
     cntl_pkg=/root/${cntl_cloud_pkg_path##*/}
     vcenter_param='openstack_sku": "vcenter'
-    sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
+    sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SMLITE_SERVER " (
         set -e
         set -x
         echo "Install SM-Lite and provision the target setup"
@@ -502,12 +502,12 @@ function provision_using_SMLite() {
     sleep 600 
     #assumption is by this time, SM is installed on cfgm0 and provision is at kernel upgrade and node reboot.
 
-    cluster_name=$(sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
+    cluster_name=$(sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SMLITE_SERVER " (
         server-manager-client display cluster --json | grep id | cut -d : -f2 | sed -e 's/^ \"//' -e 's/\"$//'
     ) ")
     cluster_name=`echo $cluster_name | tr -d '\r'`
 
-    sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
+    sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SMLITE_SERVER " (
         set -e
         set -x
         #check provisioing status.
@@ -528,7 +528,7 @@ function provision_using_SMLite() {
         #let's wait for node to come back.
         sleep 180
 
-        sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
+        sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SMLITE_SERVER " (
             set -e
             set -x
             #check provisioing status.
@@ -603,7 +603,9 @@ function run_smgr_task() {
             copy_vmdk || die "copy of vmdk image failed"
         fi
     fi
-
+    if [ -z $SMLITE_SERVER ];then
+        SMLITE_SERVER=$API_SERVER_HOST_STRING
+    fi
     copy_smlite_pkg || die "copy of sm-lite packages failed"
     provision_using_SMLite || die "provision failed"
     #add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
