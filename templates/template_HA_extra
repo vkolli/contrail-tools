@@ -106,6 +106,7 @@
                                         		"openstack":{
 								"openstack_manage_amqp": "true",
 								"keystone_version": "v3",
+								"keystone_ssl": true,
 								"keystone_admin_password": "c0ntrail123",
 								"external_vip": "10.0.0.200",
 								"internal_vip": "10.10.0.200",
