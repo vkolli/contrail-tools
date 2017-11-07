@@ -18,7 +18,7 @@ ext_routers = [('mx1', '10.204.216.253')]
 #ext_routers = [('hooper', '192.168.1.11')]
 router_asn = 64510
 public_vn_rtgt = 10003
-public_vn_subnet = "10.204.219.72/29"
+public_vn_subnet = "10.204.219.56/29"
 
 
 #Host from which the fab commands are triggered to install and provision
