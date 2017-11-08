@@ -2050,6 +2050,32 @@ def is_vmx_true():
         vmx_val = parsed_json["inp_params"]["params"]["vmx"]
     print vmx_val
 
-
+#screen -S test_screen -dm bash -c 'ls -ltrh; exec bash'
+def create_screens_for_all_nodes_in_cluster_on_sm():
+    change_network_dict()
+    change_server_dict()
+    a = subprocess.Popen('cat server-manager-file', shell=True, stdout=subprocess.PIPE)
+    sm_ip = a.stdout.read()
+    #print sm_ip
+    for clus in server_dict:
+        for i in server_dict[clus]:
+	    if server_dict[clus][i]['server_manager'] != 'true':
+		ip_dict = server_dict[clus][i]['ip_address']
+		network_list = ip_dict.keys()
+		#print network_list
+		#print network_dict
+		for j in network_list:
+		    if network_dict[j]['role'] == 'management':
+		        server_ip = ip_dict[j]
+		#print server_ip			
+		server_name = server_dict[clus][i]['name']
+		client = paramiko.SSHClient()
+		client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+		client.connect(sm_ip, username = 'root', password = 'c0ntrail123')
+		stdin, stdout, stderr = client.exec_command("apt-get install -y sshpass")
+		time.sleep(5)
+		stdin, stdout, stderr = client.exec_command("screen -S %s -dm bash -c 'sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no root@%s; exec bash'" %(server_name, server_ip))
+		client.close()	 
+ 
 if __name__ == '__main__':
     globals()[sys.argv[2]]()
