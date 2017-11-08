@@ -148,6 +148,8 @@ function bringup_SM_setup() {
         mkdir /root/sm_files/
     ) " 
     
+    # Copy the generated testbed.py file to the SM node in /root/sm_files
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/testbed.py ${TOOLS_WS}/sm_files/
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/*.json ${TOOLS_WS}/sm_files/ 
     #Copy install and provision check shell scripts
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/sm_files/* root@$SM_SERVER_IP:/root/sm_files/
