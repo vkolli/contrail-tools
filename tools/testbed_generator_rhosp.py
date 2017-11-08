@@ -61,7 +61,8 @@ def get_hosts_dict(auth_url, username, password, tenant):
         elif 'control' == role:
             host['role'] = 'openstack'
         host['uuid'] = node.instance_uuid
-        host['host_name'] = node.name
+        host['host_name'] = node.instance_info['display_name']
+        #host['host_name'] = node.name
         fixed_ip = obj.neutron.list_ports(device_id=node.instance_uuid, fields='fixed_ips')
         host['mgmt_ip'] = fixed_ip['ports'][0]['fixed_ips'][0]['ip_address']
         hosts.append(host)
@@ -118,9 +119,10 @@ def create_testbed_file(pargs, hosts, openrc_dict):
     is_analytics_isolated = False
     for host in hosts:
         host_name = gen_host_name(host['host_name'])
+        all_host_name = host['host_name']
         host_names.append(host_name)
         host_string.add("%s = '%s@%s'" %(host_name, login_name, host['mgmt_ip']))
-        env_roledefs['all'].append(host_name)
+        env_roledefs['all'].append(all_host_name)
         env_password.update({host_name : 'SSH-KEY-SHARED'})
         node_vm_ip = host['mgmt_ip']
         role = host['role']
