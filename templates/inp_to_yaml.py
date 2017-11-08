@@ -2072,6 +2072,8 @@ def create_screens_for_all_nodes_in_cluster_on_sm():
 		client = paramiko.SSHClient()
 		client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 		client.connect(sm_ip, username = 'root', password = 'c0ntrail123')
+		stdin, stdout, stderr = client.exec_command("apt-get install -y sshpass")
+		time.sleep(5)
 		stdin, stdout, stderr = client.exec_command("screen -S %s -dm bash -c 'sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no root@%s; exec bash'" %(server_name, server_ip))
 		client.close()	 
  
