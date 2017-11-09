@@ -62,7 +62,7 @@ minimum_diskGB=32
 env.log_scenario='nodec1 Kubernets Sanity'
 
 env.test = {
-  'mail_to' : 'vjoshi@juniper.net',
+  'mail_to' : 'dl-contrail-sw@juniper.net',
   'webserver_host': '10.204.216.50',
   'webserver_user' : 'bhushana',
   'webserver_password' : 'c0ntrail!23',
