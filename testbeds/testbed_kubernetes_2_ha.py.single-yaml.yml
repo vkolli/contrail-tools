@@ -65,7 +65,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-analyticsdb
-      image: "__insecure_registry__/contrail-analyticsdb-ubuntu16.04:__version__"
+        image: "__insecure_registry__/contrail-analyticsdb-ubuntu16.04:__version__"
         imagePullPolicy: ""
         securityContext:
           privileged: true
