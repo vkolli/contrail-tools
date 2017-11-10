@@ -7,7 +7,7 @@ host2 = 'root@10.204.217.197'
 host3 = 'root@10.204.217.198'
 host4 = 'root@10.204.218.100'
 host5 = 'root@10.204.218.101'
-host6 = 'root@10.204.218.102'
+#host6 = 'root@10.204.218.102'
 
 kvm_nodei33 = '10.204.217.145'
 kvm_nodel2 = '10.204.218.50'
@@ -26,7 +26,7 @@ host_build = 'root@10.204.217.187'
 
 #Role definition of the hosts.
 env.roledefs = {
-    'all': [host1, host2, host3, host4, host5, host6],
+    'all': [host1, host2, host3, host4, host5],
     'cfgm': [host1, host4, host5],
     'control': [host1, host4, host5],
     'compute': [host2, host3],
@@ -53,7 +53,7 @@ env.passwords = {
     host3: 'c0ntrail123',
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
-    host6: 'c0ntrail123',
+#    host6: 'c0ntrail123',
     kvm_nodei33 : 'c0ntrail123',
     kvm_nodel2 : 'c0ntrail123',
 
@@ -131,15 +131,15 @@ vm_node_details = {
                 'vcpus' : '8',
                 'image_dest' : '/var/lib/libvirt/images/',
             },
-    host6 : {
-                'name' : 'testbed-1-vm6',
-                'server': kvm_nodel2,
-                'network' : [{'bridge' : 'br0', 'mac':'52:54:00:01:00:08'},
-                            ],
-                'ram' : '8192',
-                'vcpus' : '4',
-                'image_dest' : '/var/lib/libvirt/images/',
-            },
+#    host6 : {
+#                'name' : 'testbed-1-vm6',
+#                'server': kvm_nodel2,
+#                'network' : [{'bridge' : 'br0', 'mac':'52:54:00:01:00:08'},
+#                            ],
+#                'ram' : '8192',
+#                'vcpus' : '4',
+#                'image_dest' : '/var/lib/libvirt/images/',
+#            },
 }
 env.test_repo_dir='/root/vjoshi/contrail-tools/contrail-test'
 env.orchestrator='kubernetes'
@@ -148,10 +148,10 @@ env.orchestrator='kubernetes'
 env.kubernetes = {
 'mode' : 'baremetal',
 'master': host1,
-'slaves': [host2, host3]
+'slaves': [host2, host3, host4, host5]
 }
 
 # 10.204.218.102 is the lb node testbed-1-vm6
-env.ha = {
-    'contrail_external_vip' : '10.204.218.102'
-}
+#env.ha = {
+#    'contrail_external_vip' : '10.204.218.102'
+#}
