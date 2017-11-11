@@ -106,7 +106,7 @@ env.vcenter_servers = {
                                  'dv_portgroup_name': 'Sanity-dvportgroup-2',
                                  'number_of_ports': '18',
                             },
-                            'vcenter_compute': '10.87.36.27',
+                            'vcenter_compute': '10.87.36.15',
                             'clusters': ['cluster-2'], #for mitaka, has to be a single cluster in the list
                         },
                     },
@@ -210,8 +210,8 @@ esxi_hosts = {
 env.ha = {
         'internal_vip' : '10.87.36.25',
         'external_vip' : '10.87.36.25',
-        'contrail_internal_vip' : '10.87.36.27',
-        'contrail_external_vip' : '10.87.36.27'
+        'contrail_internal_vip' : '10.87.36.15',
+        'contrail_external_vip' : '10.87.36.15'
 }
 
 # HA Test configuration
@@ -238,7 +238,7 @@ env.mx_gw_test=True
 env.testbed_location='US'
 env.interface_rename = False 
 env.image_web_server = '10.84.5.120'
-env.log_scenario='Vcenter-Compute Multi-Cluster, MultiNode(Esxi/Kvm) Single Intf Sanity'
+env.log_scenario='Vcenter-Compute Multi-Cluster-MultiNode-Esxi-Kvm Single Intf Sanity'
 env.enable_lbaas = True
 
 env.ntp_server = '10.84.5.100'
@@ -247,7 +247,7 @@ env.test = {
      'mail_server': '10.84.24.64',
      'mail_port': '4000',
      'image_web_server': '10.84.5.120',
-     'log_scenario': 'Vcenter-Compute Multi-Cluster, MultiNode(Esxi/Kvm) Single Intf Sanity',
+     'log_scenario': 'Vcenter-Compute Multi-Cluster-MultiNode-Esxi-Kvm Single Intf Sanity'
            }
 #enable_ceilometer = True
 #ceilometer_polling_interval = 60
