@@ -6,7 +6,13 @@ host1 = 'root@10.204.217.194'
 host2 = 'root@10.204.217.197'
 host3 = 'root@10.204.217.198'
 
+# Ensure below nodes get reimaged as well, but only above nodes are 
+# in the cluster
+host4 = 'root@10.204.218.100'
+host5 = 'root@10.204.218.101'
+
 kvm_nodei33 = '10.204.217.145'
+kvm_nodel2 = '10.204.218.50'
 
 #External routers if any
 #for eg. 
@@ -46,7 +52,10 @@ env.passwords = {
     host1: 'c0ntrail123',
     host2: 'c0ntrail123',
     host3: 'c0ntrail123',
+    host4: 'c0ntrail123',
+    host5: 'c0ntrail123',
     kvm_nodei33 : 'c0ntrail123',
+    kvm_nodel2 : 'c0ntrail123',
 
     host_build: 'c0ntrail123',
 }
@@ -103,6 +112,26 @@ vm_node_details = {
                             ],
                 'ram' : '8192',
                 'vcpus' : '4',
+            },
+    # Below vms need to be reimaged as well, as same vms are used for 
+    # testbed_kubernetes_2_ha.py cluster as well
+    host4 : {
+                'name' : 'testbed-1-vm4',
+                'server': kvm_nodel2,
+                'network' : [{'bridge' : 'br0', 'mac':'52:54:00:01:00:06'},
+                            ],
+                'ram' : '4096',
+                'vcpus' : '2',
+                'image_dest' : '/var/lib/libvirt/images/',
+            },
+    host5 : {
+                'name' : 'testbed-1-vm5',
+                'server': kvm_nodel2,
+                'network' : [{'bridge' : 'br0', 'mac':'52:54:00:01:00:07'},
+                            ],
+                'ram' : '4096',
+                'vcpus' : '2',
+                'image_dest' : '/var/lib/libvirt/images/',
             },
 }
 env.test_repo_dir='/root/vjoshi/contrail-tools/contrail-test'
