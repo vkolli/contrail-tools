@@ -1,0 +1,233 @@
+{
+    "server": [
+        {
+            "cluster_id": "wql-cluster",
+            "domain": "englab.juniper.net",
+            "id": "cmbu-ceph-perf1",
+            "ipmi_address": "10.87.140.201",
+            "ipmi_username": "ADMIN",
+            "ipmi_password": "ADMIN",
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.159.254",
+                        "ip_address": "10.87.140.197/19",
+                        "mac_address": "00:25:90:ab:9c:88",
+                        "name": "p4p1"
+                    },
+                    {
+                        "ip_address": "5.0.0.1/24",
+                        "mac_address": "90:e2:ba:2b:53:5d",
+                        "name": "p2p2"
+                    }
+                ],
+                "management_interface": "p4p1",
+                "provisioning": "kickstart"
+            },
+            "password": "c0ntrail123",
+            "roles": [
+                "openstack",
+                "contrail-controller",
+                "contrail-analytics",
+                "contrail-analyticsdb",
+                "contrail-ceph-controller"
+            ],
+            "parameters": {
+                "partition": "/dev/sda",
+                "provision": {
+                    "contrail_4": {
+                        "kernel_upgrade": false,
+                        "kernel_version": "",
+                        "vrouter_physical_interface": "",
+                        "ctrl_data_ip": "5.0.0.1",
+                        "controller_components": [
+                            "config", "control", "webui"
+                        ],
+                        "storage": {
+                            "storage_osd_disks": [
+                                "/dev/sdc:/dev/sdf:Pool_1",
+                                "/dev/sdd:/dev/sdf:Pool_2"
+                            ],
+                            "storage_osd_ssd_disks": [
+                                "/dev/sde:Pool_1"
+                            ],
+                            "storage_chassis_id": "chassis_1"
+                        },
+                        "live_migration": true
+                    }
+                }
+            },
+            "contrail": {
+                "control_data_interface": "p2p2"
+            }
+        },
+        {
+            "cluster_id": "wql-cluster",
+            "domain": "englab.juniper.net",
+            "id": "cmbu-ceph-perf2",
+            "ipmi_address": "10.87.140.202",
+            "ipmi_username": "ADMIN",
+            "ipmi_password": "ADMIN",
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.159.254",
+                        "ip_address": "10.87.140.198/19",
+                        "mac_address": "00:25:90:35:8A:1F",
+                        "name": "eth1"
+                    },
+                    {
+                        "ip_address": "5.0.0.2/24",
+                        "mac_address": "90:e2:ba:1c:be:69",
+                        "name": "p6p2"
+                    }
+                ],
+                "management_interface": "eth1",
+                "provisioning": "kickstart"
+            },
+            "password": "c0ntrail123",
+            "roles": [
+                "contrail-compute",
+                "contrail-ceph-compute"
+            ],
+            "parameters": {
+                "partition": "/dev/sda",
+                "provision": {
+                    "contrail_4": {
+                        "kernel_upgrade": false,
+                        "kernel_version": "",
+                        "vrouter_physical_interface": "",
+                        "ctrl_data_ip": "5.0.0.2",
+                        "storage": {
+                            "storage_osd_disks": [
+                                "/dev/sdc:/dev/sdf:Pool_1",
+                                "/dev/sdd:/dev/sdf:Pool_2"
+                            ],
+                            "storage_osd_ssd_disks": [
+                                "/dev/sde:Pool_1"
+                            ],
+                            "storage_chassis_id": "chassis_1"
+                        },
+                        "live_migration": true
+                    }
+                }
+            },
+            "contrail": {
+                "control_data_interface": "p6p2"
+            }
+        },
+        {
+            "cluster_id": "wql-cluster",
+            "domain": "englab.juniper.net",
+            "id": "cmbu-ceph-perf3",
+            "ipmi_address": "10.87.140.203",
+            "ipmi_username": "ADMIN",
+            "ipmi_password": "ADMIN",
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.159.254",
+                        "ip_address": "10.87.140.199/19",
+                        "mac_address": "00:25:90:92:0E:6C",
+                        "name": "eth0"
+                    },
+                    {
+                        "ip_address": "5.0.0.3/24",
+                        "mac_address": "90:e2:ba:1c:c0:ad",
+                        "name": "p6p2"
+                    }
+                ],
+                "management_interface": "eth0",
+                "provisioning": "kickstart"
+            },
+            "password": "c0ntrail123",
+            "roles": [
+                "contrail-compute",
+                "contrail-ceph-compute"
+            ],
+            "parameters": {
+                "partition": "/dev/sda",
+                "provision": {
+                    "contrail_4": {
+                        "kernel_upgrade": false,
+                        "kernel_version": "",
+                        "vrouter_physical_interface": "",
+                        "ctrl_data_ip": "5.0.0.3",
+                        "storage": {
+                            "storage_osd_disks": [
+                                "/dev/sdc:/dev/sdf:Pool_1",
+                                "/dev/sdd:/dev/sdf:Pool_2"
+                            ],
+                            "storage_osd_ssd_disks": [
+                                "/dev/sde:Pool_1"
+                            ],
+                            "storage_chassis_id": "chassis_1"
+                        },
+                        "live_migration": true
+                    }
+                }
+            },
+            "contrail": {
+                "control_data_interface": "p6p2"
+            }
+        },
+        {
+            "cluster_id": "wql-cluster",
+            "domain": "englab.juniper.net",
+            "id": "cmbu-ceph-perf4",
+            "ipmi_address": "10.87.140.204",
+            "ipmi_username": "ADMIN",
+            "ipmi_password": "ADMIN",
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.159.254",
+                        "ip_address": "10.87.140.200/19",
+                        "mac_address": "00:25:90:92:0D:F2",
+                        "name": "eth0"
+                    },
+                    {
+                        "ip_address": "5.0.0.4/24",
+                        "mac_address": "90:e2:ba:1c:c4:05",
+                        "name": "p6p2"
+                    }
+                ],
+                "management_interface": "eth0",
+                "provisioning": "kickstart"
+            },
+            "password": "c0ntrail123",
+            "roles": [
+                "contrail-compute",
+                "contrail-ceph-compute"
+            ],
+            "parameters": {
+                "partition": "/dev/sda",
+                "provision": {
+                    "contrail_4": {
+                        "kernel_upgrade": false,
+                        "kernel_version": "",
+                        "vrouter_physical_interface": "",
+                        "ctrl_data_ip": "5.0.0.4",
+                        "controller_components": [
+                            "config", "control", "webui"
+                        ],
+                        "storage": {
+                            "storage_osd_disks": [
+                                "/dev/sdc:/dev/sdf:Pool_1",
+                                "/dev/sdd:/dev/sdf:Pool_2"
+                            ],
+                            "storage_osd_ssd_disks": [
+                                "/dev/sde:Pool_1"
+                            ],
+                            "storage_chassis_id": "chassis_1"
+                        },
+                        "live_migration": true
+                    }
+                }
+            },
+            "contrail": {
+                "control_data_interface": "p6p2"
+            }
+        }
+    ]
+}

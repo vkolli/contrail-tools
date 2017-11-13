@@ -1,0 +1,23 @@
+{
+     "cluster": [
+        {
+            "id": "wql-cluster",
+            "parameters": {
+                "provision": {
+                    "contrail_4": {
+                        "storage_ceph_config": {
+                            "replica_size": 2,
+                            "ceph_object_storage": "True",
+                            "object_store_pool": "volumes"
+                        }
+                    },
+                    "contrail": {
+                    },
+                    "openstack": {
+                        "openstack_manage_amqp": true
+                    }
+                }
+            }
+        }
+    ]
+}

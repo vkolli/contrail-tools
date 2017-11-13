@@ -1,0 +1,15 @@
+{
+    "image": [
+        {
+            "category": "package",
+            "id": "combined_mitaka_image_with_storage",
+            "path": "/root/store/contrail-cloud-docker_4.0.2.0-35-mitaka_trusty.tgz",
+            "type": "contrail-ubuntu-package",
+            "version": "R4.0",
+            "parameters": {
+                "contrail-container-package": true
+            }
+
+        }
+    ]
+}
