@@ -14,3 +14,4 @@ kubernetes_public_fip_pool: {domain: default-domain, project: default, network: 
 controller_config: {bgp_asn: "64510"}
 webui_config: {http_listen_port: "10000"}
 
+kubernetes_api_server: 10.204.217.194
