@@ -601,7 +601,8 @@ function add_server_cluster_SM() {
             isofile="/root/sm_files/centos71.json"
         fi
   
-        pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
+        #pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
+        pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts"
         SMID="combined_image_mainline"
         if [ $USE_CLOUD_PKG -eq 1 ]; then
            if [[ $CB_SANITY -eq 1 ]];then
