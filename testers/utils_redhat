@@ -85,6 +85,7 @@ EOF
         echo "Unknown Distro - $DISTRO"
         exit 1
     fi
+    TEST_CONTAINER_IMAGE_DIR="/github-build/${BRANCH}/${BUILDID}/ubuntu-16-04/${TEST_SKU}/artifacts/"
     container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
     #container_image_path=$TEST_DOCKER_PATH
     container_image_file=`basename $container_image_path`
@@ -186,7 +187,7 @@ function run_redhat_task() {
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         search_package
         pkg_file_name=`basename $PKG_FILE`
-        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\).*/\1/'`
+        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\)-.*/\1/'`
         if [[ -z $TEST_HOST_STRING ]]; then
             export TEST_HOST_STRING="stack@"$UNDERCLOUD_IP
             export TEST_HOST_PASSWORD=$UNDERCLOUD_PASSWORD
