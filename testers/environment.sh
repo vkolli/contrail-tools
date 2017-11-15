@@ -16,9 +16,6 @@ if [[  $VCENTER_ONLY_TESTBED -eq 1 ]]; then
 else
     export TEST_SKU=${SKU:-icehouse}
 fi
-if [[ $DISTRO =~ redhat70 ]]; then
-    export TEST_SKU="ubuntu-16-04"
-fi
 ##
 # TEST_RUN_INFRA: to specify where the test is run, possible values are
 # docker: using docker container for test run
@@ -35,6 +32,9 @@ export TEST_CONTAINER_IMAGE=${TEST_CONTAINER_IMAGE:-''}
 export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts/"}
 # If BRANCH, BUILID, DISTRO, SKU are not defined,
 # PKG_FILE path needs to be set
+if [[ $DISTRO =~ redhat70 ]]; then
+    export TEST_CONTAINER_IMAGE_DIR=${TEST_CONTAINER_IMAGE_DIR:-"/github-build/${BRANCH}/${BUILDID}/ubuntu-16-04/${TEST_SKU}/artifacts/"} 
+fi
 export PKG_FILE
 
 #--------
