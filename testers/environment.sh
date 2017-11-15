@@ -16,6 +16,9 @@ if [[  $VCENTER_ONLY_TESTBED -eq 1 ]]; then
 else
     export TEST_SKU=${SKU:-icehouse}
 fi
+if [[ $DISTRO =~ redhat70 ]]; then
+    export TEST_SKU="ubuntu-16-04"
+fi
 ##
 # TEST_RUN_INFRA: to specify where the test is run, possible values are
 # docker: using docker container for test run
