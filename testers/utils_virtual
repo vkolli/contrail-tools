@@ -615,12 +615,12 @@ function add_server_cluster_SM() {
         if [ $USE_CLOUD_PKG -eq 1 ]; then
            if [[ $CB_SANITY -eq 1 ]];then
               if [[ $DISTRO =~ ubuntu-14 ]];then
-                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker_*.tgz`
               elif [[ $DISTRO =~ ubuntu-16 ]];then
-                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker_*.tgz`
               fi
            else
-              contrail_pkg=`ls $pkg_path/contrail-cloud-docker*.tgz`
+              contrail_pkg=`ls $pkg_path/contrail-cloud-docker_*.tgz`
            fi
         else
            if [[ $CB_SANITY -eq 1 ]];then
