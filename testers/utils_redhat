@@ -145,6 +145,7 @@ function update_all_yml() {
     sed -i 's/contrail_version/'${BRANCH}'/g' ${TOOLS_WS}/all.yml
     sed -i 's/contrail_exact_version/'${EXACT_BRANCH}'/g' ${TOOLS_WS}/all.yml
     sed -i 's/build_id/'${BUILDID}'/g' ${TOOLS_WS}/all.yml
+    sed -i 's/sku/'${SKU}'/g' ${TOOLS_WS}/all.yml
     #sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/all.yml root@$HYPERVISOR_IP:/root/contrail-ooo-deployer.3.2.6/inventory/group_vars/all.yml
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/all.yml root@$HYPERVISOR_IP:/root/contrail-ooo-deployer/inventory/group_vars/all.yml
 }
