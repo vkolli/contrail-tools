@@ -88,8 +88,16 @@ function check_SM_pkg_availability() {
 			fi
 		fi
 	else
-        	#pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts"
-        	pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-16-04/${SKU}/artifacts"
+                if [[ $DISTRO =~ ubuntu-16 ]]; then
+                        if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+        	                pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-16-04/${SKU}/artifacts"
+                        fi
+                else
+                        if [[ $TESTBED_LOCATION_US -eq 1 ]];then
+                                pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages"
+                        fi
+                fi
+        	#pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-16-04/${SKU}/artifacts"
 	fi
     else
         pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/centos64_os/${SKU}/artifacts"
@@ -601,17 +609,18 @@ function add_server_cluster_SM() {
             isofile="/root/sm_files/centos71.json"
         fi
   
-        pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
+        #pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/"
+        pkg_path="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts"
         SMID="combined_image_mainline"
         if [ $USE_CLOUD_PKG -eq 1 ]; then
            if [[ $CB_SANITY -eq 1 ]];then
               if [[ $DISTRO =~ ubuntu-14 ]];then
-                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker_*.tgz`
               elif [[ $DISTRO =~ ubuntu-16 ]];then
-                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
+                 contrail_pkg=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker_*.tgz`
               fi
            else
-              contrail_pkg=`ls $pkg_path/contrail-cloud-docker*.tgz`
+              contrail_pkg=`ls $pkg_path/contrail-cloud-docker_*.tgz`
            fi
         else
            if [[ $CB_SANITY -eq 1 ]];then
