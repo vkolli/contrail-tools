@@ -621,6 +621,7 @@ function add_server_cluster_SM() {
               fi
            else
               contrail_pkg=`ls $pkg_path/contrail-cloud-docker_*.tgz`
+              echo 'setting contrail_pkg to '$contrail_pkg
            fi
         else
            if [[ $CB_SANITY -eq 1 ]];then
