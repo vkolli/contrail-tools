@@ -6,6 +6,7 @@ host3 = 'root@10.204.217.135'
 host4 = 'root@10.204.217.136'
 host5 = 'root@10.204.217.137'
 host6 = 'root@10.204.217.138'
+host7 = 'root@10.204.216.39'
 
 ext_routers = [('hooper','10.204.217.240')]
 router_asn = 64512
@@ -15,19 +16,20 @@ public_vn_subnet = '10.204.221.192/28'
 host_build = 'stack@10.204.216.49'
 
 env.roledefs = {
-    'all': [host1, host2, host3,host4,host5, host6],
+    'all': [host1, host2, host3, host4, host5, host6, host7],
     'contrail-controller': [host1, host2, host3],
-    'openstack': [host4],
+    'openstack': [host1, host2, host3],
+    'contrail-lb': [host7],
     'contrail-analytics': [host1, host2, host3],
     'contrail-analyticsdb': [host1, host2, host3],
-    'contrail-compute': [host5,host6],
+    'contrail-compute': [host4,host5,host6],
     'build': [host_build]
 }
 
 env.hostnames = {
-    'all': ['nodei21.englab.juniper.net', 'nodei22.englab.juniper.net', 'nodei23.englab.juniper.net', 'nodei24.englab.juniper.net', 'nodei25.englab.juniper.net', 'nodei26.englab.juniper.net']
+    'all': ['nodei21', 'nodei22', 'nodei23', 'nodei24', 'nodei25', 'nodei26', 'nodea1']
 }
-env.interface_rename = True
+env.interface_rename = False
 env.physical_routers={
 'hooper'     : {       'vendor': 'juniper',
                      'model' : 'mx',
@@ -39,13 +41,21 @@ env.physical_routers={
              }
 }
 
-#control_data = {
-#    host1 : { 'ip': '192.168.193.1/24', 'gw' : '192.168.193.254', 'device':'eth1' },
-#    host2 : { 'ip': '192.168.193.2/24', 'gw' : '192.168.193.254', 'device':'eth1' },
-#    host3 : { 'ip': '192.168.193.3/24', 'gw' : '192.168.193.254', 'device':'eth1' },
-#    host4 : { 'ip': '192.168.193.4/24', 'gw' : '192.168.193.254', 'device':'p4p0p1' },
-#    host5 : { 'ip': '192.168.193.5/24', 'gw' : '192.168.193.254', 'device':'p4p0p1' },
-#}
+env.ha = {
+    'contrail_internal_vip' : '10.204.216.39',
+    'contrail_external_vip' : '10.204.216.39',
+    'internal_vip' : '10.204.217.170',
+    'external_vip' : '10.204.217.170'
+}
+
+env.kernel_upgrade=False
+env.openstack = {  
+    'manage_amqp': "true"
+}
+
+env.keystone = {   
+    'admin_password': 'contrail123'
+}
 
 env.openstack_admin_password = 'contrail123'
 env.password = 'c0ntrail123'
@@ -56,31 +66,30 @@ env.passwords = {
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     host6: 'c0ntrail123',
+    host7: 'c0ntrail123',
     host_build: 'stack@123',
 }
 
 env.ostypes = {
-    host1:'centos65',
-    host2:'centos65',
-    host3:'centos65',
-    host4:'centos65',
-    host5:'centos65',
-    host6:'centos65',
+    host1:'ubuntu',
+    host2:'ubuntu',
+    host3:'ubuntu',
+    host4:'ubuntu',
+    host5:'ubuntu',
+    host6:'ubuntu',
+    host7:'ubuntu',
 }
-
-env.openstack_admin_password = 'c0ntrail123'
 
 env.cluster_id='i21_i26_cluster'
 minimum_diskGB=32
 env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
-env.test_repo_dir='/home/stack/multi_interface_parallel/centos65/icehouse/contrail-test'
+env.test_repo_dir='/home/stack/multi_interface_parallel/ubuntu/icehouse/contrail-test'
 env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'
 multi_tenancy=True
-env.interface_rename = True
-env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
-
-enable_ceilometer = True
-ceilometer_polling_interval = 60
-env.log_scenario='SMLite Container Multi-Node ContrailHA Sanity'
+env.interface_rename = False
+env.xmpp_auth_enable=True
+env.xmpp_dns_auth_enable=True
+env.encap_priority =  "VXLAN,MPLSoUDP,MPLSoGRE"
+env.log_scenario='SMLite Container Multi-Node OpenstackHA Sanity'
 env.enable_lbaas = True

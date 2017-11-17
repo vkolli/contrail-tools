@@ -18,7 +18,7 @@ host_build = 'stack@10.204.216.49'
 env.roledefs = {
     'all': [host1, host2, host3, host4, host5, host6, host7],
     'contrail-controller': [host1, host2, host3],
-    'openstack': [host7],
+    'openstack': [host1, host2, host3],
     'contrail-lb': [host7],
     'contrail-analytics': [host1, host2, host3],
     'contrail-analyticsdb': [host1, host2, host3],
@@ -43,7 +43,9 @@ env.physical_routers={
 
 env.ha = {
     'contrail_internal_vip' : '10.204.216.39',
-    'contrail_external_vip' : '10.204.216.39'
+    'contrail_external_vip' : '10.204.216.39',
+    'internal_vip' : '10.204.217.170',
+    'external_vip' : '10.204.217.170'
 }
 
 env.kernel_upgrade=False
@@ -89,5 +91,5 @@ env.interface_rename = False
 env.xmpp_auth_enable=True
 env.xmpp_dns_auth_enable=True
 env.encap_priority =  "VXLAN,MPLSoUDP,MPLSoGRE"
-env.log_scenario='SMLite Container Multi-Node ContrailHA Sanity'
+env.log_scenario='SMLite Container Multi-Node OpenstackHA Sanity'
 env.enable_lbaas = True
