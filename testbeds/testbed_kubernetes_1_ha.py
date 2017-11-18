@@ -16,8 +16,8 @@ kvm_nodel2 = '10.204.218.50'
 #for eg. 
 #ext_routers = [('mx1', '10.204.216.253')]
 ext_routers = [('hooper', '192.168.1.11')]
-router_asn = 64510
-public_vn_rtgt = 10010
+router_asn = 64512
+public_vn_rtgt = 10101
 public_vn_subnet = "10.204.219.200/29"
 
 
