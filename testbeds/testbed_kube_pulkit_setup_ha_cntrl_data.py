@@ -32,7 +32,7 @@ env.roledefs = {
     'database': [host1, host2, host3],
     'build': [host_build],
     'contrail-kubernetes': [host1, host2, host3],
-    'contrail-lb' : [host6]
+#    'contrail-lb' : [host6]
 }
 
 env.hostnames = {
