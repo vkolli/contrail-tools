@@ -196,7 +196,7 @@ function SMLite_get_node_distro() {
         lsb_dist=Ubuntu
         SERVER_MANAGER_INSTALLER="contrail-server-manager-installer_*\.*-${BUILDID}\~$SKU\_all.deb"
         CONTRAIL_NW_PACKAGE="contrail-networking-docker_*.tgz"
-	OPENSTACK_PACKAGE="contrail-install-packages_*.deb"
+	OPENSTACK_PACKAGE="contrail-cloud-docker_*.tgz"
     else
         lsb_dist=SomeOtherOS
         SERVER_MANAGER_INSTALLER="contrail-server-manager-installer-*\.*-${BUILDID}*.el6.noarch.rpm"
@@ -221,13 +221,8 @@ function copy_smlite_pkg() {
     echo $CONTRAIL_NW_PACKAGE
     echo $SERVER_MANAGER_INSTALLER
     sleep 30
-    if [ -z $JSON ]; then
-        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${nw_pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${nw_pkg_dir}/artifacts/${CONTRAIL_NW_PACKAGE} ${sku_pkg_dir}/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
-        exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${API_SERVER_HOST_STRING}:/root/"
-    else
-        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${nw_pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${nw_pkg_dir}/artifacts/${CONTRAIL_NW_PACKAGE} ${sku_pkg_dir}/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
-        exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${API_SERVER_HOST_STRING}:/root/"
-    fi
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${nw_pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${nw_pkg_dir}/artifacts/${CONTRAIL_NW_PACKAGE} ${sku_pkg_dir}/artifacts/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
+    exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${API_SERVER_HOST_STRING}:/root/"
     if [ $? == 0 ]
     then
         echo "Copy of ${SERVER_MANAGER_INSTALLER}, ${OPENSTACK_PACKAGE} and ${CONTRAIL_NW_PACKAGE} to SMLITE server is successfull"
@@ -272,7 +267,7 @@ function provision_using_SMLite() {
 
     cntl_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-networking-docker_*.tgz`
     cntl_pkg=/root/${cntl_pkg_path##*/}
-    openstk_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${OPENSTACK_SKU}/contrail-install-packages_*.deb`
+    openstk_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${OPENSTACK_SKU}/artifacts/contrail-cloud-docker_*.tgz`
     openstk_pkg=/root/${openstk_pkg_path##*/}
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
         set -e
@@ -280,22 +275,13 @@ function provision_using_SMLite() {
         echo "Install SM-Lite and provision the target setup"
         dpkg -i /root/${SERVER_MANAGER_INSTALLER}
         sed -i '/server-manager provision -F/d' /opt/contrail/contrail_server_manager/provision_containers.sh
-        if [ -z $JSON ]; then
-            if [ $SKIP_SMLITE_INSTALL -ne 0 ]
-            then
-                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -c /root/${CONTRAIL_NW_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
-            else
-                /opt/contrail/contrail_server_manager/provision_containers.sh -c /root/${CONTRAIL_NW_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
-            fi
+        echo '\"image\":[{\"category\": \"package\", \"id\": \"openstack_image\", \"type\": \"$pkg_type\", \"path\": \"$openstk_pkg\", \"version\":\"$BUILDID\"},{\"category\": \"package\", \"id\": \"networking_image\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\", \"parameters\": {\"openstack_sku\": \"${OPENSTACK_SKU}\"}}]}' >> /root/${JSON}
+        sed -i '/server-manager provision -F/d' /opt/contrail/contrail_server_manager/provision_containers.sh
+        if [ $SKIP_SMLITE_INSTALL -ne 0 ]
+        then
+            /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
         else
-            echo '\"image\":[{\"category\": \"package\", \"id\": \"openstack_image\", \"type\": \"$pkg_type\", \"path\": \"$openstk_pkg\", \"version\":\"$BUILDID\"},{\"category\": \"package\", \"id\": \"networking_image\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\", \"parameters\": {\"openstack_sku\": \"${OPENSTACK_SKU}\"}}]}' >> /root/${JSON}
-            sed -i '/server-manager provision -F/d' /opt/contrail/contrail_server_manager/provision_containers.sh
-            if [ $SKIP_SMLITE_INSTALL -ne 0 ]
-            then
-                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
-            else
-                /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON}
-            fi
+            /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON}
         fi
         server-manager provision -F --cluster_id ${OS_CLUSTER_NAME} openstack_image
     ) "
