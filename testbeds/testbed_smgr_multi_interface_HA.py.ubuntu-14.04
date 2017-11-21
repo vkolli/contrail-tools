@@ -24,11 +24,11 @@ host_build = 'stack@10.204.216.49'
 env.roledefs = {
 
     'all': [host1, host2, host3, host4, host5, host6, host7],
-    'contrail-controller': [host1, host2, host3],
-    'openstack': [host5],
-    'contrail-compute': [host6, host7],
-    'contrail-analytics': [host1, host2, host3],
-    'contrail-analyticsdb': [host1, host2, host3],
+    'contrail-controller': [host3, host5, host7],
+    'openstack': [host2],
+    'contrail-compute': [host1, host6],
+    'contrail-analytics': [host3, host5, host7],
+    'contrail-analyticsdb': [host3, host5, host7],
     'contrail-lb': [host4],
     'build': [host_build],
 }
