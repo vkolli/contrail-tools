@@ -1,4 +1,34 @@
 jobs = {
+	"r3.2-cb-sanity" : {
+		"CB-R3.2-ubuntu14-mitaka": {
+			"job_name": "R3.2-mitaka",
+			"build_path": "/cs-build/CB-R3.2-ubuntu14-mitaka/builds/",
+			"web_build_path": "/cs-build/jenkins-jobs/CB-R3.2-ubuntu14-mitaka/builds/",
+			"result_path": "/var/www/html/sanity/cb-sanity/CB-R3.2-ubuntu14-mitaka/daily/R3.2/",
+			"row_id": "0"
+		},
+		"CB-R3.2-ubuntu14-kilo": {
+                        "job_name": "R3.2-kilo",
+                        "build_path": "/cs-build/CB-R3.2-ubuntu14-kilo/builds/",
+                        "web_build_path": "/cs-build/jenkins-jobs/CB-R3.2-ubuntu14-kilo/builds/",
+                        "result_path": "/var/www/html/sanity/cb-sanity/CB-R3.2-ubuntu14-kilo/daily/R3.2/",
+                        "row_id": "1"
+                },
+		"CB-R3.2-rhosp10-": {
+                        "job_name": "R3.2-rhosp10",
+                        "build_path": "/cs-build/CB-R3.2-redhat70-newton/builds/",
+                        "web_build_path": "/cs-build/jenkins-jobs/CB-R3.2-redhat70-newton/builds/",
+                        "result_path": "/var/www/html/sanity/cb-sanity/CB-R3.2-redhat74-newton/daily/R3.2/",
+                        "row_id": "2"
+                },
+		"CB-R3.2-vcenter": {
+                        "job_name": "R3.2-vcenter",
+                        "build_path": "/cs-build/CB-R4.0-ubuntu14-vcenter/builds/",
+                        "web_build_path": "/cs-build/jenkins-jobs/CB-R4.0-ubuntu14-vcenter/builds/",
+                        "result_path": "/var/www/html/sanity/cb-sanity/CB-R4.0-ubuntu14-vcenter/daily/R3.2/",
+                        "row_id": "3"
+                }
+	},
 	"r4.1-cb-sanity" : {
 		"CB-R4.1-ubuntu14-mitaka": {
 			"job_name": "R4.1-mitaka",
