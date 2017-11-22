@@ -9,7 +9,7 @@ host6 = 'root@10.204.217.138'
 host7 = 'root@10.204.216.39'
 
 ext_routers = [('hooper','10.204.217.240')]
-router_asn = 64512
+router_asn = 64515
 public_vn_rtgt = 2224
 public_vn_subnet = '10.204.221.192/28'
 
