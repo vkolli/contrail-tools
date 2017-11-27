@@ -374,14 +374,14 @@ function copy_smlite_pkg() {
         else
             sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         fi
-	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${SMLITE_SERVER} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${SMLITE_SERVER}:/root/"
+	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${SMLITE_SERVER}:/root/"
     else
         if [[ $CB_SANITY -eq 1 ]]; then
             sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         else
             sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         fi
-	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${SMLITE_SERVER} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${SMLITE_SERVER}:/root/"
+	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${SMLITE_SERVER}:/root/"
     fi
     if [ $? == 0 ]
     then
@@ -595,7 +595,6 @@ function run_smgr_task() {
         SMLITE_SERVER=$API_SERVER_HOST_STRING
     fi
 
-
     # esxi/vcenter setup, cleanup vcenter and dockers
     if [[ ( $VCENTER_ONLY_TESTBED -eq 1 ) || ( $VCENTER_AS_COMPUTE_TESTBED -eq 1 ) ]]; then
         (cd ${TOOLS_WS}/contrail-fabric-utils
@@ -608,6 +607,7 @@ function run_smgr_task() {
             copy_vmdk || die "copy of vmdk image failed"
         fi
     fi
+
     copy_smlite_pkg || die "copy of sm-lite packages failed"
     provision_using_SMLite || die "provision failed"
     #add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
