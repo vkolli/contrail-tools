@@ -66,7 +66,7 @@ minimum_diskGB=32
 #To Enable prallel execution of task in multiple nodes
 #do_parallel = True
 #haproxy = True
-env.log_scenario='Kubernets HA Sanity'
+env.log_scenario='Kubernets Single-yaml Sanity'
 
 env.test = {
   'mail_to' : 'vjoshi@juniper.net',
