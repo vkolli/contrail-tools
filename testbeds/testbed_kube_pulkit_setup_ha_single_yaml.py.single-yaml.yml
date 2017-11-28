@@ -65,7 +65,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-analyticsdb
-        image: "10.204.217.152:5000/contrail-analyticsdb-ubuntu16.04:4.0.3.0-96"
+        image: "__insecure_registry__/contrail-analyticsdb-ubuntu16.04:__version__"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -119,7 +119,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-analytics
-        image: "10.204.217.152:5000/contrail-analytics-ubuntu16.04:4.0.3.0-96"
+        image: "__insecure_registry__/contrail-analytics-ubuntu16.04:__version__"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -163,7 +163,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-controller
-        image: "10.204.217.152:5000/contrail-controller-ubuntu16.04:4.0.3.0-96"
+        image: "__insecure_registry__/contrail-controller-ubuntu16.04:__version__"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -218,7 +218,7 @@ spec:
       hostNetwork: true
       containers:
       - name: contrail-kube-manager
-        image: "10.204.217.152:5000/contrail-kube-manager-ubuntu16.04:4.0.3.0-96"
+        image: "__insecure_registry__/contrail-kube-manager-ubuntu16.04:__version__"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -272,7 +272,7 @@ spec:
       hostNetwork: true
       initContainers:
       - name: contrail-kubernetes-agent
-        image: "10.204.217.152:5000/contrail-kubernetes-agent-ubuntu16.04:4.0.3.0-96"
+        image: "__insecure_registry__/contrail-kubernetes-agent-ubuntu16.04:__version__"
         imagePullPolicy: ""
         securityContext:
           privileged: true
@@ -289,7 +289,7 @@ spec:
           name: var-log-contrail-cni
       containers:
       - name: contrail-agent
-        image: "10.204.217.152:5000/contrail-agent-ubuntu16.04:4.0.3.0-96"
+        image: "__insecure_registry__/contrail-agent-ubuntu16.04:__version__"
         imagePullPolicy: ""
         securityContext:
           privileged: true
