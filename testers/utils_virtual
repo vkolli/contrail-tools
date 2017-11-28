@@ -94,7 +94,8 @@ function check_SM_pkg_availability() {
                         fi
                 else
                         if [[ $TESTBED_LOCATION_US -eq 1 ]];then
-                                pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages"
+                                #pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages"
+				pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts"
                         fi
                 fi
         	#pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-16-04/${SKU}/artifacts"
