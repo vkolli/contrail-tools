@@ -10,7 +10,8 @@ host2 = 'root@10.204.216.106'
 host3 = 'root@10.204.216.107'
 host4 = 'root@10.204.216.108'
 host5 = 'root@10.204.216.109'
-host6 = 'root@10.204.216.48'
+host6 = 'root@10.204.216.94'
+host7 = 'root@10.204.216.48'
 
 ext_routers = [('blr-mx2', '10.204.216.245')]
 router_asn = 64512
@@ -21,13 +22,13 @@ host_build = 'stack@10.204.216.49'
 
 
 env.roledefs = {
-    'all': [host1, host2, host3, host4, host5, host6],
+    'all': [host1, host2, host3, host4, host5, host6, host7],
     'contrail-controller': [host1,host2,host3],
     'openstack': [host1,host2,host3],
     'contrail-analytics': [host1,host2,host3],
     'contrail-analyticsdb': [host1,host2,host3],
-    'contrail-lb': [host6],
-    'contrail-compute': [host4,host5],
+    'contrail-lb': [host7],
+    'contrail-compute': [host4,host5,host6],
     'build': [host_build],
 }
 
@@ -42,7 +43,7 @@ env.physical_routers={
              }
 }
 env.hostnames = {
-    'all': ['nodem16', 'nodem17', 'nodem18', 'nodem19', 'nodem20', 'nodea10']
+    'all': ['nodem16', 'nodem17', 'nodem18', 'nodem19', 'nodem20', 'nodem5', 'nodea10']
 }
 
 env.ha = {
@@ -81,6 +82,7 @@ env.passwords = {
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     host6: 'c0ntrail123',
+    host7: 'c0ntrail123',
 
     host_build: 'stack@123',
 }
@@ -92,6 +94,7 @@ env.ostypes = {
     host4: 'ubuntu',
     host5: 'ubuntu',
     host6: 'ubuntu',
+    host7: 'ubuntu',
 }
 
 
