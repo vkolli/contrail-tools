@@ -101,12 +101,17 @@ def get_exact_path(result_path='', build_no=''):
 		for i in ini_list:
 			temp_list = i.split('-')
 			t_list.append(temp_list[1])
+		temp_var = 0
 		for i in t_list:
 			if i == build_no:
 				index_no = t_list.index(i)
+				temp_var = 1
 				break
-		result_path = result_path + ini_list[index_no]
-		return result_path
+		if temp_var == 0:
+			return None
+		else:
+			result_path = result_path + ini_list[index_no]
+			return result_path
 """
 def get_exact_path(result_path='', build_no=''):
 	ini_list = []
@@ -138,7 +143,7 @@ def get_build_date_from_jenkins_server(path=''):
 	#print a
 	b=a[0].replace('\n', '')
 	client.close()
-	return b 
+	return b
 
 
 def get_all_ini_files(exact_path=''):
@@ -386,6 +391,7 @@ def get_all_branch_final_dict(mode='', outfile=''):
 				info_dict[mode][job][latest_build_number]['web_build_path'] = all_combination_dict[job]['web_build_path']
 				latest_build_number = str(int(latest_build_number) - 1)
 				tmp = tmp - 1
+			#print info_dict
 	#print info_dict
 	#sys.exit()
 	#pp_temp_dict = json.dumps(info_dict, indent =4)
