@@ -54,6 +54,11 @@ env.ostypes = {
     host4:'ubuntu',
 }
 
+env.ha = {
+    'internal_vip' : '10.204.217.91',
+    'external_vip' : '10.204.217.91',
+}
+
 env.orchestrator = 'openstack'
 env.other_orchestrators={
 'orch1'             :{
