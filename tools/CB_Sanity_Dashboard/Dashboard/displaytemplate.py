@@ -28,47 +28,26 @@ jobs = {
                         "result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-ubuntu16-newton/daily/mainline/",
                         "row_id": "3"
                 },
-		"CB-R5.0-mitaka": {
-                        "job_name": "R5.0-mitaka",
-                        "build_path": "/cs-build/CB-mainline-ubuntu14-mitaka/builds/",
-                        "web_build_path": "/cs-build/jenkins-jobs/CB-mainline-ubuntu14-mitaka/builds/",
-                        "result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-ubuntu14-mitaka/daily/mainline/",
-                        "row_id": "4"
-                },
 		"CB-R5.0-kubernetes": {
                         "job_name": "R5.0-kubernetes",
                         "build_path": "/cs-build/CB-mainline-ubuntu16-ocata/builds/",
                         "web_build_path": "/cs-build/jenkins-jobs/CB-mainline-ubuntu16-ocata/builds/",
                         "result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-ubuntu16-k8s/daily/mainline/",
-                        "row_id": "5"
+                        "row_id": "4"
                 },
 		"CB-R5.0-vcenter": {
                         "job_name": "R5.0-vcenter",
                         "build_path": "/cs-build/CB-mainline-ubuntu14-vcenter/builds/",
                         "web_build_path": "/cs-build/jenkins-jobs/CB-mainline-ubuntu14-vcenter/builds/",
                         "result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-ubuntu14-vcenter/daily/mainline/",
-                        "row_id": "6"
-                },
-		"CB-R5.0-vcenter-compute-mitaka": {
-                        "job_name": "R5.0-vcenter-compute-mitaka",
-                        "build_path": "/cs-build/CB-mainline-ubuntu14-mitaka/builds/",
-                        "web_build_path": "/cs-build/jenkins-jobs/CB-mainline-ubuntu14-mitaka/builds/",
-                        "result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-ubuntu14-mitaka-vcenter-as-compute/",
-                        "row_id": "7"
-                },
-		"CB-R5.0-vcenter-compute-newton": {
-                        "job_name": "R5.0-vcenter-compute-newton",
-                        "build_path": "/cs-build/CB-mainline-ubuntu16-newton/builds/",
-                        "web_build_path": "/cs-build/jenkins-jobs/CB-mainline-ubuntu16-newton/builds/",
-                        "result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-ubuntu16-newton-vcenter-as-compute/",
-                        "row_id": "8"
+                        "row_id": "5"
                 },
 		"CB-R5.0-vcenter-compute-ocata": {
                         "job_name": "R5.0-vcenter-compute-ocata",
                         "build_path": "/cs-build/CB-mainline-ubuntu16-ocata/builds/",
                         "web_build_path": "/cs-build/jenkins-jobs/CB-mainline-ubuntu16-ocata/builds/",
                         "result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-ubuntu16-ocata-vcenter-as-compute/",
-                        "row_id": "9"
+                        "row_id": "6"
                 }	
 	},
 	"r4.0-cb-sanity" : {
@@ -121,26 +100,12 @@ jobs = {
                         "result_path": "/var/www/html/sanity/cb-sanity/CB-R4.0-ubuntu14-vcenter/daily/R4.0/",
                         "row_id": "6"
                 },
-		"CB-R4.0-vcenter-compute-mitaka": {
-                        "job_name": "R4.0-vcenter-compute-mitaka",
-                        "build_path": "/cs-build/CB-R4.0-ubuntu14-vcenter/builds/",
-                        "web_build_path": "/cs-build/jenkins-jobs/CB-R4.0-ubuntu14-vcenter/builds/",
-                        "result_path": "/var/www/html/sanity/cb-sanity/CB-R4.0-ubuntu14-mitaka-vcenter-as-compute/daily/R4.0/",
-                        "row_id": "7"
-                },
-		"CB-R4.0-vcenter-compute-newton": {
-                        "job_name": "R4.0-vcenter-compute-newton",
-                        "build_path": "/cs-build/CB-R4.0-ubuntu16-newton/builds/",
-                        "web_build_path": "/cs-build/jenkins-jobs/CB-R4.0-ubuntu16-newton/builds/",
-                        "result_path": "/var/www/html/sanity/cb-sanity/CB-R4.0-ubuntu16-newton-vcenter-as-compute/daily/R4.0/",
-                        "row_id": "8"
-                },
 		"CB-R4.0-vcenter-compute-ocata": {
                         "job_name": "R4.0-vcenter-compute-ocata",
                         "build_path": "/cs-build/CB-R4.0-ubuntu16-ocata/builds/",
                         "web_build_path": "/cs-build/jenkins-jobs/CB-R4.0-ubuntu16-ocata/builds/",
                         "result_path": "/var/www/html/sanity/cb-sanity/CB-R4.0-ubuntu16-ocata-vcenter-as-compute/daily/R4.0",
-                        "row_id": "9"
+                        "row_id": "7"
                 }
 	},
 	"r3.2-cb-sanity" : {
@@ -223,26 +188,12 @@ jobs = {
 			"result_path": "/var/www/html/sanity/cb-sanity/CB-R4.1-ubuntu14-vcenter/daily/R4.1/",
 			"row_id": "6"		
 		},
-		"R4.1-vcenter-compute-mitaka": {
-			"job_name": "R4.1-vcenter-compute-mitaka",
-			"build_path": "/cs-build/CB-R4.1-ubuntu14-mitaka/builds/",
-			"web_build_path": "/cs-build/jenkins-jobs/CB-R4.1-ubuntu14-mitaka/builds/",
-			"result_path": "/var/www/html/sanity/cb-sanity/CB-R4.1-ubuntu14-mitaka-vcenter-as-compute/daily/R4.1/",
-			"row_id": "7"
-		},
-		"R4.1-vcenter-compute-newton": {
-			"job_name": "R4.1-vcenter-compute-newton",
-			"build_path": "/cs-build/CB-R4.1-ubuntu16-newton/builds/",
-			"web_build_path": "/cs-build/jenkins-jobs/CB-R4.1-ubuntu16-newton/builds/",
-			"result_path": "/var/www/html/sanity/cb-sanity/CB-R4.1-ubuntu16-newton-vcenter-as-compute/daily/R4.1/",
-			"row_id": "8"	
-		},
 		"R4.1-vcenter-compute-ocata": {
 			"job_name": "R4.1-vcenter-compute-ocata",
 			"build_path": "/cs-build/CB-R4.1-ubuntu16-ocata/builds/",
 			"web_build_path": "/cs-build/jenkins-jobs/CB-R4.1-ubuntu16-ocata/builds/",
 			"result_path": "/var/www/html/sanity/cb-sanity/CB-R4.1-ubuntu16-ocata-vcenter-as-compute/daily/R4.1/",
-			"row_id": "9"	
+			"row_id": "7"	
 		}
 	}
 }
