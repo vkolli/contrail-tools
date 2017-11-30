@@ -258,7 +258,7 @@ def get_summary_from_html_file(html_file_link):
 
 def get_detailed_data_from_ini_files(list_of_ini_files=[], exact_path=''):
 	if not list_of_ini_files:
-		print "There is an error fetching all the ini files . The list given as argument to the function 'get_detailed_data_from_ini_files' no ini files "
+		print "There is an error fetching all the ini files . The list given as argument to the function 'get_detailed_data_from_ini_files' has no ini files "
 	else:
 		ini_list = list_of_ini_files
 		final_total_number_of_testcases = 0
@@ -306,8 +306,17 @@ def build_final_json(dict_1='', dest_file_name='', mode='', all_combination_dict
 		row_id = row_id + 1
 		a = dict_1[mode][job].keys()
 		b = sorted(a)
-		build_number_list = b[::-1]
-		#print build_numbers_list
+		build_number_list = []
+		#build_number_list = b[::-1]
+		#print build_number_list
+		temp_a = []
+		for i in b:
+			temp_a.append(int(i))
+		temp_a.sort()
+		temp_b = temp_a[::-1]
+		for i in temp_b:
+			build_number_list.append(str(i))
+		print build_number_list
 		all_build_list = []
 		temp_num = 5
 		for i in build_number_list:
@@ -383,14 +392,19 @@ def get_all_branch_final_dict(mode='', outfile=''):
 				print list_of_ini_files
 				detailed_info_dict = get_detailed_data_from_ini_files(list_of_ini_files=list_of_ini_files, exact_path=exact_path)
 				#print detailed_info_dict
-				info_dict[mode][job][latest_build_number] = detailed_info_dict
-				path_for_build_date = all_combination_dict[job]['build_path'] + latest_build_number
-				info_dict[mode][job][latest_build_number]["build_date_from_jenkins"] = get_build_date_from_jenkins_server(path=path_for_build_date)
-				build_path = all_combination_dict[job]['web_build_path'] + latest_build_number + '/archive/packages/'
-				info_dict[mode][job][latest_build_number]["build_path"] = build_path
-				info_dict[mode][job][latest_build_number]['web_build_path'] = all_combination_dict[job]['web_build_path']
-				latest_build_number = str(int(latest_build_number) - 1)
-				tmp = tmp - 1
+				if detailed_info_dict == None:
+					latest_build_number = str(int(latest_build_number) - 1)
+					continue
+					#tmp = tmp - 1
+				else:
+					info_dict[mode][job][latest_build_number] = detailed_info_dict
+					path_for_build_date = all_combination_dict[job]['build_path'] + latest_build_number
+					info_dict[mode][job][latest_build_number]["build_date_from_jenkins"] = get_build_date_from_jenkins_server(path=path_for_build_date)
+					build_path = all_combination_dict[job]['web_build_path'] + latest_build_number + '/archive/packages/'
+					info_dict[mode][job][latest_build_number]["build_path"] = build_path
+					info_dict[mode][job][latest_build_number]['web_build_path'] = all_combination_dict[job]['web_build_path']
+					latest_build_number = str(int(latest_build_number) - 1)
+					tmp = tmp - 1
 			#print info_dict
 	#print info_dict
 	#sys.exit()

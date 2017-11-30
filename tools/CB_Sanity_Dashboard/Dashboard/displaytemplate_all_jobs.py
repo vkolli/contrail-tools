@@ -182,7 +182,7 @@ jobs = {
 			"row_id": "4"
 		},
 		"CB-R4.1-ubuntu16-ocata" : {
-			"job_name": "R4.1-ocata",
+			"job_name": "R4.1-ocataa",
 			"build_path": "/cs-build/CB-R4.1-ubuntu16-ocata/builds/",
 			"web_build_path": "/cs-build/jenkins-jobs/CB-R4.1-ubuntu16-ocata/builds/",
 			"result_path": "/var/www/html/sanity/cb-sanity/CB-R4.1-ubuntu16-ocata/daily/R4.1/",
