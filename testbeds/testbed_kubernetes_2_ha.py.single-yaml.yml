@@ -17,6 +17,7 @@ data:
     controller_nodes = 10.204.217.194,10.204.218.100,10.204.218.101
     analytics_nodes = 10.204.217.194,10.204.218.100,10.204.218.101
     analyticsdb_nodes = 10.204.217.194,10.204.218.100,10.204.218.101
+    opscenter_ip = 10.204.217.194,10.204.218.100,10.204.218.101
   agent-config: |-
     [AGENT]
     compile_vrouter_module = True
