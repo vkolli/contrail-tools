@@ -270,26 +270,31 @@ def get_detailed_data_from_ini_files(list_of_ini_files=[], exact_path=''):
 			os.system('sshpass -p "c0ntrail!23" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %path)
 			time.sleep(4)
 			check_if_object_downloaded(file=i)
-			dict_1 = get_data_from_individual_ini_file(file_1=i)
-			#print dict_1
-			test_num_dict = get_summary_from_html_file(dict_1['report'])
-			dict_1['testcase_results'] = test_num_dict
-			internal_no_testcases = int(dict_1['testcase_results']['values'][0])
-			internal_success_rate = dict_1['testcase_results']['values'][4]
-			#print dict_1
-			#print internal_no_testcases
-			#print internal_success_rate
-			if internal_no_testcases > final_total_number_of_testcases:
-				final_total_number_of_testcases = internal_no_testcases
-				temp_success_rate = float((internal_success_rate.replace('%', '')))
-				final_success_rate = temp_success_rate
-				detail_info_dict = dict_1
-			elif internal_no_testcases == final_total_number_of_testcases:
-				temp_success_rate = float((internal_success_rate.replace('%', '')))
-				if temp_success_rate > final_success_rate:
+			if os.stat(i).st_size != 0:
+				dict_1 = get_data_from_individual_ini_file(file_1=i)
+				#print dict_1
+				test_num_dict = get_summary_from_html_file(dict_1['report'])
+				dict_1['testcase_results'] = test_num_dict
+				internal_no_testcases = int(dict_1['testcase_results']['values'][0])
+				internal_success_rate = dict_1['testcase_results']['values'][4]
+				#print dict_1
+				#print internal_no_testcases
+				#print internal_success_rate
+				if internal_no_testcases > final_total_number_of_testcases:
+					final_total_number_of_testcases = internal_no_testcases
+					temp_success_rate = float((internal_success_rate.replace('%', '')))
 					final_success_rate = temp_success_rate
 					detail_info_dict = dict_1
-			os.system('rm -rf %s' %i)
+				elif internal_no_testcases == final_total_number_of_testcases:
+					temp_success_rate = float((internal_success_rate.replace('%', '')))
+					if temp_success_rate > final_success_rate:
+						final_success_rate = temp_success_rate
+						detail_info_dict = dict_1
+				os.system('rm -rf %s' %i)
+			else:
+				os.system('rm -rf %s' %i)
+				print "The ini file is empty"
+				return None
 		return detail_info_dict
 
 def build_final_json(dict_1='', dest_file_name='', mode='', all_combination_dict=''):
