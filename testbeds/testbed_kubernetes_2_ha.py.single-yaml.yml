@@ -22,6 +22,9 @@ data:
     [CONTROLLER]
     encap_priority = VXLAN,MPLSoUDP,MPLSoGRE
     bgp_asn = 64510
+  webui-config: |-
+    [WEBUI]
+    http_listen_port = 10000
   agent-config: |-
     [AGENT]
     compile_vrouter_module = True
@@ -186,6 +189,8 @@ spec:
           items:
           - key: global-config
             path: global.conf
+          - key: webui-config
+            path: webui.conf
           - key: controller-config
             path: controller.conf
       - name: configdb-data
