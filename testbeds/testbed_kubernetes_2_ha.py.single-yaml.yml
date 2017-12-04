@@ -168,6 +168,7 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
+      automountServiceAccountToken: false
       hostNetwork: true
       containers:
       - name: contrail-controller
@@ -176,8 +177,8 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
-        - mountPath: /etc/contrailctl
-          name: contrail-config
+        - mountPath: /tmp/contrailctl
+          name: tmp-contrail-config
         - mountPath: /var/lib/cassandra
           name: configdb-data
         - mountPath: /var/lib/zookeeper
@@ -185,7 +186,7 @@ spec:
       volumes:
       - name: contrail-config
         configMap:
-          name: contrail-config
+          name: tmp-contrail-config
           items:
           - key: global-config
             path: global.conf
