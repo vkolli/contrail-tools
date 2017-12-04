@@ -183,9 +183,9 @@ spec:
         - mountPath: /var/lib/zookeeper
           name: zookeeper-data
       volumes:
-      - name: contrail-config
+      - name: tmp-contrail-config
         configMap:
-          name: tmp-contrail-config
+          name: contrail-config
           items:
           - key: global-config
             path: global.conf
