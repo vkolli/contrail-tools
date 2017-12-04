@@ -168,7 +168,6 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
-      automountServiceAccountToken: false
       hostNetwork: true
       containers:
       - name: contrail-controller
