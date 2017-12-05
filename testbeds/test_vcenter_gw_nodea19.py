@@ -5,7 +5,6 @@ import os
 host1 = 'root@10.204.216.7'
 host2 = 'root@10.204.216.10'
 host3 = 'root@10.204.217.121'
-host4 = 'root@10.204.217.45'
 
 ext_routers = [('blr-mx1', '10.204.216.253')]
 router_asn = 64510
@@ -15,9 +14,9 @@ public_vn_subnet = "10.204.219.80/29"
 host_build = 'stack@10.204.216.49'
 
 env.roledefs = {
-    'all': [ host1, host2, host3, host4],
+    'all': [ host1, host2,host3],
     'cfgm': [host1],
-    'openstack': [host4],
+    'openstack': [host1],
     'webui': [host1],
     'control': [host1],
     'collector': [host1],
@@ -35,7 +34,7 @@ if os.getenv('AUTH_PROTOCOL',None) == 'https':
     }   
 
 env.hostnames = {
-    'all': ['nodea11', 'nodea14','nodei9', 'nodeg5']
+    'all': ['nodea11', 'nodea14','nodei9']
 }
 
 env.password = 'c0ntrail123'
@@ -43,7 +42,6 @@ env.passwords = {
     host1: 'c0ntrail123',
     host2: 'c0ntrail123',
     host3: 'c0ntrail123',
-    host4: 'c0ntrail123',
     host_build: 'stack@123',
 }
 
@@ -51,9 +49,6 @@ env.ostypes = {
     host1:'ubuntu',
     host2:'ubuntu',
     host3:'ubuntu',
-    host4:'ubuntu',
-}
-
 }
 
 env.orchestrator = 'openstack'
@@ -71,7 +66,6 @@ control_data = {
     host1 : { 'ip': '192.168.250.4/24', 'gw' : '192.168.250.254', 'device':'em1' },
     host2 : { 'ip': '192.168.250.5/24', 'gw' : '192.168.250.254', 'device':'em1' },
     host3 : { 'ip': '192.168.250.19/24', 'gw' : '192.168.250.254', 'device':'p6p2' },
-    host4 : { 'ip': '192.168.250.6/24', 'gw' : '192.168.250.254', 'device':'p1p2' },
 }
 
 env.physical_routers={
