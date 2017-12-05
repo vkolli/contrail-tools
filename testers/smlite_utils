@@ -377,11 +377,11 @@ function copy_smlite_pkg() {
 	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${SMLITE_SERVER}:/root/"
     else
         if [[ $CB_SANITY -eq 1 ]]; then
-            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_JSON $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         else
-            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_JSON $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         fi
-	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${SMLITE_SERVER}:/root/"
+	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${SMLITE_SERVER}:/root/"
     fi
     if [ $? == 0 ]
     then
