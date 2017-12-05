@@ -143,12 +143,15 @@ function run_ansible_playbook() {
 }
 
 function update_all_yml() {
-    cp ${TOOLS_WS}/templates/all.yml.$AVAILABLE_TESTBEDS ${TOOLS_WS}/all.yml
+    if [[ $CB_SANITY -eq 1 ]]; then
+        cp ${TOOLS_WS}/templates/all_cb.yml.$AVAILABLE_TESTBEDS ${TOOLS_WS}/all.yml
+    else
+        cp ${TOOLS_WS}/templates/all.yml.$AVAILABLE_TESTBEDS ${TOOLS_WS}/all.yml
+    fi
     sed -i 's/contrail_version/'${BRANCH}'/g' ${TOOLS_WS}/all.yml
     sed -i 's/contrail_exact_version/'${EXACT_BRANCH}'/g' ${TOOLS_WS}/all.yml
     sed -i 's/build_id/'${BUILDID}'/g' ${TOOLS_WS}/all.yml
     sed -i 's/sku/'${SKU}'/g' ${TOOLS_WS}/all.yml
-    #sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/all.yml root@$HYPERVISOR_IP:/root/contrail-ooo-deployer.3.2.6/inventory/group_vars/all.yml
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/all.yml root@$HYPERVISOR_IP:/root/contrail-ooo-deployer/inventory/group_vars/all.yml
 }
 
