@@ -4,9 +4,12 @@ from fabric.api import env
 host1 = 'root@10.204.217.143'
 
 #External routers if any
-#for eg. 
+#for eg.
 #ext_routers = [('mx1', '10.204.216.253')]
 ext_routers = [('blr-mx2', '10.204.216.245')]
+#IP Fabric gateway info, name and IP tuple
+#eg: [('mx1', '1.1.1.1')]
+fabric_gw =[('sw166', '10.204.217.254')]
 router_asn = 64520
 public_vn_rtgt = 30002
 public_vn_subnet = "10.204.219.0/29"
@@ -123,6 +126,6 @@ env.test = {
 #  'public_virtual_network': 'public',
 #  'public_tenant_name' : 'admin',
 #  'fixture_cleanup' : 'yes',
-#   'keypair_name': 'contrail_key',  
+#   'keypair_name': 'contrail_key',
 }
 env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}

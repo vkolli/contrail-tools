@@ -16,6 +16,9 @@ host7 = 'root@10.204.216.160'
 
 
 ext_routers = [('blr-mx1', '10.10.10.101')]
+#IP Fabric gateway info, name and IP tuple
+#eg: [('mx1', '1.1.1.1')]
+fabric_gw =[('sw166', '10.204.217.254')]
 router_asn = 64512
 public_vn_rtgt = 19005
 public_vn_subnet = "10.204.219.120/29"
@@ -156,5 +159,5 @@ env.log_scenario = 'SMLite Openstack HA Regression'
 env.enable_lbaas = True
 do_parallel = True
 env.test_repo_dir='/root/contrail-test'
-env.xmpp_auth_enable=True		
+env.xmpp_auth_enable=True
 env.xmpp_dns_auth_enable=True

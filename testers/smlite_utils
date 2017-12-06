@@ -194,7 +194,7 @@ function set_json_file_path {
     folder_path=''
     json=''
 
-    folder_path="/root/sm_files"
+    folder_path="${TOOLS_WS}/jsons"
     json=$folder_path/$JSON
 
     export ABS_PATH_JSON=$json
@@ -377,11 +377,11 @@ function copy_smlite_pkg() {
 	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${SMLITE_SERVER}:/root/"
     else
         if [[ $CB_SANITY -eq 1 ]]; then
-            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/${CONTRAIL_PACKAGE} $ABS_PATH_JSON $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         else
-            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
+            sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/artifacts/${CONTRAIL_PACKAGE} $ABS_PATH_JSON $ABS_PATH_TBFILE ${SMLITE_SERVER}:/root/
         fi
-	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${SMLITE_SERVER}:/root/"
+	exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh ${SMLITE_SERVER}:/root/"
     fi
     if [ $? == 0 ]
     then
@@ -460,6 +460,19 @@ function provision_using_SMLite() {
     fi
     cntl_pkg=/root/${cntl_cloud_pkg_path##*/}
     vcenter_param='openstack_sku": "vcenter'
+    JSON_FILE_DIR=`dirname $ABS_PATH_JSON`
+
+    if [[ $SKU =~ vcenter ]]; then
+        echo '{"image":[{"category": "package", "id": "'$SMID'", "type": "'$pkg_type'", "path": "'$cntl_pkg'", "parameters":{"'$vcenter_param'"}, "version":"'$BUILDID'"}]}' > $JSON_FILE_DIR/image.json
+        jq -s add $ABS_PATH_JSON $JSON_FILE_DIR/image.json > $JSON_FILE_DIR/combined.json
+        mv $JSON_FILE_DIR/combined.json $ABS_PATH_JSON
+    else
+        echo '{"image":[{"category": "package", "id": "'$SMID'", "type": "'$pkg_type'", "path": "'$cntl_pkg'", "version":"'$BUILDID'"}]}' > $JSON_FILE_DIR/image.json
+        jq -s add $ABS_PATH_JSON $JSON_FILE_DIR/image.json > $JSON_FILE_DIR/combined.json
+        mv $JSON_FILE_DIR/combined.json $ABS_PATH_JSON
+    fi
+
+    copy_smlite_pkg || die "copy of sm-lite packages failed"
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $SMLITE_SERVER " (
         set -e
         set -x
@@ -473,11 +486,6 @@ function provision_using_SMLite() {
                 /opt/contrail/contrail_server_manager/provision_containers.sh -c /root/${CONTRAIL_PACKAGE} -t /root/${tb_filename} -cid $CLUSTER_NAME
             fi
         else
-            if [[ $SKU =~ vcenter ]]; then
-                echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"parameters\":{\"$vcenter_param\"}, \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
-            else
-                echo '\"image\":[{\"category\": \"package\", \"id\": \"$SMID\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
-            fi
             if [ $SKIP_SMLITE_INSTALL -ne 0 ]
             then
                 if [[ ( $SKU =~ vcenter ) && ( $VCENTER_TEST_SKU != "mitaka" ) ]]; then
@@ -606,7 +614,6 @@ function run_smgr_task() {
     if [ -z $SMLITE_SERVER ];then
         SMLITE_SERVER=$API_SERVER_HOST_STRING
     fi
-    copy_smlite_pkg || die "copy of sm-lite packages failed"
     provision_using_SMLite || die "provision failed"
     #add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
     #check_kernel_upgrade || die "kernel upgrade failed"
