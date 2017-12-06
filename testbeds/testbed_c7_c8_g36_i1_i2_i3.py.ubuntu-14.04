@@ -10,6 +10,9 @@ host6 = 'root@10.204.217.114'
 host7 = 'root@10.204.217.115'
 
 ext_routers = [('hooper','192.168.192.253')]
+#IP Fabric gateway info, name and IP tuple
+#eg: [('mx1', '1.1.1.1')]
+fabric_gw =[('sw166', '10.204.217.254')]
 router_asn = 64512
 public_vn_rtgt = 2223
 public_vn_subnet = '10.204.221.176/28'
