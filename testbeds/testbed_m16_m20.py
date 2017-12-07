@@ -14,6 +14,9 @@ host6 = 'root@10.204.216.94'
 host7 = 'root@10.204.216.48'
 
 ext_routers = [('blr-mx2', '10.204.216.245')]
+#IP Fabric gateway info, name and IP tuple
+#eg: [('mx1', '1.1.1.1')]
+fabric_gw =[('sw166', '10.204.217.254')]
 router_asn = 64512
 public_vn_rtgt = 33333
 public_vn_subnet = '10.204.220.200/29'
