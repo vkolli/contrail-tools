@@ -8,6 +8,10 @@
                 "provision": {
                     "contrail_4": {
                         "enable_lbaas": true,
+			"global_config": {
+                            "xmpp_auth_enable": true,
+                            "xmpp_dns_auth_enable": true
+                        },
                         "controller_config": {
                             "encap_priority": "VXLAN,MPLSoUDP,MPLSoGRE",
                             "external_routers_list": {
