@@ -108,3 +108,5 @@ env.enable_lbaas = True
 do_parallel = True
 env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
 env.test_repo_dir='/root/contrail-test'
+env.xmpp_auth_enable=True
+env.xmpp_dns_auth_enable=True
