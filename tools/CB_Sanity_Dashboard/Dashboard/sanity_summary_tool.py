@@ -28,68 +28,50 @@ results_host_info = {
 def check_if_object_downloaded(file=''):
 	temp = False
 	while(temp == False):
-		time.sleep(5)
 		a_tmp = subprocess.Popen('ls | grep %s' %file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True).communicate() 
 		if a_tmp[0] != '':
 			temp = True
 		else:
 			print "Waiting for some more time for the file to get downloaded : %s" % file
+			time.sleep(1)
 	
 def check_if_object_deleted(file=''):
 	temp = False
 	while (temp == False):
-		time.sleep(5)
 		a_tmp = subprocess.Popen('ls | grep %s' %file, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True).communicate()
 		if a_tmp[0] == '':
 			temp = True
 		else:
 			print "Waiting for some more time for the file to get deleted : %s" % file
+			time.sleep(1)
 
-def get_latest_build_number(build_path=''):
-	client = paramiko.SSHClient()
-	client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	client.connect(results_host_info['build_host'], username= results_host_info['build_host_username'], password= results_host_info['build_host_password'])
-	stdin, stdout, stderr = client.exec_command('ls %s -ltrh' %(build_path))
+def get_latest_build_number(build_path='', build_mode='', build_host_handle='', result_host_handle=''):
+	if (build_mode=='cb'):
+		stdin, stdout, stderr = build_host_handle.exec_command('ls %s -ltrh | grep lastStableBuild | cut -f2 -d">"' %(build_path))
+	else:
+		stdin, stdout, stderr = build_host_handle.exec_command('ls %s -ltrh | grep LATEST | cut -f2 -d">"' %(build_path))
 	a = stdout.readlines()
-	client.close()
-	#print a
+	print a
 	if a == []:
 		return -1
 	else:
 		len_a = len(a)
-		#print len_a
-		#var_b = a[(len_a - 1)]
-		#print var_b
-		#var_b_list = var_b.split(' ')
-		#var_b_list_len = len(var_b_list)
-		#print var_b_list_len
-		#var_c = var_b_list[(var_b_list_len - 1)]
-		#print var_c
-		#latest_build = var_c.replace('\n', '')
-		#print latest_build
 		for i in a:
-			if 'lastStableBuild' in i:
-				var_a = i
-		var_b = var_a.split(' ')
-		var_b_len = len(var_b)
-		var_c = var_b[(var_b_len - 1)]
-		print var_c
-		latest_build = var_c.replace('\n', '')
+			var_a = i
+			print i
+		var_b = var_a.replace(' ','')
+		latest_build = var_b.replace('\n', '')
 		return latest_build
 
-def get_exact_path(result_path='', build_no=''):
+def get_exact_path(result_path='', build_no='', build_host_handle='', result_host_handle=''):
 	ini_list = []
-	client = paramiko.SSHClient()
-	client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	client.connect(results_host_info['result_host'], username=results_host_info['result_host_username'], password=results_host_info['result_host_password'])
-	stdin, stdout, stderr = client.exec_command('ls %s | grep -e "-%s"' %(result_path, build_no))
+	stdin, stdout, stderr = result_host_handle.exec_command('ls %s | grep -e "-%s"' %(result_path, build_no))
 	a = stdout.readlines()
 	print a
 	for i in a:
 		b = i.replace('\n', '')
 		#print b
 		ini_list.append(b)
-	client.close()
 	if len(ini_list) == 1:
 		temp_num_1_list = ini_list[0].split('-')
 		if temp_num_1_list[1] == build_no:
@@ -112,49 +94,22 @@ def get_exact_path(result_path='', build_no=''):
 		else:
 			result_path = result_path + ini_list[index_no]
 			return result_path
-"""
-def get_exact_path(result_path='', build_no=''):
-	ini_list = []
-	client = paramiko.SSHClient()
-	client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	client.connect(results_host_info['result_host'], username=results_host_info['result_host_username'], password=results_host_info['result_host_password'])
-	stdin, stdout, stderr = client.exec_command('ls %s | grep -e "-%s"' %(result_path, build_no))
-	a = stdout.readlines()
-	print a
-	for i in a:
-		b = i.replace('\n', '')
-		#print b
-		ini_list.append(b)
-	client.close()
-	if len(ini_list) == 1:
-		result_path = result_path + ini_list[0]
-		#print path 
-		return result_path
 
-"""
-def get_build_date_from_jenkins_server(path=''):
-	client = paramiko.SSHClient()
-	client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	client.connect(results_host_info['build_host'], username= results_host_info['build_host_username'], password= results_host_info['build_host_password'])
+def get_build_date_from_jenkins_server(path='', build_host_handle='', result_host_handle=''):
 	cmd='stat %s  | grep Change | cut -d" " -f2' %(path)
 	print cmd
-	stdin, stdout, stderr = client.exec_command(cmd)
+	stdin, stdout, stderr = build_host_handle.exec_command(cmd)
 	a = stdout.readlines()
 	#print a
 	b=a[0].replace('\n', '')
-	client.close()
 	return b
 
 
-def get_all_ini_files(exact_path=''):
+def get_all_ini_files(exact_path='', build_host_handle='', result_host_handle=''):
 	final_ini_list = []
-	client = paramiko.SSHClient()
-	client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-	client.connect(results_host_info['result_host'], username=results_host_info['result_host_username'], password=results_host_info['result_host_password'])
-	stdin, stdout, stderr = client.exec_command('ls %s | grep .ini' %exact_path)
+	stdin, stdout, stderr = result_host_handle.exec_command('ls %s\/*ini' %exact_path)
 	ini_list =stdout.readlines()
 	error_list = stderr.readlines()
-	client.close()
 	#print ini_list
 	for i in ini_list:
 		a = str(i).replace('\n', '')
@@ -162,7 +117,7 @@ def get_all_ini_files(exact_path=''):
 	if (len(error_list) == 0):
 		return final_ini_list
 	else:
-		return error_list
+		return []
 
 def get_data_from_individual_ini_file(file_1=''):
 	config = ConfigParser.ConfigParser()
@@ -228,7 +183,7 @@ def get_data_from_individual_ini_file(file_1=''):
 
 def get_summary_from_html_file(html_file_link):
 	os.system('wget -q %s -O junit-noframes.html' %html_file_link)
-	time.sleep(4)
+	#time.sleep(4)
 	check_if_object_downloaded(file='junit-noframes.html')
 	file = open('junit-noframes.html', 'r')
 	soup = BeautifulSoup(file)
@@ -265,13 +220,14 @@ def get_detailed_data_from_ini_files(list_of_ini_files=[], exact_path=''):
 		final_success_rate = 0
 		detail_info_dict = {}
 		for i in ini_list:
-			path = exact_path + '/' + i
+			path = i
 			#print path
 			os.system('sshpass -p "c0ntrail!23" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error bhushana@10.204.216.50:%s .' %path)
-			time.sleep(4)
-			check_if_object_downloaded(file=i)
-			if os.stat(i).st_size != 0:
-				dict_1 = get_data_from_individual_ini_file(file_1=i)
+			#time.sleep(4)
+			file=os.path.basename(i)
+			check_if_object_downloaded(file)
+			if os.stat(file).st_size != 0:
+				dict_1 = get_data_from_individual_ini_file(file_1=file)
 				#print dict_1
 				test_num_dict = get_summary_from_html_file(dict_1['report'])
 				dict_1['testcase_results'] = test_num_dict
@@ -290,14 +246,14 @@ def get_detailed_data_from_ini_files(list_of_ini_files=[], exact_path=''):
 					if temp_success_rate > final_success_rate:
 						final_success_rate = temp_success_rate
 						detail_info_dict = dict_1
-				os.system('rm -rf %s' %i)
+				os.system('rm -rf %s' %file)
 			else:
-				os.system('rm -rf %s' %i)
+				os.system('rm -rf %s' %file)
 				print "The ini file is empty"
 				return None
 		return detail_info_dict
 
-def build_final_json(dict_1='', dest_file_name='', mode='', all_combination_dict=''):
+def build_final_json(dict_1='', dest_file_name='', mode='', all_combination_dict='',build_mode=''):
 	final_info_dict = {}
 	final_info_dict['Sanity'] = {}
 	final_job_list = []
@@ -352,7 +308,7 @@ def build_final_json(dict_1='', dest_file_name='', mode='', all_combination_dict
 			individual_build_dict['Skipped'] = '0'
 			individual_build_dict["Success rate"] = '0.0%'
 			individual_build_dict["status"] = "incomplete"
-			individual_build_dict["BuildLink"] = "http://10.84.5.120"+ all_combination_dict[job]['web_build_path']
+			individual_build_dict["BuildLink"] = "http://10.84.5.120"+ all_combination_dict[job][build_mode]['web_build_path']
 			all_build_list.append(individual_build_dict)
 		individual_info_dict["Builds"]= all_build_list
 		final_job_list.append(individual_info_dict)
@@ -369,14 +325,15 @@ def build_final_json(dict_1='', dest_file_name='', mode='', all_combination_dict
 		print >> fp, pprint_final_info_dict
 		fp.close()	
 
-def get_all_branch_final_dict(mode='', outfile=''):
+def get_all_branch_final_dict(mode='', outfile='', build_mode='', build_host_handle='', result_host_handle=''):
 	info_dict = {}
 	info_dict[mode] = {}
 	all_combination_dict = displaytemplate.jobs[mode]
-	#print all_combination_dict
+	print all_combination_dict
 	for job in all_combination_dict:
 		print "\n=================\nJob: "+job
-		latest_build_number = get_latest_build_number(build_path=all_combination_dict[job]['build_path'])
+		build_path=all_combination_dict[job][build_mode]['build_path']
+		latest_build_number = get_latest_build_number(build_path, build_mode, build_host_handle, result_host_handle)
 		print "Latest Build Number: " + str(latest_build_number)
 		#get_detailed_data_from_ini_files(all_combination_dict[job], build_no=latest_build_number)
 		tmp = 5 
@@ -386,16 +343,22 @@ def get_all_branch_final_dict(mode='', outfile=''):
 			if int(latest_build_number) < 1:
 				break
 			print latest_build_number
-			exact_path = get_exact_path(result_path=all_combination_dict[job]['result_path'], build_no=latest_build_number)
+                        result_path=all_combination_dict[job][build_mode]['result_path']
+			build_no=latest_build_number
+			exact_path = get_exact_path(result_path, build_no, build_host_handle, result_host_handle)
 			print exact_path
 			if exact_path == None:
 				latest_build_number = str(int(latest_build_number) - 1)
 				#tmp = tmp - 1
 			else:
 				#print exact_path
-				list_of_ini_files = get_all_ini_files(exact_path=exact_path)
+				list_of_ini_files = get_all_ini_files(exact_path, build_host_handle, result_host_handle)
 				print list_of_ini_files
-				detailed_info_dict = get_detailed_data_from_ini_files(list_of_ini_files=list_of_ini_files, exact_path=exact_path)
+				#import pdb;pdb.set_trace()
+				if(len(list_of_ini_files)==0):
+					latest_build_number = str(int(latest_build_number) - 1)
+					continue
+				detailed_info_dict = get_detailed_data_from_ini_files(list_of_ini_files, exact_path)
 				#print detailed_info_dict
 				if detailed_info_dict == None:
 					latest_build_number = str(int(latest_build_number) - 1)
@@ -403,30 +366,42 @@ def get_all_branch_final_dict(mode='', outfile=''):
 					#tmp = tmp - 1
 				else:
 					info_dict[mode][job][latest_build_number] = detailed_info_dict
-					path_for_build_date = all_combination_dict[job]['build_path'] + latest_build_number
-					info_dict[mode][job][latest_build_number]["build_date_from_jenkins"] = get_build_date_from_jenkins_server(path=path_for_build_date)
-					build_path = all_combination_dict[job]['web_build_path'] + latest_build_number + '/archive/packages/'
+					path_for_build_date = all_combination_dict[job][build_mode]['build_path'] + latest_build_number
+					info_dict[mode][job][latest_build_number]['build_date_from_jenkins'] = get_build_date_from_jenkins_server(path_for_build_date, build_host_handle, result_host_handle)
+					if (build_mode == "cb"):
+						build_path = all_combination_dict[job][build_mode]['web_build_path'] + latest_build_number + '/archive/packages/'
+					else:
+						build_path = all_combination_dict[job][build_mode]['web_build_path'] + latest_build_number
 					info_dict[mode][job][latest_build_number]["build_path"] = build_path
-					info_dict[mode][job][latest_build_number]['web_build_path'] = all_combination_dict[job]['web_build_path']
+					info_dict[mode][job][latest_build_number]['web_build_path'] = all_combination_dict[job][build_mode]['web_build_path']
 					latest_build_number = str(int(latest_build_number) - 1)
 					tmp = tmp - 1
-			#print info_dict
-	#print info_dict
-	#sys.exit()
-	#pp_temp_dict = json.dumps(info_dict, indent =4)
-	#fp = open('test.json', 'w')
-	#print >> fp, pp_temp_dict
-	#fp.close()
-	#sys.exit()
-	build_final_json(dict_1=info_dict, dest_file_name=outfile, mode=mode, all_combination_dict=all_combination_dict)
+	dict_1=info_dict
+	dest_file_name=outfile
+	build_final_json(dict_1, dest_file_name, mode, all_combination_dict, build_mode)
 
 
 def main():
 	parser = OptionParser()
 	parser.add_option('-m', '--mode', help='Give the name of the branch that you want to check sanity resuts of', type='string', dest='mode')
-	parser.add_option('-o', '--outfile', help='Name of the output file where the json will be stored', type='string', dest='outfile')
+	parser.add_option('-o', '--outfile_cb', help='Name of the output file where the json will be stored', type='string', dest='outfile_cb')
+	parser.add_option('-f', '--outfile_fb', help='Name of the output file where the json will be stored', type='string', dest='outfile_fb')
 	(opts, args) = parser.parse_args()
-	get_all_branch_final_dict(mode=opts.mode, outfile= opts.outfile)
+
+        build_host_handle = paramiko.SSHClient()
+        build_host_handle.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        build_host_handle.connect(results_host_info['build_host'], username= results_host_info['build_host_username'], password= results_host_info['build_host_password'])
+        result_host_handle = paramiko.SSHClient()
+        result_host_handle.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        result_host_handle.connect(results_host_info['result_host'], username=results_host_info['result_host_username'], password=results_host_info['result_host_password'])
+
+	mode=opts.mode
+	outfile_cb=opts.outfile_cb
+	outfile_fb=opts.outfile_fb
+	build_mode="cb"
+	get_all_branch_final_dict(mode, outfile_cb, build_mode, build_host_handle, result_host_handle)
+	build_mode="fb"
+	get_all_branch_final_dict(mode, outfile_fb, build_mode, build_host_handle, result_host_handle)
 	#build_final_json(dict_to_build_final_json)
 
 main()
