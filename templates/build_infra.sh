@@ -169,6 +169,8 @@ then
 	echo "config-node-ip file now created that contains config node IP"
 	python /root/$1/inp_to_yaml.py /root/$1/input.json create_testbedpy_file > /root/$1/testbed.py
 	echo "Testbed.py file created that will be used for running the tests on the overlay cluster"
+	python /root/$1/inp_to_yaml.py /root/$1/input.json get_compute_node_ip > /root/$1/compute-node-ips
+	echo "File created that has all the Compute Node FIPs in a comma separated manner"
 	cd /root/$1/
 	python /root/$1/inp_to_yaml.py /root/$1/input.json create_screens_for_all_nodes_in_cluster_on_sm
 	echo "Creating screens for every node in the cluster. The screens will be ocated on the SM Node"
