@@ -590,7 +590,7 @@ function run_smgr_task() {
         exit 1
     fi
     create_testbed || die "Failed to create required testbed details"
-    reimage_setup_using_SM || debug_and_die "reimage failed"
+    reimage_setup || debug_and_die "Reimage failed!"
     if [ -z $JSON ]; then
         echo "JSON env variables is not set."
 	echo "testbed.py will be used to provision the setup."
