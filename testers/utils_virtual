@@ -860,6 +860,7 @@ function apply_overlay_compute_node_patch(){
         echo "$comp_ip"
 	sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $comp_ip " (
 	    cd /usr/lib/python2.7/dist-packages/nova/virt/libvirt
+	    apt-get install -y sshpass
 	    cp driver.py driver.py.bak
 	    cp vif.py vif.py.bak
 	    sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@10.84.24.64:/cs-shared/soumilk/compute_node_patch_senthil_for_VT_clusters/driver.py .
