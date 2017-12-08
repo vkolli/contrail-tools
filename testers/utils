@@ -132,6 +132,8 @@ function search_package {
 			    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/${BUILDID}/archive/packages/contrail-cloud-docker*.tgz`
 			fi
                     fi
+                elif [[ $DISTRO =~ redhat70 ]]; then
+                    PKG_FILE=`ls /cs-build/CB-${BRANCH}-redhat70-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages_*.tgz`           
                 else
                     if [[ $SKU =~ vcenter ]]; then
                         PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}/contrail-vcenter-docker_*.tgz`
