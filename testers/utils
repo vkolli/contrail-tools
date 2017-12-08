@@ -135,6 +135,8 @@ function search_package {
                 else
                     if [[ $SKU =~ vcenter ]]; then
                         PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-mitaka/${BUILDID}/contrail-vcenter-docker_*.tgz`
+                    elif [[ $DISTRO =~ redhat70 ]]; then
+                        PKG_FILE=`ls /cs-build/CB-${BRANCH}-redhat70-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages_*.tgz` 
                     else
                         PKG_FILE="$(ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker*.tgz)"
                     #PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/contrail-cloud-docker*.tgz`
@@ -150,6 +152,8 @@ function search_package {
                     elif [[ $DISTRO =~ ubuntu-14 ]]; then
                         PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/mitaka/artifacts/contrail-vcenter-docker_*.tgz`
                     fi
+                elif [[ $DISTRO =~ redhat70 ]]; then
+		    PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts/contrail-install-packages_*.tgz`
                 else
                     PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts/contrail-cloud-docker*.tgz`
                 fi
