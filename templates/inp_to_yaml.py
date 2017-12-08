@@ -2077,5 +2077,50 @@ def create_screens_for_all_nodes_in_cluster_on_sm():
 		stdin, stdout, stderr = client.exec_command("screen -S %s -dm bash -c 'sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no root@%s; exec bash'" %(server_name, server_ip))
 		client.close()	 
  
+def get_compute_node_ip():
+    fixedip_to_floatingip_mapping_dict = {}
+    ret_list = []
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    # print fip_neutron_dict
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]
+                                           ["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+                if "compute" in server_dict[clus][i]["roles"]:
+                    for j in server_dict[clus][i]["ip_address"]:
+                        if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+				ret_list.append(fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]])
+    ret_string = ','.join(ret_list)
+    print ret_string
+
+def get_compute_node_ip_mainline():
+    fixedip_to_floatingip_mapping_dict = {}
+    ret_list = []
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    # print fip_neutron_dict
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]
+                                           ["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+                if "contrail-compute" in server_dict[clus][i]["roles"]:
+                    for j in server_dict[clus][i]["ip_address"]:
+                        if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+                                ret_list.append(fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]])
+    ret_string = ','.join(ret_list)
+    print ret_string
 if __name__ == '__main__':
     globals()[sys.argv[2]]()
