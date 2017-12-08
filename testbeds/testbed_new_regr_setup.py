@@ -146,7 +146,7 @@ env.qos_niantic = {host3:[
                           { 'priority_id': '6', 'scheduling': 'strict', 'bandwidth': '0'},
                           { 'priority_id': '7', 'scheduling': 'rr', 'bandwidth': '40'}]}
 
-#env.cluster_id='clusterm5m6m7m8m9m10'
+env.cluster_id='new_regr_cluster'
 minimum_diskGB = 32
 #env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
 #env.test_repo_dir = '/home/stack/regression/contrail-test'
