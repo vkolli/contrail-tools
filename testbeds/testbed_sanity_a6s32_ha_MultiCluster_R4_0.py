@@ -12,7 +12,7 @@ host0 = 'root@10.87.36.15'
 
 
 #If there is only single interface,  MX ip is 10.87.36.30
-ext_routers = [('a5-mx80-2', '10.87.36.62')]
+#ext_routers = [('a5-mx80-2', '10.87.36.62')]
 #For multi-interface setup, mx ip is 192.168.10.200
 
 #ext_routers = [('a5-mx80-2', '192.168.10.200')]
