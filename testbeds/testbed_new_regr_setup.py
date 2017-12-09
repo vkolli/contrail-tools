@@ -37,7 +37,7 @@ env.roledefs = {
 env.physical_routers={
 'blr-mx1'     : {       'vendor': 'juniper',
                      'model' : 'mx',
-                     'asn'   : '64510',
+                     'asn'   : '64512',
                      'name'  : 'blr-mx1',
                      'ssh_username' : 'root',
                      'ssh_password' : 'c0ntrail123',
@@ -48,7 +48,7 @@ env.physical_routers={
 env.dm_mx={
 'yuvaraj'     : {       'vendor': 'juniper',
                      'model' : 'mx',
-                     'asn'   : '64510',
+                     'asn'   : '64512',
                      'name'  : 'yuvaraj',
                      'control_ip' : '10.10.10.100',
                      'ssh_username' : 'root',
