@@ -14,7 +14,7 @@ host3 = 'root@10.87.64.158'
 host_build = 'root@10.87.64.147'  # b4s342
 
 # External routers if any
-ext_routers = [('cmbu-lakewood', '10.87.140.181'),('5b4-mx240', '10.87.64.246')]
+ext_routers = [('cmbu-lakewood', '6.6.1.12'),('5b4-mx240', '6.6.6.10')]
 
 # Autonomous system number
 router_asn = 64512
