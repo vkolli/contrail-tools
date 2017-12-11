@@ -585,10 +585,6 @@ function run_smgr_task() {
         exit 1
     fi
 
-    if [ -z $CLUSTER_NAME ] && [ -z $SERVER_NAME ]; then
-        echo "CLUSTER_NAME/SERVER_NAME env is not set, aborting the process"
-        exit 1
-    fi
     create_testbed || die "Failed to create required testbed details"
     reimage_setup || debug_and_die "Reimage failed!"
     JSON=`echo $TBFILE | sed 's/.py/.json/'`
