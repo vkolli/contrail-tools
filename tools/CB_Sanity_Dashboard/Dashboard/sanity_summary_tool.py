@@ -61,7 +61,22 @@ def get_latest_build_number(build_path='', build_mode='', build_host_handle='', 
 			print i
 		var_b = var_a.replace(' ','')
 		latest_build = var_b.replace('\n', '')
-		return latest_build
+		if latest_build == '-1':
+			if (build_mode=='cb'):
+				stdin, stdout, stderr = build_host_handle.exec_command('ls %s -ltrh | grep lastUnsuccessfulBuild | cut -f2 -d">"' %(build_path))
+				a = stdout.readlines()
+				if a == []:
+					pass
+				else:
+					len_a = len(a)
+					for i in a:
+						var_a = i
+						print i
+					var_b = var_a.replace(' ','')
+					latest_build = var_b.replace('\n', '')
+					print "Taking Latest UnSuccessful Build: %s" % latest_build
+
+		return str(latest_build)
 
 def get_exact_path(result_path='', build_no='', build_host_handle='', result_host_handle=''):
 	ini_list = []

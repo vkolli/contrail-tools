@@ -5,12 +5,12 @@ jobs = {
 			"cb": {
 				"build_path": "/cs-build/CB-mainline-redhat70-ocata/builds/",
 				"web_build_path": "/cs-build/jenkins-jobs/CB-mainline-redhat70-ocata/builds/",
-				"result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-redhat74-ocata/"
+				"result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-redhat74-ocata/daily/mainline/"
 			},
 			"fb": {
 				"build_path": "/github-build/R5.0/",
 				"web_build_path": "/github-build/R5.0/",
-				"result_path": "/var/www/html/sanity/fb-sanity/FB-mainline-redhat74-ocata/"
+				"result_path": "/var/www/html/sanity/fb-sanity/FB-mainline-redhat74-ocata/daily/mainline/"
 			},
 			"row_id": "0"
 		},
@@ -19,12 +19,12 @@ jobs = {
 			"cb": {
                         	"build_path": "/cs-build/CB-mainline-redhat70-newton/builds/",
                         	"web_build_path": "/cs-build/jenkins-jobs/CB-mainline-redhat70-newton/builds/",
-                        	"result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-redhat74-newton/"
+                        	"result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-redhat74-newton/daily/mainline/"
 			},
 			"fb": {
 				"build_path": "/github-build/R5.0/",
 				"web_build_path": "/github-build/R5.0/",
-                        	"result_path": "/var/www/html/sanity/fb-sanity/FB-mainline-redhat74-newton/"
+                        	"result_path": "/var/www/html/sanity/fb-sanity/FB-mainline-redhat74-newton/daily/mainline/"
 			},
                         "row_id": "1"
                 },
@@ -89,12 +89,12 @@ jobs = {
 			"cb": {
                         	"build_path": "/cs-build/CB-mainline-ubuntu16-ocata/builds/",
                         	"web_build_path": "/cs-build/jenkins-jobs/CB-mainline-ubuntu16-ocata/builds/",
-                        	"result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-ubuntu16-ocata-vcenter-as-compute/"
+                        	"result_path": "/var/www/html/sanity/cb-sanity/CB-mainline-ubuntu16-ocata-vcenter-as-compute/daily/mainline/"
 			},
 			"fb": {
 				"build_path": "/github-build/R5.0/",
 				"web_build_path": "/github-build/R5.0/",
-                        	"result_path": "/var/www/html/sanity/fb-sanity/FB-mainline-ubuntu16-ocata-vcenter-as-compute/"
+                        	"result_path": "/var/www/html/sanity/fb-sanity/FB-mainline-ubuntu16-ocata-vcenter-as-compute/daily/mainline/"
 			},
                         "row_id": "6"
                 }	
