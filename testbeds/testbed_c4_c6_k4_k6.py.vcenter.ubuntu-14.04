@@ -125,6 +125,7 @@ esxi_hosts = {
         'datastore' : '/vmfs/volumes/k4-ds',
         'datacenter': 'c4_datacenter11',
         'cluster': 'c4_cluster11',
+        'skip_reimage'  : 'true',
         'contrail_vm' : {
             'name' : 'nodek4-compute-vm',
             'mac' : '00:50:56:aa:aa:03',
@@ -141,6 +142,7 @@ esxi_hosts = {
         'datacenter': 'c4_datacenter11',
         'cluster' : 'c4_cluster11',
         'datastore' : '/vmfs/volumes/k5-ds',
+        'skip_reimage'  : 'true',
         'contrail_vm' : {
             'name' : 'nodek5-compute-vm',
             'mac' : '00:50:56:aa:aa:04',
@@ -157,6 +159,7 @@ esxi_hosts = {
         'cluster' : 'c4_cluster11',
         'datacenter': 'c4_datacenter11',
         'datastore' : '/vmfs/volumes/k6-ds',
+        'skip_reimage'  : 'true',
         'contrail_vm' : {
             'name' : 'nodek6-compute-vm',
             'mac' : '00:50:56:aa:aa:05',

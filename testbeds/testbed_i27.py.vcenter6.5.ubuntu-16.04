@@ -97,6 +97,7 @@ esxi_hosts = {
         'datastore' : '/vmfs/volumes/nodei35-ds',
         'datacenter': 'i27_datacenter11',
         'cluster': 'i27_cluster11',
+        'skip_reimage'  : 'true',
         'contrail_vm' : {
             'name' : 'nodei35-compute-vm',
             'mac' : '00:77:56:cd:bc:ba',
@@ -113,6 +114,7 @@ esxi_hosts = {
         'datacenter': 'i27_datacenter11',
         'cluster' : 'i27_cluster11',
         'datastore' : '/vmfs/volumes/nodei36-ds',
+        'skip_reimage'  : 'true',
         'contrail_vm' : {
             'name' : 'nodei36-compute-vm',
             'mac' : '00:77:56:aa:ba:ba',
