@@ -20,6 +20,8 @@ function get_pkg_suffix_to_use {
     pkg_suffix=""
     if [[ ${DISTRO} =~ ubuntu ]]; then
         pkg_suffix=".deb"
+    elif [[ $DISTRO =~ redhat70 ]]; then
+        pkg_suffix=".tgz"
     else
         pkg_suffix=".rpm"
     fi
