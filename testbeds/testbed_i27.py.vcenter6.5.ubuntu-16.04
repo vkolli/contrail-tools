@@ -101,7 +101,7 @@ esxi_hosts = {
         'contrail_vm' : {
             'name' : 'nodei35-compute-vm',
             'mac' : '00:77:56:cd:bc:ba',
-            'host' : host3,
+            'host' : host4,
             'mode': 'vcenter',
             'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
@@ -118,7 +118,7 @@ esxi_hosts = {
         'contrail_vm' : {
             'name' : 'nodei36-compute-vm',
             'mac' : '00:77:56:aa:ba:ba',
-            'host' : host4,
+            'host' : host5,
             'mode': 'vcenter',
             'vmdk' : '/cs-shared/images/vcenter-vmdk/ContrailVM-disk1.vmdk',
         }
