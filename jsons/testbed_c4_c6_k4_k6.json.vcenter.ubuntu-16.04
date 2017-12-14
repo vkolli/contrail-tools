@@ -76,11 +76,11 @@
                     "dhcp": true,
                     "ip_address": "10.204.216.61",
                     "mac_address": "00:25:90:c3:0b:14",
-                    "name": "p1p1",
+                    "name": "enp1s0f0",
                     "default_gateway": "10.204.216.254"
                 }
             ],
-            "management_interface": "p1p1"
+            "management_interface": "enp1s0f0"
         },
         "password": "c0ntrail123",
         "roles": [
@@ -101,11 +101,11 @@
                     "dhcp": true,
                     "ip_address": "10.204.216.62",
                     "mac_address": "00:25:90:c3:0d:38",
-                    "name": "p1p1",
+                    "name": "enp1s0f0",
                     "default_gateway": "10.204.216.254"
                 }
             ],
-            "management_interface": "p1p1"
+            "management_interface": "enp1s0f0"
         },
         "password": "c0ntrail123",
         "roles": [
@@ -126,11 +126,11 @@
                     "dhcp": true,
                     "ip_address": "10.204.216.63",
                     "mac_address": "00:25:90:c3:0a:1a",
-                    "name": "p1p1",
+                    "name": "enp1s0f0",
                     "default_gateway": "10.204.216.254"
                 }
             ],
-            "management_interface": "p1p1"
+            "management_interface": "enp1s0f0"
         },
         "password": "c0ntrail123",
         "roles": [
@@ -152,11 +152,11 @@
                     "dhcp": true,
                     "ip_address": "10.204.216.181",
                     "mac_address": "00:50:56:aa:aa:03",
-                    "name": "eth0",
+                    "name": "ens160",
                     "default_gateway": "10.204.216.254"
                 }
             ],
-            "management_interface": "eth0"
+            "management_interface": "ens160"
         },
         "parameters": {
             "esxi_parameters": {
