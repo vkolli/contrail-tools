@@ -2,76 +2,6 @@
 #!/usr/bin/awk -f
 TOOLS_WS=${TOOLS_WS:-$(pwd)}
 multi_node=0
-source $TOOLS_WS/testers/smgr_utils
-
-#install ant on cfgm0
-function install_ant() {
-
-    sshpass -p c0ntrail123 ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
-        set -x
-        echo "Temporary workaround to installfabric on CFGM"
-        /opt/contrail/contrail_packages/setup.sh
-        cp /root/sources.list /etc/apt/
-
-        #remove mediubuntu entry from sources.list temporarily as it's causing apt-get update to fail.
-        sed -i".bak" '/packages.medibuntu.org/d' /etc/apt/sources.list
-
-        apt-get update
-        apt-get -y --force-yes --allow-unauthenticated install ant
-        if [ $? == 0 ]
-        then
-            echo "ant package installation is done"
-        else
-            echo "ant  package installation failed"
-            exit 1
-        fi
-        #temporary fix to take care of issue due to different paramiko version
-        pip uninstall -y paramiko
-        pip install paramiko==1.17.0
-
-        mv /usr/local/lib/python2.7/dist-packages/easy-install.pth /usr/local/lib/python2.7/dist-packages/easy-install.pth.orig
-        if [ $? == 0 ]
-        then
-            echo "moving easy-install.pth sucessfull"
-        else
-            echo "moving easy-install.pth failed, sanity will fail to run"
-        fi   
-    ) "
-
-}
-
-
-function add_sourcelist_SMLite() {
- 
-    set -x
-    HOSTS=`cat "${TOOLS_WS}/testbeds/${tb_filename}" | grep "host[0-9]\s\=" | awk '{print $3}' | awk -F'@' '{print $2}' | tr -d "'"`
-    echo $HOSTS
-    for word in $HOSTS
-    do
-        echo $word
-        sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $word " {
-   
-            cp /etc/apt/sources.list /etc/apt/sources.list.orig
-            sed -i".bak" '/google/d' /etc/apt/sources.list.save
-            cp /etc/apt/sources.list.save /etc/apt/sources.list
-            if [ $? != 0 ]
-                then
-                echo "failed to replace sources.list with sources.list.save on node!!!"
-            else
-                echo "replaced sources.list with sources.list.save on node"
-            fi
-            #remove mediubuntu entry from sources.list temporarily as it's causing apt-get update to fail.
-            sed -i".bak" '/packages.medibuntu.org/d' /etc/apt/sources.list
-
-            apt-get update
-            apt-get -y install gdb
-    } "
-    sleep 10
-    done
-
-
-}
-
 
 function reimage_setup_using_SM {
     if [ $SKIP_REIMAGE -ne 0 ]
@@ -167,7 +97,15 @@ function set_json_file_path {
 function SMLite_check_SM_pkg_availability() {
     count=0
     SMLite_get_node_distro
-    smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts"
+    if [[ $CB_SANITY -eq 1 ]]; then
+        if [[ $DISTRO =~ ubuntu-16 ]]; then
+                smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
+        else
+                smpkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
+        fi
+    else
+        smpkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts"
+    fi
     echo $SERVER_MANAGER_INSTALLER
 
     while [ "$count" -ne 36 ]; do
@@ -215,14 +153,29 @@ function copy_smlite_pkg() {
     #check if SM pkgs are available in artifacts before proceeding further.
     SMLite_check_SM_pkg_availability || die "SM pkg not available in artifacts"
 
-    sku_pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${OPENSTACK_SKU}"
-    nw_pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}"
+    if [[ $CB_SANITY -eq 1 ]]; then
+        if [[ $DISTRO =~ ubuntu-16 ]]; then
+            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}"
+        else
+            pkg_dir="/cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}"
+        fi
+    else
+        sku_pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${OPENSTACK_SKU}"
+        nw_pkg_dir="/cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}"
+    fi
     echo $OPENSTACK_PACKAGE
     echo $CONTRAIL_NW_PACKAGE
     echo $SERVER_MANAGER_INSTALLER
     sleep 30
-    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${nw_pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${nw_pkg_dir}/artifacts/${CONTRAIL_NW_PACKAGE} ${sku_pkg_dir}/artifacts/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
-    exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh $ABS_PATH_JSON ${API_SERVER_HOST_STRING}:/root/"
+
+    if [[ $CB_SANITY -eq 1 ]]; then
+        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${pkg_dir}/${SERVER_MANAGER_INSTALLER} ${pkg_dir}/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
+        exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh /root/sm_files/check_image_cliff.sh $ABS_PATH_JSON ${API_SERVER_HOST_STRING}:/root/"
+    else
+        sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${nw_pkg_dir}/artifacts/${SERVER_MANAGER_INSTALLER} ${nw_pkg_dir}/artifacts/${CONTRAIL_NW_PACKAGE} ${sku_pkg_dir}/artifacts/${OPENSTACK_PACKAGE} $ABS_PATH_TBFILE ${API_SERVER_HOST_STRING}:/root/
+        exec_cmds -s root@$SM_SERVER_IP -p "c0ntrail123" -c "sshpass -p ${API_SERVER_HOST_PASSWORD} scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/sm_files/check_provision_cliff.sh /root/sm_files/check_image_cliff.sh $ABS_PATH_JSON ${API_SERVER_HOST_STRING}:/root/"
+    fi
+
     if [ $? == 0 ]
     then
         echo "Copy of ${SERVER_MANAGER_INSTALLER}, ${OPENSTACK_PACKAGE} and ${CONTRAIL_NW_PACKAGE} to SMLITE server is successfull"
@@ -265,10 +218,33 @@ function provision_using_SMLite() {
  
     echo "Connect to SM_SERVER to provision the targets/cluster"
 
-    cntl_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-networking-docker_*.tgz`
-    cntl_pkg=/root/${cntl_pkg_path##*/}
-    openstk_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${OPENSTACK_SKU}/artifacts/contrail-cloud-docker_*.tgz`
-    openstk_pkg=/root/${openstk_pkg_path##*/}
+    if [[ $CB_SANITY -eq 1 ]]; then
+        if [[ $DISTRO =~ ubuntu-16 ]]; then
+            openstk_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu16-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
+        else
+            openstk_pkg_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/${BUILDID}/contrail-cloud-docker_*.tgz`
+        fi
+        openstk_pkg=/root/${openstk_pkg_path##*/}
+        cntl_pkg=`echo $openstk_pkg | sed 's/cloud/networking/' | sed "s/\-$SKU//"`
+    else
+        cntl_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-networking-docker_*.tgz`
+        cntl_pkg=/root/${cntl_pkg_path##*/}
+        openstk_pkg_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${OPENSTACK_SKU}/artifacts/contrail-cloud-docker_*.tgz`
+        openstk_pkg=/root/${openstk_pkg_path##*/}
+    fi
+
+    echo $openstk_pkg
+    echo $cntl_pkg
+
+    if [[ $CB_SANITY -eq 1 ]]; then
+        sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
+            set -e
+            set -x
+            echo "Extract Contrail Networking package from the Cloud Docker TGZ"
+            tar -xzvf ${openstk_pkg}
+        ) "
+    fi
+
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
         set -e
         set -x
@@ -311,6 +287,31 @@ function provision_using_SMLite() {
     else
         echo "Provisioning openstack failed!!! aborting the process"
         exit 1
+    fi
+
+    if [[ $SKU =~ ocata ]]; then
+        sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
+            set -e
+            set -x
+            echo "Add Networking Image to SM"
+            echo '{\"image\":[{\"category\": \"package\", \"id\": \"networking_image\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\", \"parameters\": {\"openstack_sku\": \"${OPENSTACK_SKU}\"}}]}' > /root/networking_image.json
+            server-manager add image -f /root/networking_image.json
+            sleep 10
+            chmod +777 /root/check_image_cliff.sh
+            /root/check_image_cliff.sh networking_image
+            if [ "$?" -eq 0 ]
+            then
+                echo "Networking Image successfully added to the SM!!!"
+            else
+                echo "Networking Image add to SM Failed!!! aborting the process"
+            fi
+        ) "; rv=$?
+        if [ $rv == 0 ]; then
+            echo "Networking Image successfully added to the SM!!!"
+        else
+            echo "Networking Image add to SM Failed!!! aborting the process"
+            exit 1
+        fi
     fi
 
     sshpass -p "c0ntrail123" ssh -t -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $API_SERVER_HOST_STRING " (
