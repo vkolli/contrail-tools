@@ -128,6 +128,9 @@ function search_package {
 	   	if [[ $TESTBED_LOCATION_US -eq 1 ]];then
    		    PKG_FILE=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages*${pkg_suffix}`
 		fi
+                if [[ $DISTRO =~ redhat70 ]]; then
+                    PKG_FILE=`ls /cs-build/CB-${BRANCH}-redhat70-${SKU}/builds/${BUILDID}/archive/packages/contrail-install-packages_*.tgz` 
+                fi
 	    fi
         fi
         if [[ -z $PKG_FILE ]]; then
