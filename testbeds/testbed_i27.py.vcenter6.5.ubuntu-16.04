@@ -131,6 +131,7 @@ env.test = {
      'mail_to': 'dl-contrail-sw@juniper.net',
            }
 
+env.cluster_id='cluster-esxi-new'
 minimum_diskGB=32
 env.test_repo_dir='/home/stack/multi_interface_parallel/centos65/icehouse/contrail-test'
 env.mail_from='contrail-build@juniper.net'
