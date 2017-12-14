@@ -144,6 +144,7 @@ env.test = {
   'mail_sender': 'contrailbuild@juniper.net',
 }
 
+env.cluster_id='cluster_vrouter_gw'
 minimum_diskGB=32
 env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'
