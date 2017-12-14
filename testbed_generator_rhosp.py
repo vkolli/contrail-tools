@@ -65,6 +65,8 @@ def get_hosts_dict(auth_url, username, password, tenant):
         fixed_ip = obj.neutron.list_ports(device_id=node.instance_uuid, fields='fixed_ips')
         host['mgmt_ip'] = fixed_ip['ports'][0]['fixed_ips'][0]['ip_address']
         hosts.append(host)
+    import pdb; pdb.set_trace()
+    hosts.append({'role': 'compute', 'uuid': u'12345678-0142-4c84-af34-1c2b124d5dd6', 'mgmt_ip': u'x.x.x.x', 'host_name': u'host_build'})
     return hosts
 
 def parse_openrc(filename):
@@ -93,7 +95,8 @@ def gen_host_name(hostname):
     special_char = ['-', ':', '.']
     for char in special_char:
         hostname = hostname.replace(char, '_')
-    return 'host_'+hostname
+    return hostname
+    #return 'host_'+hostname
 
 def fixup_tb_string(tb_string, hosts):
     for host in hosts:
@@ -130,7 +133,8 @@ def create_testbed_file(pargs, hosts, openrc_dict):
         control_data_ip=api_int_ip.split('\n')[0]
         #control_data.append(control_data_ip)
         ctrl_int_cmd = "/usr/sbin/route -n | grep 10.0.0 | awk '{print $8}'"
-        gw_ip = subprocess.check_output("sshpass ssh -o StrictHostKeyChecking=no heat-admin@%s %s"                                                                                % (node_vm_ip, ctrl_int_cmd), shell=True)
+        gw_ip = subprocess.check_output("sshpass ssh -o StrictHostKeyChecking=no heat-admin@%s %s" 
+                 % (node_vm_ip, ctrl_int_cmd), shell=True)
         ctrl_gw = gw_ip.split('\n')[0]
         control_data.update({host_name : {'ip': control_data_ip + '/24', 'gw': '10.0.0.1', 'device':ctrl_gw},})
         if 'openstack' == host['role']:
@@ -139,6 +143,7 @@ def create_testbed_file(pargs, hosts, openrc_dict):
             env_roledefs['cfgm'].append(host_name)
             env_roledefs['webui'].append(host_name)
             env_roledefs['control'].append(host_name)
+            env_roledefs['build'].append(host_name)
         elif 'analytics' == host['role']:
             env_roledefs['collector'].append(host_name)
         elif 'analyticsdb' == host['role']:
