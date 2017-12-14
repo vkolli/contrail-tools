@@ -65,7 +65,6 @@ def get_hosts_dict(auth_url, username, password, tenant):
         fixed_ip = obj.neutron.list_ports(device_id=node.instance_uuid, fields='fixed_ips')
         host['mgmt_ip'] = fixed_ip['ports'][0]['fixed_ips'][0]['ip_address']
         hosts.append(host)
-    import pdb; pdb.set_trace()
     hosts.append({'role': 'compute', 'uuid': u'12345678-0142-4c84-af34-1c2b124d5dd6', 'mgmt_ip': u'x.x.x.x', 'host_name': u'host_build'})
     return hosts
 
