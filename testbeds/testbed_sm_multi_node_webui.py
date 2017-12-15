@@ -20,6 +20,8 @@ router_asn = 64512
 public_vn_rtgt = 10000
 public_vn_subnet = "10.84.41.0/24"
 
+host_build = 'stack@10.204.216.49'
+
 env.roledefs = {
     'all': [host1, host2, host3, host4, host5],
     'contrail-controller': [host2],
@@ -27,6 +29,7 @@ env.roledefs = {
     'contrail-analytics': [host1],
     'contrail-analyticsdb': [host1, host2, host3],
     'contrail-compute': [host4, host5],
+    'build': [host_build],
 }
 
 env.hostnames = {
@@ -39,6 +42,7 @@ env.passwords = {
     host3: 'c0ntrail123',
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
+    host_build: 'stack@123',
 }
 
 env.ostypes = {
