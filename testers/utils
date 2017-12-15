@@ -879,10 +879,8 @@ function reimage_setup {
         # verify reimage is successful or failure
         fab check_reimage_state  || debug_and_die "Check to validate reimaging failed"
     fi
-    if [[ ( "$BRANCH" < "R4.0" ) && ( ${BRANCH} != "mainline" ) ]]; then
-        (cd ${TOOLS_WS}/contrail-fabric-utils;
-         fab set_allow_unsupported_sfp ) || echo "Unable to enable unsupported sfp"
-    fi
+    (cd ${TOOLS_WS}/contrail-fabric-utils;
+    fab set_allow_unsupported_sfp ) || echo "Unable to enable unsupported sfp"
 }
 
 ##
