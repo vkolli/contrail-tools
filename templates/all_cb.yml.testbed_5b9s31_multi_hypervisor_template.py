@@ -3,7 +3,7 @@ RHEL_VERSION: 7.4
 RHEL_QCOW: /root/overcloud_images_downloaded/rhel-server-7.4-x86_64-kvm.qcow2
 IMAGE_DIRECTORY: /var/lib/libvirt/images
 UNDERCLOUD_IMAGE_SIZE: 100G
-UNDERCLOUD_NAME: ansible-ocata
+UNDERCLOUD_NAME: undercloud
 UNDERCLOUD_ROOT_PWD: c0ntrail123
 UNDERCLOUD_STACK_PWD: c0ntrail123
 UNDERCLOUD_DEFAULT_NW: br-ex
