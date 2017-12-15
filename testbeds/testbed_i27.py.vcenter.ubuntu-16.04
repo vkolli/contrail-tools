@@ -2,8 +2,8 @@ from fabric.api import env
 import os
 
 host1 = 'root@10.204.217.139'
-#host2 = 'root@10.204.217.140'
-#host3 = 'root@10.204.217.144'
+host2 = 'root@10.204.217.140'
+host3 = 'root@10.204.217.144'
 host4 = 'root@10.204.217.204'
 host5 = 'root@10.204.217.229'
 esx1 = 'root@10.204.217.147'
@@ -24,26 +24,24 @@ if os.getenv('HA_TEST',None) == 'True':
     }
 else:
     env.roledefs = {
-        #'all': [host1, host2,host3, host4, host5],
-        'all': [host1,host4, host5],
-        'cfgm': [host1],
-        'webui': [host1],
-        'control': [host1],
-        'collector': [host1],
-        'database': [host1],
+        'all': [host1, host2,host3, host4, host5],
+        'cfgm': [host1,host2,host3],
+        'webui': [host1,host2,host3],
+        'control': [host1,host2,host3],
+        'collector': [host1,host2,host3],
+        'database': [host1,host2,host3],
         'compute': [host4, host5],
         'build': [host_build]
     }
 env.hostnames = {
-    #'all': ['nodei27', 'nodei28' ,'nodei32', 'nodei35-compute-vm', 'nodei36-compute-vm']
-    'all': ['nodei27','nodei35-compute-vm', 'nodei36-compute-vm']
+    'all': ['nodei27', 'nodei28' ,'nodei32', 'nodei35-compute-vm', 'nodei36-compute-vm']
 }
 
 env.password = 'c0ntrail123'
 env.passwords = {
     host1: 'c0ntrail123',
-    #host2: 'c0ntrail123',
-    #host3: 'c0ntrail123',
+    host2: 'c0ntrail123',
+    host3: 'c0ntrail123',
     host4: 'c0ntrail123',
     host5: 'c0ntrail123',
     esx1: 'c0ntrail123',
@@ -53,8 +51,8 @@ env.passwords = {
 
 env.ostypes = {
     host1:'ubuntu',
-    #host2:'ubuntu',
-    #host3:'ubuntu',
+    host2:'ubuntu',
+    host3:'ubuntu',
     host4:'ubuntu',
     host4:'ubuntu',
 }
