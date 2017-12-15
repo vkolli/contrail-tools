@@ -12,13 +12,12 @@ host_build = 'stack@10.204.216.49'
 
 if os.getenv('HA_TEST',None) == 'True':
     env.roledefs = {
-        #'all': [host1, host2,host3, host4, host5],
-        'all': [host1,host4, host5],
-        'cfgm': [host1],
-        'webui': [host1],
-        'control': [host1],
-        'collector': [host1],
-        'database': [host1],
+        'all': [host1, host2,host3, host4, host5],
+        'cfgm': [host1, host2,host3],
+        'webui': [host1, host2,host3],
+        'control': [host1, host2,host3],
+        'collector': [host1, host2,host3],
+        'database': [host1, host2,host3],
         'compute': [host4, host5],
         'build': [host_build]
     }
