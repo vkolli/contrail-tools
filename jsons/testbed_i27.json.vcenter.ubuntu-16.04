@@ -83,56 +83,56 @@
             "contrail-vcenter-plugin"
         ]
     },
-    {   
-        "cluster_id": "cluster-esxi-new",
-        "domain": "englab.juniper.net",
-        "host_name": "nodei32",
-        "id": "nodei32",
-        "network": {
-            "interfaces": [
-                {   
-                    "dhcp": true,
-                    "ip_address": "10.204.217.144",
-                    "mac_address": "00:25:90:e7:81:dc",
-                    "name": "em1",
-                    "default_gateway": "10.204.217.254"
-                }
-            ],
-            "management_interface": "em1"
-        },
-        "password": "c0ntrail123",
-        "roles": [
-            "contrail-controller",
-            "contrail-analytics",
-            "contrail-analyticsdb",
-            "contrail-vcenter-plugin"
-        ]
-    },
-    {   
-        "cluster_id": "cluster-esxi-new",
-        "domain": "englab.juniper.net",
-        "host_name": "nodei28",
-        "id": "nodei28",
-        "network": {
-            "interfaces": [
-                {   
-                    "dhcp": true,
-                    "ip_address": "10.204.217.140",
-                    "mac_address": "00:25:90:e7:7e:70",
-                    "name": "em1",
-                    "default_gateway": "10.204.217.254"
-                }
-            ],
-            "management_interface": "em1"
-        },
-        "password": "c0ntrail123",
-        "roles": [
-            "contrail-controller",
-            "contrail-analytics",
-            "contrail-analyticsdb",
-            "contrail-vcenter-plugin"
-        ]
-    },
+#    {   
+#        "cluster_id": "cluster-esxi-new",
+#        "domain": "englab.juniper.net",
+#        "host_name": "nodei32",
+#        "id": "nodei32",
+#        "network": {
+#            "interfaces": [
+#                {   
+#                    "dhcp": true,
+#                    "ip_address": "10.204.217.144",
+#                    "mac_address": "00:25:90:e7:81:dc",
+#                    "name": "em1",
+#                    "default_gateway": "10.204.217.254"
+#                }
+#            ],
+#            "management_interface": "em1"
+#        },
+#        "password": "c0ntrail123",
+#        "roles": [
+#            "contrail-controller",
+#            "contrail-analytics",
+#            "contrail-analyticsdb",
+#            "contrail-vcenter-plugin"
+#        ]
+#    },
+#    {   
+#        "cluster_id": "cluster-esxi-new",
+#        "domain": "englab.juniper.net",
+#        "host_name": "nodei28",
+#        "id": "nodei28",
+#        "network": {
+#            "interfaces": [
+#                {   
+#                    "dhcp": true,
+#                    "ip_address": "10.204.217.140",
+#                    "mac_address": "00:25:90:e7:7e:70",
+#                    "name": "em1",
+#                    "default_gateway": "10.204.217.254"
+#                }
+#            ],
+#            "management_interface": "em1"
+#        },
+#        "password": "c0ntrail123",
+#        "roles": [
+#            "contrail-controller",
+#            "contrail-analytics",
+#            "contrail-analyticsdb",
+#            "contrail-vcenter-plugin"
+#        ]
+#    },
     {   
         "cluster_id": "cluster-esxi-new",
         "domain": "englab.juniper.net",
