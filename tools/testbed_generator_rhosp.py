@@ -65,7 +65,7 @@ def get_hosts_dict(auth_url, username, password, tenant):
         fixed_ip = obj.neutron.list_ports(device_id=node.instance_uuid, fields='fixed_ips')
         host['mgmt_ip'] = fixed_ip['ports'][0]['fixed_ips'][0]['ip_address']
         hosts.append(host)
-    hosts.append({'role': 'compute', 'uuid': u'12345678-0142-4c84-af34-1c2b124d5dd6', 'mgmt_ip': u'x.x.x.x', 'host_name': u'host_build'})
+    hosts.append({'role': 'build', 'uuid': u'12345678-0142-4c84-af34-1c2b124d5dd6', 'mgmt_ip': u'x.x.x.x', 'host_name': u'host_build'})
     return hosts
 
 def parse_openrc(filename):
@@ -142,7 +142,6 @@ def create_testbed_file(pargs, hosts, openrc_dict):
             env_roledefs['cfgm'].append(host_name)
             env_roledefs['webui'].append(host_name)
             env_roledefs['control'].append(host_name)
-            env_roledefs['build'].append(host_name)
         elif 'analytics' == host['role']:
             env_roledefs['collector'].append(host_name)
         elif 'analyticsdb' == host['role']:
@@ -150,6 +149,8 @@ def create_testbed_file(pargs, hosts, openrc_dict):
         elif 'compute' == host['role']:
             env_roledefs['compute'].append(host_name)
 
+    env_roledefs['build'].append(host_name)
+    control_data.pop('host_build')
     for k,v in env_roledefs.iteritems():
         env_roledefs[k] = list(set(v))
     env_ha.update({'contrail_external_vip': openrc_dict['auth_ip']})
