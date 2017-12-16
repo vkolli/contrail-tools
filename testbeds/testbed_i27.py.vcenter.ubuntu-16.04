@@ -2,8 +2,8 @@ from fabric.api import env
 import os
 
 host1 = 'root@10.204.217.139'
-#host2 = 'root@10.204.217.140'
-#host3 = 'root@10.204.217.144'
+host2 = 'root@10.204.217.140'
+host3 = 'root@10.204.217.144'
 host4 = 'root@10.204.217.204'
 host5 = 'root@10.204.217.229'
 esx1 = 'root@10.204.217.147'
