@@ -8,6 +8,13 @@
                 },
                 "contrail_4": {
                     "cloud_orchestrator": "vcenter",
+                    "controller_config": {
+                        "bgp_asn": "64512",
+                        "encap_priority": "MPLSoUDP,MPLSoGRE,VXLAN",
+                        "external_routers_list": {
+                            "ishant": "10.204.216.247"
+                        }
+                    },
                     "vcenter_servers": [
                         {   
                             "server1": {
