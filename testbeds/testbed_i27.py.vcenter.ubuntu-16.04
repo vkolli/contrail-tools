@@ -10,6 +10,11 @@ esx1 = 'root@10.204.217.147'
 esx2 = 'root@10.204.217.148'
 host_build = 'stack@10.204.216.49'
 
+ext_routers = [('ishant','10.204.216.247')]
+router_asn = 64512
+public_vn_rtgt = 80808
+public_vn_subnet = '10.204.220.64/26'
+
 if os.getenv('HA_TEST',None) == 'True':
     env.roledefs = {
         'all': [host1, host2,host3, host4, host5],
