@@ -234,12 +234,12 @@ env.mail_to='dl-contrail-sw@juniper.net'
 env.encap_priority="'MPLSoUDP','MPLSoGRE','VXLAN'"
 env.mail_server='10.84.24.64'
 env.mail_port='4000'
-env.mx_gw_test=True
+#env.mx_gw_test=True
 env.testbed_location='US'
 env.interface_rename = False 
 env.image_web_server = '10.84.5.120'
 env.log_scenario='Vcenter-Compute Multi-Cluster-MultiNode-Esxi-Kvm Single Intf Sanity'
-env.enable_lbaas = True
+#env.enable_lbaas = True
 
 env.ntp_server = '10.84.5.100'
 env.test = {

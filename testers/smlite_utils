@@ -597,8 +597,10 @@ function run_smgr_task() {
 
     # esxi/vcenter setup, cleanup vcenter and dockers
     if [[ ( $VCENTER_ONLY_TESTBED -eq 1 ) || ( $VCENTER_AS_COMPUTE_TESTBED -eq 1 ) ]]; then
-        (cd ${TOOLS_WS}/contrail-fabric-utils
-         fab cleanup_vcenter)
+	if [[ ( $VCENTER_ONLY_TESTBED -eq 1 ) ]]; then
+            (cd ${TOOLS_WS}/contrail-fabric-utils
+             fab cleanup_vcenter)
+	fi
         if [[ $SKIP_REIMAGE -eq 1 ]]; then
             (cd ${TOOLS_WS}/contrail-fabric-utils
              fab cleanup_dockers)
