@@ -78,7 +78,7 @@ env.kubernetes = {
    'slaves': [host2, host3]
 }
 
-env.cluster_id='clusterc19i16i18'
+#env.cluster_id='clusterc19i16i18'
 minimum_diskGB = 32
 env.rsyslog_params = {'port':19876, 'proto':'tcp', 'collector':'dynamic', 'status':'enable'}
 env.test_repo_dir = '/root/contrail-test'
