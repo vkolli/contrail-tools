@@ -133,7 +133,7 @@ function search_package {
                 fi
             else
                 if [[ $DISTRO =~ redhat70 ]]; then
-                    PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/archive/contrail-install-packages_*${pkg_suffix}`
+                    PKG_FILE=`ls /github-build/${BRANCH}/${BUILDID}/${DISTRO}/${SKU}/artifacts/contrail-install-packages_*${pkg_suffix}`
                 fi
 	    fi
            
