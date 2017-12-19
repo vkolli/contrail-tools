@@ -106,7 +106,7 @@ esxi_hosts = {
         'vcenter_server':'vcenter1',
         'username' : 'root',
         'password' : 'c0ntrail123',
-        'cluster' : 'Bangalore c4k4rack14',
+        'cluster' : 'c4k4rack14',
         'datastore' : '/vmfs/volumes/k4-ds',
         'skip_reimage'  : 'true',
         'contrail_vm' : {
