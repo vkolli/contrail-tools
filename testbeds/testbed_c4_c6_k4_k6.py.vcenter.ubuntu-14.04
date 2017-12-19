@@ -93,9 +93,9 @@ env.vcenter_servers = {
         'username': 'administrator@vsphere.local',
         'password': 'Contrail123!',
         'auth': 'https',
-        'datacenter': 'c4k4u14',
-        'cluster': ['c4k4rack14'],
-        'dv_switch': { 'dv_switch_name': 'c4k4u14_dvs', 'nic': 'vmnic0', },
+        'datacenter': 'c4_datacenter11',
+        'cluster': ['c4_cluster11','c4_cluster12'],
+        'dv_switch': { 'dv_switch_name': 'c4k4_dvs', 'nic': 'vmnic0', },
         'dv_port_group': { 'dv_portgroup_name': 'c4k4u14_dvpg', 'number_of_ports': '3', },
     }
 }
@@ -106,7 +106,7 @@ esxi_hosts = {
         'vcenter_server':'vcenter1',
         'username' : 'root',
         'password' : 'c0ntrail123',
-        'cluster' : 'c4k4rack14',
+        'cluster' : 'c4_cluster11',
         'datastore' : '/vmfs/volumes/k4-ds',
         'skip_reimage'  : 'true',
         'contrail_vm' : {
@@ -122,7 +122,7 @@ esxi_hosts = {
         'ip' : k5,
         'username' : 'root',
         'password' : 'c0ntrail123',
-        'cluster' : 'c4k4rack14',
+        'cluster' : 'c4_cluster11',
         'datastore' : '/vmfs/volumes/k5-ds',
         'skip_reimage'  : 'true',
         'contrail_vm' : {
@@ -137,7 +137,7 @@ esxi_hosts = {
         'ip' : k6,
         'username' : 'root',
         'password' : 'c0ntrail123',
-        'cluster' : 'c4k4rack14',
+        'cluster' : 'c4_cluster11',
         'datastore' : '/vmfs/volumes/k6-ds',
         'skip_reimage'  : 'true',
         'contrail_vm' : {
