@@ -6,9 +6,9 @@ os_username = 'admin'
 os_password = 'c0ntrail123'
 os_tenant_name = 'admin'
 
-host1 = 'root@10.204.217.6'
-host2 = 'root@i10.204.216.120'
-host3 = 'root@10.204.216.31'
+host1 = 'root@10.204.217.4'
+host2 = 'root@i10.204.217.128'
+host3 = 'root@10.204.217.130'
 
 ext_routers = [('blr-mx2', '10.204.216.245')]
 router_asn = 64512
@@ -41,7 +41,7 @@ env.physical_routers={
 }
 
 env.hostnames = {
-    'all': ['nodec21','nodea4', 'nodea35']
+    'all': ['nodec19','nodei16', 'nodei18']
 }
 
 
