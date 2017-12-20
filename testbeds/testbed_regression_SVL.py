@@ -529,6 +529,7 @@ env.tor_hosts={
 ##}
 ##
 do_parallel = True
+aaa_mode='rbac'
 #env.mail_from='chhandak@juniper.net'
 #env.mail_to='chhandak@juniper.net'
 env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
