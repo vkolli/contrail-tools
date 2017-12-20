@@ -94,6 +94,7 @@ EOF
         exit 1
     fi
     sshpass -p $TEST_HOST_PASSWORD scp $SSHOPT $container_image_path $TEST_HOST_STRING:/tmp/
+    TEST_SKU="mitaka"
     exec_cmds -s $TEST_HOST_STRING -p $TEST_HOST_PASSWORD -c "(
         docker  -v &> /dev/null ; rv=\$?
         if [ \$rv -ne 0 ]; then
@@ -142,7 +143,11 @@ function run_ansible_playbook() {
 }
 
 function update_all_yml() {
-    cp ${TOOLS_WS}/templates/all.yml.$AVAILABLE_TESTBEDS ${TOOLS_WS}/all.yml
+    if [[ $CB_SANITY -eq 1 ]]; then
+        cp ${TOOLS_WS}/templates/all_cb.yml.$AVAILABLE_TESTBEDS ${TOOLS_WS}/all.yml
+    else
+        cp ${TOOLS_WS}/templates/all.yml.$AVAILABLE_TESTBEDS ${TOOLS_WS}/all.yml
+    fi
     sed -i 's/contrail_version/'${BRANCH}'/g' ${TOOLS_WS}/all.yml
     sed -i 's/contrail_exact_version/'${EXACT_BRANCH}'/g' ${TOOLS_WS}/all.yml
     sed -i 's/build_id/'${BUILDID}'/g' ${TOOLS_WS}/all.yml
