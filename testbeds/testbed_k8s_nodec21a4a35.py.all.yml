@@ -11,5 +11,5 @@ kubernetes_public_fip_pool: {domain: default-domain, project: default, network: 
 
 controller_config: {bgp_asn: "64512"}
 webui_config: {http_listen_port: 10000}
-#vrouter_physical_interface: enp1s0f0
+vrouter_physical_interface: enp1s0f0
 controller_ip: 10.204.217.6
