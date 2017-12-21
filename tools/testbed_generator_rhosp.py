@@ -149,6 +149,7 @@ def create_testbed_file(pargs, hosts, openrc_dict):
         elif 'compute' == host['role']:
             env_roledefs['compute'].append(host_name)
 
+    env_password['host_build'] = 'c0ntrail123'
     env_roledefs['build'].append(host_name)
     control_data.pop('host_build')
     for k,v in env_roledefs.iteritems():
