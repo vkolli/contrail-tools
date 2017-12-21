@@ -22,8 +22,7 @@ function setup_sanity_base_simple {
     if [[ "$TEST_RUN_CMD" == *"control_node_scaling"* ]]; then
         copy_bgp_stress_test_binary # This is not going to work in container, this will need to happen while building the container
     fi
-    #Hardcoded test docker version from 4.0.2
-    sanity_cmd="sudo bash -x /usr/local/bin/testrunner.sh run -k /home/stack/.ssh/id_rsa -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-mitaka:${PACKAGE_VERSION}"
+    sanity_cmd="bash -x /usr/local/bin/testrunner.sh run -k /home/stack/.ssh/id_rsa -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-mitaka:${PACKAGE_VERSION}"
     if [ $PARALLEL_RUN -eq 1 ]; then
          EXTRA_RUN_TEST_ARGS="$EXTRA_RUN_TEST_ARGS -t "
     fi
@@ -116,7 +115,7 @@ EOF
         sudo mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
     )"
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l stack $UNDERCLOUD_IP "(
-        sed 's/x.x.x.x/$UNDERCLOUD_IP/' $HOME/testbed.py
+        sed -i 's/x.x.x.x/10.84.24.64/' $HOME/testbed.py
         sudo cp $HOME/testbed.py $HOME/contrail-test-runs/$SCRIPT_TIMESTAMP/testbed.py
     )"
     sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}$TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TOOLS_WS}/contrail-fabric-utils/fabfile/testbeds/testbed.py
@@ -142,6 +141,7 @@ function run_ansible_playbook() {
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l stack $UNDERCLOUD_IP "(
         source /home/stack/stackrc
         heat stack-delete overcloud 
+        sleep 10
     )"
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $HYPERVISOR_IP "(
 	cd /root/contrail-ooo-deployer/ 
@@ -158,7 +158,6 @@ function update_all_yml() {
     sed -i 's/contrail_version/'${BRANCH}'/g' ${TOOLS_WS}/all.yml
     sed -i 's/contrail_exact_version/'${EXACT_BRANCH}'/g' ${TOOLS_WS}/all.yml
     sed -i 's/build_id/'${BUILDID}'/g' ${TOOLS_WS}/all.yml
-    #sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/all.yml root@$HYPERVISOR_IP:/root/contrail-ooo-deployer.3.2.6/inventory/group_vars/all.yml
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/all.yml root@$HYPERVISOR_IP:/root/contrail-ooo-deployer/inventory/group_vars/all.yml
 }
 
