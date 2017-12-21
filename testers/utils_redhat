@@ -86,15 +86,22 @@ EOF
         echo "Unknown Distro - $DISTRO"
         exit 1
     fi
-    #container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
-    container_image_path=$TEST_DOCKER_PATH
+    TEST_SKU="mitaka"
+    if [[ $CB_SANITY -eq 1 ]]; then
+        TEST_CONTAINER_IMAGE_DIR="/cs-build/CB-${BRANCH}-ubuntu14-${TEST_SKU}/builds/lastSuccessfulBuild/archive/packages/"
+    else
+        TEST_CONTAINER_IMAGE_DIR="/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${TEST_SKU}/artifacts/"
+    fi
+    PKG_FILE=`ls ${TEST_CONTAINER_IMAGE_DIR}/contrail-install-packages_*.tgz`
+    pkg_file_name=`basename $PKG_FILE`
+    export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\)-.*/\1/'`
+    container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
     container_image_file=`basename $container_image_path`
     if [[ ! -f $container_image_path ]]; then
         echo "ERROR!! Container image $container_image_path doesnt exist"
         exit 1
     fi
     sshpass -p $TEST_HOST_PASSWORD scp $SSHOPT $container_image_path $TEST_HOST_STRING:/tmp/
-    TEST_SKU="mitaka"
     exec_cmds -s $TEST_HOST_STRING -p $TEST_HOST_PASSWORD -c "(
         docker  -v &> /dev/null ; rv=\$?
         if [ \$rv -ne 0 ]; then
