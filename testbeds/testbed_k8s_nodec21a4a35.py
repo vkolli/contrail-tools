@@ -12,7 +12,7 @@ host3 = 'root@10.204.216.31'
 
 ext_routers = [('blr-mx2', '10.204.216.245')]
 router_asn = 64512
-public_vn_rtgt = 33333
+public_vn_rtgt = 11314
 public_vn_subnet = '10.204.219.48/29'
 
 host_build = 'stack@10.204.216.49'
