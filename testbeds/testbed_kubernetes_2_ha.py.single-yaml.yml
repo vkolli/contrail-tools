@@ -18,13 +18,6 @@ data:
     analytics_nodes = 10.204.217.194,10.204.218.100,10.204.218.101
     analyticsdb_nodes = 10.204.217.194,10.204.218.100,10.204.218.101
     opscenter_ip = 10.204.217.194,10.204.218.100,10.204.218.101
-  controller-config: |-
-    [CONTROLLER]
-    encap_priority = VXLAN,MPLSoUDP,MPLSoGRE
-    bgp_asn = 64510
-  webui-config: |-
-    [WEBUI]
-    http_listen_port = 10000
   agent-config: |-
     [AGENT]
     compile_vrouter_module = True
@@ -176,22 +169,18 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
-        - mountPath: /tmp/contrailctl
-          name: tmp-contrail-config
+        - mountPath: /etc/contrailctl
+          name: contrail-config
         - mountPath: /var/lib/cassandra
           name: configdb-data
         - mountPath: /var/lib/zookeeper
           name: zookeeper-data
       volumes:
-      - name: tmp-contrail-config
+      - name: contrail-config
         configMap:
           name: contrail-config
           items:
           - key: global-config
-            path: global.conf
-          - key: webui-config
-            path: webui.conf
-          - key: controller-config
             path: controller.conf
       - name: configdb-data
         hostPath: 
