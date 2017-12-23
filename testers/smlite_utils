@@ -590,7 +590,7 @@ function run_smgr_task() {
     fi
     create_testbed || die "Failed to create required testbed details"
     reimage_setup_using_SM || debug_and_die "Reimage failed!"
-    JSON=`echo $TBFILE | sed 's/.py/.json/'`
+    JSON=`echo $TBFILE_NAME | sed 's/.py/.json/'`
     echo $JSON
     echo "JSON will be used to provision the setup."
     set_json_file_path || die "setting json file path for cluster and server failed"
