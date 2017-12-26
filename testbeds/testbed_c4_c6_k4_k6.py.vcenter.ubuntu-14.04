@@ -109,11 +109,11 @@ esxi_hosts = {
         'cluster' : 'c4_cluster11',
         'datastore' : '/vmfs/volumes/k4-ds',
         'skip_reimage'  : 'true',
+        'name' : 'nodek4',
         'contrail_vm' : {
             'name' : 'nodek4-compute-vm',
             'mac' : '00:50:56:aa:aa:03',
             'host' : host4,
-            'cluster' : 'c4k4rack14',
             'vmdk' : '/cs-shared/images/vcenter-vmdk/14.04/vmdk/ContrailVM-disk1.vmdk',
         }
     },
@@ -125,6 +125,7 @@ esxi_hosts = {
         'cluster' : 'c4_cluster11',
         'datastore' : '/vmfs/volumes/k5-ds',
         'skip_reimage'  : 'true',
+        'name' : 'nodek5',
         'contrail_vm' : {
             'name' : 'nodek5-compute-vm',
             'mac' : '00:50:56:aa:aa:04',
@@ -140,6 +141,7 @@ esxi_hosts = {
         'cluster' : 'c4_cluster11',
         'datastore' : '/vmfs/volumes/k6-ds',
         'skip_reimage'  : 'true',
+        'name' : 'nodek6',
         'contrail_vm' : {
             'name' : 'nodek6-compute-vm',
             'mac' : '00:50:56:aa:aa:05',
