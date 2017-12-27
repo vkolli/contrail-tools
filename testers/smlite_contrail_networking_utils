@@ -253,7 +253,11 @@ function provision_using_SMLite() {
         echo "Install SM-Lite and provision the target setup"
         dpkg -i /root/${SERVER_MANAGER_INSTALLER}
         sed -i '/server-manager provision -F/d' /opt/contrail/contrail_server_manager/provision_containers.sh
-        echo '\"image\":[{\"category\": \"package\", \"id\": \"openstack_image\", \"type\": \"$pkg_type\", \"path\": \"$openstk_pkg\", \"version\":\"$BUILDID\"},{\"category\": \"package\", \"id\": \"networking_image\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\", \"parameters\": {\"openstack_sku\": \"${OPENSTACK_SKU}\"}}]}' >> /root/${JSON}
+        if [[ $SKU =~ ocata ]]; then
+            echo '\"image\":[{\"category\": \"package\", \"id\": \"openstack_image\", \"type\": \"$pkg_type\", \"path\": \"$openstk_pkg\", \"version\":\"$BUILDID\"}]}' >> /root/${JSON}
+        else
+            echo '\"image\":[{\"category\": \"package\", \"id\": \"openstack_image\", \"type\": \"$pkg_type\", \"path\": \"$openstk_pkg\", \"version\":\"$BUILDID\"},{\"category\": \"package\", \"id\": \"networking_image\", \"type\": \"$pkg_type\", \"path\": \"$cntl_pkg\", \"version\":\"$BUILDID\", \"parameters\": {\"openstack_sku\": \"${OPENSTACK_SKU}\"}}]}' >> /root/${JSON}
+        fi
         if [ $SKIP_SMLITE_INSTALL -ne 0 ]
         then
             if [[ $SKU =~ ocata ]]; then
