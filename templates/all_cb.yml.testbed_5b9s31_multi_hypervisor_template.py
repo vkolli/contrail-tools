@@ -30,12 +30,12 @@ SATELLITE_KEY:
 SATELLITE_ORG:
 SATELLITE_VERSION:
 RH_POOL_ID: 8a85f9895cce2f3a015ccf0eb79749f8
-OPENSTACK_VERSION: ocata
+OPENSTACK_VERSION: sku
 ROOT_SSH_KEY: /root/.ssh/id_rsa.pub
 STACK_SSH_KEY: /home/stack/.ssh/id_rsa.pub
 CONTRAIL_VERSION: contrail_exact_version
 CONTRAIL_VERSION_BUILD: build_id
-CONTRAIL_PACKAGE_LOCATION: http://10.84.5.120/cs-build/jenkins-jobs/CB-contrail_version-redhat70-ocata/builds/build_id/archive/packages/
+CONTRAIL_PACKAGE_LOCATION: http://10.84.5.120/cs-build/jenkins-jobs/CB-contrail_version-redhat70-sku/builds/build_id/archive/packages/
 BUILD_DPDK_IMAGE: 'yes'
 # Optional parameter
 UNDERCLOUD_STATIC_IP: 10.87.67.76
