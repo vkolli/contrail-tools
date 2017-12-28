@@ -27,6 +27,7 @@ env.roledefs = {
     'collector': [host1],
     'database': [host1],
     'build': [host_build],
+    'contrail-kubernetes': [host1]
 }
 
 env.physical_routers={
@@ -70,7 +71,7 @@ env.ostypes = {
     host2: 'ubuntu',
     host3: 'ubuntu',
 }
-env.log_scenario='Kubernets Single-yaml Sanity'
+env.log_scenario='Kubernets Single Yaml Sanity'
 env.orchestrator='kubernetes'
 env.kubernetes = {
    'mode' : 'baremetal',

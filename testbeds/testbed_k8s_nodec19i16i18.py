@@ -12,7 +12,7 @@ host3 = 'root@10.204.217.130'
 
 ext_routers = [('blr-mx2', '10.204.216.245')]
 router_asn = 64512
-public_vn_rtgt = 33333
+public_vn_rtgt = 11314
 public_vn_subnet = '10.204.219.48/29'
 
 host_build = 'stack@10.204.216.49'
@@ -27,6 +27,7 @@ env.roledefs = {
     'collector': [host1],
     'database': [host1],
     'build': [host_build],
+    'contrail-kubernetes': [host1]
 }
 
 env.physical_routers={
@@ -70,7 +71,7 @@ env.ostypes = {
     host2: 'ubuntu',
     host3: 'ubuntu',
 }
-env.log_scenario='Kubernets Single-yaml Sanity'
+env.log_scenario='Kubernetes Single Yaml Sanity'
 env.orchestrator='kubernetes'
 env.kubernetes = {
    'mode' : 'baremetal',
