@@ -75,17 +75,17 @@ env.ostypes = {
 }
 
 bond= {
-    host6 : { 'name': 'bond0', 'member': ['eth1','eth2','eth3'],'mode':'802.3ad' },
+    host6 : { 'name': 'bond0', 'member': ['eno2','enp4s0f0','enp4s0f1'],'mode':'802.3ad' },
 }
 
 control_data = {
-    host1 : { 'ip': '192.168.100.14/24', 'gw' : '', 'device':'eth1' },
-    host2 : { 'ip': '192.168.100.15/24', 'gw' : '', 'device':'eth1' },
-    host3 : { 'ip': '192.168.100.11/24', 'gw' : '', 'device':'eth1' },
-    host4 : { 'ip': '192.168.100.12/24', 'gw' : '', 'device':'eth1' },
-    host5 : { 'ip': '192.168.100.13/24', 'gw' : '', 'device':'eth1' },
+    host1 : { 'ip': '192.168.100.14/24', 'gw' : '', 'device':'eno2' },
+    host2 : { 'ip': '192.168.100.15/24', 'gw' : '', 'device':'eno2' },
+    host3 : { 'ip': '192.168.100.11/24', 'gw' : '', 'device':'enp1s0f1' },
+    host4 : { 'ip': '192.168.100.12/24', 'gw' : '', 'device':'enp1s0f1' },
+    host5 : { 'ip': '192.168.100.13/24', 'gw' : '', 'device':'enp1s0f1' },
     host6 : { 'ip': '192.168.100.16/24', 'gw' : '', 'device':'bond0' },
-    host7 : { 'ip': '192.168.100.17/24', 'gw' : '', 'device':'p1p2' },
+    host7 : { 'ip': '192.168.100.17/24', 'gw' : '', 'device':'enp1s0f1' },
 }
 
 # VIP
@@ -95,14 +95,11 @@ env.ha = {
 }
 
 #To enable multi-tenancy feature
-enable_ceilometer = True
-ceilometer_polling_interval = 60
 env.enable_lbaas = True
-ha_setup = True
 multi_tenancy = True
 env.encap_priority =  "'VXLAN','MPLSoUDP','MPLSoGRE'"
 do_parallel = True
 env.test_repo_dir='/home/stack/smgr_github_ubuntu_multi_node/contrail-test'
 env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'
-env.log_scenario='SMLite Contrail Networking HA Sanity'
+env.log_scenario='SMLite Contrail Networking HA Ocata Multi Interface Sanity'
