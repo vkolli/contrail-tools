@@ -105,6 +105,13 @@ def fixup_tb_string(tb_string, hosts):
     tb_string = tb_string.replace('false', 'False')
     return tb_string
 
+def get_internal_vip():
+    rfile = "/home/stack/tripleo-heat-templates/environments/contrail/contrail-net-storage-mgmt.yaml"
+    for line in open(rfile, 'r'):
+        ip = re.search("ContrailVIP: (.*)", line)
+        if ip:
+            return ip.group(1)
+
 def create_testbed_file(pargs, hosts, openrc_dict):
     tb_filename = pargs.tb_filename
     host_string = set()
@@ -121,7 +128,10 @@ def create_testbed_file(pargs, hosts, openrc_dict):
     for host in hosts:
         host_name = gen_host_name(host['host_name'])
         host_names.append(host_name)
-        host_string.add("%s = '%s@%s'" %(host_name, login_name, host['mgmt_ip']))
+        if 'build' == host['role']:
+            host_string.add("%s = '%s@%s'" %(host_name, 'root', host['mgmt_ip']))
+        else:
+            host_string.add("%s = '%s@%s'" %(host_name, login_name, host['mgmt_ip']))
         env_roledefs['all'].append(host_name)
         env_password.update({host_name : 'SSH-KEY-SHARED'})
         node_vm_ip = host['mgmt_ip']
@@ -142,6 +152,7 @@ def create_testbed_file(pargs, hosts, openrc_dict):
             env_roledefs['cfgm'].append(host_name)
             env_roledefs['webui'].append(host_name)
             env_roledefs['control'].append(host_name)
+            env_test.update({'discovery_ip': host['mgmt_ip']})
         elif 'analytics' == host['role']:
             env_roledefs['collector'].append(host_name)
         elif 'analyticsdb' == host['role']:
@@ -155,6 +166,9 @@ def create_testbed_file(pargs, hosts, openrc_dict):
     for k,v in env_roledefs.iteritems():
         env_roledefs[k] = list(set(v))
     env_ha.update({'contrail_external_vip': openrc_dict['auth_ip']})
+    internal_VIP = get_internal_vip()
+    print internal_VIP
+    env_ha.update({'contrail_internal_vip': internal_VIP})
     env_keystone.update({'keystone_ip': openrc_dict['auth_ip']})
     env_keystone.update({'auth_protocol': openrc_dict['auth_protocol']})
     env_keystone.update({'auth_port': openrc_dict['auth_port']})
@@ -163,14 +177,13 @@ def create_testbed_file(pargs, hosts, openrc_dict):
     env_keystone.update({'admin_tenant': openrc_dict['admin_tenant']})
     env_keystone.update({'region_name': openrc_dict.get('region_name', 'regionOne')})
     env_keystone.update({'insecure': 'True'})
-
 #    update mail and web server detail under env_test
 #    env_test.update({'discovery_ip': hosts_dict['contrail_vip']})
 #    env_test.update({'config_api_ip': hosts_dict['contrail_vip']})
 #    env_test.update({'analytics_api_ip': hosts_dict['contrail_vip']})
 
     tb_list = list()
-#    tb_list.append("env.test = %s"%json.dumps(env_test, sort_keys=True, indent=4))
+    tb_list.append("env.test = %s"%json.dumps(env_test, sort_keys=True, indent=4))
     tb_list.append("env.keystone = %s"%json.dumps(env_keystone, sort_keys=True, indent=4))
     tb_list.append("env.ha = %s"%json.dumps(env_ha, sort_keys=True, indent=4))
 #    tb_list.append("control_data = %s"%json.dumps(control_data, sort_keys=True, indent=4))

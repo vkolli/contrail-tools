@@ -141,7 +141,7 @@ function run_ansible_playbook() {
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l stack $UNDERCLOUD_IP "(
         source /home/stack/stackrc
         heat stack-delete overcloud 
-        sleep 10
+        sleep 150
     )"
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $HYPERVISOR_IP "(
 	cd /root/contrail-ooo-deployer/ 
