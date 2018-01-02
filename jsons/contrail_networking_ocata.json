@@ -95,6 +95,10 @@
                     },
                     "openstack":{
                         "external_openstack_ip": "192.168.100.20",
+                        "rabbitmq": {
+                            "password": "contrail123",
+                            "user": "openstack"
+                        },
                         "keystone": {
                             "admin_password": "contrail123",
                             "admin_token": "admin"

@@ -102,4 +102,6 @@ do_parallel = True
 env.test_repo_dir='/home/stack/smgr_github_ubuntu_multi_node/contrail-test'
 env.mail_from='contrail-build@juniper.net'
 env.mail_to='dl-contrail-sw@juniper.net'
+env.xmpp_auth_enable=True
+env.xmpp_dns_auth_enable=True
 env.log_scenario='SMLite Contrail Networking HA Ocata Multi Interface Sanity'

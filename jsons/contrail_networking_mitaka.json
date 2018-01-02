@@ -11,6 +11,10 @@
                     },
                     "openstack":{
                         "openstack_manage_amqp": true,
+                        "rabbitmq": {
+                            "password": "contrail123",
+                            "user": "guest"
+                        },
                         "keystone": {
                             "admin_password": "contrail123",
                             "admin_token": "admin"
@@ -24,6 +28,10 @@
             "parameters" : {
                 "provision": {
                     "contrail_4": {
+                        "rabbitmq_config": {
+                            "password": "contrail123",
+                            "user": "guest"
+                        },
                         "global_config": {
                             "xmpp_dns_auth_enable": true,
                             "xmpp_auth_enable": true,
@@ -62,6 +70,10 @@
                     },
                     "openstack":{
                         "external_openstack_ip": "192.168.100.15",
+                        "rabbitmq": {
+                            "password": "contrail123",
+                            "user": "guest"
+                        },
                         "keystone": {
                             "admin_password": "contrail123",
                             "admin_token": "admin"
