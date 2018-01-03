@@ -11,11 +11,8 @@ function reimage_setup_using_SM {
 
     if [[ $DISTRO =~ ubuntu-14.04 ]]; then
         image_id="ubuntu-14.04.5"
-	image="/cs-shared/images/ubuntu-14.04.5-server-amd64.iso"
-        pkg_type="contrail-ubuntu-package"
-        iso_type="ubuntu"
-        SMID=ubuntu14$SKU${BUILDID}
-        isofile="/root/images/image145.json"
+    elif [[ $DISTRO =~ ubuntu-16 ]]; then
+        image_id="ubuntu-16.04.2.minimal"
     elif [[ ${CENTOS_72} -eq 1 ]];then
         image_id="centos-7.2"
 	image="/root/images/CentOS-7-x86_64-Minimal-1511.iso"
@@ -196,13 +193,18 @@ function provision_using_SMLite() {
         return 0
     fi
   
-    if [[ $DISTRO =~ ubuntu-14.04 ]]; then
+    if [[ $DISTRO =~ ubuntu ]]; then
         pkg_type="contrail-ubuntu-package"
         iso_type="ubuntu"
         SMID=ubuntu14$SKU${BUILDID}
-	OPENSTACK=${OPENSTACK_SKU}
+	if [[ $DISTRO =~ ubuntu-16 ]]; then
+            SMID=ubuntu16$SKU${BUILDID}
+        fi
+        OPENSTACK=${OPENSTACK_SKU}
         if [[ $SKU =~ mitaka ]]; then
             ubuntu_rel="trusty"
+        elif [[ $SKU =~ ocata ]]; then
+            ubuntu_rel="xenial"
         fi
     elif [[ ${CENTOS_72} -eq 1 ]];then
         pkg_type="contrail-centos-package"
@@ -258,9 +260,17 @@ function provision_using_SMLite() {
         fi
         if [ $SKIP_SMLITE_INSTALL -ne 0 ]
         then
-            /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
+            if [[ $SKU =~ ocata ]]; then
+                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON} -sku ocata
+            else
+                /opt/contrail/contrail_server_manager/provision_containers.sh -ni -j /root/${JSON}
+            fi
         else
-            /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON}
+            if [[ $SKU =~ ocata ]]; then
+                /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON} -sku ocata
+            else
+                /opt/contrail/contrail_server_manager/provision_containers.sh -j /root/${JSON}
+            fi
         fi
         server-manager provision -F --cluster_id ${OS_CLUSTER_NAME} openstack_image
     ) "
@@ -361,7 +371,7 @@ function run_smgr_task() {
         exit 1
     fi
 
-    if [ -z $OS_CLUSTER_NAME ] && [ -z $CLUSTER_NAME ] && [ -z $SERVER_NAME ]; then
+    if [ -z $OS_CLUSTER_NAME ] && [ -z $CLUSTER_NAME ]; then
         echo "CLUSTER_NAME/SERVER_NAME env is not set, aborting the process"
         exit 1
     fi
@@ -369,7 +379,7 @@ function run_smgr_task() {
     reimage_setup_using_SM || debug_and_die "reimage failed"
     if [ -z JSON ]; then
         echo "JSON env variables is not set."
-	echo "testbed.py will be used to provision the setup."
+	exit 1
     else
         echo "JSON will be used to provision the setup."
 	set_json_file_path || die "setting json file path for cluster and server failed"
