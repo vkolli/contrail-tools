@@ -49,6 +49,7 @@
             "parameters" : {
                 "provision": {
                     "contrail_4": {
+                        "openstack_sku": "ocata",
                         "rabbitmq_config": {
                             "password": "contrail123",
                             "user": "openstack"
@@ -92,6 +93,9 @@
                         "rabbitmq": {
                             "password": "contrail123",
                             "user": "openstack"
+                        },
+                        "neutron": {
+                            "shared_secret": "contrail123"
                         },
                         "keystone": {
                             "admin_password": "contrail123",
