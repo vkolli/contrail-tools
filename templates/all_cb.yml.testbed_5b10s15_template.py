@@ -39,4 +39,5 @@ CONTRAIL_VERSION: contrail_exact_version
 CONTRAIL_VERSION_BUILD: build_id
 CONTRAIL_PACKAGE_LOCATION: http://10.84.5.120/cs-build/jenkins-jobs/CB-contrail_version-redhat70-sku/builds/build_id/archive/packages/
 #CONTRAIL_PACKAGE_LOCATION: http://10.84.5.120/github-build/contrail_version/build_id/redhat70/sku/artifacts/
+NTP_SERVER_UNDERCLOUD: 172.21.200.60
 BUILD_DPDK_IMAGE: 'yes'
