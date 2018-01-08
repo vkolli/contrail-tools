@@ -148,6 +148,7 @@ def create_testbed_file(pargs, hosts, openrc_dict):
         control_data.update({host_name : {'ip': control_data_ip + '/24', 'gw': '10.0.0.1', 'device':ctrl_gw},})
         if 'openstack' == host['role']:
             env_roledefs['openstack'].append(host_name)
+            env_cfgm.update({'amqp_hosts': [control_data_ip]})
         elif 'controller' == host['role']:
             env_roledefs['cfgm'].append(host_name)
             env_roledefs['webui'].append(host_name)
@@ -186,6 +187,8 @@ def create_testbed_file(pargs, hosts, openrc_dict):
     tb_list.append("env.test = %s"%json.dumps(env_test, sort_keys=True, indent=4))
     tb_list.append("env.keystone = %s"%json.dumps(env_keystone, sort_keys=True, indent=4))
     tb_list.append("env.ha = %s"%json.dumps(env_ha, sort_keys=True, indent=4))
+#   Currently works for non-HA, need enhancement for HA
+    tb_list.append("env.cfgm = %s"%json.dumps(env_cfgm, sort_keys=True, indent=4))
 #    tb_list.append("control_data = %s"%json.dumps(control_data, sort_keys=True, indent=4))
     tb_list.append("env.roledefs = %s"%json.dumps(env_roledefs, sort_keys=True, indent=4))
     tb_list.append("env.openstack_admin_password = '%s'"%

@@ -1022,9 +1022,6 @@ function set_other_test_params {
          export CT_GENERATE_HTML_REPORT=\"$GENERATE_HTML_REPORT\";
          export CT_KEYPAIR_NAME=\"$KEYPAIR_NAME\";
          export CT_MAIL_SENDER=\"$MAIL_SENDER\";
-         export CT_DISCOVERY_IP=\"$DISCOVERY_IP\";
-         export CT_CONFIG_API_IP=\"$CONFIG_API_IP\";
-         export CT_ANALYTICS_API_IP=\"$ANALYTICS_API_IP\";
          export CT_DISCOVERY_PORT=\"$DISCOVERY_PORT\";
          export CT_CONFIG_API_PORT=\"$CONFIG_API_PORT\";
          export CT_ANALYTICS_API_PORT=\"$ANALYTICS_API_PORT\";
@@ -1037,6 +1034,15 @@ function set_other_test_params {
          export CT_OS_INSECURE=\"$OS_INSECURE\";
          export CT_AUTH_PROTOCOL=\"$AUTH_PROTOCOL\";
          export CT_ENABLE_RBAC=\"$ENABLE_RBAC\";"
+    if [ ! -z $DISCOVERY_IP ] ; then
+         val+="export CT_DISCOVERY_IP=\"$DISCOVERY_IP\";"
+    fi
+    if [ ! -z $ANALYTICS_API_IP ] ; then
+         val+="export CT_ANALYTICS_API_IP=\"$ANALYTICS_API_IP\";"
+    fi
+    if [ ! -z $CONFIG_API_IP ] ; then
+         val+="export CT_CONFIG_API_IP=\"$CONFIG_API_IP\";"
+    fi
     echo $val
 }
 
