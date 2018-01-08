@@ -40,4 +40,5 @@ STACK_SSH_KEY: /home/stack/.ssh/id_rsa.pub
 CONTRAIL_VERSION: contrail_exact_version
 CONTRAIL_VERSION_BUILD: build_id
 CONTRAIL_PACKAGE_LOCATION: http://10.84.5.120/github-build/contrail_version/build_id/redhat70/sku/artifacts/
+NTP_SERVER_UNDERCLOUD: 10.84.5.100
 BUILD_DPDK_IMAGE: 'yes'

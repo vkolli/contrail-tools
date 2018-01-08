@@ -38,6 +38,6 @@ CONTRAIL_VERSION_BUILD: build_id
 CONTRAIL_PACKAGE_LOCATION: http://10.84.5.120/cs-build/jenkins-jobs/CB-contrail_version-redhat70-sku/builds/build_id/archive/packages/
 BUILD_DPDK_IMAGE: 'yes'
 # Optional parameter
-NTP_SERVER_UNDERCLOUD: 10.84.5.100
+NTP_SERVER_UNDERCLOUD: 172.21.200.60
 UNDERCLOUD_STATIC_IP: 10.87.67.76
 UNDERCLOUD_MAC: 52:54:00:2b:fe:76
