@@ -12,6 +12,7 @@ host6 = 'root@10.204.217.132'
 host7 = 'root@10.204.217.168'
 
 ext_routers = [('blr-mx2','192.168.100.100')]
+fabric_gw = [('sw166', '10.204.217.254')]
 router_asn = 64512
 public_vn_rtgt = 8168
 public_vn_subnet = '10.204.219.168/29'
