@@ -76,8 +76,7 @@
 			"horizon_port": 8898,
                         "network_interface": "eno1",
                         "neutron_external_interface": "eno2",
-                        "keepalived_virtual_router_id": 217,
-                        "fluentd_image_full": "kolla/ubuntu-binary-fluentd:4.0.0"
+                        "keepalived_virtual_router_id": 217
                     }
                 }
             }, 
