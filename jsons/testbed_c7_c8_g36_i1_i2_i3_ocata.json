@@ -103,12 +103,12 @@
                         "default_gateway": "10.204.216.254"
                     },
                     {
-                        "name": "eno2",
+                        "name": "enp1s0f1",
                         "mac_address": "00:25:90:c3:09:0b",
                         "ip_address": "192.168.192.6/24"
                     }
                 ],
-                "management_interface": "enp1s0f1"
+                "management_interface": "enp1s0f0"
             },
             "roles": [
                 "openstack",
