@@ -107,7 +107,7 @@ env.ha = {
     'contrail_internal_vip' : '192.168.192.4',
     'contrail_external_vip' : '10.204.217.76',
     'internal_vip' : '192.168.192.8',
-    'external_vip' : '192.168.192.8'
+    'external_vip' : '10.204.216.130'
 }
 
 env.test = {

@@ -33,7 +33,7 @@
                         }, 
                         "ha": {
                             "internal_vip": "192.168.192.8", 
-                            "external_vip": "192.168.192.8"
+                            "external_vip": "10.204.216.130"
                         }, 
                         "neutron": {
                             "shared_secret": "contrail123"
