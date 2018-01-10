@@ -97,6 +97,8 @@ control_data = {
 env.ha = {
     'contrail_internal_vip' : '192.168.100.12',
     'contrail_external_vip' : '10.204.217.77',
+    'internal_vip' : '192.168.100.20',
+    'external_vip' : '10.204.217.184'
 }
 
 #To enable multi-tenancy feature
