@@ -317,8 +317,8 @@ function copy_vmdk() {
 
     vmdk_path="/cs-shared/contrail-vcenter/vmdk/$distro_vmdk/LATEST"
 
-    exec_cmds -s ${API_SERVER_HOST_STRING} -p ${API_SERVER_HOST_PASSWORD} -c "mkdir -p /root/vmdk"
-    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${vmdk_path}/${vmdk_image} ${API_SERVER_HOST_STRING}:/root/vmdk/vmdk.tar
+    exec_cmds -s ${SMLITE_SERVER} -p ${API_SERVER_HOST_PASSWORD} -c "mkdir -p /root/vmdk"
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${vmdk_path}/${vmdk_image} ${SMLITE_SERVER}:/root/vmdk/vmdk.tar
 
     if [ $? == 0 ]
     then
@@ -595,6 +595,10 @@ function run_smgr_task() {
     echo "JSON will be used to provision the setup."
     set_json_file_path || die "setting json file path for cluster and server failed"
 
+    if [ -z $SMLITE_SERVER ];then
+        SMLITE_SERVER=$API_SERVER_HOST_STRING
+    fi
+
     # esxi/vcenter setup, cleanup vcenter and dockers
     if [[ ( $VCENTER_ONLY_TESTBED -eq 1 ) || ( $VCENTER_AS_COMPUTE_TESTBED -eq 1 ) ]]; then
 	if [[ ( $VCENTER_ONLY_TESTBED -eq 1 ) ]]; then
@@ -608,9 +612,6 @@ function run_smgr_task() {
         else
             copy_vmdk || die "copy of vmdk image failed"
         fi
-    fi
-    if [ -z $SMLITE_SERVER ];then
-        SMLITE_SERVER=$API_SERVER_HOST_STRING
     fi
     provision_using_SMLite || die "provision failed"
     #add_sourcelist_SMLite || die "source.list copy failed on all target nodes"
