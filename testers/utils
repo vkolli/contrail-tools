@@ -571,6 +571,9 @@ function bringup_setup {
     if [[ $VCENTER_ONLY_TESTBED -eq 1 || $VCENTER_AS_COMPUTE_TESTBED -eq 1 ]]; then
         # for vcenter: setup the datastore on each esx
         fab prov_vcenter_datastores
+	run_fab cleanup_vcenter
+        fab prov_esxi
+        sleep 60
     fi
 
     # copy contrail-package on all node
@@ -579,9 +582,6 @@ function bringup_setup {
 
     if [[ $VCENTER_ONLY_TESTBED -eq 1  || $VCENTER_AS_COMPUTE_TESTBED -eq 1 ]]; then
         # register the setup with vcenter server
-        run_fab cleanup_vcenter
-	fab prov_esxi
-        sleep 60
         run_fab setup_vcenter
         sleep 120
     fi
