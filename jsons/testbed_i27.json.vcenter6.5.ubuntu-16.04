@@ -212,6 +212,46 @@
         "roles": [
             "contrail-compute"
         ]
+    },
+    {   
+        "cluster_id": "cluster-esxi-new",
+        "domain": "englab.juniper.net",
+        "host_name": "nodei11-compute-vm",
+        "id": "nodei11-compute-vm",
+        "ip_address": "10.204.217.181",
+        "network": {
+            "interfaces": [
+                {   
+                    "dhcp": true,
+                    "ip_address": "10.204.217.181",
+                    "mac_address": "00:50:56:a6:25:04",
+                    "name": "ens160",
+                    "default_gateway": "10.204.217.254"
+                }
+            ],
+            "management_interface": "ens160"
+        },
+        "parameters": {
+            "esxi_parameters": {
+                "cluster": "i27_cluster11",
+                "contrail_vm": {
+                    "vmdk": "/root/vmdk/vmdk.tar",
+                    "control_data_switch": "vSwitch0",
+                    "mgmt_pg": "contrail-fab-pg"
+                },
+                "datacenter": "i27_datacenter11",
+                "datastore": "nodei11-ds",
+                "name": "10.204.217.123",
+                "password": "c0ntrail123",
+                "username": "root",
+                "validate_certs": false,
+                "vcenter_server": "server1"
+            }
+        },
+        "password": "c0ntrail123",
+        "roles": [
+            "contrail-compute"
+        ]
     }
  ]
 }
