@@ -571,7 +571,6 @@ function bringup_setup {
     if [[ $VCENTER_ONLY_TESTBED -eq 1 || $VCENTER_AS_COMPUTE_TESTBED -eq 1 ]]; then
         # for vcenter: setup the datastore on each esx
         fab prov_vcenter_datastores
-	run_fab cleanup_vcenter
         fab prov_esxi
         sleep 60
     fi
@@ -1233,6 +1232,7 @@ function debug_and_die
         collect_tech_support
         if [[ $VCENTER_ONLY_TESTBED -eq 1  || $VCENTER_AS_COMPUTE_TESTBED -eq 1 ]]; then
             # deregister the setup from vcenter server
+	    run_fab cleanup_vcenter
             echo "Locking testbed $tb_lock_file for debugging"
             #run_fab cleanup_vcenter
         fi
@@ -1453,6 +1453,10 @@ function run_task() {
         install_third_party_pkgs || die "installing GDB/ant failed"
         install_dep_pkgs_for_test
         run_sanity || die "Run_sanity step failed"
+    fi
+    if [[ $VCENTER_ONLY_TESTBED -eq 1  || $VCENTER_AS_COMPUTE_TESTBED -eq 1 ]]; then
+        # deregister the setup with vcenter server
+        run_fab cleanup_vcenter
     fi
     run_tempest || die "Run_Tempest step failed"
     echo "Test Done"
