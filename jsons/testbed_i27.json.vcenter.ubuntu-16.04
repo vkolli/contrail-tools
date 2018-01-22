@@ -21,6 +21,7 @@
                             "external_rabbitmq_servers": "10.204.217.139, 10.204.217.140, 10.204.217.144"
                     },
                     "enable_lbaas": true,
+                    "metadata_ssl_enable": true,
                     "vcenter_servers": [
                         {   
                             "server1": {
