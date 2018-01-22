@@ -13,9 +13,11 @@ esx3 = 'root@10.204.217.123'
 host_build = 'stack@10.204.216.49'
 
 ext_routers = [('ishant','10.204.216.247')]
+fabric_gw = [('sw166', '10.204.217.254')]
 router_asn = 64512
 public_vn_rtgt = 80808
 public_vn_subnet = '10.204.220.64/26'
+use_devicemanager_for_md5 = True
 
 if os.getenv('HA_TEST',None) == 'True':
     env.roledefs = {
@@ -172,3 +174,6 @@ env.ntp_server = '10.204.217.158'
 env.optional_services = {
     'cfgm' : ['device-manager'],
 }
+env.xmpp_auth_enable=True
+env.xmpp_dns_auth_enable=True
+env.metadata_ssl_enable = True
