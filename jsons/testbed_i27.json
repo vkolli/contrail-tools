@@ -15,6 +15,12 @@
                             "ishant": "10.204.216.247"
                         }
                     },
+		    "global_config": {
+                            "xmpp_dns_auth_enable": true,
+                            "xmpp_auth_enable": true,
+                            "external_rabbitmq_servers": "10.204.217.139, 10.204.217.140, 10.204.217.144"
+                    },
+                    "enable_lbaas": true,
                     "vcenter_servers": [
                         {   
                             "server1": {
