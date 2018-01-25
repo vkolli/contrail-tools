@@ -213,6 +213,7 @@ function run_redhat_task() {
             return 0
         fi
         setup_sanity_base_simple
+        run_tempest || die "Run_Tempest step failed"
     else
         add_sourcelist || die "source.list copy failed on all target nodes"
         install_third_party_pkgs || die "installing GDB/ant failed"
@@ -220,7 +221,7 @@ function run_redhat_task() {
         run_sanity || debug_and_die "Run_sanity step failed"
     fi
 
-    run_tempest || die "Run_Tempest step failed"
+    #run_tempest || die "Run_Tempest step failed"
     collect_tech_support || die "Task to collect logs/cores failed"
     #delete_stacks || die "Failed to delete stacks"
     echo "Ending test on "${AVAILABLE_TESTBEDS}
