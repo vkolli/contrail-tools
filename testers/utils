@@ -1342,6 +1342,8 @@ function command_exists() {
 
 
 function run_tempest {
+    echo $SKIP_TEMPEST
+    echo 'Testing code shaju'
     if [ $SKIP_TEMPEST -ne 0 ] 
     then 
         return 0
