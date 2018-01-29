@@ -214,7 +214,6 @@ function run_redhat_task() {
         else
            echo "Skipping sanity please check SKIP_SANITY value"
         fi
-        setup_sanity_base_simple
         run_tempest || die "Run_Tempest step failed"
     else
         add_sourcelist || die "source.list copy failed on all target nodes"
