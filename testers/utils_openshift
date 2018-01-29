@@ -181,13 +181,13 @@ function copy_tools_files_to_ansible_node() {
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/ose-install.template root@$ANSIBLE_IP:${ANSIBLE_WS}
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/testbeds/$TBFILE root@$ANSIBLE_IP:${ANSIBLE_WS}/testbed.py
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/tools/update_ose_install.py root@$ANSIBLE_IP:${ANSIBLE_WS}
-    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/tools/setup_ssh_keys.py root@$ANSIBLE_IP:${ANSIBLE_WS}
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/tools/setup_ssh_keys_openshift.py root@$ANSIBLE_IP:${ANSIBLE_WS}
 
 }
 
 function enable_passwordless_ssh() {
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $ANSIBLE_IP " (
-    python ${ANSIBLE_WS}/setup_ssh_keys.py ${ANSIBLE_WS}/testbed.py
+    python ${ANSIBLE_WS}/setup_ssh_keys_openshift.py ${ANSIBLE_WS}/testbed.py
     )"
 }
 
