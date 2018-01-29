@@ -19,23 +19,9 @@ function launch_testbed_virtual() {
         #Check if reimage param is set, otherwise use distro for launching VMs
         if [ -z "$REIMAGE_PARAM" ]
         then
-            if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
-            then
-                echo "build_infra_mainline"
-                ./build_infra_mainline.sh ${TEMPLATE_DIR} ${DISTRO} ${BASE_CLUSTER} 
-            else
-                echo "build_infra"
-                ./build_infra.sh ${TEMPLATE_DIR} ${DISTRO} ${BASE_CLUSTER}
-            fi
+            ./build_infra_openshift.sh ${TEMPLATE_DIR} ${DISTRO} ${BASE_CLUSTER} 
         else
-            if [[ ( ${BRANCH} > "R3.2.99" ) || ( ${BRANCH} == "mainline" ) ]]
-            then
-                echo "build_infra_mainline"
-                ./build_infra_mainline.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM} ${BASE_CLUSTER}
-            else
-                echo "build_infra"
-                ./build_infra.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM} ${BASE_CLUSTER}
-            fi
+            ./build_infra_openshift.sh ${TEMPLATE_DIR} ${REIMAGE_PARAM} ${BASE_CLUSTER}
         fi
         if [ $? == 0 ]
         then
