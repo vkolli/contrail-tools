@@ -1762,8 +1762,8 @@ def create_testbedpy_file_mainline():
         file_str = file_str + "env.orchestrator='kubernetes'\n\n"
         file_str = file_str + "env.kubernetes = {\n"
         file_str = file_str + "'mode' : 'baremetal',\n"
-        file_str = file_str + "'master': role_per_server_mapping["contrail-cfgm"],\n"
-        file_str = file_str + "'slaves': role_per_server_mapping["contrail-compute"].\n"
+        file_str = file_str + "'master': %s,\n" %role_per_server_mapping["contrail-cfgm"]
+        file_str = file_str + "'slaves': %s\n" %role_per_server_mapping["contrail-compute"]
         file_str = file_str + "}\n\n"
 
         file_str = file_str + "env.interface_rename = False\n\n"

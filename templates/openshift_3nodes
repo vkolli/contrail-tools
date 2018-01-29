@@ -8,7 +8,7 @@
 			"no_of_networks" : 1,
 			"network_stack_name" : "test_network_final",
 			"server_stack_name" : "test_server_final",
-			"project_uuid" : "93e30a58-3825-437f-9369-75c015d52f08"	
+			"project_uuid" : "project_uuid_val"
 		},
 		"networks":{
 			"final_test_network_1":{
@@ -20,7 +20,7 @@
 		},
 		"floating_ip_network":{
                         "param":{
-                                "floating_ip_network_uuid" : "26c2b374-8bc6-4ef2-abd0-2da9b6a114e6",
+                                "floating_ip_network_uuid" : "fip_uuid",
                                 "name" : "floatingIpPool_final_script_test"
                         }
                 },
@@ -34,7 +34,7 @@
 						"image" : "openshift-enterprise",
 						"floating_ip" : "true",
 						"server_manager" : "flase",
-                                                "roles" : ["contrail-controller", "contrail-analytics", "contrail-analyticsdb"]
+                                                "roles" : ["contrail-controller", "contrail-analytics", "contrail-analyticsdb", "openstack"]
 					},
 					"server2":{
                                                 "name":"server2" ,

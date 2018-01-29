@@ -27,7 +27,7 @@ echo "Change Premissions on cloud_init.sh file"
 chmod 777 /root/$1/cloud_init.sh
 
 echo "Lets See if the Server Manager OS is already added to openstack"
-python /root/$1/inp_to_yaml_openshift.py /root/$1/input.json add_sm_os_to_openstack
+python /root/$1/inp_to_yaml.py /root/$1/input.json add_sm_os_to_openstack
 echo "Server Manager OS added"
 
 #Adding the recommended flavor for the VM on the base cluster
@@ -172,7 +172,7 @@ then
 	echo "server-manager-file now created that conatins server manager IP"
 	python /root/$1/inp_to_yaml.py /root/$1/input.json get_config_node_ip_mainline > /root/$1/config-node-ip
 	echo "config-node-ip file now created that contains config node IP"
-	python /root/$1/inp_to_yaml.py /root/$1/input.json create_testbedpy_file_mainline > /root/$1/testbed.py
+	python /root/$1/inp_to_yaml_openshift.py /root/$1/input.json create_testbedpy_file_mainline > /root/$1/testbed.py
 	echo "Testbed.py file created that will be used for running the tests on the overlay cluster"
 	python /root/$1/inp_to_yaml.py /root/$1/input.json get_control_data_ip_sm > /root/$1/sm-control-data-ip
 	echo "Server Manager control data network ip is created "
