@@ -1660,13 +1660,8 @@ def create_testbedpy_file_mainline():
                                 "   host%s : { 'ip': '%s', 'gw' : '%s', 'device': 'eth1'},\n" % (
                                     str(itr), control_ip, gateway)
 
-                if server_dict[clus][i]["floating_ip"] == 'true':
-                    fip_dict_1 = get_all_fip_dict()
-                    file_str = file_str + \
-                        "host%s = 'root@%s'\n" % (str(itr), fip_dict_1[(server_dict[clus][i]["name"])])
-                else:    
-                    file_str = file_str + \
-                        "host%s = 'root@%s'\n" % (str(itr), manag_ip)
+                file_str = file_str + \
+                    "host%s = 'root@%s'\n" % (str(itr), manag_ip)
                 #file_str = file_str + \
                 #    "host%s = 'root@%s'\n" % (str(itr), manag_ip)
                 if "env_password" in testbed_py_dict[clus]:
