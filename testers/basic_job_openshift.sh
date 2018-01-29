@@ -7,5 +7,5 @@ source $TOOLS_WS/testers/utils_openshift
 testbeds=(${AVAILABLE_TESTBEDS//,/ })
 echo "AVAILABLE TESTBEDS : ${testbeds[@]}"
 get_testbed
-run_openshift_virtual_task
+run_openshift_task
 unlock_testbed $TBFILE_NAME

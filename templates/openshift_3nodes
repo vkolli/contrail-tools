@@ -31,34 +31,34 @@
 						"name":"server1" , 
 						"ip_address" : { "final_test_network_1":"10.0.0.4"},
 						"flavor" : "m1.xxlarge",
-						"image" : "openshift",
+						"image" : "openshift-enterprise",
 						"floating_ip" : "true",
 						"server_manager" : "flase",
-						"roles" : ["openstack"]
+                                                "roles" : ["contrail-controller", "contrail-analytics", "contrail-analyticsdb"]
 					},
 					"server2":{
                                                 "name":"server2" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.5"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "openshift",
+                                                "image" : "openshift-enterprise",
                                                 "floating_ip" : "true",
-                                                "server_manager" : "flase",
-                                                "roles" : ["contrail-controller", "contrail-analytics", "contrail-analyticsdb"]
+                                                "server_manager" : "false",
+                                                "roles" : ["contrail-compute"]
                                         },
 					"server3":{
                                                 "name":"server3" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.6"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "openshift",
+                                                "image" : "openshift-enterprise",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["contrail-compute"]
                                         },
                                         "servermanager":{
                                                 "name":"servermanager" ,
-                                                "ip_address" : { "final_test_network_1":"10.0.0.9", "final_test_network_2":"10.10.0.9"},
+                                                "ip_address" : { "final_test_network_1":"10.0.0.9"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "ubuntu-14-04",
+                                                "image" : "ansible",
                                                 "floating_ip" : "true",
                                                 "roles" : ["sm"],
                                                 "server_manager" : "true"
@@ -89,6 +89,7 @@
                         		}
                 		},
 				"testbed_py_params": {
+                                        "use_fip_in_testbed_file": "false",
 					"env_password": "c0ntrail123",
 					"env_ostypes" : "redhat70",
 					"openstack_admin_password" : "c0ntrail123",

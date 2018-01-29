@@ -46,7 +46,7 @@ function launch_testbed_virtual() {
         fi
     ) "
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/server-manager-file ${TOOLS_WS}/
-    export SM_SERVER_IP=`cat ${TOOLS_WS}/server-manager-file`
+    export ANSIBLE_IP=`cat ${TOOLS_WS}/server-manager-file`
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/config-node-ip ${TOOLS_WS}/
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/info.txt ${TOOLS_WS}/
     sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/sm-control-data-ip ${TOOLS_WS}/
@@ -62,41 +62,150 @@ function delete_stacks() {
     )"
 }
 
-function update_byo_yml() {
-    #Function to get node IPs from testbed.py
-    #sed into the ose-install template
+
+function setup_testnode {
+    if [[ $TEST_DISTRO =~ ^(centos|redhat) ]]; then
+        PACKAGE_INSTALL_CMD="
+        tee /etc/yum.repos.d/docker.repo <<-'EOF'
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/\$releasever/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+        yum install -y docker-engine-1.8.3 ;\
+        service docker start
+        "
+    elif [[ $TEST_DISTRO =~ 'ubuntu' ]]; then
+        PACKAGE_INSTALL_CMD="
+        DEBIAN_FRONTEND=noninteractive ; \
+        apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D && \
+        echo 'deb https://apt.dockerproject.org/repo ubuntu-trusty main'  > /etc/apt/sources.list.d/docker.list && \
+        echo 'deb http://cz.archive.ubuntu.com/ubuntu trusty main'  > /etc/apt/sources.list.d/ubuntu-archive.list && \
+        apt-get -y update; apt-get install -y --force-yes docker-engine
+        "
+    else
+        echo "Unknown Distro - $DISTRO"
+        exit 1
+    fi
+    if [[ $CB_SANITY -eq 1 ]]; then
+        if [[ $DISTRO =~ ubuntu-16 ]]; then
+            container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/docker-image-*.tar.gz`
+        fi
+    else
+        container_image_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts/docker-image-contrail-test-${SKU}*.tar.gz`
+    fi
+    container_image_file=`basename $container_image_path`
+    if [[ ! -f $container_image_path ]]; then
+        echo "ERROR!! Container image $container_image_path doesnt exist"
+        exit 1
+    fi
+    random_str=${RANDOM}
+    tmp_container_image_file="/tmp/${random_str}_${container_image_file}"
+    sshpass -p $TEST_HOST_PASSWORD scp $SSHOPT $container_image_path $TEST_HOST_STRING:${tmp_container_image_file}
+    exec_cmds -s $TEST_HOST_STRING -p $TEST_HOST_PASSWORD -c "(
+        docker  -v &> /dev/null ; rv=\$?
+        if [ \$rv -ne 0 ]; then
+            $PACKAGE_INSTALL_CMD
+        fi
+        s=$(docker images -q ${TEST_RUN}-${TEST_SKU}:${PACKAGE_VERSION} | grep -c [a-z])
+        wget -O /usr/local/bin/testrunner.sh https://raw.githubusercontent.com/Juniper/contrail-test-ci/master/testrunner.sh
+        chmod +x /usr/local/bin/testrunner.sh
+        if [ \$s -eq 0 ]; then
+            testrunner.sh load  ${tmp_container_image_file}
+            rm -f ${tmp_container_image_file}
+        fi
+        mkdir -p ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}
+    )"
+    sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT}${TOOLS_WS}/testbeds/${tb_filename} $TEST_HOST_STRING:${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py
 }
 
+
+
 function run_openshift_ansible() {
-    export OPENSHIFT_ANSIBLE=$TOOLS_WS/openshift-ansible
-    update_ose-install || debug_and_die "Failed to update byo yml"
-    cd $OPENSHIFT_ANSIBLE
-    ansible-playbook -i inventory/byo/ose-install playbooks/byo/config.yml
+    export OPENSHIFT_ANSIBLE=${ANSIBLE_WS}/openshift-ansible
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $ANSIBLE_IP " (
+        cd $ANSIBLE_WS
+        rm -rf /root/docker_images/
+        rm -rf $OPENSHIFT_ANSIBLE
+        rm -rf $OPENSHIFT_ANSIBLE/inventory/byo/ose-install
+        git clone https://github.com/savithruml/openshift-ansible -b contrail-openshift
+        mkdir /root/docker_images/
+        wget -O /root/docker_images/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz http://10.84.5.120/github-build/${BRANCH}/${BUILDID}/redhat70/ocata/artifacts/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz
+        cd $OPENSHIFT_ANSIBLE
+        cp $ANSIBLE_WS/ose-install.template $OPENSHIFT_ANSIBLE/inventory/byo/ose-install
+        python ${ANSIBLE_WS}/update_ose_install.py $OPENSHIFT_ANSIBLE/inventory/byo/ose-install ${ANSIBLE_WS}/testbed.py
+        ansible-playbook -i inventory/byo/ose-install inventory/byo/ose-prerequisites.yml
+        ansible-playbook -i inventory/byo/ose-install playbooks/byo/openshift_facts.yml
+        ansible-playbook -i inventory/byo/ose-install playbooks/byo/config.yml -e openshift_disable_check=disk_availability,docker_storage
+    )"
+}
+
+function update_ose_install() {
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $ANSIBLE_IP " (
+        python ${ANSIBLE_WS}/update_ose_install.py $OPENSHIFT_ANSIBLE/inventory/byo/ose-install ${ANSIBLE_WS}/testbed.py
+    )"
 }
 
 function copy_contrail_ansible() {
-    export CONTRAIL_ANSIBLE=$TOOLS_WS/contrail-ansible
-    mkdir $CONTRAIL_ANSIBLE && cd $CONTRAIL_ANSIBLE
-    wget http://10.84.5.120/github-build/R4.0/20/ubuntu-14-04/mitaka/artifacts_extra/contrail-ansible-4.0.0.0-20.tar.gz
-    tar -xvzf contrail-ansible-4.0.0.0-20.tar.gz
-    mkdir playbooks/container_images && cd playbooks/container_images
-    wget http://10.84.5.120/github-build/R4.0/20/ubuntu-14-04/mitaka/artifacts/contrail-kubernetes-docker-images_4.0.0.0-20.tgz
-    
-    
+    export CONTRAIL_ANSIBLE=${ANSIBLE_WS}/contrail-ansible
+    sed -i 's/contrail_version/'${BRANCH}'/g' ${TOOLS_WS}/all.yml
+    sed -i 's/contrail_exact_version/'${EXACT_BRANCH}'/g' ${TOOLS_WS}/all.yml
+    sed -i 's/build_id/'${BUILDID}'/g' ${TOOLS_WS}/all.yml
+    sed -i 's/sku/'${SKU}'/g' ${TOOLS_WS}/all.yml
+
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $ANSIBLE_IP " (
+        mkdir $CONTRAIL_ANSIBLE
+        cd $CONTRAIL_ANSIBLE
+        wget http://10.84.5.120/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/mitaka/artifacts_extra/contrail-ansible-4.1.0.0-8.tar.gz
+        tar -xvzf contrail-ansible-4.1.0.0-8.tar.gz
+        mkdir $CONTRAIL_ANSIBLE/playbooks/container_images 
+        cd $CONTRAIL_ANSIBLE/playbooks/container_images
+        tar -xvzf contrail-kubernetes-docker-images_4.0.0.0-20.tgz    
+    )"
 }
+
+
+function update_all_yml_and_hosts() {
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $ANSIBLE_IP " (
+        cp $ANSIBLE_WS/all.yml.template_virtual $CONTRAIL_ANSIBLE/playbooks/inventory/my-inventory/group_vars/all.yml 
+        cp $ANSIBLE_WS/hosts.template_virtual $CONTRAIL_ANSIBLE/playbooks/inventory/my-inventory/hosts
+        python $ANSIBLE_WS/update_ose_install.py $CONTRAIL_ANSIBLE/playbooks/inventory/my-inventory/hosts $ANSIBLE_WS/testbed.py
+    )"
+}
+
 function run_contrail_ansible() {
-    update_all_yml
-    update hosts_file
-    cd $CONTRAIL_ANSIBLE
+    update_all_yml_and_hosts
+    cd $CONTRAIL_ANSIBLE/playbooks
     ansible-playbook -i inventory/my-inventory site.yml   
 }
 
 #need to run it from ansible node
-function enable_passwordless_ssh() {
-    python tools/setup_ssh_keys.py ${TOOLS_WS}/testbeds/${tb_filename}
+function copy_tools_files_to_ansible_node() {   
+    export ANSIBLE_WS=/root/${TEMPLATE_DIR}
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $ANSIBLE_IP " (
+    mkdir ${TEMPLATE_DIR}
+    )"
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/templates/all.yml.template_virtual root@$ANSIBLE_IP:${ANSIBLE_WS}
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/templates/hosts.template_virtual root@$ANSIBLE_IP:${ANSIBLE_WS}
+    cp ${TOOLS_WS}/templates/ose-install.template ${TOOLS_WS}/
+    sed -i 's/BUILDID/'${BUILDID}'/g' ${TOOLS_WS}/ose-install.template
+    sed -i 's/BRANCH/'${EXACT_BRANCH}'/g' ${TOOLS_WS}/ose-install.template
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/ose-install.template root@$ANSIBLE_IP:${ANSIBLE_WS}
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/testbeds/$TBFILE root@$ANSIBLE_IP:${ANSIBLE_WS}/testbed.py
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/tools/update_ose_install.py root@$ANSIBLE_IP:${ANSIBLE_WS}
+    sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/tools/setup_ssh_keys.py root@$ANSIBLE_IP:${ANSIBLE_WS}
+
 }
 
-function run_openshift_virtual_task() {
+function enable_passwordless_ssh() {
+    sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $ANSIBLE_IP " (
+    python ${ANSIBLE_WS}/setup_ssh_keys.py ${ANSIBLE_WS}/testbed.py
+    )"
+}
+
+function run_openshift_task() {
     export RUN_SUCCESSFUL=0
     echo "Running tests on $1.."
     #Change testbed filename to template_HA.py
@@ -104,7 +213,8 @@ function run_openshift_virtual_task() {
     export TBFILE="template_HA.py"    
     export TBFILE_NAME="template_HA.py"
     launch_testbed_virtual || debug_and_die "Failed to launch testbed setup"
-    echo $SM_SERVER_IP
+    export TEST_DISTRO="ubuntu"
+    echo $ANSIBLE_IP
     if [ ${TEST_SETUP} == "SINGLENODE" ]
     then
         multi_node=0
@@ -118,31 +228,23 @@ function run_openshift_virtual_task() {
         echo "TEST_SETUP is not defined, abort the process"
         exit 1
     fi
-    if [ -z "$SM_SERVER_IP" ]
+    if [ -z "$ANSIBLE_IP" ]
     then
-        echo "SM_SERVER_IP is not set, unable to proceede, aborting the process"
+        echo "ANSIBLE_IP is not set, unable to proceede, aborting the process"
         exit 1
     fi
-
-    if [ -z $CLUSTER_NAME ]; then
-        echo "CLUSTER_NAME env is not set, aborting the process"
-        exit 1
-    fi
+    sleep 180
     create_testbed || die "Failed to create required testbed details"
+    copy_tools_files_to_ansible_node
     enable_passwordless_ssh || die "Unable to enable password less ssh"
     run_openshift_ansible || die "Openshift provision failed"
-    copy_contrail_ansible
-    run_contrail_ansible
     
-    #Add server and cluster to the SM
-
-    #check_kernel_upgrade || die "kernel upgrade failed"
-    export API_SERVER_HOST_STRING="root@"`cat ${TOOLS_WS}/config-node-ip`
+    export API_SERVER_HOST_STRING="root@"`cat ${TOOLS_WS}/server-manager-file`
     
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         search_package
         pkg_file_name=`basename $PKG_FILE`
-        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-cloud-docker[-_]\([0-9\.\-]*\)-.*/\1/'`
+        export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\)-.*/\1/'`
         if [[ -z $TEST_HOST_STRING ]]; then
             export TEST_HOST_STRING=$API_SERVER_HOST_STRING
             export TEST_HOST_PASSWORD=$API_SERVER_HOST_PASSWORD
