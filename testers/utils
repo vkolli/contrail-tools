@@ -1331,7 +1331,7 @@ function get_node_distro {
     if [[ $lsb_dist_output =~ Ubuntu ]]; then
         lsb_dist=Ubuntu
     else
-        lsb_dist=SomeOtherOS 
+        lsb_dist=Redhat 
     fi
     export lsb_dist
 }
@@ -1348,11 +1348,11 @@ function run_tempest {
     then 
         return 0
     fi
-    #get_node_distro
-    #if [ $lsb_dist != 'Ubuntu' ]
-    #then
-    #    echo "****** Running tempest supported on only Ubuntu as of today!!******* "
-    #else
+    get_node_distro
+    if [ $lsb_dist != 'Ubuntu' ]
+    then
+        echo "****** Running tempest test in Redhat setup!******* "
+    fi 
     if [[ ${TEST_SKU} = "kilo" || ${TEST_SKU} = "juno" ]]
     then
       branch="kilo"
@@ -1366,7 +1366,12 @@ function run_tempest {
     sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/testers/tempest/tempest_run.sh  ${TEST_HOST_STRING}:tempest/
     sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/contrail-fabric-utils/testbed_env  ${TEST_HOST_STRING}:tempest/
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
-        tempest_cmd="bash -x /usr/local/bin/testrunner.sh run -z /root/tempest -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-${TEST_SKU}:${PACKAGE_VERSION}"
+        if [ $lsb_dist != 'Ubuntu' ]
+        then
+            tempest_cmd="bash -x /usr/local/bin/testrunner.sh run -k /home/stack/.ssh/id_rsa -z /root/tempest -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-${TEST_SKU}:${PACKAGE_VERSION}"
+        else
+            tempest_cmd="bash -x /usr/local/bin/testrunner.sh run -z /root/tempest -t ${HOME}/contrail-test-runs/${SCRIPT_TIMESTAMP}/testbed.py ${TEST_RUN}-${TEST_SKU}:${PACKAGE_VERSION}"
+        fi
         exec_cmds -s ${TEST_HOST_STRING} -p ${TEST_HOST_PASSWORD} -c "
             ${tempest_cmd}
         "
