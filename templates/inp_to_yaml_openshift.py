@@ -1758,6 +1758,7 @@ def create_testbedpy_file_mainline():
         file_str = file_str + "env.hostnames = {\n"
         file_str = file_str + hostname_string + "}\n\n"
         file_str = file_str + "env.orchestrator='kubernetes'\n\n"
+        file_str = file_str + "env.deployer='openshift'\n\n"
         file_str = file_str + "env.kubernetes = {\n"
         file_str = file_str + "'mode' : 'baremetal',\n"
         inner_iter = 1
