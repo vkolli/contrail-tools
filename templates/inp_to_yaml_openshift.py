@@ -1,6 +1,4 @@
 """
-Author: Soumil Kulkarni
-File Name: inp_to_yaml.py
 Summary: Script to create a virtualized infrastructure for running daily sanity or recreating any bugs for testing purpose. (Contrail on Contrail)
 """
 import sys
@@ -1379,6 +1377,7 @@ def create_testbedpy_file():
         role_per_server_mapping = {
             "all": [],
             "cfgm": [],
+            "contrail-kubernetes": [],
             "openstack": [],
             "webui": [],
             "control": [],
@@ -1692,6 +1691,7 @@ def create_testbedpy_file_mainline():
 
         testbedfile_serverjson_role_mapping = {
             "openstack": "openstack",
+            "contrail-kubernetes": "contrail-kubernetes",
             "contrail-controller": "control",
             "contrail-analytics": "collector",
             "contrail-analyticsdb": "database",
@@ -1705,6 +1705,7 @@ def create_testbedpy_file_mainline():
             "contrail-analytics": [],
             "contrail-analyticsdb": [],
             "contrail-compute": [],
+            "contrail-kubernetes": [],
             "build": ["host_build"]}
         if "env_ostypes" in testbed_py_dict[clus]:
             env_ostypes_string = env_ostypes_string + "}\n\n"
@@ -1734,6 +1735,9 @@ def create_testbedpy_file_mainline():
                         role_per_server_mapping["contrail-cfgm"] = []
                         role_per_server_mapping["contrail-cfgm"].append(
                             name_mapping[server_dict[clus][i]["name"]])
+                if "contrail-kubernetes" in server_dict[clus][i]["roles"]:
+                    role_per_server_mapping["contrail-kubernetes"].append(
+                        name_mapping[server_dict[clus][i]["name"]])
                 if "contrail-analytics" in server_dict[clus][i]["roles"]:
                     role_per_server_mapping["contrail-analytics"].append(
                         name_mapping[server_dict[clus][i]["name"]])
@@ -1753,12 +1757,21 @@ def create_testbedpy_file_mainline():
                             name_mapping[server_dict[clus][i]["name"]])
         file_str = file_str + "env.hostnames = {\n"
         file_str = file_str + hostname_string + "}\n\n"
-
         file_str = file_str + "env.orchestrator='kubernetes'\n\n"
         file_str = file_str + "env.kubernetes = {\n"
         file_str = file_str + "'mode' : 'baremetal',\n"
-        file_str = file_str + "'master': %s,\n" %role_per_server_mapping["contrail-cfgm"]
-        file_str = file_str + "'slaves': %s\n" %role_per_server_mapping["contrail-compute"]
+        inner_iter = 1
+        hosts_str = "[ "
+        for j in role_per_server_mapping["contrail-compute"]:
+	    if inner_iter == len(role_per_server_mapping["contrail-compute"]):
+                hosts_str = hosts_str + j + " ]"
+            else:
+                hosts_str = hosts_str + "%s, " % j
+            inner_iter += 1
+        for i in role_per_server_mapping["contrail-cfgm"]:
+            file_str = file_str + "'master': %s,\n" %i
+
+        file_str = file_str + "'slaves': %s \n" %hosts_str
         file_str = file_str + "}\n\n"
 
         file_str = file_str + "env.interface_rename = False\n\n"
