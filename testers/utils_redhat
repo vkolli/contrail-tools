@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #!/usr/bin/awk -f
 TOOLS_WS=${TOOLS_WS:-$(pwd)}
+source $TOOLS_WS/testers/utils
 multi_node=0
 
 function setup_sanity_base_simple {
