@@ -1342,6 +1342,8 @@ function command_exists() {
 
 
 function run_tempest {
+    echo $SKIP_TEMPEST	
+    echo 'Testing code shaju'
     if [ $SKIP_TEMPEST -ne 0 ] 
     then 
         return 0
@@ -1358,15 +1360,15 @@ function run_tempest {
       branch="master"
     fi
     exec_cmds -s ${TEST_HOST_STRING} -p ${TEST_HOST_PASSWORD} -c "
-    rm -rf tempest
+    #rm -rf tempest
     if [ $lsb_dist != 'Ubuntu' ]
     then
        yum -y install git
-       sudo cp -r $TEMPEST_REPO /root/tempest
     else
        apt-get -y install git
-       git clone -b $branch $TEMPEST_REPO"
     fi
+      rm -rf tempest	
+      git clone -b $branch $TEMPEST_REPO"
     sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/testers/tempest/tempest_run.sh  ${TEST_HOST_STRING}:tempest/
     sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/contrail-fabric-utils/testbed_env  ${TEST_HOST_STRING}:tempest/
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
