@@ -76,12 +76,15 @@ EOF
         exit 1
     fi
     if [[ $CB_SANITY -eq 1 ]]; then
-        if [[ $DISTRO =~ ubuntu-16 ]]; then
-            container_image_path=`ls /cs-build/CB-${BRANCH}-ubuntu14-${SKU}/builds/${BUILDID}/archive/packages/docker-image-*.tar.gz`
-        fi
+        TEST_CONTAINER_IMAGE_DIR="/cs-build/CB-${BRANCH}-ubuntu16-${SKU}/builds/lastSuccessfulBuild/archive/packages/"
     else
-        container_image_path=`ls /cs-shared/github-build/${BRANCH}/${BUILDID}/ubuntu-14-04/${SKU}/artifacts/docker-image-contrail-test-${SKU}*.tar.gz`
+        TEST_CONTAINER_IMAGE_DIR="/github-build/${BRANCH}/${BUILDID}/ubuntu-16-04/${TEST_SKU}/artifacts/"
     fi
+    PKG_FILE=`ls ${TEST_CONTAINER_IMAGE_DIR}/contrail-install-packages_*.tgz`
+    pkg_file_name=`basename $PKG_FILE`
+    export PACKAGE_VERSION=`echo ${pkg_file_name} | sed 's/contrail-install-packages[-_]\([0-9\.\-]*\)-.*/\1/'`
+    container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
+    #container_image_path=$TEST_DOCKER_PATH
     container_image_file=`basename $container_image_path`
     if [[ ! -f $container_image_path ]]; then
         echo "ERROR!! Container image $container_image_path doesnt exist"
@@ -118,7 +121,11 @@ function run_openshift_ansible() {
         rm -rf $OPENSHIFT_ANSIBLE/inventory/byo/ose-install
         git clone https://github.com/savithruml/openshift-ansible -b contrail-openshift
         mkdir /root/docker_images/
-        wget -O /root/docker_images/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz http://10.84.5.120/github-build/${BRANCH}/${BUILDID}/redhat70/ocata/artifacts/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz
+        if [[ $CB_SANITY -eq 1 ]]; then
+            wget -O /root/docker_images/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz http://10.84.5.120/cs-build/jenkins-jobs/CB-${BRANCH}-redhat70-${SKU}/${BUILDID}/archive/packages/contrail-kubernetes-docker-${EXACT_BRANCH}-${BUILDID}_redhat7.tgz
+        else
+            wget -O /root/docker_images/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz http://10.84.5.120/github-build/${BRANCH}/${BUILDID}/redhat70/${SKU}/artifacts/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz
+        fi
         cd $OPENSHIFT_ANSIBLE
         cp $ANSIBLE_WS/ose-install.template $OPENSHIFT_ANSIBLE/inventory/byo/ose-install
         python ${ANSIBLE_WS}/update_ose_install.py $OPENSHIFT_ANSIBLE/inventory/byo/ose-install ${ANSIBLE_WS}/testbed.py
