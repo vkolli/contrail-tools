@@ -37,7 +37,6 @@ export PKG_FILE
 #--------
 # For Tempest
 # You can override these from the results of 'fab export_testbed_details' task
-
 export KEYSTONE_SERVICE_HOST_USER=${KEYSTONE_SERVICE_HOST_USER:-root}
 export KEYSTONE_SERVICE_HOST_PASSWORD=${KEYSTONE_SERVICE_HOST_PASSWORD:-c0ntrail123}
 export API_SERVER_IP=`echo $API_SERVER_HOST_STRING | cut -d @ -f2`
