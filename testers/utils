@@ -1368,6 +1368,7 @@ function run_tempest {
        cp -r /usr/lib/python2.7/site-packages/neutron/tests/tempest  tempest
        cp /root/contrail-tempest/run_contrail_tempest.sh tempest
        cp -r /root/contrail-tempest/contrail tempest/
+       cp -r /root/contrail-tempest/tools/ tempest/
     else
        apt-get -y install git
        git clone -b $branch $TEMPEST_REPO
