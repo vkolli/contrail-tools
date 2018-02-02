@@ -1363,7 +1363,7 @@ function run_tempest {
     rm -rf tempest
     if [ $lsb_dist != 'Ubuntu' ]
     then
-       echo "copying redhat tempest repo from pkg to /root/tempest"
+       echo 'copying redhat tempest repo from pkg to /root/tempest'
        cp -r /usr/lib/python2.7/site-packages/neutron/tests/tempest  tempest
     else
        apt-get -y install git
