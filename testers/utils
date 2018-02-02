@@ -1366,7 +1366,7 @@ function run_tempest {
        echo 'copying redhat tempest repo from pkg to /root/tempest'
        git clone -b $branch $TEMPEST_REPO /root/contrail-tempest
        cp -r /usr/lib/python2.7/site-packages/neutron/tests/tempest  tempest
-       cp /root/contrail-tempest/tempest/run_contrail_tempest.sh tempest
+       cp /root/contrail-tempest/run_contrail_tempest.sh tempest
     else
        apt-get -y install git
        git clone -b $branch $TEMPEST_REPO
