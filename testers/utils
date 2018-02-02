@@ -1364,17 +1364,15 @@ function run_tempest {
     if [ $lsb_dist != 'Ubuntu' ]
     then
        echo 'copying redhat tempest repo from pkg to /root/tempest'
+       git clone -b $branch $TEMPEST_REPO /root/contrail-tempest
        cp -r /usr/lib/python2.7/site-packages/neutron/tests/tempest  tempest
+       cp /root/contrail-tempest/tempest/run_contrail_tempest.sh tempest
     else
        apt-get -y install git
        git clone -b $branch $TEMPEST_REPO
     fi
     "
     sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/testers/tempest/tempest_run.sh  ${TEST_HOST_STRING}:tempest/
-    if [ $lsb_dist != 'Ubuntu' ]
-    then
-        sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/testers/tempest/run_contrail_tempest.sh  ${TEST_HOST_STRING}:tempest/  
-    fi
     sshpass -p $TEST_HOST_PASSWORD scp ${SSHOPT} $TOOLS_WS/contrail-fabric-utils/testbed_env  ${TEST_HOST_STRING}:tempest/
     if [[ $TEST_RUN_INFRA == 'docker' ]]; then
         if [ $lsb_dist != 'Ubuntu' ]
