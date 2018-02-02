@@ -122,7 +122,7 @@ function run_openshift_ansible() {
         git clone https://github.com/savithruml/openshift-ansible -b contrail-openshift
         mkdir /root/docker_images/
         if [[ $CB_SANITY -eq 1 ]]; then
-            wget -O /root/docker_images/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz http://10.84.5.120/cs-build/jenkins-jobs/CB-${BRANCH}-redhat70-${SKU}/${BUILDID}/archive/packages/contrail-kubernetes-docker-${EXACT_BRANCH}-${BUILDID}_redhat7.tgz
+            wget -O /root/docker_images/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz http://10.84.5.120/cs-build/jenkins-jobs/CB-${BRANCH}-redhat70-${SKU}/builds/${BUILDID}/archive/packages/contrail-kubernetes-docker_${EXACT_BRANCH}-${BUILDID}_redhat7.tgz
         else
             wget -O /root/docker_images/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz http://10.84.5.120/github-build/${BRANCH}/${BUILDID}/redhat70/${SKU}/artifacts/contrail-kubernetes-docker-images_${EXACT_BRANCH}-${BUILDID}.tgz
         fi
