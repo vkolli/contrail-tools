@@ -212,8 +212,4 @@ export USE_LATEST_ANSIBLE_CODE=${USE_LATEST_ANSIBLE_CODE:-0}
 export CONTRAIL_TEST_CODE_PATH=${CONTRAIL_TEST_CODE_PATH:-$TOOLS_WS}
 
 # Tempest repo to use
-if [[  $DISTRO=='redhat70' ]]; then
-   export TEMPEST_REPO=${TEMPEST_REPO:-"/usr/lib/python2.7/site-packages/neutron/tests/tempest"}
-else
-   export TEMPEST_REPO=${TEMPEST_REPO:-"https://github.com/Juniper/tempest.git"}
-fi
+export TEMPEST_REPO=${TEMPEST_REPO:-"https://github.com/Juniper/tempest.git"}
