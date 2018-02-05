@@ -138,8 +138,10 @@ function reimage_setup_using_SM {
                exit 1
             fi
         else
+	    # use server.json defined images so that esxi and ubuntu will take different image parameters
             echo "use tag to avoid reimaging servers which dont need it"
-            server-manager reimage -F --tag skip_reimage=false ${image_id}
+            #server-manager reimage -F --tag skip_reimage=false ${image_id}
+            server-manager reimage -F --tag skip_reimage=false
             if [ $? == 0 ]
             then
                echo "Issue of Reimage command to reimage target nodes is sucessful!!!"
