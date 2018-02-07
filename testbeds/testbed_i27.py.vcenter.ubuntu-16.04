@@ -16,6 +16,8 @@ ext_routers = [('ishant','10.204.216.247')]
 router_asn = 64512
 public_vn_rtgt = 80808
 public_vn_subnet = '10.204.220.64/26'
+use_devicemanager_for_md5 = True
+fabric_gw = [('sw166', '10.204.217.254')]
 
 if os.getenv('HA_TEST',None) == 'True':
     env.roledefs = {
@@ -64,6 +66,17 @@ env.ostypes = {
     host4:'ubuntu',
     host5:'ubuntu',
     host6:'ubuntu',
+}
+
+env.physical_routers={
+'ishant'     : {       'vendor': 'juniper',
+                     'model' : 'mx',
+                     'asn'   : '64512',
+                     'name'  : 'ishant',
+                     'ssh_username' : 'root',
+                     'ssh_password' : 'c0ntrail123',
+                     'mgmt_ip'  : '10.204.216.247',
+             }
 }
 
 env.orchestrator = 'vcenter'
