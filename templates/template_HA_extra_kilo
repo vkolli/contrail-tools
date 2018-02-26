@@ -101,7 +101,8 @@
 								"enable_lbaas": "true",
                                                 		"minimum_disk_database": 32,
 								"xmpp_auth_ssl": "true",
-                                                		"kernel_upgrade": "true"
+                                                		"kernel_upgrade": "true",
+                                                                "kernel_version": "3.13.0-141"
                                         		},
                                         		"openstack":{
 								"openstack_manage_amqp": "true",
