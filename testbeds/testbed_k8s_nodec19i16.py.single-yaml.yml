@@ -29,10 +29,10 @@ data:
     cluster_project = {'domain': 'default-domain', 'project': 'default'}
     cluster_network = {}
     service_subnets = 10.96.0.0/12
-    pod_subnets = 10.32.0.0/12
+    pod_subnets = 10.204.219.48/29
     api_server = 10.204.217.4
     ip_fabric_forwarding = True
-    kubernetes_api_server: 192.168.1.1
+    kubernetes_api_server: 10.204.217.4
   kubemanager-vnc-config: |-
     [KUBERNETES_VNC]
     public_fip_pool = {'project': 'default', 'domain': 'default-domain', 'network': '__public__', 'name': '__fip_pool_public__'}
