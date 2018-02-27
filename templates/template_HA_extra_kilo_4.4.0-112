@@ -37,7 +37,7 @@
 						"name":"server1" , 
 						"ip_address" : { "final_test_network_1":"10.0.0.4", "final_test_network_2":"10.10.0.4"},
 						"flavor" : "m1.xxlarge",
-						"image" : "ubuntu-16.04.3-nokey",
+						"image" : "image_val",
 						"floating_ip" : "true",
 						"server_manager" : "flase",
 						"roles" : ["config", "openstack", "webui", "control", "collector", "database"]
@@ -46,7 +46,7 @@
                                 		"name":"server2" ,
                                 		"ip_address" : { "final_test_network_1":"10.0.0.5", "final_test_network_2":"10.10.0.5"},
                                 		"flavor" : "m1.xxlarge",
-                                		"image" : "ubuntu-16.04.3-nokey",
+                                		"image" : "image_val",
                                 		"floating_ip" : "true",
                                 		"server_manager" : "false",
                                 		"roles" : ["config", "openstack", "webui", "control", "collector", "database"]
@@ -55,7 +55,7 @@
                                 		"name":"server3" ,
                                 		"ip_address" : { "final_test_network_1":"10.0.0.6", "final_test_network_2":"10.10.0.6"},
                                 		"flavor" : "m1.xxlarge",
-                                		"image" : "ubuntu-16.04.3-nokey",
+                                		"image" : "image_val",
                                 		"floating_ip" : "true",
                                 		"server_manager" : "false",
                                 		"roles" : ["config", "openstack", "webui", "control", "collector", "database"]
@@ -64,7 +64,7 @@
                                                 "name":"server4" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.7", "final_test_network_2":"10.10.0.7"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "ubuntu-16.04.3-nokey",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "false",
                                                 "roles" : ["compute"]
@@ -73,7 +73,7 @@
                                                 "name":"server5" ,
                                                 "ip_address" : { "final_test_network_1":"10.0.0.8", "final_test_network_2":"10.10.0.8"},
                                                 "flavor" : "m1.xxlarge",
-                                                "image" : "ubuntu-16.04.3-nokey",
+                                                "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "false",
                                                 "roles" : ["compute"]
@@ -82,7 +82,7 @@
                                 		"name":"servermanager" ,
                                 		"ip_address" : { "final_test_network_1":"10.0.0.9", "final_test_network_2":"10.10.0.9"},
                                 		"flavor" : "m1.xxlarge",
-                                		"image" : "ubuntu-16.04.3-nokey",
+                                		"image" : "image_val",
                                 		"floating_ip" : "true",
                                 		"roles" : ["sm"],
 						"server_manager" : "true"
