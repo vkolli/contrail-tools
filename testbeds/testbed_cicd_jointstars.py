@@ -21,6 +21,10 @@ host16 = 'root@10.87.67.31'
 host17 = 'root@10.87.67.32'
 host18 = 'root@10.87.67.33'
 host19 = 'root@10.87.67.34'
+host20 = 'root@10.87.67.37'
+host21 = 'root@10.87.67.38'
+host22 = 'root@10.87.67.40'
+host23 = 'root@10.87.67.41'
 
 kvm_5b9s1 = 'root@10.87.67.25'
 kvm_5b9s2 = 'root@10.87.67.26'
@@ -145,27 +149,31 @@ host_build = 'root@10.84.24.64'
 
 #Role definition of the hosts.
 env.roledefs = {
-    'all': [host1, host2, host3, host4, host5, host6, host7, host8, host9, host10, host11, host12, host13, host14, host15, host16, host17, host18, host19],
+    'all': [host1, host2, host3, host4, host5, host6, host7, host8, host9, host10, host11, host12, host13, host14, host15, host16, host17, host18, host19, host20, host21, host22, host23],
     'openstack': [host1, host5, host9],
     'webui': [host1, host5, host9],
     'cfgm': [host2, host6, host10],
     'control': [host3, host7, host11],
     'collector': [host4, host8, host12],
     'database': [host4, host8, host12],
-    'compute': [host13, host14, host15, host16, host17, host18, host19],
+    'compute': [host13, host14, host15, host16, host17, host18, host19, host20, host21, host22, host23],
     'storage-master': [host1, host5, host9],
-    'storage-compute': [host13, host14, host15, host16, host17, host18, host19],
+    'storage-compute': [host13, host14, host15, host16, host17, host18, host19, host20, host21, host22, host23],
     'build': [host_build],
 }
 
 storage_node_config = {
-    host13 : {'disks': ['/dev/sdb', 'dev/sdc']},
-    host14 : {'disks': ['/dev/sdb', 'dev/sdc']},
-    host15 : {'disks': ['/dev/sdb', 'dev/sdc']},
-    host16 : {'disks': ['/dev/sdb', 'dev/sdc']},
-    host17 : {'disks': ['/dev/sdb', 'dev/sdc']},
-    host18 : {'disks': ['/dev/sdb', 'dev/sdc']},
-    host19 : {'disks': ['/dev/sdb', 'dev/sdc']},
+    host13 : {'disks': ['/dev/sdb', '/dev/sdc']},
+    host14 : {'disks': ['/dev/sdb', '/dev/sdc']},
+    host15 : {'disks': ['/dev/sdb', '/dev/sdc']},
+    host16 : {'disks': ['/dev/sdb', '/dev/sdc']},
+    host17 : {'disks': ['/dev/sdb', '/dev/sdc']},
+    host18 : {'disks': ['/dev/sdb', '/dev/sdc']},
+    host19 : {'disks': ['/dev/sdb', '/dev/sdc']},
+    host20 : {'disks': ['/dev/sdb', '/dev/sdc', '/dev/sdd']},
+    host21 : {'disks': ['/dev/sdb', '/dev/sdc']},
+    host22 : {'disks': ['/dev/sdb', '/dev/sdc']},
+    host23 : {'disks': ['/dev/sdb', '/dev/sdc']},
 }
 
 live_migration=True
@@ -190,6 +198,10 @@ env.hostnames = {
     host17: '5b9s8',
     host18: '5b9s9',
     host19: '5b9s10',
+    host20: '5b9s11-node1',
+    host21: '5b9s11-node2',
+    host22: '5b9s11-node3',
+    host23: '5b9s11-node4',
 }
 
 if os.getenv('AUTH_PROTOCOL',None) == 'https':
@@ -240,6 +252,10 @@ env.passwords = {
     host17: 'c0ntrail123',
     host18: 'c0ntrail123',
     host19: 'c0ntrail123',
+    host20: 'c0ntrail123',
+    host21: 'c0ntrail123',
+    host22: 'c0ntrail123',
+    host23: 'c0ntrail123',
     host_build: 'c0ntrail123',
 }
 
@@ -264,6 +280,10 @@ env.ostypes = {
     host17: 'ubuntu',
     host18: 'ubuntu',
     host19: 'ubuntu',
+    host20: 'ubuntu',
+    host21: 'ubuntu',
+    host22: 'ubuntu',
+    host23: 'ubuntu',
 }
 
 #OPTIONAL BONDING CONFIGURATION
@@ -280,6 +300,10 @@ bond= {
     host17 : { 'name': 'bond0', 'member': ['p513p1','p513p2'], 'mode':'802.3ad' },
     host18 : { 'name': 'bond0', 'member': ['p513p1','p513p2'], 'mode':'802.3ad' },
     host19 : { 'name': 'bond0', 'member': ['p513p1','p513p2'], 'mode':'802.3ad' },
+    host20 : { 'name': 'bond0', 'member': ['p2p1','p2p2'], 'mode':'802.3ad' },
+    host21 : { 'name': 'bond0', 'member': ['p2p1','p2p2'], 'mode':'802.3ad' },
+    host22 : { 'name': 'bond0', 'member': ['p2p1','p2p2'], 'mode':'802.3ad' },
+    host23 : { 'name': 'bond0', 'member': ['p2p1','p2p2'], 'mode':'802.3ad' },
 }
 
 #env.sriov = {
@@ -308,7 +332,10 @@ control_data = {
    host17 : { 'ip': '192.16.20.17/24', 'gw' : '192.16.20.100', 'device':'bond0' },
    host18 : { 'ip': '192.16.20.18/24', 'gw' : '192.16.20.100', 'device':'bond0' },
    host19 : { 'ip': '192.16.20.19/24', 'gw' : '192.16.20.100', 'device':'bond0' },
-
+   host20 : { 'ip': '192.16.20.20/24', 'gw' : '192.16.20.100', 'device':'bond0' },
+   host21 : { 'ip': '192.16.20.21/24', 'gw' : '192.16.20.100', 'device':'bond0' },
+   host22 : { 'ip': '192.16.20.22/24', 'gw' : '192.16.20.100', 'device':'bond0' },
+   host23 : { 'ip': '192.16.20.23/24', 'gw' : '192.16.20.100', 'device':'bond0' },
 }
 
 storage_data = {
@@ -331,6 +358,10 @@ storage_data = {
    host17 : { 'ip':'192.16.201.17/24', 'gw':'192.16.201.1', 'device':'p514p1' },
    host18 : { 'ip':'192.16.201.18/24', 'gw':'192.16.201.1', 'device':'p514p1' },
    host19 : { 'ip':'192.16.201.19/24', 'gw':'192.16.201.1', 'device':'p514p1' },
+   host20 : { 'ip':'192.16.201.20/24', 'gw':'192.16.201.1', 'device':'p1p2' },
+   host21 : { 'ip':'192.16.201.21/24', 'gw':'192.16.201.1', 'device':'p1p2' },
+   host22 : { 'ip':'192.16.201.22/24', 'gw':'192.16.201.1', 'device':'p1p2' },
+   host23 : { 'ip':'192.16.201.23/24', 'gw':'192.16.201.1', 'device':'p1p2' },
 }
 
 #To disable installing contrail interface rename package
