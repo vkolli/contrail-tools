@@ -185,10 +185,9 @@ function search_package {
                 export REIMAGE_PARAM="centos-7.2"
 		if [ "$BRANCH" \> "R3.1.2.99" ]; then
 		    if [ "$SKU" == "mitaka" ] || [ "$SKU" == "liberty" ] || [ "$SKU" == "newton" ]; then
-		        export REIMAGE_PARAM="centos-7.3"
+		        export REIMAGE_PARAM="centos-7.4"
 		    fi
 		fi
-		    
             fi
         else
             export REIMAGE_PARAM="redhat-7.2"
@@ -622,7 +621,7 @@ function setup_and_install_contrail {
 		if [ ! -z $KERNEL_VERSION ];then
                     fab upgrade_kernel_all:version=$KERNEL_VERSION || debug_and_die "Upgrading Kernel failed"
 		else
-		    if [ "$REIMAGE_PARAM" != "centos-7.3" ]; then
+		    if [ "$REIMAGE_PARAM" != "centos-7.4" ]; then
                         fab upgrade_kernel_all || debug_and_die "Upgrading Kernel failed"
 		    fi
 		fi
