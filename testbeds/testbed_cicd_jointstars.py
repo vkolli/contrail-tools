@@ -42,97 +42,97 @@ vm_node_details = {
     host1 : {
                 'name' : '5b9s1-vm1',
                 'server': kvm_5b9s1,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:00:01'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:00:01', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host2 : {
                 'name' : '5b9s1-vm2',
                 'server': kvm_5b9s1,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:00:02'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:00:02', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host3 : {
                 'name' : '5b9s1-vm3',
                 'server': kvm_5b9s1,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:00:03'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:00:03', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host4 : {
                 'name' : '5b9s1-vm4',
                 'server': kvm_5b9s1,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:00:04'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:00:04', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host5 : {
                 'name' : '5b9s2-vm1',
                 'server': kvm_5b9s2,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:01:01'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:01:01', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host6 : {
                 'name' : '5b9s2-vm2',
                 'server': kvm_5b9s2,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:01:02'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:01:02', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host7 : {
                 'name' : '5b9s2-vm3',
                 'server': kvm_5b9s2,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:01:03'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:01:03', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host8 : {
                 'name' : '5b9s2-vm4',
                 'server': kvm_5b9s2,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:01:04'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:01:04', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host9 : {
                 'name' : '5b9s3-vm1',
                 'server': kvm_5b9s3,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:02:01'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:02:01', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host10 : {
                 'name' : '5b9s3-vm2',
                 'server': kvm_5b9s3,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:02:02'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:02:02', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host11 : {
                 'name' : '5b9s3-vm3',
                 'server': kvm_5b9s3,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:02:03'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:02:03', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             },
     host12 : {
                 'name' : '5b9s3-vm4',
                 'server': kvm_5b9s3,
-                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:02:04'},
-                             {'bridge' : 'br1'},
-                             {'bridge' : 'br2'}
+                'network' : [{'bridge' : 'br0', 'mac':'62:53:54:02:02:04', 'model':'virtio'},
+                             {'bridge' : 'br1', 'model':'virtio'},
+                             {'bridge' : 'br2', 'model':'virtio'}
                             ],
             }
 }
