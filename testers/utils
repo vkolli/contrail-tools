@@ -981,7 +981,7 @@ EOF
 	if [[ $CB_SANITY -eq 1 ]]; then
             TEST_CONTAINER_IMAGE_DIR="/cs-build/CB-${BRANCH}-ubuntu14-${TEST_SKU}/${BUILDID}"
 	else
-	    TEST_CONTAINER_IMAGE_DIR="/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/${BUILDID}"
+	    TEST_CONTAINER_IMAGE_DIR="/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/artifacts"
 	fi
     fi
     container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
