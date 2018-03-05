@@ -978,7 +978,11 @@ EOF
         exit 1
     fi
     if [[ $VCENTER_ONLY_TESTBED -eq 1 && "$BRANCH" == "R3.2" ]]; then
-        TEST_CONTAINER_IMAGE_DIR="/cs-build/CB-${BRANCH}-ubuntu14-${TEST_SKU}/${BUILDID}"
+	if [[ $CB_SANITY -eq 1 ]]; then
+            TEST_CONTAINER_IMAGE_DIR="/cs-build/CB-${BRANCH}-ubuntu14-${TEST_SKU}/${BUILDID}"
+	else
+	    TEST_CONTAINER_IMAGE_DIR="/github-build/${BRANCH}/${BUILDID}/${DISTRO}/${TEST_SKU}/${BUILDID}"
+	fi
     fi
     container_image_path=${TEST_CONTAINER_IMAGE:-"${TEST_CONTAINER_IMAGE_DIR}/docker-image-${TEST_RUN}-${TEST_SKU}-${PACKAGE_VERSION}.tar.gz"}
     container_image_file=`basename $container_image_path`
