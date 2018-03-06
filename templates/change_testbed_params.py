@@ -126,6 +126,30 @@ def get_requested_image():
             a_tmp = a.stdout.read()
             a_tmp = str(a_tmp)
             print a_tmp
+	if sys.argv[2] == 'vRE_18_1':
+	    a = subprocess.Popen(
+                "wget http://10.84.5.120/cs-shared/soumilk/remote_compute/Remote_compute_Automation/new_topology-try-2017-12-11/New_working_VMX/vmx_re_image",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp = str(a_tmp)
+            print a_tmp
+	if sys.argv[2] == 'vPFE_18_1':
+	    a = subprocess.Popen(
+                "wget http://10.84.5.120/cs-shared/soumilk/remote_compute/Remote_compute_Automation/new_topology-try-2017-12-11/New_working_VMX/vmx_fpc_image",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp = str(a_tmp)
+            print a_tmp	
+	if sys.argv[2] == 'centos-7.4':
+	    a = subprocess.Popen(
+                "wget http://10.84.5.120/images/soumilk/vm_images/centos74_nokey.qcow2",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp = str(a_tmp)
+            print a_tmp
 
 # Method for Checking if the requested image is added to the cluster, if
 # not. It will download the image and add it to the cluster.
@@ -203,6 +227,80 @@ def get_vmx_images():
             print "Requested Image already exists in the cluster "
             a = subprocess.Popen(
                 "openstack image list | grep vPFE_17",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            print a_tmp
+
+    if image_name == "vRE_18_1":
+        print "Checking if the vRE image used for the VMX is present, if not, downloading it"
+        a = subprocess.Popen(
+            "openstack image list -f json",
+            shell=True,
+            stdout=subprocess.PIPE)
+        a_tmp = a.stdout.read()
+        a_tmp_dict = eval(a_tmp)
+        a_tmp = ""
+        for i in a_tmp_dict:
+            if i["Name"] == "re_181":
+                a_tmp = "re_181"
+        if len(a_tmp) == 0:
+            print "The Requested RE Image for the VMX is not present in the cluster, Downloading it ----->>\n"
+            get_requested_image()
+            a = subprocess.Popen(
+                "openstack image create --container-format bare --disk-format qcow2 --private --property hw_cdrom_bus='ide' --property hw_disk_bus='ide' --property hw_vif_model='virtio' --file vmx_re_image re_181",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            print a_tmp
+            time.sleep(5)
+            a = subprocess.Popen(
+                "openstack image list | grep re_181",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            print a_tmp
+        else:
+            print "Requested Image already exists in the cluster "
+            a = subprocess.Popen(
+                "openstack image list | grep re_181",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            print a_tmp
+
+    if image_name == "vPFE_18_1":
+        print "Checking if the vPFE image is present, if not, downloading it"
+        a = subprocess.Popen(
+            "openstack image list -f json",
+            shell=True,
+            stdout=subprocess.PIPE)
+        a_tmp = a.stdout.read()
+        a_tmp_dict = eval(a_tmp)
+        a_tmp = ""
+        for i in a_tmp_dict:
+            if i["Name"] == "fpc_181":
+                a_tmp = "fpc_181"
+        if len(a_tmp) == 0:
+            print "The Requested PFE Image for the VMX is not present in the cluster, Downloading it ----->>\n"
+            get_requested_image()
+            a = subprocess.Popen(
+                "openstack image create --container-format bare --disk-format vmdk --private --property hw_cdrom_bus='ide' --property hw_disk_bus='ide' --property hw_vif_model='virtio' --file vmx_fpc_image fpc_181",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            print a_tmp
+            time.sleep(5)
+            a = subprocess.Popen(
+                "openstack image list | grep fpc_181",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            print a_tmp
+        else:
+            print "Requested Image already exists in the cluster "
+            a = subprocess.Popen(
+                "openstack image list | grep fpc_181",
                 shell=True,
                 stdout=subprocess.PIPE)
             a_tmp = a.stdout.read()
@@ -427,7 +525,42 @@ def parse_openstack_image_list_command():
                     stdout=subprocess.PIPE)
                 a_tmp = a.stdout.read()
                 print a_tmp
-
+	
+	elif sys.argv[2] == 'centos-7.4':
+            a = subprocess.Popen(
+                "openstack image list -f json",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp_dict = eval(a_tmp)
+            a_tmp = ""
+            for i in a_tmp_dict:
+                if i["Name"] == "centos-7.4":
+                    a_tmp = "centos-7.4"
+            if len(a_tmp) == 0:
+                print "The Requested Image is not present in the cluster, Downloading it ----->>\n"
+                get_requested_image()
+                a = subprocess.Popen(
+                    "openstack image create --disk-format qcow2 --container-format bare --public --file centos74_nokey.qcow2 centos-7.4",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+                time.sleep(5)
+                a = subprocess.Popen(
+                    "openstack image list | grep centos-7.4",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+            else:
+                print "Requested Image already exists in the cluster "
+                a = subprocess.Popen(
+                    "openstack image list | grep centos-7.4",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
 
 # Method for checking the status of stacks during their creation phase
 def get_stack_status():
