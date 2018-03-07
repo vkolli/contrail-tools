@@ -1,0 +1,144 @@
+{
+    "cluster": [
+        {
+            "base_image_id": null, 
+            "email": "jebap@juniper.net", 
+            "id": "cluster-5b10s11", 
+            "package_image_id": null, 
+            "parameters": {
+                "provision": {
+                    "contrail": {
+                        "analytics": {
+                            "config_audit_ttl": 2160, 
+                            "data_directory": "", 
+                            "data_ttl": 48, 
+                            "flow_ttl": 2, 
+                            "snmp_fast_scan_frequency": 60, 
+                            "snmp_scan_frequency": 600, 
+                            "ssd_data_directory": "", 
+                            "statistics_ttl": 168, 
+                            "syslog_port": -1, 
+                            "topology_scan_frequency": 60
+                        }, 
+                        "compute": {
+                            "core_mask": "", 
+                            "huge_pages": "", 
+                            "sriov": {
+                                "enable": false
+                            }
+                        }, 
+                        "config": {
+                            "healthcheck_interval": 5, 
+                            "manage_neutron": true, 
+                            "zookeeper_ip_port": 2181
+                        }, 
+                        "control": {
+                            "encapsulation_priority": "VXLAN,MPLSoUDP,MPLSoGRE", 
+                            "external_bgp": "", 
+                            "router_asn": 64512
+                        }, 
+                        "database": {
+                            "directory": "/var/lib/cassandra", 
+                            "ip_port": 9160, 
+                            "minimum_diskGB": 32
+                        }, 
+                        "enable_lbass": false, 
+                        "ha": {
+                            "contrail_external_vip": "", 
+                            "contrail_external_virtual_router_id": 104, 
+                            "contrail_internal_vip": "", 
+                            "contrail_internal_virtual_router_id": 103, 
+                            "haproxy_enable": false
+                        }, 
+                        "kernel_upgrade": true, 
+                        "kernel_version": "", 
+                        "storage": {
+                            "live_migration_host": "", 
+                            "osd_bootstrap_key": "", 
+                            "storage_admin_key": "", 
+                            "storage_monitor_secret": ""
+                        }, 
+                        "vgw": {
+                            "gateway_routes": "", 
+                            "interface": "", 
+                            "public_subnet": "", 
+                            "public_vn_name": ""
+                        }, 
+                        "vmware": {
+                            "ip": "", 
+                            "password": "", 
+                            "username": "", 
+                            "vswitch": ""
+                        }, 
+                        "xmpp_auth_enable": false, 
+                        "xmpp_dns_auth_enable": false
+                    }, 
+                    "openstack": {
+                        "amqp": {
+                            "server_ip": ""
+                        }, 
+                        "ceilometer": {
+                            "mongo": "contrail123", 
+                            "password": "contrail123"
+                        }, 
+                        "cinder": {
+                            "password": "contrail123"
+                        }, 
+                        "enable_ceilometer": false, 
+                        "glance": {
+                            "password": "contrail123"
+                        }, 
+                        "ha": {
+                            "external_vip": "", 
+                            "external_virtual_router_id": 101, 
+                            "internal_vip": "", 
+                            "internal_virtual_router_id": 102, 
+                            "nfs_glance_path": "", 
+                            "nfs_server": ""
+                        }, 
+                        "heat": {
+                            "encryption_key": "2A9D1D3D711942C8", 
+                            "password": "contrail123"
+                        }, 
+                        "horizon": {
+                            "password": "contrail123"
+                        }, 
+                        "keystone": {
+                            "admin_password": "contrail123", 
+                            "admin_tenant": "admin", 
+                            "admin_token": "062D3E1DD689", 
+                            "admin_user": "admin", 
+                            "auth_port": 35357, 
+                            "auth_protocol": "http", 
+                            "ip": "", 
+                            "service_tenant": "services"
+                        }, 
+                        "multi_tenancy": true, 
+                        "mysql": {
+                            "root_password": "c0ntrail123", 
+                            "service_password": "C0E70D4211F9"
+                        }, 
+                        "neutron": {
+                            "password": "contrail123", 
+                            "port": 9697, 
+                            "service_protocol": "http"
+                        }, 
+                        "nova": {
+                            "password": "contrail123"
+                        }, 
+                        "openstack_manage_amqp": false, 
+                        "region": "RegionOne", 
+                        "swift": {
+                            "password": "contrail123"
+                        }
+                    }
+                }, 
+                "storage_fsid": "13b8b2a1-c601-4205-b5db-42118d18e56c", 
+                "storage_virsh_uuid": "1cb5b6ec-09be-4e94-83a5-d9289ac7ac52", 
+                "uuid": "8822ffd3-fac6-4e3f-a5f7-ef2fe375857d"
+            }, 
+            "provision_role_sequence": "{'completed': [], 'steps': []}", 
+            "provisioned_id": null
+        }
+    ]
+}

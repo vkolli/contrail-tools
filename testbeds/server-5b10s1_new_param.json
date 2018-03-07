@@ -1,0 +1,704 @@
+{
+    "server": [
+        {
+            "base_image_id": "ubuntu-14-04", 
+            "cluster_id": "", 
+            "contrail": {
+                "control_data_interface": "eth0"
+            }, 
+            "discovered": "false", 
+            "domain": "englab.juniper.net", 
+            "email": null, 
+            "gateway": "10.87.67.254", 
+            "host_name": "5b10s1", 
+            "id": "5b10s1", 
+            "intf_bond": null, 
+            "intf_control": null, 
+            "intf_data": null, 
+            "ip_address": "10.87.67.129", 
+            "ipmi_address": "10.87.122.141", 
+            "ipmi_interface": "lan", 
+            "ipmi_password": "ADMIN", 
+            "ipmi_type": "", 
+            "ipmi_username": "ADMIN", 
+            "last_update": "2017-04-07 05:46:20", 
+            "mac_address": "90:E2:BA:D9:2B:75", 
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.67.254", 
+                        "dhcp": true, 
+                        "ip_address": "10.87.67.129/25", 
+                        "mac_address": "90:E2:BA:D9:2B:75", 
+                        "member_interfaces": [], 
+                        "name": "eth0", 
+                        "parent": "", 
+                        "tor": "", 
+                        "tor_port": "", 
+                        "type": "physical"
+                    }
+                ], 
+                "management_interface": "eth0", 
+                "routes": []
+            }, 
+            "package_image_id": "", 
+            "parameters": {
+                "disks": [], 
+                "interface_name": "eth0", 
+                "partition": "/dev/sda", 
+                "provision": {
+                    "contrail": {
+                        "storage": {
+                            "storage_chassis_id": "", 
+                            "storage_chassis_id_input": "", 
+                            "storage_osd_disks": [], 
+                            "storage_repo_id": ""
+                        }
+                    }
+                }
+            }, 
+            "password": "c0ntrail123", 
+            "provisioned_id": "", 
+            "reimaged_id": "ubuntu-14-04", 
+            "roles": [], 
+            "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCp0QAm9K7kI6gAGXX82Sf9UTqZ/7KeUTv+4zAjjHtX3aZXftv5mQ07rfxPeTCXE+4PP6Thk58whBiCwOeNPtO/IBx8/A6SEjhWhfNc2xhBS3HCibVDQ9P9goX42BX7+LlR1gbWPjWQ20jzwOTYP5Cyxq+qydHbXRsm0NRZCUu78qzLOtRmVCm384JAnhplCcwuyhvnMn5nmXzXz1wn/JADtlf7wNwlY4kwYDCB0Zrt5kZDmc2YSlT6lqx/BDho8oDI37Uk1J+QAeeTApCLL9shGNE1PiL1dGKBO+LqUaYSVWQjqgd8xNiBV+ruaBDR9DZIsUs3+J3r/FfwXY0w7SE5", 
+            "static_ip": "N", 
+            "status": "reimage_started", 
+            "subnet_mask": "255.255.255.128", 
+            "tag": {}, 
+            "top_of_rack": {
+                "switches": []
+            }
+        }, 
+        {
+            "base_image_id": "ubuntu-14-04", 
+            "cluster_id": "", 
+            "contrail": {
+                "control_data_interface": "eth0"
+            }, 
+            "discovered": "false", 
+            "domain": "englab.juniper.net", 
+            "email": null, 
+            "gateway": "10.87.67.254", 
+            "host_name": "5b10s2", 
+            "id": "5b10s2", 
+            "intf_bond": null, 
+            "intf_control": null, 
+            "intf_data": null, 
+            "ip_address": "10.87.67.130", 
+            "ipmi_address": "10.87.122.142", 
+            "ipmi_interface": "lan", 
+            "ipmi_password": "ADMIN", 
+            "ipmi_type": "", 
+            "ipmi_username": "ADMIN", 
+            "last_update": "2017-04-07 05:46:21", 
+            "mac_address": "90:E2:BA:D9:3B:A1", 
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.67.254", 
+                        "dhcp": true, 
+                        "ip_address": "10.87.67.130/25", 
+                        "mac_address": "90:E2:BA:D9:3B:A1", 
+                        "member_interfaces": [], 
+                        "name": "eth0", 
+                        "parent": "", 
+                        "tor": "", 
+                        "tor_port": "", 
+                        "type": "physical"
+                    }
+                ], 
+                "management_interface": "eth0", 
+                "routes": []
+            }, 
+            "package_image_id": "", 
+            "parameters": {
+                "disks": [], 
+                "interface_name": "eth0", 
+                "partition": "/dev/sda", 
+                "provision": {
+                    "contrail": {
+                        "storage": {
+                            "storage_chassis_id": "", 
+                            "storage_chassis_id_input": "", 
+                            "storage_osd_disks": [], 
+                            "storage_repo_id": ""
+                        }
+                    }
+                }
+            }, 
+            "password": "c0ntrail123", 
+            "provisioned_id": "", 
+            "reimaged_id": "ubuntu-14-04", 
+            "roles": [], 
+            "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJQme7EQeGPoQthkewaqaQ9TXxOxa95UNVo7JcbgPW3rIWARssiKVxmB2NTkuiY74BfoQDLHA/YdHRvF384JcxTyHCGB9ND53VeYrVYQpjzIX/6mC7ZlicEWT/F/Agj8wG+t1cRig5KrOfZggV2ffK7ctslb/P+G7mNPfBKty6oVhd0FRlPTP/2aAgnehKc32DUsiwu1FErFD02Y9pGpEpc5isa4NxpsgspQ0olZORsv7VtAovLlv/gVRqjGjuU6LKQodqiYpsZyJZZ0SdWc93fLmXiKcy74NtSm2MCkhFZU4EK3jj7cn9xIg6vOEQKCvdNQ/lWQV1nmvTsNFWw02J", 
+            "static_ip": "N", 
+            "status": "reimage_started", 
+            "subnet_mask": "255.255.255.128", 
+            "tag": {}, 
+            "top_of_rack": {
+                "switches": []
+            }
+        }, 
+        {
+            "base_image_id": "ubuntu-14-04", 
+            "cluster_id": "", 
+            "contrail": {
+                "control_data_interface": "eth0"
+            }, 
+            "discovered": "false", 
+            "domain": "englab.juniper.net", 
+            "email": null, 
+            "gateway": "10.87.67.254", 
+            "host_name": "5b10s3", 
+            "id": "5b10s3", 
+            "intf_bond": null, 
+            "intf_control": null, 
+            "intf_data": null, 
+            "ip_address": "10.87.67.131", 
+            "ipmi_address": "10.87.122.143", 
+            "ipmi_interface": "lan", 
+            "ipmi_password": "ADMIN", 
+            "ipmi_type": "", 
+            "ipmi_username": "ADMIN", 
+            "last_update": "2017-04-07 05:46:22", 
+            "mac_address": "90:E2:BA:D9:36:55", 
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.67.254", 
+                        "dhcp": true, 
+                        "ip_address": "10.87.67.131/25", 
+                        "mac_address": "90:E2:BA:D9:36:55", 
+                        "member_interfaces": [], 
+                        "name": "eth0", 
+                        "parent": "", 
+                        "tor": "", 
+                        "tor_port": "", 
+                        "type": "physical"
+                    }
+                ], 
+                "management_interface": "eth0", 
+                "routes": []
+            }, 
+            "package_image_id": "", 
+            "parameters": {
+                "disks": [], 
+                "interface_name": "eth0", 
+                "partition": "/dev/sda", 
+                "provision": {
+                    "contrail": {
+                        "storage": {
+                            "storage_chassis_id": "", 
+                            "storage_chassis_id_input": "", 
+                            "storage_osd_disks": [], 
+                            "storage_repo_id": ""
+                        }
+                    }
+                }
+            }, 
+            "password": "c0ntrail123", 
+            "provisioned_id": "", 
+            "reimaged_id": "ubuntu-14-04", 
+            "roles": [], 
+            "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCM+KF2WTMMWAKKF9s2B8e7NG+W8q099CvE/LvuKyNooZF38otGX84de/SSvzkRxpC2zAIGN5GzveJfpbK5sipqXx7duvkt00JEfAg7e5FpdnQEll8AVUvVsNb9eOGt1sWe9w4bdn4Pht2b0SrKxXzvXvXz+i8Z5XUfh/Ug87eiLIgyZzxWtHY9O+QrZw0/mb7UpANZX0axRXXnwPSBrfP/++79k/aem3LY39+ZKC6zz7z1X4WRr8qhwkP1frNIb083brsfvRQaAEugjVWriYVHpU2BTjWDFW8EdYWaMPdV8+tGRP2tCNZQIXb3hHgxtEYs0wfMaBwBkn/3StbLuG2x", 
+            "static_ip": "N", 
+            "status": "reimage_started", 
+            "subnet_mask": "255.255.255.128", 
+            "tag": {}, 
+            "top_of_rack": {
+                "switches": []
+            }
+        }, 
+        {
+            "base_image_id": "ubuntu-14.04.5", 
+            "cluster_id": "cluster-5b10s1", 
+            "contrail": {
+                "control_data_interface": "eth0"
+            }, 
+            "discovered": "false", 
+            "domain": "englab.juniper.net", 
+            "email": null, 
+            "gateway": "10.87.67.254", 
+            "host_name": "5b10s4", 
+            "id": "5b10s4", 
+            "intf_bond": null, 
+            "intf_control": null, 
+            "intf_data": null, 
+            "ip_address": "10.87.67.132", 
+            "ipmi_address": "10.87.122.144", 
+            "ipmi_interface": "lan", 
+            "ipmi_password": "ADMIN", 
+            "ipmi_type": "", 
+            "ipmi_username": "ADMIN", 
+            "last_update": "2017-04-07 05:46:23", 
+            "mac_address": "90:E2:BA:D9:24:3D", 
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.67.254", 
+                        "dhcp": true, 
+                        "ip_address": "10.87.67.132/25", 
+                        "mac_address": "90:E2:BA:D9:24:3D", 
+                        "member_interfaces": [], 
+                        "name": "eth0", 
+                        "parent": "", 
+                        "tor": "", 
+                        "tor_port": "", 
+                        "type": "physical"
+                    }
+                ], 
+                "management_interface": "eth0", 
+                "routes": []
+            }, 
+            "package_image_id": "", 
+            "parameters": {
+                "disks": [], 
+                "interface_name": "eth0", 
+                "partition": "/dev/sda", 
+                "provision": {
+                    "contrail": {
+                        "storage": {
+                            "storage_chassis_id": "", 
+                            "storage_chassis_id_input": "", 
+                            "storage_osd_disks": [], 
+                            "storage_repo_id": ""
+                        }
+                    }
+                }
+            }, 
+            "password": "c0ntrail123", 
+            "provisioned_id": "", 
+            "reimaged_id": "ubuntu-14-04", 
+            "roles": [], 
+            "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy+Sn/2HrwyXgrmgxa34GFBraCrQRbgQsx2NqaMlb3oFAYJPC97l9As1lNOiEyq4/AO6ek/l5e6zc6EGIygx9so3cDXbP0/VpnNlv6wRZu0OgVroOpfdjC3Zq/fZMvavsNic96WJJGGeFSAP9/A/YfGfJQ5CkM6hf6IJUUBynlAhNWe/AMvzbibg6daFQwa/XAYXQb1IS1ghT731aF4BweSgHhvmjQINH4peovVDNERInFBW54Pwbvi72yPZ0yPsU+8C7RIRzg8ReLpuHvAztHgBDclXJFGJ/npHcVPh75jdS+1iog8vrRpXFzU/oRwxUYTja4TNmZ5+/aRwTJUOiX", 
+            "static_ip": "N", 
+            "status": "reimage_started", 
+            "subnet_mask": "255.255.255.128", 
+            "tag": {}, 
+            "top_of_rack": {
+                "switches": []
+            }
+        }, 
+        {
+            "base_image_id": "ubuntu-14.04.5", 
+            "cluster_id": "cluster-5b10s1", 
+            "contrail": {
+                "control_data_interface": "eth0"
+            }, 
+            "discovered": "false", 
+            "domain": "englab.juniper.net", 
+            "email": null, 
+            "gateway": "10.87.67.254", 
+            "host_name": "5b10s5", 
+            "id": "5b10s5", 
+            "intf_bond": null, 
+            "intf_control": null, 
+            "intf_data": null, 
+            "ip_address": "10.87.67.133", 
+            "ipmi_address": "10.87.122.145", 
+            "ipmi_interface": "lan", 
+            "ipmi_password": "ADMIN", 
+            "ipmi_type": "", 
+            "ipmi_username": "ADMIN", 
+            "last_update": "2017-04-07 05:46:24", 
+            "mac_address": "90:E2:BA:D9:2C:A5", 
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.67.254", 
+                        "dhcp": true, 
+                        "ip_address": "10.87.67.133/25", 
+                        "mac_address": "90:E2:BA:D9:2C:A5", 
+                        "member_interfaces": [], 
+                        "name": "eth0", 
+                        "parent": "", 
+                        "tor": "", 
+                        "tor_port": "", 
+                        "type": "physical"
+                    }
+                ], 
+                "management_interface": "eth0", 
+                "routes": []
+            }, 
+            "package_image_id": "", 
+            "parameters": {
+                "disks": [], 
+                "interface_name": "eth0", 
+                "partition": "/dev/sda", 
+                "provision": {
+                    "contrail": {
+                        "storage": {
+                            "storage_chassis_id": "", 
+                            "storage_chassis_id_input": "", 
+                            "storage_osd_disks": [], 
+                            "storage_repo_id": ""
+                        }
+                    }
+                }
+            }, 
+            "password": "c0ntrail123", 
+            "provisioned_id": "", 
+            "reimaged_id": "ubuntu-14-04", 
+            "roles": [], 
+            "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD0rQjCEcVj1FP80ey6iHQlGhhd9vei6jH9AmrmTQndG/lhYdFjUJJGeFkhPiYnuJv53VuIMc7aHzuswU7eUMXAyP/YkKJKijLin1Oez1pmPjAKWzGZHcGL7cMP0oNHodGe5RhyEYD/wf0OlDPOYUqaG5YCXdHEv+wt8zGqjNYYxnLkHALvODEgXwjZ6aG3AlLTb3+mCVMsGKUQIgi1MShJkR72m+pmpgnyzOS+M+xwvgKI9LlxEmlYYoVEwGYDbkFkiPKT9tNH5iLqPtrNN/k+O6wOQHzmBBfeDUhqgOAy5zYNYtF6LXAnuBc6XixintDLH6kZwFBMcZAD10WSqtpx", 
+            "static_ip": "N", 
+            "status": "reimage_started", 
+            "subnet_mask": "255.255.255.128", 
+            "tag": {}, 
+            "top_of_rack": {
+                "switches": []
+            }
+        }, 
+        {
+            "base_image_id": "ubuntu-14.04.5", 
+            "cluster_id": "cluster-5b10s1", 
+            "contrail": {
+                "control_data_interface": "eth0"
+            }, 
+            "discovered": "false", 
+            "domain": "englab.juniper.net", 
+            "email": null, 
+            "gateway": "10.87.67.254", 
+            "host_name": "5b10s7", 
+            "id": "5b10s7", 
+            "intf_bond": null, 
+            "intf_control": null, 
+            "intf_data": null, 
+            "ip_address": "10.87.67.135", 
+            "ipmi_address": "10.87.122.147", 
+            "ipmi_interface": "lan", 
+            "ipmi_password": "ADMIN", 
+            "ipmi_type": "", 
+            "ipmi_username": "ADMIN", 
+            "last_update": "2017-04-07 05:46:25", 
+            "mac_address": "90:E2:BA:D9:36:19", 
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.67.254", 
+                        "dhcp": true, 
+                        "ip_address": "10.87.67.135/25", 
+                        "mac_address": "90:E2:BA:D9:36:19", 
+                        "member_interfaces": [], 
+                        "name": "eth0", 
+                        "parent": "", 
+                        "tor": "", 
+                        "tor_port": "", 
+                        "type": "physical"
+                    }
+                ], 
+                "management_interface": "eth0", 
+                "routes": []
+            }, 
+            "package_image_id": "", 
+            "parameters": {
+                "disks": [], 
+                "interface_name": "eth0", 
+                "partition": "/dev/sda", 
+                "provision": {
+                    "contrail": {
+                        "storage": {
+                            "storage_chassis_id": "", 
+                            "storage_chassis_id_input": "", 
+                            "storage_osd_disks": [], 
+                            "storage_repo_id": ""
+                        }
+                    }
+                }
+            }, 
+            "password": "c0ntrail123", 
+            "provisioned_id": "", 
+            "reimaged_id": "ubuntu-14-04", 
+            "roles": [], 
+            "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDaSEAxP7TyrVdc/KNWkSAY4wMHnTW98ib4korrW3FNbLCSdhJ04gf8eJ+Pjcog5Tjl34SVlXFVbcmT9Jqj6HKMB2T0JSXS0V8L/Y+1mHrwkpH2qRgCTMZX0zw8GHSScmml5/4Wq0L9a6pngdpNPHkpTCqgk17Y8xZdq00m3648CES+NJgTgzC55+IWpmmVWA+Msp2khT6MOX8N5M/RzsAbyQoaqNqIrYDxewJyq9l5iCmMi2oea6o3MZFszUtu+DxAt96r7dmjIqCR4CZES7VyAXVwFN6SZ48lXpUGFyNVU1BDNMyMNfWuldp7lGe/EC2EFsmBWZtaxRRYcLtr3YRB", 
+            "static_ip": "N", 
+            "status": "reimage_started", 
+            "subnet_mask": "255.255.255.128", 
+            "tag": {}, 
+            "top_of_rack": {
+                "switches": []
+            }
+        }, 
+        {
+            "base_image_id": "ubuntu-14.04.5", 
+            "cluster_id": "cluster-5b10s1", 
+            "contrail": {
+                "control_data_interface": "eth0"
+            }, 
+            "discovered": "false", 
+            "domain": "englab.juniper.net", 
+            "email": null, 
+            "gateway": "10.87.67.254", 
+            "host_name": "5b10s8", 
+            "id": "5b10s8", 
+            "intf_bond": null, 
+            "intf_control": null, 
+            "intf_data": null, 
+            "ip_address": "10.87.67.136", 
+            "ipmi_address": "10.87.122.148", 
+            "ipmi_interface": "lan", 
+            "ipmi_password": "ADMIN", 
+            "ipmi_type": "", 
+            "ipmi_username": "ADMIN", 
+            "last_update": "2017-04-07 05:46:26", 
+            "mac_address": "90:E2:BA:D9:3E:1D", 
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.67.254", 
+                        "dhcp": true, 
+                        "ip_address": "10.87.67.136/25", 
+                        "mac_address": "90:E2:BA:D9:3E:1D", 
+                        "member_interfaces": [], 
+                        "name": "eth0", 
+                        "parent": "", 
+                        "tor": "", 
+                        "tor_port": "", 
+                        "type": "physical"
+                    }
+                ], 
+                "management_interface": "eth0", 
+                "routes": []
+            }, 
+            "package_image_id": "", 
+            "parameters": {
+                "disks": [], 
+                "interface_name": "eth0", 
+                "partition": "/dev/sda", 
+                "provision": {
+                    "contrail": {
+                        "storage": {
+                            "storage_chassis_id": "", 
+                            "storage_chassis_id_input": "", 
+                            "storage_osd_disks": [], 
+                            "storage_repo_id": ""
+                        }
+                    }
+                }
+            }, 
+            "password": "c0ntrail123", 
+            "provisioned_id": "", 
+            "reimaged_id": "ubuntu-14-04", 
+            "roles": [], 
+            "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCV8X2gbwN0ks/ROnYxKdQbanfmc1gxDh5SXeDURfArB6Bq3SIUg2AnxAx3RmUVotBhds+xfuvp5xBfB2Spb98FWaQmlRaG5DIxurQhT6aNvBL4sfC20tpU1yE5rHrOGccM2zJ8ie4Va1QnCJi0+G/1b0hHBObCLY0rx+zeuo5G5bJ4xIdvkrL7PeFPt+Eb3OVUXwnx9RLdTWR5WWsUDiN8182q4iLa5tXoBETndiX0hR7509slJDXIa26bPB5sUKSCDBKSpD5m++kwUnWCHT0jtlCPz3emsNP7KBIwvhqECnlElJp0WxOz/xhQ2INaCdcVYwKKs6GJ9dx7Un7wYDF5", 
+            "static_ip": "N", 
+            "status": "restart_issued", 
+            "subnet_mask": "255.255.255.128", 
+            "tag": {}, 
+            "top_of_rack": {
+                "switches": []
+            }
+        }, 
+        {
+            "base_image_id": "ubuntu-14.04.5", 
+            "cluster_id": "cluster-5b10s1", 
+            "contrail": {
+                "control_data_interface": "eth0"
+            }, 
+            "discovered": "false", 
+            "domain": "englab.juniper.net", 
+            "email": null, 
+            "gateway": "10.87.67.254", 
+            "host_name": "5b10s9", 
+            "id": "5b10s9", 
+            "intf_bond": null, 
+            "intf_control": null, 
+            "intf_data": null, 
+            "ip_address": "10.87.67.137", 
+            "ipmi_address": "10.87.122.149", 
+            "ipmi_interface": "lan", 
+            "ipmi_password": "ADMIN", 
+            "ipmi_type": "", 
+            "ipmi_username": "ADMIN", 
+            "last_update": "2017-04-07 05:46:27", 
+            "mac_address": "90:E2:BA:D9:2C:B1", 
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.67.254", 
+                        "dhcp": true, 
+                        "ip_address": "10.87.67.137/25", 
+                        "mac_address": "90:E2:BA:D9:2C:B1", 
+                        "member_interfaces": [], 
+                        "name": "eth0", 
+                        "parent": "", 
+                        "tor": "", 
+                        "tor_port": "", 
+                        "type": "physical"
+                    }
+                ], 
+                "management_interface": "eth0", 
+                "routes": []
+            }, 
+            "package_image_id": "", 
+            "parameters": {
+                "disks": [], 
+                "interface_name": "eth0", 
+                "partition": "/dev/sda", 
+                "provision": {
+                    "contrail": {
+                        "storage": {
+                            "storage_chassis_id": "", 
+                            "storage_chassis_id_input": "", 
+                            "storage_osd_disks": [], 
+                            "storage_repo_id": ""
+                        }
+                    }
+                }
+            }, 
+            "password": "c0ntrail123", 
+            "provisioned_id": "", 
+            "reimaged_id": "ubuntu-14-04", 
+            "roles": [], 
+            "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDT+zZqhwe3/SO5wXkQJmDbcPYKoOW1aKSIgaw1IhlAlecGz6SxugJvWm50FLRC3IaGxrL0vrQb+KH+V7NW0iCqBK9DfFaN5E8hmw10H7e5NR6MwY2myiQ6ewuXqF8bjaSlwIznG2D+HRemPXvRsQ0DWCuJBlA9Hk0x7Sl5Daj9RrOkwYOIZnYLLJ9VqvYtT0BiaCHXSIkHVFlOKzoBk9fwO2Q6hg8dJbsGC2swXp6JZKXhqlf6pcJb2H11kDqTTNaXuQA8PlSpWOoHtSTpN52gYHRCB/nsCk9hjuMW2eXUAEPLPcFyAl6b9QUm0A/HiNRy86KFHTcS2/BCfmuJpSSt", 
+            "static_ip": "N", 
+            "status": "restart_issued", 
+            "subnet_mask": "255.255.255.128", 
+            "tag": {}, 
+            "top_of_rack": {
+                "switches": []
+            }
+        }, 
+        {
+            "base_image_id": "ubuntu-14.04.5", 
+            "cluster_id": "cluster-5b10s1", 
+            "contrail": {
+                "control_data_interface": "eth0"
+            }, 
+            "discovered": "false", 
+            "domain": "englab.juniper.net", 
+            "email": null, 
+            "gateway": "10.87.67.254", 
+            "host_name": "5b10s10", 
+            "id": "5b10s10", 
+            "intf_bond": null, 
+            "intf_control": null, 
+            "intf_data": null, 
+            "ip_address": "10.87.67.138", 
+            "ipmi_address": "10.87.122.150", 
+            "ipmi_interface": "lan", 
+            "ipmi_password": "ADMIN", 
+            "ipmi_type": "", 
+            "ipmi_username": "ADMIN", 
+            "last_update": "2017-04-07 05:46:28", 
+            "mac_address": "90:E2:BA:D9:3D:75", 
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.67.254", 
+                        "dhcp": true, 
+                        "ip_address": "10.87.67.138", 
+                        "mac_address": "90:E2:BA:D9:3D:75", 
+                        "member_interfaces": [], 
+                        "name": "eth0", 
+                        "parent": "", 
+                        "tor": "", 
+                        "tor_port": "", 
+                        "type": "physical"
+                    }
+                ], 
+                "management_interface": "eth0", 
+                "routes": []
+            }, 
+            "package_image_id": "", 
+            "parameters": {
+                "disks": [], 
+                "interface_name": "eth0", 
+                "partition": "/dev/sda", 
+                "provision": {
+                    "contrail": {
+                        "storage": {
+                            "storage_chassis_id": "", 
+                            "storage_chassis_id_input": "", 
+                            "storage_osd_disks": [], 
+                            "storage_repo_id": ""
+                        }
+                    }
+                }
+            }, 
+            "password": "c0ntrail123", 
+            "provisioned_id": "", 
+            "reimaged_id": "ubuntu-14-04", 
+            "roles": [], 
+            "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCVd9fwbtpWOV/jIgXccz/9nu8dWwwttdw/Szt9Ck1ae2hDSxXnw3yh2ZNgR8NdrEH3V7GJXPyPPqdhkZZS4xS5a7Q+6CTJb8kC5TBF2rBmPr1EOv8q84D3/ZX2Q1JrDdLY8Ut4BwYW2c0Sb089j0LMGw6wNqcPU3wrVxI0FSGKinlzO6zfaNcrUpwK5RVx+EAZ1nXYNSLKkZOTPgsj+TYcXfDAKtc0U4EO+6sFXu360LwsV9DYX1hc8JrwXR429llmB+/gWQfLa/0vfED8CMOh20FFvcMQyQzUH0gc7NOr05PdLUoblpICzuY9/EmHnx7dpY89VP/1UjuWs66vxoYX", 
+            "static_ip": "N", 
+            "status": "restart_issued", 
+            "subnet_mask": "255.255.255.255", 
+            "tag": {}, 
+            "top_of_rack": {
+                "switches": []
+            }
+        }, 
+        {
+            "base_image_id": "ubuntu-14.04.5", 
+            "cluster_id": "cluster-5b10s1", 
+            "contrail": {
+                "control_data_interface": "eth0"
+            }, 
+            "discovered": "false", 
+            "domain": "englab.juniper.net", 
+            "email": null, 
+            "gateway": "10.87.67.254", 
+            "host_name": "5b10s6", 
+            "id": "5b10s6", 
+            "intf_bond": null, 
+            "intf_control": null, 
+            "intf_data": null, 
+            "ip_address": "10.87.67.134", 
+            "ipmi_address": "10.87.122.146", 
+            "ipmi_interface": "lan", 
+            "ipmi_password": "ADMIN", 
+            "ipmi_type": "", 
+            "ipmi_username": "ADMIN", 
+            "last_update": "2017-04-07 05:46:29", 
+            "mac_address": "90:E2:BA:D9:20:C1", 
+            "network": {
+                "interfaces": [
+                    {
+                        "default_gateway": "10.87.67.254", 
+                        "dhcp": true, 
+                        "ip_address": "10.87.67.134/25", 
+                        "mac_address": "90:E2:BA:D9:20:C1", 
+                        "member_interfaces": [], 
+                        "name": "eth0", 
+                        "parent": "", 
+                        "tor": "", 
+                        "tor_port": "", 
+                        "type": "physical"
+                    }
+                ], 
+                "management_interface": "eth0", 
+                "routes": []
+            }, 
+            "package_image_id": "", 
+            "parameters": {
+                "disks": [], 
+                "interface_name": "eth0", 
+                "partition": "/dev/sda", 
+                "provision": {
+                    "contrail": {
+                        "storage": {
+                            "storage_chassis_id": "", 
+                            "storage_chassis_id_input": "", 
+                            "storage_osd_disks": [], 
+                            "storage_repo_id": ""
+                        }
+                    }
+                }
+            }, 
+            "password": "c0ntrail123", 
+            "provisioned_id": "", 
+            "reimaged_id": "ubuntu-14-04", 
+            "roles": [], 
+            "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1ED8B3ZxZytdFZ4R4YerZoFDcY2ThChEMxe0bubx5N31m8JhA0RTNeox9LFviEaelB+V8TqQDdWv2ZVRS1RQXsuxxCz0ybNDvKrSeHs74HkQHLQWEaRAx91JKw+eAfXcryIYsaJY049n2LPeGj6NDcZy/EUFHHJemhL7AiVbFqiH4RL/NXSM/MZReRqx879oCKJT9zfnRU+z7AAkwNCx2dp1zwr0PfgT5U5lOsc3yvxfTFGkDhJ53EPkZ3LM07/0tI5JtCY8aIr0JD2FXk2bl12aLMxNMOkwKkhgMrqBoksmFq5UzM/I0LtnYU/ayeguFpmtRRbC8nEryd/iG5HsX", 
+            "static_ip": "N", 
+            "status": "restart_issued", 
+            "subnet_mask": "255.255.255.128", 
+            "tag": {}, 
+            "top_of_rack": {
+                "switches": []
+            }
+        }
+    ]
+}
