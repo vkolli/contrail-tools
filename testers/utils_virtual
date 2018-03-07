@@ -838,6 +838,7 @@ function launch_testbed_virtual_5_0() {
 	sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/templates/* root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/
 	sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $BASE_CLUSTER " (
 	  set -e
+	  export VERSION=$TAG
 	  cp /root/${TEMPLATE_DIR}/$TEMPLATE /root/${TEMPLATE_DIR}/input.json
 	  cd /root/${TEMPLATE_DIR}/
 	  echo "Using build_infra_5_0.sh file for launching the tasks"
