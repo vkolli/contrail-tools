@@ -40,7 +40,7 @@ final_server_stack_name=$server_stack_name$dashed_project_uuid
 echo "Server Stack Name: $final_server_stack_name"
 echo $final_server_stack_name >> /root/$1/info.txt
 
-rm /root/.ssh/known_hosts
+#rm /root/.ssh/known_hosts
 # Lets create the Network Stack
 heat stack-create -f /root/$1/final_network.yaml $final_network_stack_name
 sleep 10
