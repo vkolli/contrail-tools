@@ -39,7 +39,7 @@
 						"flavor" : "m1.xxlarge",
 						"image" : "image_val",
 						"floating_ip" : "true",
-						"server_manager" : "flase",
+						"server_manager" : "false",
 						"roles" : ["config", "openstack", "webui", "control", "collector", "database"]
 					},
 					"server2":{	
