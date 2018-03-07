@@ -2237,7 +2237,14 @@ def create_yaml_file_for_5_0_provisioning():
 	if (("INTROSPECT_SSL_ENABLE" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["INTROSPECT_SSL_ENABLE"] == "true")):
 	    final_prov_yaml_string = final_prov_yaml_string + "  INTROSPECT_SSL_ENABLE:\n"
 	if (("XMPP_SSL_ENABLE" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["XMPP_SSL_ENABLE"] == "true")):
-	    final_prov_yaml_string = final_prov_yaml_string + "  XMPP_SSL_ENABLE:\n" 
+	    final_prov_yaml_string = final_prov_yaml_string + "  XMPP_SSL_ENABLE:\n"
+	if (("two_interface" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["two_interface"] == "true")):
+	    for j in (server_dict[clus][i]["ip_address"]):
+		current_network = j
+		gateway = network_dict[j]["default_gateway"]
+		if network_dict[j]["role"] == "control-data":
+		    final_prov_yaml_string = final_prov_yaml_string + "  VROUTER_GATEWAY: %s\n" %gateway
+		    final_prov_yaml_string = final_prov_yaml_string + "  PHYSICAL_INTERFACE: eth1\n"	     
     final_prov_yaml_string = final_prov_yaml_string + "\norchestrator_configuration:\n"
     for clus in provision_5_0_dict:
 	if "keystone" in provision_5_0_dict[clus]["openstack_config"]:
@@ -2246,6 +2253,11 @@ def create_yaml_file_for_5_0_provisioning():
 		final_prov_yaml_string = final_prov_yaml_string + "    version: %s\n" %provision_5_0_dict[clus]["openstack_config"]["keystone"]["version"]
 	    else:
 		final_prov_yaml_string = final_prov_yaml_string + "    version: /v3\n"
+	if (("two_interface" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["two_interface"] == "true")):
+	    if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"])):
+	        final_prov_yaml_string = final_prov_yaml_string + "  internal_vip: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
+		final_prov_yaml_string = final_prov_yaml_string + "  external_vip: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
+		final_prov_yaml_string = final_prov_yaml_string + "  network_interface: eth1\n"
     # This part of the code will provide the contrail-test configurations for the yaml file
     final_prov_yaml_string = final_prov_yaml_string + "\ntest_configuration:\n"
     for clus in provision_5_0_dict:
