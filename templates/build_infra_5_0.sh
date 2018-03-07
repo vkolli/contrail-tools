@@ -16,7 +16,7 @@ sed -i 's/project_uuid_val/'${dashed_project_uuid}'/' /root/$1/input.json
 echo "input.json  --- Changed"
 
 python /root/$1/change_testbed_params.py /root/$1/input.json $ubuntu_image_name parse_openstack_image_list_command
-python /root/$1/inp_to_yaml.py /root/$1/input.json /root/$1/check_and_create_required_flavor
+python /root/$1/inp_to_yaml.py /root/$1/input.json check_and_create_required_flavor
 
 sleep 5
 sed -i 's/image_val/'${ubuntu_image_name}'/' /root/$1/input.json
