@@ -830,6 +830,7 @@ function launch_testbed_virtual() {
 
 function launch_testbed_virtual_5_0() {
 	echo "Launch testbed using heat template"
+        export TEMPLATE_DIR=${BUILD_TAG}
 	sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $BASE_CLUSTER " (
 	  set -e
 	  mkdir /root/${TEMPLATE_DIR}/
