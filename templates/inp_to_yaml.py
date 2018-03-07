@@ -2244,7 +2244,17 @@ def create_yaml_file_for_5_0_provisioning():
 		gateway = network_dict[j]["default_gateway"]
 		if network_dict[j]["role"] == "control-data":
 		    final_prov_yaml_string = final_prov_yaml_string + "  VROUTER_GATEWAY: %s\n" %gateway
-		    final_prov_yaml_string = final_prov_yaml_string + "  PHYSICAL_INTERFACE: eth1\n"	     
+		    final_prov_yaml_string = final_prov_yaml_string + "  PHYSICAL_INTERFACE: eth1\n"
+	    list_of_control_data_ip_of_control_nodes = []
+	    for j in server_dict[clus]:
+		if server_dict[clus][j]["server_manager"] != "true":
+		    if "control" in server_dict[clus][j]["roles"]:
+		        for k in server_dict[clus][j]["ip_address"]:
+			    if network_dict[k]["role"] == "control-data":
+				list_of_control_data_ip_of_control_nodes.append(server_dict[clus][j]["ip_address"][k])
+	    tmp_control_data_ip_string = ",".join(list_of_control_data_ip_of_control_nodes)
+	    final_prov_yaml_string = final_prov_yaml_string + "  CONTROLLER_NODES: %s\n" %tmp_control_data_ip_string	     
+    # This part of the code will provide the orchestrator configurations for the yaml file
     final_prov_yaml_string = final_prov_yaml_string + "\norchestrator_configuration:\n"
     for clus in provision_5_0_dict:
 	if "keystone" in provision_5_0_dict[clus]["openstack_config"]:
