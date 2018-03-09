@@ -26,7 +26,7 @@
 		},
 		"floating_ip_network":{
                         "param":{
-                                "floating_ip_network_uuid" : "26c2b374-8bc6-4ef2-abd0-2da9b6a114e6",
+                                "floating_ip_network_uuid" : "fip_uuid",
                                 "name" : "floatingIpPool_final_script_test"
                         }
                 },

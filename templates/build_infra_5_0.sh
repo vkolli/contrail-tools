@@ -20,8 +20,8 @@ python /root/$1/inp_to_yaml.py /root/$1/input.json check_and_create_required_fla
 
 sleep 5
 sed -i 's/image_val/'${ubuntu_image_name}'/' /root/$1/input.json
-#fip_uuid="$(python change_testbed_params.py input.json $selected_config_node_ip get_fip_uuid)"
-#sed -i 's/fip_uuid/'${fip_uuid}'/' input.json
+fip_uuid="$(python change_testbed_params.py input.json $selected_config_node_ip get_fip_uuid)"
+sed -i 's/fip_uuid/'${fip_uuid}'/' input.json
 echo "input.json  --- Changed"
 echo "\n The Input.json looks something like this now"
 cat /root/$1/input.json
