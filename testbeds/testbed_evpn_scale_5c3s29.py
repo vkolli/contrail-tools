@@ -331,7 +331,7 @@ env.ostypes = {
 #}
 
 env.sriov = {
-     host16 :[ {'interface' : 'p514p2', 'VF' : 25, 'physnets' : ['physnet1']}],
+     #host16 :[ {'interface' : 'p514p2', 'VF' : 25, 'physnets' : ['physnet1']}],
 }
 
 #OPTIONAL SEPARATION OF MANAGEMENT AND CONTROL + DATA and OPTIONAL VLAN INFORMATION
