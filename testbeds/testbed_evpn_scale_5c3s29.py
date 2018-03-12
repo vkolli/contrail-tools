@@ -119,7 +119,7 @@ vm_node_details = {
                 'network' : [{'bridge' : 'br0', 'mac':'62:53:55:02:01:04', 'model':'virtio'},
                              {'bridge' : 'br1', 'model':'virtio'}
                             ],
-            }
+            },
     host7 : {
                 'name' : '5c3s29-3-vm1',
                 'ram' : '65536',
