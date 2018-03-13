@@ -117,35 +117,29 @@ then
 	sed -i 's/__VERSION__/'${contrail_version}'/' /root/$1/all.yml
 	python /root/$1/inp_to_yaml.py /root/$1/input.json get_config_node_ip > /root/$1/config_node_ip
         config_node_ip="$(cat /root/$1/config_node_ip)"
-	((count=100))
+	((count=50))
 	while [[ $count -ne 0 ]] ; do
-	    ping  -c5 $config_node_ip | tee  /dev/null
-	    rc=$?
-	    if [[ $rc -eq 0 ]] ; then
-	        ((count = 1))
-	    fi
+            output=$(ping  -c5 $config_node_ip)
+            echo $output | grep "100% packet loss"
+            rc=$?
+            if [[ $rc -ne 0 ]]; then
+                break
+            fi
+            echo "The Config Node is not yet Pingable"
 	    ((count = count - 1))
 	done
-	if [[ $rc -eq 0 ]]
+	if [[ $count -eq 0 ]]
 	then
+	    echo "The Config Node is Not Pingable"
+            exit 1
+	else
 	    echo "The confing node ip where the contrail-deployments repo is going to cloned is: "$config_node_ip
 	    sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'yum install -y git ansible epel-release vim ; cd ; git clone https://github.com/pryadav7/contrail-deployments.git'
 	    sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/contrail-deployments/inventory/group_vars/
 	    sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/contrail-deployments/ ; ansible-playbook -i inventory/ playbooks/all.yml'
-	else
-	    echo "The Config Node is Not Pingable"
 	fi
-	#echo "The confing node ip where the contrail-deployments repo is going to cloned is: "$config_node_ip
-	#sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'yum install -y git ansible epel-release vim ; cd ; git clone https://github.com/pryadav7/contrail-deployments.git'
-	#sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/contrail-deployments/inventory/group_vars/
-	#sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/contrail-deployments/ ; ansible-playbook -i inventory/ playbooks/all.yml'
 else
         echo "Network Stack Creation failed. So creation of the SERVER STACK is TERMINATED !!!!"
 fi
 echo "Cloning the contrail-deployments repo and transferring the all.yaml file generated above."
-#sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no root@10.87.120.9 'yum install -y git ansible; cd ; git clone https://github.com/pryadav7/contrail-deployments.git'
-#sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no all.yaml root@10.87.120.9:/root/contrail-deployments/inventory/group_vars/
-#sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no root@10.87.120.9 'cd /root/contrail-deployments/inventory/ ; ls -ltrh'
 echo "DONE !!!!!!!!!!!!"
-d
-
