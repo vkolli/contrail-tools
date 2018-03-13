@@ -2,27 +2,27 @@ from fabric.api import env
 import os
 
 #Management ip addresses of hosts in the cluster
-host1 ='root@10.87.74.141'
-host2 ='root@10.87.74.142'
-host3 ='root@10.87.74.143'
-host4 ='root@10.87.74.144'
-host5 ='root@10.87.74.145'
-host6 ='root@10.87.74.146'
-host7 ='root@10.87.74.147'
-host8 ='root@10.87.74.148'
-host9 ='root@10.87.74.149'
-host10 ='root@10.87.74.150'
-host11 ='root@10.87.74.151'
-host12 ='root@10.87.74.152'
-host13 ='root@10.87.74.153'
-host14 ='root@10.87.74.154'
-host15 ='root@10.87.74.155'
+host1 ='root@10.87.74.145'
+host2 ='root@10.87.74.146'
+host3 ='root@10.87.74.147'
+host4 ='root@10.87.74.148'
+host5 ='root@10.87.74.149'
+host6 ='root@10.87.74.150'
+host7 ='root@10.87.74.151'
+host8 ='root@10.87.74.152'
+host9 ='root@10.87.74.153'
+host10 ='root@10.87.74.154'
+host11 ='root@10.87.74.155'
+host12 ='root@10.87.74.156'
+host13 ='root@10.87.74.157'
+host14 ='root@10.87.74.158'
+host15 ='root@10.87.74.159'
 
 kvm_5c3s29_1 ='root@10.87.74.137'
 kvm_5c3s29_2 ='root@10.87.74.138'
 kvm_5c3s29_3 ='root@10.87.74.139'
 
-reimage_param = os.getenv('REIMAGE_PARAM', 'ubuntu-14.04.4')
+reimage_param = os.getenv('REIMAGE_PARAM', 'ubuntu-14.04.5')
 
 vm_node_details = {
     'default': {
@@ -176,7 +176,7 @@ ext_routers = [('5c3-mx80-1', '7.7.7.77')]
 router_asn = 64513
 
 #Host from which the fab commands are triggered to install and provision
-host_build = 'root@10.84.74.141'
+host_build = 'root@10.87.74.145'
 
 #Role definition of the hosts.
 env.roledefs = {
