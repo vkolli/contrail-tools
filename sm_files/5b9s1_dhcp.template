@@ -1,0 +1,280 @@
+# ******************************************************************
+# Cobbler managed dhcpd.conf file
+#
+# generated from cobbler dhcp.conf template ($date)
+# Do NOT make changes to /etc/dhcpd.conf. Instead, make your changes
+# in /etc/cobbler/dhcp.template, as /etc/dhcpd.conf will be
+# overwritten.
+#
+# ******************************************************************
+
+ddns-update-style interim;
+
+allow booting;
+allow bootp;
+
+ignore client-updates;
+set vendorclass = option vendor-class-identifier;
+
+subnet 10.87.66.128 netmask 255.255.255.128 {
+    option routers              10.87.66.254;
+    option subnet-mask          255.255.255.128;
+    option domain-name-servers  172.29.135.60;
+    option domain-search        "";
+    option domain-name          "";
+    option ntp-servers          $next_server;
+    default-lease-time          21600;
+    max-lease-time              43200;
+    next-server                 $next_server;
+    filename                    "/pxelinux.0";
+     on commit {
+         set clip = binary-to-ascii(10, 8, ".", leased-address);
+         set clhw = binary-to-ascii(16, 8, ":", substring(hardware, 1, 6));
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "commit", clip, clhw);
+         set ClientHost = pick-first-value(host-decl-name,
+                                           option fqdn.hostname,
+                                          option host-name,
+                                           "none");
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "commit", clip, clhw, ClientHost);
+     }
+     on release {
+         set clip = binary-to-ascii(10, 8, ".", leased-address);
+         set clhw = binary-to-ascii(16, 8, ":", substring(hardware, 1, 6));
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "release", clip, clhw);
+         set ClientHost = pick-first-value(host-decl-name,
+                                           option fqdn.hostname,
+                                           option host-name,
+                                           "none");
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "release", clip, clhw, ClientHost);
+     }
+     on expiry {
+         set clip = binary-to-ascii(10, 8, ".", leased-address);
+         set clhw = binary-to-ascii(16, 8, ":", substring(hardware, 1, 6));
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "expiry", clip, clhw);
+         set ClientHost = pick-first-value(host-decl-name,
+                                           option fqdn.hostname,
+                                           option host-name,
+                                           "none");
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "expiry", clip, clhw, ClientHost);
+     }
+}
+
+
+subnet 10.87.67.0 netmask 255.255.255.128 {
+    option routers              10.87.67.126;
+    option subnet-mask          255.255.255.128;
+    option domain-name-servers  172.29.135.60;
+    option domain-search        "";
+    option domain-name          "";
+    option ntp-servers          $next_server;
+    default-lease-time          21600;
+    max-lease-time              43200;
+    next-server                 $next_server;
+    filename                    "/pxelinux.0";
+     on commit {
+         set clip = binary-to-ascii(10, 8, ".", leased-address);
+         set clhw = binary-to-ascii(16, 8, ":", substring(hardware, 1, 6));
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "commit", clip, clhw);
+         set ClientHost = pick-first-value(host-decl-name,
+                                           option fqdn.hostname,
+                                          option host-name,
+                                           "none");
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "commit", clip, clhw, ClientHost);
+     }
+     on release {
+         set clip = binary-to-ascii(10, 8, ".", leased-address);
+         set clhw = binary-to-ascii(16, 8, ":", substring(hardware, 1, 6));
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "release", clip, clhw);
+         set ClientHost = pick-first-value(host-decl-name,
+                                           option fqdn.hostname,
+                                           option host-name,
+                                           "none");
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "release", clip, clhw, ClientHost);
+     }
+     on expiry {
+         set clip = binary-to-ascii(10, 8, ".", leased-address);
+         set clhw = binary-to-ascii(16, 8, ":", substring(hardware, 1, 6));
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "expiry", clip, clhw);
+         set ClientHost = pick-first-value(host-decl-name,
+                                           option fqdn.hostname,
+                                           option host-name,
+                                           "none");
+         execute("/opt/contrail/server_manager/smgr_dhcp_event.py", "expiry", clip, clhw, ClientHost);
+     }
+}
+
+host 5b9s1-vm1 {
+    hardware ethernet 62:53:54:02:00:01;
+    fixed-address 10.87.67.93;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s1-vm1";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s1-vm2 {
+    hardware ethernet 62:53:54:02:00:02;
+    fixed-address 10.87.67.94;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s1-vm2";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s1-vm3 {
+    hardware ethernet 62:53:54:02:00:03;
+    fixed-address 10.87.67.95;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s1-vm3";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s1-vm4 {
+    hardware ethernet 62:53:54:02:00:04;
+    fixed-address 10.87.67.96;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s1-vm4";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s2-vm1 {
+    hardware ethernet 62:53:54:02:01:01;
+    fixed-address 10.87.67.97;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s2-vm1";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s2-vm2 {
+    hardware ethernet 62:53:54:02:01:02;
+    fixed-address 10.87.67.98;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s2-vm2";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s2-vm3 {
+    hardware ethernet 62:53:54:02:01:03;
+    fixed-address 10.87.67.99;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s2-vm3";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s2-vm4 {
+    hardware ethernet 62:53:54:02:01:04;
+    fixed-address 10.87.67.100;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s2-vm4";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s3-vm1 {
+    hardware ethernet 62:53:54:02:02:01;
+    fixed-address 10.87.67.101;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s3-vm1";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s3-vm2 {
+    hardware ethernet 62:53:54:02:02:02;
+    fixed-address 10.87.67.102;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s3-vm2";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s3-vm3 {
+    hardware ethernet 62:53:54:02:02:03;
+    fixed-address 10.87.67.103;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s3-vm3";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+host 5b9s3-vm4 {
+    hardware ethernet 62:53:54:02:02:04;
+    fixed-address 10.87.67.104;
+    option domain-search        "englab.juniper.net", "juniper.net";
+    option domain-name          "englab.juniper.net" ;
+    option ntp-servers         $next_server ;
+    option host-name            "5b9s3-vm4";
+    option routers 10.87.67.126;
+    option domain-name-servers  172.29.131.60, 172.29.135.60, 8.8.8.8;
+}
+
+#for dhcp_tag in $dhcp_tags.keys():
+    ## group could be subnet if your dhcp tags line up with your subnets
+    ## or really any valid dhcpd.conf construct ... if you only use the
+    ## default dhcp tag in cobbler, the group block can be deleted for a
+    ## flat configuration
+# group for Cobbler DHCP tag: $dhcp_tag
+group {
+        #for mac in $dhcp_tags[$dhcp_tag].keys():
+            #set iface = $dhcp_tags[$dhcp_tag][$mac]
+    host $iface.name {
+        hardware ethernet $mac;
+        #if $iface.ip_address:
+        fixed-address $iface.ip_address;
+        #end if
+        #if $iface.hostname:
+        option host-name "$iface.hostname";
+        #end if
+        #if $iface.netmask:
+        option subnet-mask $iface.netmask;
+        #end if
+        #if $iface.gateway:
+        option routers $iface.gateway;
+        #end if
+        filename "$iface.filename";
+        ## Cobbler defaults to $next_server, but some users
+        ## may like to use $iface.system.server for proxied setups
+        next-server $next_server;
+        ## next-server $iface.next_server;
+    }
+        #end for
+}
+#end for
+#host 5b9s11 { hardware ethernet 90:E2:BA:D9:21:E1; deny booting;}
+#host 5b9s12 { hardware ethernet 90:E2:BA:D9:24:29; deny booting;}
+#host 5b9s13 { hardware ethernet 90:E2:BA:D9:36:F5; deny booting;}
+#host 5b9s14 { hardware ethernet 90:E2:BA:D9:2F:31; deny booting;}
+#host 5b9s28 { hardware ethernet 3C:FD:FE:A3:98:62; deny booting;}
+#host 5b9s32 { hardware ethernet 90:E2:BA:84:54:52; deny booting;}
+#
+#host 5b9s15-1 { hardware ethernet C4:54:44:44:D5:A3; deny booting;}
+#host 5b9s15-2 { hardware ethernet 2c:60:0c:42:20:5a; deny booting;}
+#host 5b9s15-3 { hardware ethernet c4:54:44:44:d5:15; deny booting;}
+#host 5b9s15-4 { hardware ethernet C4:54:44:43:A1:34; deny booting;}
