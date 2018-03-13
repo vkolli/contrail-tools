@@ -28,7 +28,7 @@ vm_node_details = {
     'default': {
                 'image_dest' : '/mnt/disk1/images/',
                 'disk_format' : 'qcow2',
-                'image_source' : 'http://10.84.5.120/images/node_vm_images/%s-copy.qcow2.gz' % (reimage_param),
+                'image_source' : 'http://10.84.5.120/images/node_vm_images/centos-7.4-copy.qcow2.gz',
                 },
     host1 : {
                 'name' : '5c3s29-1-vm1',
