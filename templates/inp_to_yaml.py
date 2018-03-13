@@ -317,6 +317,8 @@ def create_network_yaml():
         ip_block_with_mask = network_dict[i]["ip_block_with_mask"]
         network_string = network_string + "      cidr: %s\n" % ip_block_with_mask
         network_string = network_string + "      ip_version: 4\n"
+        if network_dict[i].get('role') == 'control-data':
+            network_string = network_string + "      gateway_ip: null\n"
         network_string = network_string + "      name: %s\n\n" % subnet_name
         num = num + 1
     print network_string
