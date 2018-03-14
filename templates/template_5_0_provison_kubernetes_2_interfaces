@@ -4,7 +4,7 @@
 			"msg" : "9 node cluster for mainline build with multiple interfaces and Openstack  HA"
 		},
 		"params":{
-			"no_of_servers" : 5,
+			"no_of_servers" : 7,
 			"no_of_networks" : 2,
 			"network_stack_name" : "test_network_final",
 			"server_stack_name" : "test_server_final",
@@ -49,7 +49,7 @@
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
-                                                "roles" : ["k8s_master"]
+                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui"]
                                         },
 					"server3":{
                                                 "name":"server3" ,
@@ -58,7 +58,7 @@
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
-                                                "roles" : ["k8s_master"]
+                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui"]
                                         },
 					"server4":{
                                                 "name":"server4" ,
@@ -76,7 +76,7 @@
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
-                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui"]
+                                                "roles" : ["vrouter", "k8s_node"]
                                         },
 					"server6":{
                                                 "name":"server6" ,
@@ -85,7 +85,7 @@
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
-                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui"]
+                                                "roles" : ["vrouter", "k8s_node"]
                                         },
 					"server7":{
                                                 "name":"server7" ,
@@ -96,24 +96,6 @@
                                                 "server_manager" : "flase",
                                                 "roles" : ["vrouter", "k8s_node"]
                                         },
-					"server8":{
-                                                "name":"server8" ,
-                                                "ip_address" : { "final_test_network_1":"10.0.0.11", "final_test_network_2":"10.10.0.11"},
-                                                "flavor" : "m1.xxlarge",
-                                                "image" : "image_val",
-                                                "floating_ip" : "true",
-                                                "server_manager" : "flase",
-                                                "roles" : ["vrouter", "k8s_node"]
-                                        },
-					"server9":{
-                                                "name":"server9" ,
-                                                "ip_address" : { "final_test_network_1":"10.0.0.12", "final_test_network_2":"10.10.0.12"},
-                                                "flavor" : "m1.xxlarge",
-                                                "image" : "image_val",
-                                                "floating_ip" : "true",
-                                                "server_manager" : "flase",
-                                                "roles" : ["vrouter", "k8s_node"]
-                                        }
 				},
 				"cluster_json_params": {
 					"server_password" : "c0ntrail123",
