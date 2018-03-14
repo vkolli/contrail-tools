@@ -58,7 +58,7 @@
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
-                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui", "k8smaster"]
+                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui", "k8s_master"]
                                         },
 					"server4":{
                                                 "name":"server4" ,
