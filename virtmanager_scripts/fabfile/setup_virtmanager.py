@@ -155,16 +155,45 @@ def generate_etc_hosts(hostname):
     text = "127.0.0.1       localhost\n127.0.1.1       \
             %s.englab.juniper.net    %s \n\n"%(hostname,hostname)
     create_file(file_name , text)
+
+def setup_ntp(hostname,smip):
+    file_name = "ntp.conf"
+    text = "driftfile\t/var/lib/ntp/drift\nserver\
+           %s\nrestrict\
+           127.0.0.1\nrestrict\
+           -6 ::1\nincludefile\
+           /etc/ntp/crypto/pw\nkeys\
+           /etc/ntp/keys\n\n"%(smip)
+    run("apt-get -y install ntp")
+    run("service ntp stop")
+    run("ntpdate "+smip)
+    run("mv /etc/ntp.conf /etc/ntp.conf.orig")
+    run("touch /var/lib/ntp/drift")
+    create_file(file_name , text)
+    run("service ntp restart")
+
+
+def point_sources_list_smrepo(hostname,smip,reimage_param):
+    f1='/tmp/'+hostname+'.sources.list'
+    run("cp /etc/apt/sources.list /etc/apt/sources.list.image")
+    outfile=open(f1, 'w')
+    outfile.write("deb [arch=amd64] http://"+smip+"/contrail/images/"+reimage_param+" trusty main")
+    outfile.close()
+    put(f1,"/etc/apt/sources.list")
+    with settings(warn_only=True):
+        run("apt-get update")
     
 def change_host_name_of_vm(hostname):
     host = hostname
     generate_etc_hostname(host)
     generate_etc_hosts(host)
-    #run("cp /etc/hostname /etc/hostname.old")
     run("cp /etc/hosts /etc/hosts.old")
     put("hostname", "/etc/")
     put("hosts", "/etc/")
+    point_sources_list_smrepo(host,smip,reimage_param)
+    setup_ntp(host,smip)
     run("reboot")
+
 
 def change_libvirt_type(ty = 'qemu'):
     virt_file = run("cd /etc/nova;grep -r 'libvirt_type' *")
