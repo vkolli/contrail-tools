@@ -95,7 +95,7 @@
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
                                                 "roles" : ["vrouter", "k8s_node"]
-                                        },
+                                        }
 				},
 				"cluster_json_params": {
 					"server_password" : "c0ntrail123",
