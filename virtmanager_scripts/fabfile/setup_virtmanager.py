@@ -104,7 +104,7 @@ def create_vms_from_testbed(contrail_fab_path='/opt/contrail/utils'):
                       vm_detail['disk_format'])
         for i in range(0,3):
             try:
-                with settings(host_string=key):
+                with settings(host_string=key,warn_only=True):
                     change_host_name_of_vm(vm_detail['name'])
                 break
             except :
