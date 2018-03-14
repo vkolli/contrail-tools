@@ -49,7 +49,7 @@
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
-                                                "roles" : ["vrouter"]
+                                                "roles" : ["vrouter", "openstack_compute"]
                                         },
 					"server3":{
                                                 "name":"server3" ,
@@ -58,7 +58,7 @@
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
-                                                "roles" : ["vrouter"]
+                                                "roles" : ["vrouter", "openstack_compute"]
                                         },
 					"server4":{
                                                 "name":"server4" ,
@@ -67,7 +67,7 @@
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
-                                                "roles" : ["vrouter"]
+                                                "roles" : ["vrouter", "openstack_compute"]
                         		}
 				},
 				"cluster_json_params": {
