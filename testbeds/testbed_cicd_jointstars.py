@@ -139,7 +139,7 @@ vm_node_details = {
 }
 
 #External routers if any
-ext_routers = [('5b10-mx80-1', '10.87.67.169')]
+ext_routers = [('5b9-mx80-1', '10.87.67.123')]
 
 #Autonomous system number
 router_asn = 64522
