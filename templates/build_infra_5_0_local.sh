@@ -117,9 +117,9 @@ then
 	python inp_to_yaml.py input.json get_config_node_ip > /root/$dashed_project_uuid/config_node_ip
         config_node_ip="$(cat /root/$dashed_project_uuid/config_node_ip)"
 	echo "The confing node ip where the contrail-deployments repo is going to cloned is: "$config_node_ip
-	sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'yum install -y git ansible epel-release vim ; cd ; git clone https://github.com/pryadav7/contrail-deployments.git'
-	sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$dashed_project_uuid/all.yml root@$config_node_ip:/root/contrail-deployments/inventory/group_vars/
-	sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/contrail-deployments/ ; ansible-playbook -i inventory/ playbooks/all.yml'
+	sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'yum install -y git ansible epel-release vim ; cd ; git clone https://github.com/Juniper/contrail-tools.git'
+	sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$dashed_project_uuid/all.yml root@$config_node_ip:/root/contrail-tools/ansible/inventory/group_vars/
+	sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/contrail-tools/ansible/ ; ansible-playbook -i inventory/ playbooks/all.yml'
 else
         echo "Network Stack Creation failed. So creation of the SERVER STACK is TERMINATED !!!!"
 fi
