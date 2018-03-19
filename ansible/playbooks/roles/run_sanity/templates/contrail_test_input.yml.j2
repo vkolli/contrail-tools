@@ -19,6 +19,11 @@ contrail_configuration:
 {% endif %}
 {% endif %}
 
+{% if orchestrator_configuration is defined %}
+orchestrator_configuration:
+  {{ orchestrator_configuration | to_nice_yaml | indent(2, False) }}
+{% endif %}
+
 {% if test_configuration is defined %}
 test_configuration:
   {{ test_configuration | to_nice_yaml | indent(2, False) }}
