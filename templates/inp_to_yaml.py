@@ -381,11 +381,16 @@ def create_server_yaml():
         final_server_yaml_string = final_server_yaml_string + "      virtual_network: %s\n" %fip_uuid
     ip_port_dict = {}
     for clus in server_dict:
+        external_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('external_vip')
+        contrail_external_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('contrail_external_vip')
+        internal_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('internal_vip')
+        contrail_internal_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('contrail_internal_vip')
         server_string = ""
         for i in server_dict[clus]:
             #lets create ports for the server according to the template given
             indi_server_string = ""
             name = server_dict[clus][i]["name"]
+            roles = server_dict[clus][i]["roles"]
             individual_ip_address_dict = server_dict[clus][i]["ip_address"]
             project_uuid = general_params_dict["project_uuid"]
             #print individual_ip_address_dict
@@ -409,26 +414,19 @@ def create_server_yaml():
                 final_server_yaml_string = final_server_yaml_string + "      fixed_ips:\n"
                 final_server_yaml_string = final_server_yaml_string + "      - ip_address: %s\n" %individual_ip_address_dict[net_name]
                 if network_dict[net]["role"] == "management":
-                    final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
-                    if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or ("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                        if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
-                        elif (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["openstack"]["external_vip"]
-                        elif (("external_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_external_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_external_vip"]
-
+                    if (external_vip and 'openstack' in roles) or (contrail_external_vip and 'config' in roles):
+                        final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
+                        if 'openstack' in roles and external_vip:
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %external_vip
+                        if 'config' in roles and contrail_external_vip:
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %contrail_external_vip
                 if network_dict[net]["role"] == "control-data":
-                    final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
-                    if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) or ("contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                        if (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
-                        elif (("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
-                        elif (("internal_vip" not in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("contrail_internal_vip" in cluster_dict[clus]["parameters"]["provision"]["contrail"])):
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %cluster_dict[clus]["parameters"]["provision"]["contrail"]["contrail_internal_vip"]
+                    if (internal_vip and 'openstack' in roles) or (contrail_internal_vip and 'config' in roles):
+                        final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
+                        if 'openstack' in roles and internal_vip:
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %internal_vip
+                        if 'config' in roles and contrail_internal_vip:
+                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %contrail_internal_vip
                 ip_port_dict[individual_ip_address_dict[net_name]] = port_name
             # lets create the servers according to the teplate given
             final_server_yaml_string = final_server_yaml_string + "  " + name + ":\n"
