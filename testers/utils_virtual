@@ -835,7 +835,7 @@ function launch_testbed_virtual_5_0() {
 	  set -e
 	  mkdir /root/${TEMPLATE_DIR}/
 	) "
-	sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${TOOLS_WS}/templates/* root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/
+	sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${TOOLS_WS}/templates/* ${TOOLS_WS}/ansible root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/
 	sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $BASE_CLUSTER " (
 	  set -e
 	  export VERSION=$TAG
@@ -843,7 +843,7 @@ function launch_testbed_virtual_5_0() {
 	  cd /root/${TEMPLATE_DIR}/
 	  echo "Using build_infra_5_0.sh file for launching the tasks"
 	  ./build_infra_5_0.sh ${TEMPLATE_DIR} centos-7.4 ${BASE_CLUSTER}
-	) " 	
+	) "
 }
 function delete_stacks() {
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $BASE_CLUSTER " (
