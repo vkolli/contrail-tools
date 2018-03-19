@@ -1,0 +1,99 @@
+deployment:
+    type:
+        kolla:
+            branch: contrail/ocata
+            registry: ci-repo.englab.juniper.net:5000
+        contrail:
+            branch: master
+            registry: ci-repo.englab.juniper.net:5000
+    sku: ocata
+    os: centos7
+    version: ocata-master-1
+    orchestrator: openstack
+
+provider_config:
+  bms:
+    ssh_pwd: c0ntrail123
+    ssh_user: root
+    ntpserver: 10.84.5.100
+    domainsuffix: local
+
+instances:
+  bms1:
+    provider: bms
+    ip: 10.0.0.4
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      openstack:
+
+  bms2:
+    provider: bms
+    ip: 10.0.0.5
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      openstack:
+
+  bms3:
+    provider: bms
+    ip: 10.0.0.6
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      openstack:
+
+  bms4:
+    provider: bms
+    ip: 10.0.0.7
+    roles:
+      vrouter:
+
+  bms5:
+    provider: bms
+    ip: 10.0.0.10
+    roles:
+      vrouter:
+
+contrail_configuration:
+  AAA_MODE: no-auth
+  VROUTER_GATEWAY: 10.10.0.1
+  PHYSICAL_INTERFACE: eth1
+  RABBITMQ_NODE_PORT: 5673
+
+orchestrator_configuration:
+  keystone:
+    version: v3
+    password: c0ntrail123
+  internal_vip: 10.10.0.200
+  external_vip: 10.0.0.200
+  network_interface: eth1
+
+test_configuration:
+    image_web_server: 10.84.5.120
+    use_project_scoped_token: True
+    public_host: 10.84.5.120
+    web_server:
+        server:
+        username:
+        password:
+        report_path:
+        log_path:
+        web_root:
+    mail_server:
+        server:
+        port:
+        to:
+        sender:

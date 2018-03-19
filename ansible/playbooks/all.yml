@@ -1,0 +1,2 @@
+- include: deploy.yml
+- include: run_sanity.yml

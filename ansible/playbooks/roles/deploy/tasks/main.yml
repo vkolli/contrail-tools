@@ -1,0 +1,70 @@
+---
+- name: set default deployment
+  vars:
+    types:
+      kolla:
+      contrail:
+  set_fact:
+    deployment: "{{ deployment|default({})|combine({'type': types }) }}"
+  when: deployment is undefined or deployment.type is undefined
+
+- name: set openstack version
+  set_fact:
+    sku: "{{ deployment.sku }}"
+  when: deployment.sku is defined
+
+- name: set contrail version
+  set_fact:
+    version: "{{ deployment.version }}"
+  when: deployment.version is defined
+
+- name: set orchestrator
+  set_fact:
+    orchestrator: "{{ deployment.orchestrator }}"
+  when: deployment.orchestrator is defined
+
+- name: set docker os version
+  set_fact:
+     os: "{{ deployment.os }}"
+  when: deployment.os is defined
+
+- name: Update kolla ansible related attributes
+  include: contrail-kolla-ansible/main.yml
+  when: deployment.type.kolla is defined
+
+- name: Invoke contrail ansible deployer
+  include: contrail-ansible-deployer/main.yml
+  when: deployment.type.contrail is defined
+
+#- name: Provision OpenStack cluster with kolla
+#  command: >
+#    ansible-playbook -i inventory/all-in-one all.yml -v
+#  become: true
+#  become_user: root
+#  environment:
+#    ANSIBLE_STDOUT_CALLBACK: debug
+#    ANSIBLE_LOG_PATH: "{{ playbook_dir }}/../ansible.log"
+#  args:
+#    chdir: "{{ kolla_provision_dir }}/ansible"
+
+- name: Configure nodes
+  command: >
+    ansible-playbook -i inventory/ playbooks/configure_instances.yml -v
+  become: true
+  become_user: root
+  environment:
+    ANSIBLE_STDOUT_CALLBACK: debug
+    ANSIBLE_LOG_PATH: "{{ playbook_dir }}/../ansible.log"
+  args:
+    chdir: "{{ contrail_provision_dir }}"
+  
+- name: Provision with Contrail
+  command: >
+    ansible-playbook -i inventory/ -e orchestrator="{{ orchestrator }}" playbooks/install_contrail.yml -v
+  become: true
+  become_user: root
+  environment:
+    ANSIBLE_STDOUT_CALLBACK: debug
+    ANSIBLE_LOG_PATH: "{{ playbook_dir }}/../ansible.log"
+  args:
+    chdir: "{{ contrail_provision_dir }}"

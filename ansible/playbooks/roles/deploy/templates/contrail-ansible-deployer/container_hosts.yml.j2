@@ -1,0 +1,24 @@
+CONTAINER_REGISTRY: {{ contrailregistry }}
+REGISTRY_PRIVATE_SECURE: false
+REGISTRY_PRIVATE_INSECURE: false
+contrail_configuration:
+  LINUX_DISTR: {{ 'centos7' if 'centos' in os else 'ubuntu16' }}
+  OPENSTACK_VERSION: {{ sku }}
+  CONTRAIL_VERSION: {{ version }}
+{% for key, value in contrail_configs.iteritems() %}
+  {{ key }}: {{ value }}
+{% endfor %}
+{% if orchestrator == 'openstack' %}
+  AUTH_MODE: keystone
+  KEYSTONE_AUTH_ADMIN_PASSWORD: {{ admin_password }}
+  KEYSTONE_AUTH_HOST: "{{ auth_ip }}"
+  RABBITMQ_PORT: "{{ contrail_rabbitmq_port }}"
+{% endif %}
+
+{% if roles is defined %}
+roles:
+{% for key, value in roles.iteritems() %}  {{ key }}:
+{% for item in value %}    {{ item }}:
+{% endfor %}
+{% endfor %}
+{% endif %}

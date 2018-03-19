@@ -1,0 +1,66 @@
+---
+- name: set contrail ansible repo version if undefined
+  set_fact:
+    contrail_branch: master
+  when: deployment.type.contrail.branch is undefined
+
+- name: set contrail ansible repo version if defined
+  set_fact:
+    contrail_branch: "{{ deployment.type.contrail.branch }}"
+  when: deployment.type.contrail.branch is defined
+
+- name: create temp directory for contrail
+  tempfile:
+     state: directory
+     suffix: _contrail
+  register: tmpdir
+
+- name: set contrail provision dir
+  set_fact:
+      contrail_provision_dir: "{{ tmpdir.path }}/contrail-ansible-deployer"
+
+- name: set contrailregistry if defined
+  set_fact:
+    contrailregistry: "{{ deployment.type.contrail.registry }}"
+  when: deployment.type.contrail.registry is defined
+
+- name: set controller nodes if defined
+  set_fact: 
+    controller_nodes: "{{ contrail_configuration.CONTROLLER_NODES }}"
+  when: contrail_configuration.CONTROLLER_NODES is defined
+
+- debug:
+    msg: "Cloning contrail-ansible-deployer at {{ contrail_provision_dir }}"
+
+- name: clone contrail ansible repo for openstack
+  git:
+    repo: 'https://github.com/Juniper/contrail-ansible-deployer.git'
+    accept_hostkey: yes
+    update: yes
+    dest: "{{ contrail_provision_dir }}"
+    version: "{{ contrail_branch }}"
+
+#- name: update hosts file
+#  template:
+#    src: contrail-ansible-deployer/hosts.j2
+#    dest: "{{ tmpdir.path }}/inventory/hosts"
+
+#- name: update container hosts
+#  template:
+#    src: contrail-ansible-deployer/container_hosts.yml.j2
+#    dest: "{{ tmpdir.path }}/inventory/group_vars/container_hosts.yml"
+
+#- name: update contrail inventory file
+#  template:
+#    src: contrail-ansible-deployer/all.yml.j2
+#    dest: "{{ tmpdir.path }}/inventory/group_vars/all.yml"
+
+#- name: update contrail install file
+#  copy:
+#    src: contrail-ansible-deployer/install_contrail.yml
+#    dest: "{{ tmpdir.path }}/playbooks/install_contrail.yml"
+
+- name: update contrail inventory file
+  template:
+    src: contrail-ansible-deployer/instances.yaml.j2
+    dest: "{{ contrail_provision_dir }}/config/instances.yaml"
