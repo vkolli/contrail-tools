@@ -119,18 +119,17 @@ then
         config_node_ip="$(cat /root/$1/config_node_ip)"
 	((count=50))
 	while [[ $count -ne 0 ]] ; do
-            output=$(ping  -c5 $config_node_ip)
-            echo $output | grep "100% packet loss"
+            nc -z $config_node_ip 22
             rc=$?
             if [[ $rc -ne 0 ]]; then
                 break
             fi
-            echo "The Config Node is not yet Pingable"
+            echo "The Config Node, $config_node_ip is not yet reachable"
 	    ((count = count - 1))
 	done
 	if [[ $count -eq 0 ]]
 	then
-	    echo "The Config Node is Not Pingable"
+	    echo "The Config Node $config_node_ip is Not reachable"
             exit 1
 	else
 	    echo "The confing node ip where the contrail-deployments repo is going to cloned is: "$config_node_ip
