@@ -119,7 +119,7 @@ then
         config_node_ip="$(cat /root/$1/config_node_ip)"
 	((count=50))
 	while [[ $count -ne 0 ]] ; do
-            nc -z $config_node_ip 22
+            sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'uname -a'
             rc=$?
             if [[ $rc -ne 0 ]]; then
                 break
