@@ -127,8 +127,10 @@
                 		},
 				"provison_5_0_config": {
 					"contrail_config": {
-						"AAA_MODE": "no-auth",
-						"two_interface": "true"
+						"AAA_MODE": "cloud-admin",
+						"two_interface": "true",
+						"AGENT_MODE": "nic"
+						
 					},
 					"openstack_config": {
 						"keystone": {
