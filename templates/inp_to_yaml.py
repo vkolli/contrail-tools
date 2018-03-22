@@ -2234,9 +2234,11 @@ def create_yaml_file_for_5_0_provisioning():
 	    for j in (server_dict[clus][i]["ip_address"]):
 		current_network = j
 		gateway = network_dict[j]["default_gateway"]
+		ip_block_with_mask = network_dict[j]["ip_block_with_mask"]
 		if network_dict[j]["role"] == "control-data":
 		    final_prov_yaml_string = final_prov_yaml_string + "  VROUTER_GATEWAY: %s\n" %gateway
 		    final_prov_yaml_string = final_prov_yaml_string + "  PHYSICAL_INTERFACE: eth1\n"
+		    final_prov_yaml_string = final_prov_yaml_string + "  CONTROL_DATA_NET_LIST: %s\n" %ip_block_with_mask
 	    list_of_control_data_ip_of_control_nodes = []
 	    for j in server_dict[clus]:
 		if server_dict[clus][j]["server_manager"] != "true":
