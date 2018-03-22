@@ -26,9 +26,10 @@ contrail_configuration:
 {% if orchestrator == 'openstack' %}
   AUTH_MODE: keystone
   KEYSTONE_AUTH_ADMIN_PASSWORD: {{ admin_password }}
-  KEYSTONE_AUTH_HOST: "{{ auth_ip }}"
+  KEYSTONE_AUTH_HOST: {{ auth_ip }}
   KEYSTONE_AUTH_URL_VERSION: "/{{ keystone_version }}"
-  RABBITMQ_NODE_PORT: "{{ contrail_rabbitmq_port }}"
+  RABBITMQ_NODE_PORT: {{ contrail_rabbitmq_port }}
+  IPFABRIC_SERVICE_IP: {{ auth_ip }}
 {% endif %}
   {{ contrail_configuration | to_nice_yaml | indent(2, False) }}
 {% endif %}

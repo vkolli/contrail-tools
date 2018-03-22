@@ -2228,16 +2228,8 @@ def create_yaml_file_for_5_0_provisioning():
     # This part of the code will provide the contrail configurations for the yaml file
     final_prov_yaml_string = final_prov_yaml_string + "\ncontrail_configuration:\n" 
     for clus in provision_5_0_dict:
-	if "AAA_MODE" in provision_5_0_dict[clus]["contrail_config"]:
-	    final_prov_yaml_string = final_prov_yaml_string + "  AAA_MODE: %s\n" %provision_5_0_dict[clus]["contrail_config"]["AAA_MODE"]
-	else:
-	    final_prov_yaml_string = final_prov_yaml_string + "  AAA_MODE: rbac\n" 
-	if (("CONFIG_API_SSL_ENABLE" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["CONFIG_API_SSL_ENABLE"] == "true")):
-	    final_prov_yaml_string = final_prov_yaml_string + "  CONFIG_API_SSL_ENABLE:\n"
-	if (("INTROSPECT_SSL_ENABLE" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["INTROSPECT_SSL_ENABLE"] == "true")):
-	    final_prov_yaml_string = final_prov_yaml_string + "  INTROSPECT_SSL_ENABLE:\n"
-	if (("XMPP_SSL_ENABLE" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["XMPP_SSL_ENABLE"] == "true")):
-	    final_prov_yaml_string = final_prov_yaml_string + "  XMPP_SSL_ENABLE:\n"
+        for k,v in provision_5_0_dict[clus]["contrail_config"].iteritems():
+            final_prov_yaml_string = final_prov_yaml_string + "  %s: %s\n"%(k,v)
 	if (("two_interface" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["two_interface"] == "true")):
 	    for j in (server_dict[clus][i]["ip_address"]):
 		current_network = j
