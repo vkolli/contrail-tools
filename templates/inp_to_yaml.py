@@ -2159,12 +2159,23 @@ def create_yaml_file_for_5_0_provisioning():
     # Provide Deployment config to be used for the cluster.
     final_prov_yaml_string = final_prov_yaml_string + "deployment:\n"
     final_prov_yaml_string = final_prov_yaml_string + "  type:\n"
-    final_prov_yaml_string = final_prov_yaml_string + "    kolla:\n"
-    final_prov_yaml_string = final_prov_yaml_string + "      branch: contrail/ocata\n"
-    final_prov_yaml_string = final_prov_yaml_string + "      registry: ci-repo.englab.juniper.net:5000\n"
-    final_prov_yaml_string = final_prov_yaml_string + "    contrail:\n"
-    final_prov_yaml_string = final_prov_yaml_string + "      branch: master\n"
-    final_prov_yaml_string = final_prov_yaml_string + "      registry: ci-repo.englab.juniper.net:5000\n"
+    for clus in provision_5_0_dict:
+    	if "deployments" in provision_5_0_dict[clus]["deployment_config"]:
+	    if "contrail" in provision_5_0_dict[clus]["deployment_config"]["deployments"]:
+		final_prov_yaml_string = final_prov_yaml_string + "    contrail:\n"
+		final_prov_yaml_string = final_prov_yaml_string + "      branch: %s\n" %provision_5_0_dict[clus]["deployment_config"]["deployments"]["contrail"]["branch"]
+		final_prov_yaml_string = final_prov_yaml_string + "      registry: %s\n" % provision_5_0_dict[clus]["deployment_config"]["deployments"]["contrail"]["registry"]
+	    if "helm" in provision_5_0_dict[clus]["deployment_config"]["deployments"]:
+		final_prov_yaml_string = final_prov_yaml_string + "    helm:\n"
+		final_prov_yaml_string = final_prov_yaml_string + "      branch: %s\n" %provision_5_0_dict[clus]["deployment_config"]["deployments"]["helm"]["branch"]
+		final_prov_yaml_string = final_prov_yaml_string + "      registry: %s\n" %provision_5_0_dict[clus]["deployment_config"]["deployments"]["helm"]["registry"]
+	else: 
+    	    final_prov_yaml_string = final_prov_yaml_string + "    kolla:\n"
+    	    final_prov_yaml_string = final_prov_yaml_string + "      branch: contrail/ocata\n"
+    	    final_prov_yaml_string = final_prov_yaml_string + "      registry: ci-repo.englab.juniper.net:5000\n"
+    	    final_prov_yaml_string = final_prov_yaml_string + "    contrail:\n"
+    	    final_prov_yaml_string = final_prov_yaml_string + "      branch: master\n"
+    	    final_prov_yaml_string = final_prov_yaml_string + "      registry: ci-repo.englab.juniper.net:5000\n"
     for clus in provision_5_0_dict:
 	if "sku" in provision_5_0_dict[clus]["deployment_config"]:
             sku = provision_5_0_dict[clus]["deployment_config"]["sku"]
