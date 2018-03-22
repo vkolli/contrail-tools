@@ -138,7 +138,18 @@
 						}
 					},
 					"deployment_config": {
+						"deployments": {
+							"contrail": {
+								"branch": "master",
+								"registry": "docker.io/opencontrailnightly"
+							},
+							"helm": {
+								"branch": "master",
+								"registry": "docker.io/opencontrailnightly"
+							}
+						},
 						"version": "__VERSION__",
+						"os": "ubuntu",
 						"orchestrator": "openstack"
 					},
 					"provider_config": {
