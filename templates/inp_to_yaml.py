@@ -409,6 +409,7 @@ def create_server_yaml():
                 final_server_yaml_string = final_server_yaml_string + "    properties:\n"
                 final_server_yaml_string = final_server_yaml_string + "      network: %s\n" % net_name
                 final_server_yaml_string = final_server_yaml_string + "      name: %s\n" %port_name
+                final_server_yaml_string = final_server_yaml_string + "      security_groups: null\n"
                 if "mac_address" in server_dict[clus][i]:
                     final_server_yaml_string = final_server_yaml_string + "      mac_address: %s\n" %server_dict[clus][i]["mac_address"][net_name]
                 final_server_yaml_string = final_server_yaml_string + "      fixed_ips:\n"
