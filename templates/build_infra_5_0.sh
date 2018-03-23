@@ -141,9 +141,9 @@ then
 	    sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r /root/$1/ansible root@$config_node_ip:/root/ansible
             OS_INFO=`sshpass -p 'c0ntrail123' ssh -o 'StrictHostKeyChecking no' -o 'UserKnownHostsFile /dev/null' root@$config_node_ip 'cat /etc/*elease | grep "PRETTY_NAME"'`
             OS=unknown
-            if [[ $OS_TYPE = *"CentOS"* ]]; then
+            if [[ $OS_INFO = *"CentOS"* ]]; then
             OS="centos"
-            elif [[ $OS_TYPE = *"Ubuntu"* ]]; then
+            elif [[ $OS_INFO = *"Ubuntu"* ]]; then
             OS="ubuntu"
             fi
             echo $OS
@@ -152,15 +152,9 @@ then
 	        sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/ansible/inventory/group_vars/
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/all.yml'
 	    elif $OS=="ubuntu"
-	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'apt update'
-	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'apt upgrade'
-	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'apt install software-properties-common'
-	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'apt-add-repository ppa:ansible/ansible'
-	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'apt install sshpass ansible'
-
+	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'apt update; apt install -y software-properties-common; apt-add-repository -y ppa:ansible/ansible; apt install -y ansible sshpass'
 	        sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/ansible/inventory/group_vars/
-	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/install.yml'
-	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/all.yml
+	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/install.yml ; ansible-playbook -i inventory/ playbooks/all.yml'
 	    fi
 	fi
 else
@@ -168,3 +162,6 @@ else
 fi
 echo "Cloning the contrail-deployments repo and transferring the all.yaml file generated above."
 echo "DONE !!!!!!!!!!!!"
+
+
+
