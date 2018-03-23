@@ -127,6 +127,8 @@ then
             echo "The Config Node, $config_node_ip is not yet reachable"
 	    ((count = count - 1))
 	done
+	sleep 10
+	echo "Sleeping for 10 seconds"
 	if [[ $count -eq 0 ]]
 	then
 	    echo "The Config Node $config_node_ip is Not reachable"

@@ -843,7 +843,12 @@ function launch_testbed_virtual_5_0() {
 	  cd /root/${TEMPLATE_DIR}/
 	  echo "Using build_infra_5_0.sh file for launching the tasks"
 	  #./build_infra_5_0.sh ${TEMPLATE_DIR} centos-7.4 ${BASE_CLUSTER}
-          ./build_infra_5_0.sh ${TEMPLATE_DIR} ${OSIMAGE} ${BASE_CLUSTER}
+	  if [ -z ${OSIMAGE+x} ]
+	  then
+	    ./build_infra_5_0.sh ${TEMPLATE_DIR} centos-7.4 ${BASE_CLUSTER}
+	  else
+            ./build_infra_5_0.sh ${TEMPLATE_DIR} ${OSIMAGE} ${BASE_CLUSTER}
+	  fi
 	) "
 }
 function delete_stacks() {
