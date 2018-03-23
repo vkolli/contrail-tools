@@ -403,13 +403,22 @@ def create_server_yaml():
                 else:
                     ip_num = 2
                 net_name = net
+                final_server_yaml_string = final_server_yaml_string + "  allow_all_secgroup:\n"
+                final_server_yaml_string = final_server_yaml_string + "    type: OS::Neutron::SecurityGroup\n"
+                final_server_yaml_string = final_server_yaml_string + "    properties:\n"
+                final_server_yaml_string = final_server_yaml_string + "      rules:\n"
+                final_server_yaml_string = final_server_yaml_string + "        - protocol: tcp\n"
+                final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
+                final_server_yaml_string = final_server_yaml_string + "        - protocol: icmp\n"
+                final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
                 port_name = name + "_port_" + str(ip_num)
                 final_server_yaml_string = final_server_yaml_string + "  %s:\n" % port_name
                 final_server_yaml_string = final_server_yaml_string + "    type: OS::Neutron::Port\n"
                 final_server_yaml_string = final_server_yaml_string + "    properties:\n"
                 final_server_yaml_string = final_server_yaml_string + "      network: %s\n" % net_name
                 final_server_yaml_string = final_server_yaml_string + "      name: %s\n" %port_name
-                final_server_yaml_string = final_server_yaml_string + "      security_groups: null\n"
+                final_server_yaml_string = final_server_yaml_string + "      security_groups:\n"
+                final_server_yaml_string = final_server_yaml_string + "        - { get_resource: allow_all_secgroup }\n"
                 if "mac_address" in server_dict[clus][i]:
                     final_server_yaml_string = final_server_yaml_string + "      mac_address: %s\n" %server_dict[clus][i]["mac_address"][net_name]
                 final_server_yaml_string = final_server_yaml_string + "      fixed_ips:\n"
