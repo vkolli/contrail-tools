@@ -130,8 +130,6 @@ then
 	    ((count = count - 1))
             sleep 5
 	done
-	sleep 10
-	echo "Sleeping for 10 seconds"
 	if [[ $count -eq 0 ]]
 	then
 	    echo "The Config Node $config_node_ip is Not reachable"
@@ -142,16 +140,16 @@ then
             OS_INFO=`sshpass -p 'c0ntrail123' ssh -o 'StrictHostKeyChecking no' -o 'UserKnownHostsFile /dev/null' root@$config_node_ip 'cat /etc/*elease | grep "PRETTY_NAME"'`
             OS=unknown
             if [[ $OS_INFO = *"CentOS"* ]]; then
-            OS="centos"
+              OS="centos"
             elif [[ $OS_INFO = *"Ubuntu"* ]]; then
-            OS="ubuntu"
+              OS="ubuntu"
             fi
             echo $OS
             if $OS == "centos"; then
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'yum install -y git ansible epel-release vim'
 	        sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/ansible/inventory/group_vars/
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/all.yml'
-	    elif $OS=="ubuntu"
+	    elif $OS=="ubuntu"; then
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'apt update; apt install -y software-properties-common; apt-add-repository -y ppa:ansible/ansible; apt install -y ansible sshpass'
 	        sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/ansible/inventory/group_vars/
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/install.yml ; ansible-playbook -i inventory/ playbooks/all.yml'
