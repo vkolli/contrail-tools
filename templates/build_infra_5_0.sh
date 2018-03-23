@@ -10,7 +10,8 @@ sleep 5
 echo "The Contents of the input.json file before modification "
 cat /root/$1/input.json
 
-keystone user-role-add --user admin --role admin --tenant $1
+openstack role add --project $1 --user $OS_USERNAME admin
+export OS_TENANT_NAME=$1
 
 sed -i 's/project_uuid_val/'${dashed_project_uuid}'/' /root/$1/input.json
 echo "input.json  --- Changed"
@@ -117,7 +118,7 @@ then
 	sed -i 's/__VERSION__/'${contrail_version}'/' /root/$1/all.yml
 	python /root/$1/inp_to_yaml.py /root/$1/input.json get_config_node_ip > /root/$1/config_node_ip
         config_node_ip="$(cat /root/$1/config_node_ip)"
-	((count=50))
+	((count=60))
 	while [[ $count -ne 0 ]] ; do
             sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'uname -a'
             rc=$?
@@ -126,6 +127,7 @@ then
             fi
             echo "The Config Node, $config_node_ip is not yet reachable"
 	    ((count = count - 1))
+            sleep 5
 	done
 	sleep 10
 	echo "Sleeping for 10 seconds"
