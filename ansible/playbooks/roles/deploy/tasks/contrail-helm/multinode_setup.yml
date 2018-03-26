@@ -40,9 +40,14 @@
   when: item.value.roles.control is defined
   with_dict: "{{ instances }}"
 
-- name: set labels for vrouter nodes
+- name: set labels for vrouter kernel nodes
   command: kubectl label node "{{ vars['hostvars'][item.value.ip]['ansible_hostname'] }}" opencontrail.org/vrouter-kernel=enabled
-  when: item.value.roles.vrouter is defined
+  when: item.value.roles.vrouter is defined and contrail_configuration.AGENT_MODE == 'nic'
+  with_dict: "{{ instances }}"
+
+- name: set labels for vrouter dpdk nodes
+  command: kubectl label node "{{ vars['hostvars'][item.value.ip]['ansible_hostname'] }}" opencontrail.org/vrouter-kernel=enabled
+  when: item.value.roles.vrouter is defined and contrail_configuration.AGENT_MODE == 'dpdk'
   with_dict: "{{ instances }}"
 
 - name: check if cluster admin file exists
