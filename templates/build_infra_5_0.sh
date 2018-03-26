@@ -138,11 +138,11 @@ then
 	    echo "The confing node ip where the contrail-deployments repo is going to cloned is: "$config_node_ip
 	    sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r /root/$1/ansible root@$config_node_ip:/root/ansible
             OS_INFO=`sshpass -p 'c0ntrail123' ssh -o 'StrictHostKeyChecking no' -o 'UserKnownHostsFile /dev/null' root@$config_node_ip 'cat /etc/*elease | grep "PRETTY_NAME"'`
-            if [[ $OS_INFO = *"CentOS"* ]]; then
+            if [[ $OS_INFO == *"CentOS"* ]]; then
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'yum install -y git ansible epel-release vim'
 	        sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/ansible/inventory/group_vars/
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/all.yml'
-            elif [[ $OS_INFO = *"Ubuntu"* ]]; then
+            elif [[ $OS_INFO == *"Ubuntu"* ]]; then
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'apt-get update; apt-get install -y software-properties-common; apt-add-repository -y ppa:ansible/ansible; apt-get install -y ansible sshpass'
 	        sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/ansible/inventory/group_vars/
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/install.yml ; ansible-playbook -i inventory/ playbooks/all.yml'
