@@ -34,18 +34,15 @@
 
 - name: Invoke contrail ansible deployer
   include: contrail-ansible-deployer/main.yml
-  when: deployment.type.contrail is defined
+  when: deployment.type.kolla and deployment.type.contrail is defined
 
-#- name: Provision OpenStack cluster with kolla
-#  command: >
-#    ansible-playbook -i inventory/all-in-one all.yml -v
-#  become: true
-#  become_user: root
-#  environment:
-#    ANSIBLE_STDOUT_CALLBACK: debug
-#    ANSIBLE_LOG_PATH: "{{ playbook_dir }}/../ansible.log"
-#  args:
-#    chdir: "{{ kolla_provision_dir }}/ansible"
+- name: clone openstack helm repos
+  include: openstack-helm/main.yml
+  when: deployment.type.helm is defined
+
+- name: clone contrail helm deployer repo
+  include: contrail-helm/main.yml
+  when: deployment.type.helm is defined and deployment.type.contrail is defined
 
 - name: Configure nodes
   command: >
@@ -57,6 +54,7 @@
     ANSIBLE_LOG_PATH: "{{ playbook_dir }}/../ansible.log"
   args:
     chdir: "{{ contrail_provision_dir }}"
+  when: deployment.type.contrail and deployment.type.kolla is defined
   
 - name: Provision with Contrail
   command: >
@@ -68,3 +66,5 @@
     ANSIBLE_LOG_PATH: "{{ playbook_dir }}/../ansible.log"
   args:
     chdir: "{{ contrail_provision_dir }}"
+  when: deployment.type.contrail and deployment.type.kolla is defined
+
