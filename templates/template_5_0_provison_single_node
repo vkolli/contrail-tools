@@ -1,10 +1,10 @@
 {
 	"inp_params": {
 		"description":{
-			"msg" : "9 node cluster for mainline build with multiple interfaces and Openstack  HA"
+			"msg" : "1 node cluster for mainline build with multiple interfaces and Openstack  HA"
 		},
 		"params":{
-			"no_of_servers" : 5,
+			"no_of_servers" : 1,
 			"no_of_networks" : 2,
 			"network_stack_name" : "test_network_final",
 			"server_stack_name" : "test_server_final",
@@ -40,35 +40,8 @@
 						"image" : "image_val",
 						"floating_ip" : "true",
 						"server_manager" : "flase",
-						"roles" : ["k8s_master", "config_database", "config", "control", "analytics_database", "analytics", "webui"]
-					},
-					"server2":{
-                                                "name":"server2" ,
-                                                "ip_address" : { "final_test_network_1":"10.0.0.5", "final_test_network_2":"10.10.0.5"},
-                                                "flavor" : "m1.xxlarge",
-                                                "image" : "image_val",
-                                                "floating_ip" : "true",
-                                                "server_manager" : "flase",
-                                                "roles" : ["vrouter","k8s_node"]
-                                        },
-					"server3":{
-                                                "name":"server3" ,
-                                                "ip_address" : { "final_test_network_1":"10.0.0.6", "final_test_network_2":"10.10.0.6"},
-                                                "flavor" : "m1.xxlarge",
-                                                "image" : "image_val",
-                                                "floating_ip" : "true",
-                                                "server_manager" : "flase",
-                                                "roles" : ["vrouter", "k8s_node"]
-                                        },
-					"server4":{
-                                                "name":"server4" ,
-                                                "ip_address" : { "final_test_network_1":"10.0.0.7", "final_test_network_2":"10.10.0.7"},
-                                                "flavor" : "m1.xxlarge",
-                                                "image" : "image_val",
-                                                "floating_ip" : "true",
-                                                "server_manager" : "flase",
-                                                "roles" : ["vrouter", "k8s_node"]
-                        		}
+						"roles" : ["openstack","config_database", "config", "control", "analytics_database", "analytics", "webui","vrouter", "openstack_compute"]
+					}
 				},
 				"cluster_json_params": {
 					"server_password" : "c0ntrail123",
@@ -92,8 +65,6 @@
 								}
 							},
                                         		"contrail": {
-								"contrail_external_vip": "10.0.0.200",
-								"contrail_internal_vip": "10.10.0.200",
                                                 		"kernel_upgrade": "true",
 								"manage_neutron": "false"
                                         		},
@@ -111,7 +82,8 @@
                 		},
 				"provison_5_0_config": {
 					"contrail_config": {
-						"AAA_MODE": "no-auth"
+						"AAA_MODE": "no-auth",
+						"two_interface": "true"
 					},
 					"openstack_config": {
 						"keystone": {
@@ -120,7 +92,7 @@
 					},
 					"deployment_config": {
 						"version": "__VERSION__",
-						"orchestrator": "kubernetes"
+						"orchestrator": "openstack"
 					},
 					"provider_config": {
 						"ssh_password": "c0ntrail123",
@@ -134,9 +106,9 @@
                             "server": "zephyrine.englab.juniper.net",
                             "username": "stack",
                             "password" : "stack@123",
-                            "report_path": "/var/www/html/sanity/fb-sanity/FB-master-k8s-centos7-ansible-sanity",
-                            "log_path": "/var/www/html/Docs/logs",
-                            "web_root": "/Docs/logs"
+                            "report_path": "/var/www/html/sanity/fb-sanity/FB-master-ocata-centos7-ha-ansible-sanity",
+                            "log_path": "/var/www/html/Docs/logs", 
+                            "web_root": "/Docs/logs" 
 						},
 						"mail_server": {
 							"server": "10.84.24.64",

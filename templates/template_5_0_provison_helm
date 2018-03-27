@@ -161,12 +161,12 @@
 					"test_config": {
 						"image_web_server": "10.84.5.120",
 						"web_server" : {
-							"server": "10.204.216.50",
-							"username": "bhushana",
-							"password" : "c0ntrail!23",
-							"report_path": "/home/bhushana/Documents/technical/sanity/SVL_VT_Ubuntu-16.04.3_Ocata_Helm_master_Sanity",
-							"log_path": "/home/bhushana/Documents/technical/sanity/SVL_VT_Ubuntu-16.04.3_Ocata_Helm_master_Sanity",
-							"web_root": "/Docs/"
+                            "server": "zephyrine.englab.juniper.net",
+                            "username": "stack",
+                            "password" : "stack@123",
+                            "report_path": "/var/www/html/sanity/fb-sanity/FB-master-ocata-ubuntu16-ha-helm-sanity",
+                            "log_path": "/var/www/html/Docs/logs", 
+                            "web_root": "/Docs/logs" 
 						},
 						"mail_server": {
 							"server": "10.84.24.64",
