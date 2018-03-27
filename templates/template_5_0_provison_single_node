@@ -69,8 +69,7 @@
 								"manage_neutron": "false"
                                         		},
                                         		"openstack":{
-								"external_vip": "10.0.0.100",
-								"internal_vip": "10.10.0.100",
+								"internal_vip": "10.0.0.100",
 								"openstack_manage_amqp": "true",
 								"keystone_admin_password": "c0ntrail123",
 								"keystone_version": "v3",
@@ -83,7 +82,6 @@
 				"provison_5_0_config": {
 					"contrail_config": {
 						"AAA_MODE": "no-auth",
-						"two_interface": "true"
 					},
 					"openstack_config": {
 						"keystone": {
