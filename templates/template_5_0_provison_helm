@@ -139,6 +139,7 @@
 					"openstack_config": {
 						"keystone": {
 							"version":"v3"
+                                                        "auth_ip":"keystone.openstack.svc.cluster.local"
 						}
 					},
 					"deployment_config": {
