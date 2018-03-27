@@ -143,7 +143,7 @@ then
 	        sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/ansible/inventory/group_vars/
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/all.yml'
             elif [[ $OS_INFO == *"Ubuntu"* ]]; then
-	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'sudo rm -r /var/lib/apt/lists/* -vf && apt-get update && apt-get install -y software-properties-common && apt-add-repository -y ppa:ansible/ansible && apt-get install -y ansible sshpass'
+	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'mv /var/cache/apt/archives/lock /var/cache/apt/archives/lock_bak; apt-get update; apt-get install -y software-properties-common; apt-add-repository -y ppa:ansible/ansible; apt-get install -y ansible sshpass'
 	        sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/ansible/inventory/group_vars/
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/install.yml ; ansible-playbook -i inventory/ playbooks/all.yml'
             fi
