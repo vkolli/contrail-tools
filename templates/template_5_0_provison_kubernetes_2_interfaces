@@ -153,7 +153,7 @@
                             "password" : "stack@123",
                             "report_path": "/var/www/html/sanity/fb-sanity/FB-master-k8s-centos7-ha-ansible-sanity",
                             "log_path": "/var/www/html/Docs/logs", 
-                            "web_root": "/Docs/"  
+                            "web_root": "/Docs/logs"  
 						},
 						"mail_server": {
 							"server": "10.84.24.64",

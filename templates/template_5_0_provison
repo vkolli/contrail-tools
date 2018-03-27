@@ -131,12 +131,12 @@
 					"test_config": {
 						"image_web_server": "10.84.5.120",
 						"web_server" : {
-							"server": "10.204.216.50",
-							"username": "bhushana",
-							"password" : "c0ntrail!23",
-							"report_path": "/home/bhushana/Documents/technical/sanity/R5.0-centos7-ocata",
-							"log_path": "/home/bhushana/Documents/technical/sanity/R5.0-centos7-ocata",
-							"web_root": "/Docs/"
+                            "server": "zephyrine.englab.juniper.net",
+                            "username": "stack",
+                            "password" : "stack@123",
+                            "report_path": "/var/www/html/sanity/fb-sanity/FB-master-ocata-centos7-ansible-sanity",
+                            "log_path": "/var/www/html/Docs/logs",
+                            "web_root": "/Docs/logs" 
 						},
 						"mail_server": {
 							"server": "10.84.24.64",
