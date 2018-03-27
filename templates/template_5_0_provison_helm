@@ -164,8 +164,8 @@
                             "server": "zephyrine.englab.juniper.net",
                             "username": "stack",
                             "password" : "stack@123",
-                            "report_path": "/var/www/html/sanity/fb-sanity/ocata-master-ubuntu-16.04.3-helm",
-                            "log_path": "/var/www/html/sanity/fb-sanity/ocata-master-ubuntu-16.04.3-helm",
+                            "report_path": "/var/www/html/sanity/fb-sanity/FB-master-ocata-ubuntu16-ha-helm-sanity",
+                            "log_path": "/var/www/html/Docs/logs", 
                             "web_root": "/Docs/" 
 						},
 						"mail_server": {
