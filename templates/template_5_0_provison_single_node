@@ -81,7 +81,7 @@
                 		},
 				"provison_5_0_config": {
 					"contrail_config": {
-						"AAA_MODE": "no-auth",
+						"AAA_MODE": "no-auth"
 					},
 					"openstack_config": {
 						"keystone": {
