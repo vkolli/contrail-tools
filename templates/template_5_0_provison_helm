@@ -42,24 +42,24 @@
 						"server_manager" : "flase",
 						"roles" : ["openstack","config_database", "config", "control", "analytics_database", "analytics", "webui"]
 					},
-					"server2":{
-                                                "name":"server2" ,
-                                                "ip_address" : { "final_test_network_1_Prachi":"10.0.0.5", "final_test_network_2_Prachi":"10.10.0.5"},
-                                                "flavor" : "m1.xxlarge",
-                                                "image" : "image_val",
-                                                "floating_ip" : "true",
-                                                "server_manager" : "flase",
-                                                "roles" : ["openstack","config_database", "config", "control", "analytics_database", "analytics", "webui"]
-                                        },
-					"server3":{
-                                                "name":"server3" ,
-                                                "ip_address" : { "final_test_network_1_Prachi":"10.0.0.6", "final_test_network_2_Prachi":"10.10.0.6"},
-                                                "flavor" : "m1.xxlarge",
-                                                "image" : "image_val",
-                                                "floating_ip" : "true",
-                                                "server_manager" : "flase",
-                                                "roles" : ["openstack","config_database", "config", "control", "analytics_database", "analytics", "webui"]
-                                        },
+#					"server2":{
+#                                                "name":"server2" ,
+#                                                "ip_address" : { "final_test_network_1_Prachi":"10.0.0.5", "final_test_network_2_Prachi":"10.10.0.5"},
+#                                                "flavor" : "m1.xxlarge",
+#                                                "image" : "image_val",
+#                                                "floating_ip" : "true",
+#                                                "server_manager" : "flase",
+#                                                "roles" : ["openstack","config_database", "config", "control", "analytics_database", "analytics", "webui"]
+#                                        },
+#					"server3":{
+#                                                "name":"server3" ,
+#                                                "ip_address" : { "final_test_network_1_Prachi":"10.0.0.6", "final_test_network_2_Prachi":"10.10.0.6"},
+#                                                "flavor" : "m1.xxlarge",
+#                                                "image" : "image_val",
+#                                                "floating_ip" : "true",
+#                                                "server_manager" : "flase",
+#                                                "roles" : ["openstack","config_database", "config", "control", "analytics_database", "analytics", "webui"]
+#                                        },
 					"server4":{
                                                 "name":"server4" ,
                                                 "ip_address" : { "final_test_network_1_Prachi":"10.0.0.7", "final_test_network_2_Prachi":"10.10.0.7"},
