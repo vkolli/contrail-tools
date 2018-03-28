@@ -97,3 +97,10 @@ test_configuration:
         port:
         to:
         sender:
+
+bms_reimage_info:
+  server_manager:
+    ip: 10.87.66.242
+    username: root
+    password: c0ntrail123
+    image: centos74

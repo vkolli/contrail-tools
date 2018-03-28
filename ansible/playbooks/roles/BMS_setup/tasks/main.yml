@@ -1,0 +1,11 @@
+- name:
+  vars:
+    os_image:
+  set_fact:
+    os_image: "{{ item.value.image }}"
+  with_dict: "{{ bms_reimage_info }}"
+
+- name: Re-image with server manager
+  shell: "server-manager reimage -F --server_id {{item.key}} {{ os_image }}"
+  when: item.value.provider == 'bms'
+  with_dict: "{{ instances }}"

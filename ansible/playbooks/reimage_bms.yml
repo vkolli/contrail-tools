@@ -1,0 +1,22 @@
+- hosts: localhost
+  gather_facts: yes
+  tasks:
+    - add_host:
+        name: "{{ item.value.ip }}"
+        ansible_ssh_host: "{{ item.value.ip }}"
+        ansible_ssh_user: "{{ item.value.ansible_user | default('root') }}"
+        ansible_ssh_pass: "{{ item.value.ansible_ssh_pass | default('c0ntrail123') }}"
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+        group: "server_manager"
+      with_dict: "{{ bms_reimage_info }}"
+
+
+- hosts: server_manager
+  gather_facts: yes
+  become: true
+  become_user: root
+  roles:
+    - BMS_setup
+  environment:
+    ANSIBLE_HOST_KEY_CHECKING: 'false'
+    ANSIBLE_STDOUT_CALLBACK: debug
