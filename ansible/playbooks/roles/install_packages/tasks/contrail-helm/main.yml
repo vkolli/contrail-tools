@@ -14,6 +14,9 @@
     src: ntp.conf.j2
     dest: "/etc/ntp.conf"
 
+- name: Configure network interface
+  command: dhclient
+
 - name: Disable UFW
   command: service ufw stop
 
