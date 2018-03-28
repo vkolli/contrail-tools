@@ -34,7 +34,7 @@
 
 - name: Invoke contrail ansible deployer
   include: contrail-ansible-deployer/main.yml
-  when: deployment.type.kolla and deployment.type.contrail is defined
+  when: deployment.type.kolla is defined and deployment.type.contrail is defined
 
 - name: clone openstack helm repos
   include: openstack-helm/main.yml
