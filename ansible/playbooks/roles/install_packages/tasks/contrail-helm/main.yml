@@ -1,11 +1,12 @@
-- name: install python mininal 
-  raw: test -e /usr/bin/python || (apt install -y python-minimal)
+#- name: install python mininal 
+#  command: apt-get install -y python-minimal
 
 - name: install packages
   apt:
     name: "{{ item }}"
     state: latest
   with_items:
+    - python-minimal
     - ntp
     - git
 
@@ -15,7 +16,7 @@
     dest: "/etc/ntp.conf"
 
 - name: restart ntp
-   service: name=ntp state=restarted
+  service: name=ntp state=restarted
 
 - name: Configure network interface
   command: dhclient
