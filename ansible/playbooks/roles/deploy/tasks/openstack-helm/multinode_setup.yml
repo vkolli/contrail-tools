@@ -232,7 +232,7 @@
 
 - name: deploy neutron rbac chart
 #  command: "./tools/deployment/multinode/142-neutron-rbac-opencontrail.sh"
-  command: "/tools/deployment/multinode/162-neutron-rbac-opencontrail.sh"
+  command: "/tools/deployment/developer/nfs/162-neutron-rbac-opencontrail.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
