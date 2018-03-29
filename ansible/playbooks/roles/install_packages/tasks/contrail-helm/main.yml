@@ -1,14 +1,18 @@
-#- name: install python mininal 
-#  command: apt-get install -y python-minimal
-
-- name: install packages
-  apt:
-    name: "{{ item }}"
-    state: latest
+- name: install python mininal, ntp, git  
+  command: apt-get install -y "{{ item }}"
   with_items:
     - python-minimal
     - ntp
     - git
+
+#- name: install packages
+#  apt:
+#    name: "{{ item }}"
+#    state: latest
+#  with_items:
+#    - python-minimal
+#    - ntp
+#    - git
 
 - name: configure ntp server
   template: 
