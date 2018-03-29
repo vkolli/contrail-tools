@@ -1,0 +1,135 @@
+provider_config:
+  bms:
+    ssh_pwd: c0ntrail123
+    ssh_user: root
+    ntpserver: 10.84.5.100
+    domainsuffix: local
+instances:
+  openstack_node:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.0.0.4
+    roles:                     # Optional.  If roles is not defined, all below roles will be created
+      openstack:
+  all_contrail_roles_default_pop:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.0.0.5
+    roles:                     # Optional.  If roles is not defined, all below roles will be created
+      config_database:          # Optional.
+      config:                   # Optional.
+      control:                  # Optional.
+      analytics_database:     # Optional.
+      analytics:                # Optional.
+      webui:                    # Optional.
+  compute_3_default_pop:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.0.0.6
+    roles:
+      openstack_compute:
+      vrouter:
+        VROUTER_GATEWAY: 10.60.0.1
+  compute_1_default_pop:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.0.0.7
+    roles:
+      openstack_compute:
+      vrouter:
+        VROUTER_GATEWAY: 10.60.0.1
+  compute_2_default_pop:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.0.0.8
+    roles:
+      openstack_compute:
+      vrouter:
+        VROUTER_GATEWAY: 10.60.0.1
+  control_1_only_pop1:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.0.0.9
+    roles:
+      control:
+        location: pop1
+  control_2_only_pop1:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.0.0.10
+    roles:
+      control:
+        location: pop1 
+  control_1_only_pop2:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.0.0.11
+    roles:                     # Optional.  If roles is not defined, all below roles will be created
+      control:
+        location: pop2
+  control_2_only_pop2:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.0.0.12
+    roles:                     # Optional.  If roles is not defined, all below roles will be created
+      control:
+        location: pop2
+  compute_1_pop1:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.20.0.5
+    roles:
+      openstack_compute:                     # Optional.  If roles is not defined, all below roles will be created
+      vrouter:
+        CONTROL_NODES: 10.60.0.9,10.60.0.10
+        VROUTER_GATEWAY: 10.70.0.1
+        location: pop1
+  compute_2_pop1:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.20.0.6
+    roles:
+      openstack_compute:                     # Optional.  If roles is not defined, all below roles will be created
+      vrouter:
+        CONTROL_NODES: 10.60.0.9,10.60.0.10
+        VROUTER_GATEWAY: 10.70.0.1
+        location: pop1
+  compute_1_pop2:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.30.0.5
+    roles:
+      openstack_compute:                     # Optional.  If roles is not defined, all below roles will be created
+      vrouter:
+        CONTROL_NODES: 10.60.0.11,10.60.0.12
+        VROUTER_GATEWAY: 10.80.0.1
+        location: pop2
+  compute_2_pop2:                          # Mandatory. Instance name
+    provider: bms                # Mandatory. Instance runs on BMS
+    ip: 10.30.0.6
+    roles:
+      openstack_compute:                     # Optional.  If roles is not defined, all below roles will be created
+      vrouter:
+        CONTROL_NODES: 10.60.0.11,10.60.0.12
+        VROUTER_GATEWAY: 10.80.0.1
+        location: pop2
+contrail_configuration:     # Contrail service configuration section
+  CONTAINER_REGISTRY: opencontrailnightly
+  #CONTRAIL_VERSION: master-centos7-ocata-bld-8
+  #CONTRAIL_VERSION: master-centos7-ocata-bld-13
+  CONTROLLER_NODES: 10.60.0.5
+  CLOUD_ORCHESTRATOR: openstack
+  #CLOUD_ORCHESTRATOR: kubernetes
+  #OPENSTACK_VERSION: ocata
+  #LINUX_DISTR: centos7i
+  #AUTH_MODE: keystone
+  KEYSTONE_AUTH_ADMIN_PASSWORD: c0ntrail123
+  KEYSTONE_AUTH_HOST: 10.60.0.100
+  KEYSTONE_AUTH_URL_VERSION: /v3
+  RABBITMQ_NODE_PORT: 5673
+  PHYSICAL_INTERFACE: eth1
+
+kolla_config:
+  kolla_globals:
+    network_interface: "eth1"
+    enable_haproxy: "yes"
+    contrail_api_interface_address: 10.60.0.5
+    kolla_internal_vip_address: 10.60.0.100
+    kolla_external_vip_address: 10.0.0.100
+    kolla_external_vip_interface: "eth0"
+
+remote_locations:
+  pop1:
+    BGP_ASN: 12345
+    SUBCLUSTER: pop1
+  pop2:
+    BGP_ASN: 12346
+    SUBCLUSTER: pop2
