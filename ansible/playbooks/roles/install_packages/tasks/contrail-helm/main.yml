@@ -3,6 +3,7 @@
   command: "{{item}}"
   with_items:
     - rm /var/lib/dpkg/lock
+  ignore_errors: yes
 
 - name: install packages
   apt:
