@@ -317,7 +317,7 @@ def create_network_yaml():
         ip_block_with_mask = network_dict[i]["ip_block_with_mask"]
         network_string = network_string + "      cidr: %s\n" % ip_block_with_mask
         network_string = network_string + "      ip_version: 4\n"
-        if network_dict[i].get('role') == 'control-data':
+	if network_dict[i].get('role') == 'control-data':
             network_string = network_string + "      gateway_ip: null\n"
         network_string = network_string + "      name: %s\n\n" % subnet_name
         num = num + 1
@@ -380,17 +380,25 @@ def create_server_yaml():
         final_server_yaml_string = final_server_yaml_string + "      name: %s\n" % name
         final_server_yaml_string = final_server_yaml_string + "      virtual_network: %s\n" %fip_uuid
     ip_port_dict = {}
+    final_server_yaml_string = final_server_yaml_string + "  allow_all_secgroup:\n"
+    final_server_yaml_string = final_server_yaml_string + "    type: OS::Neutron::SecurityGroup\n"
+    final_server_yaml_string = final_server_yaml_string + "    properties:\n"
+    final_server_yaml_string = final_server_yaml_string + "      rules:\n"
+    final_server_yaml_string = final_server_yaml_string + "        - protocol: tcp\n"
+    final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
+    final_server_yaml_string = final_server_yaml_string + "        - protocol: icmp\n"
+    final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
     for clus in server_dict:
-        external_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('external_vip')
-        contrail_external_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('contrail_external_vip')
-        internal_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('internal_vip')
-        contrail_internal_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('contrail_internal_vip')
+	external_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('external_vip')
+	contrail_external_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('contrail_external_vip')
+	internal_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('internal_vip')
+	contrail_internal_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('contrail_internal_vip')
         server_string = ""
         for i in server_dict[clus]:
             #lets create ports for the server according to the template given
             indi_server_string = ""
             name = server_dict[clus][i]["name"]
-            roles = server_dict[clus][i]["roles"]
+	    roles = server_dict[clus][i]["roles"]
             individual_ip_address_dict = server_dict[clus][i]["ip_address"]
             project_uuid = general_params_dict["project_uuid"]
             #print individual_ip_address_dict
@@ -403,40 +411,32 @@ def create_server_yaml():
                 else:
                     ip_num = 2
                 net_name = net
-                final_server_yaml_string = final_server_yaml_string + "  allow_all_secgroup:\n"
-                final_server_yaml_string = final_server_yaml_string + "    type: OS::Neutron::SecurityGroup\n"
-                final_server_yaml_string = final_server_yaml_string + "    properties:\n"
-                final_server_yaml_string = final_server_yaml_string + "      rules:\n"
-                final_server_yaml_string = final_server_yaml_string + "        - protocol: tcp\n"
-                final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
-                final_server_yaml_string = final_server_yaml_string + "        - protocol: icmp\n"
-                final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
                 port_name = name + "_port_" + str(ip_num)
                 final_server_yaml_string = final_server_yaml_string + "  %s:\n" % port_name
                 final_server_yaml_string = final_server_yaml_string + "    type: OS::Neutron::Port\n"
                 final_server_yaml_string = final_server_yaml_string + "    properties:\n"
                 final_server_yaml_string = final_server_yaml_string + "      network: %s\n" % net_name
                 final_server_yaml_string = final_server_yaml_string + "      name: %s\n" %port_name
-                final_server_yaml_string = final_server_yaml_string + "      security_groups:\n"
-                final_server_yaml_string = final_server_yaml_string + "        - { get_resource: allow_all_secgroup }\n"
+		final_server_yaml_string = final_server_yaml_string + "      security_groups:\n"
+		final_server_yaml_string = final_server_yaml_string + "        - { get_resource: allow_all_secgroup }\n"
                 if "mac_address" in server_dict[clus][i]:
                     final_server_yaml_string = final_server_yaml_string + "      mac_address: %s\n" %server_dict[clus][i]["mac_address"][net_name]
                 final_server_yaml_string = final_server_yaml_string + "      fixed_ips:\n"
                 final_server_yaml_string = final_server_yaml_string + "      - ip_address: %s\n" %individual_ip_address_dict[net_name]
                 if network_dict[net]["role"] == "management":
-                    if (external_vip and 'openstack' in roles) or (contrail_external_vip and 'config' in roles):
-                        final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
-                        if 'openstack' in roles and external_vip:
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %external_vip
-                        if 'config' in roles and contrail_external_vip:
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %contrail_external_vip
+		    if (external_vip and 'openstack' in roles) or (contrail_external_vip and 'config' in roles):
+			final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
+			if 'openstack' in roles and external_vip:
+			    final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %external_vip
+			if 'config' in roles and contrail_external_vip:
+			    final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %contrail_external_vip
                 if network_dict[net]["role"] == "control-data":
-                    if (internal_vip and 'openstack' in roles) or (contrail_internal_vip and 'config' in roles):
-                        final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
-                        if 'openstack' in roles and internal_vip:
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %internal_vip
-                        if 'config' in roles and contrail_internal_vip:
-                            final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %contrail_internal_vip
+		    if (internal_vip and 'openstack' in roles) or (contrail_internal_vip and 'config' in roles):
+			final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
+			if 'openstack' in roles and internal_vip:
+			    final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %internal_vip
+			if 'config' in roles and contrail_internal_vip:
+			    final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %contrail_internal_vip        
                 ip_port_dict[individual_ip_address_dict[net_name]] = port_name
             # lets create the servers according to the teplate given
             final_server_yaml_string = final_server_yaml_string + "  " + name + ":\n"
@@ -2117,6 +2117,45 @@ def create_screens_for_all_nodes_in_cluster_on_sm():
 		time.sleep(5)
 		stdin, stdout, stderr = client.exec_command("screen -S %s -dm bash -c 'sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no root@%s; exec bash'" %(server_name, server_ip))
 		client.close()	 
+
+def create_static_routes_for_remote_compute_nodes():
+    fixedip_to_floatingip_mapping_dict = {}
+    #ret_list = []
+    ret_dict = {}
+    project_uuid = general_params_dict["project_uuid"]
+    a = subprocess.Popen('neutron floatingip-list --tenant_id %s -f json' %
+                         project_uuid, shell=True, stdout=subprocess.PIPE)
+    a_tmp = a.stdout.read()
+    #print a_tmp
+    a_tmp = str(a_tmp)
+    fip_neutron_dict = eval(a_tmp)
+    # print fip_neutron_dict
+    for i in range(len(fip_neutron_dict)):
+        fixedip_to_floatingip_mapping_dict[fip_neutron_dict[i]["fixed_ip_address"]] = fip_neutron_dict[i]["floating_ip_address"]
+    for clus in server_dict:
+        for i in server_dict[clus]:
+            if server_dict[clus][i]["server_manager"] != "true":
+		hostname = server_dict[clus][i]["name"]
+	        for j in server_dict[clus][i]["ip_address"]:
+		    if server_dict[clus][i]["ip_address"][j] in fixedip_to_floatingip_mapping_dict:
+		        #ret_list.append(fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]])
+			ret_dict[hostname] = fixedip_to_floatingip_mapping_dict[server_dict[clus][i]["ip_address"][j]]
+    #print ret_list  
+    #for ip_addr in ret_list:
+    for host_name in ret_dict:
+	#command= "sshpass -p c0ntrail123 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no route-eth1 root@%s:/etc/sysconfig/network-scripts/" %ip_addr
+	command= "sshpass -p c0ntrail123 scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no route-eth1 root@%s:/etc/sysconfig/network-scripts/" %ret_dict[host_name]
+        os.system(command)
+	command= 'sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null %s "reboot"' %ret_dict[host_name]
+	os.system(command)
+	#Change /etc/hostname file on all the servers with the correct hostname for that server
+	#command= 'sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null %s "echo "%s" > /etc/hostname; reboot"'%(ret_dict[host_name],host_name)
+	#print command
+	#os.system(command)	
+	#command= 'sshpass -p "c0ntrail123" ssh -l root -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null %s "reboot"' %ret_dict[host_name]
+	#os.system(command)
+	print "%s Done \n" %ret_dict[host_name] 
+
  
 def get_compute_node_ip():
     fixedip_to_floatingip_mapping_dict = {}
@@ -2179,7 +2218,7 @@ def create_yaml_file_for_5_0_provisioning():
 		final_prov_yaml_string = final_prov_yaml_string + "    helm:\n"
 		final_prov_yaml_string = final_prov_yaml_string + "      branch: %s\n" %provision_5_0_dict[clus]["deployment_config"]["deployments"]["helm"]["branch"]
 		final_prov_yaml_string = final_prov_yaml_string + "      registry: %s\n" %provision_5_0_dict[clus]["deployment_config"]["deployments"]["helm"]["registry"]
-	else: 
+	else:
     	    final_prov_yaml_string = final_prov_yaml_string + "    kolla:\n"
     	    final_prov_yaml_string = final_prov_yaml_string + "      branch: contrail/ocata\n"
     	    final_prov_yaml_string = final_prov_yaml_string + "      registry: ci-repo.englab.juniper.net:5000\n"
@@ -2192,12 +2231,12 @@ def create_yaml_file_for_5_0_provisioning():
 	    final_prov_yaml_string = final_prov_yaml_string + "  sku: %s\n" %sku
 	else:
 	    final_prov_yaml_string = final_prov_yaml_string + "  sku: ocata\n"
-	if "os" in provision_5_0_dict[clus]["deployment_config"]:	
+	if "os" in provision_5_0_dict[clus]["deployment_config"]:
 	    given_os = provision_5_0_dict[clus]["deployment_config"]["os"]
 	    final_prov_yaml_string = final_prov_yaml_string + "  os: %s\n" %given_os
 	else:
 	    final_prov_yaml_string = final_prov_yaml_string + "  os: centos74\n"
-	if "version" in provision_5_0_dict[clus]["deployment_config"]: 
+	if "version" in provision_5_0_dict[clus]["deployment_config"]:
 	    version = provision_5_0_dict[clus]["deployment_config"]["version"]
 	    final_prov_yaml_string = final_prov_yaml_string + "  version: %s\n" %version
 	else:
@@ -2209,7 +2248,7 @@ def create_yaml_file_for_5_0_provisioning():
 	    final_prov_yaml_string = final_prov_yaml_string + "  orchestrator: openstack\n"
 	if "slave_orchestrator"  in provision_5_0_dict[clus]["deployment_config"]:
 	    slave_orchestrator = provision_5_0_dict[clus]["deployment_config"]["slave_orchestrator"]
-    # Put Provider config in the yaml file. 
+    # Put Provider config in the yaml file.
     # This part of the yaml file will be constant until we change the provider from bms to any thing else
     final_prov_yaml_string = final_prov_yaml_string + "\nprovider_config:\n"
     final_prov_yaml_string = final_prov_yaml_string + "  bms:\n"
@@ -2229,8 +2268,8 @@ def create_yaml_file_for_5_0_provisioning():
 	if "domainsuffix" in provision_5_0_dict[clus]["provider_config"]:
 	    final_prov_yaml_string = final_prov_yaml_string + "    domainsuffix: %s\n" %provision_5_0_dict[clus]["provider_config"]["domainsuffix"]
 	else:
-    	    final_prov_yaml_string = final_prov_yaml_string + "    domainsuffix: local\n\n" 
-    # This part of the yaml file has details about the servers in our cluster. 
+    	    final_prov_yaml_string = final_prov_yaml_string + "    domainsuffix: local\n\n"
+    # This part of the yaml file has details about the servers in our cluster.
     final_prov_yaml_string = final_prov_yaml_string + "\ninstances:\n"
     for clus in server_dict:
         for i in server_dict[clus]:
@@ -2247,7 +2286,7 @@ def create_yaml_file_for_5_0_provisioning():
 	        for j in list_of_roles_for_this_instance:
 	            final_prov_yaml_string = final_prov_yaml_string + "      %s:\n" %j
     # This part of the code will provide the contrail configurations for the yaml file
-    final_prov_yaml_string = final_prov_yaml_string + "\ncontrail_configuration:\n" 
+    final_prov_yaml_string = final_prov_yaml_string + "\ncontrail_configuration:\n"
     for clus in provision_5_0_dict:
         for k,v in provision_5_0_dict[clus]["contrail_config"].iteritems():
             final_prov_yaml_string = final_prov_yaml_string + "  %s: %s\n"%(k,v)
@@ -2268,7 +2307,7 @@ def create_yaml_file_for_5_0_provisioning():
 			    if network_dict[k]["role"] == "control-data":
 				list_of_control_data_ip_of_control_nodes.append(server_dict[clus][j]["ip_address"][k])
 	    tmp_control_data_ip_string = ",".join(list_of_control_data_ip_of_control_nodes)
-	    final_prov_yaml_string = final_prov_yaml_string + "  CONTROLLER_NODES: %s\n" %tmp_control_data_ip_string	     
+	    final_prov_yaml_string = final_prov_yaml_string + "  CONTROLLER_NODES: %s\n" %tmp_control_data_ip_string
     # This part of the code will provide the orchestrator configurations for the yaml file
     final_prov_yaml_string = final_prov_yaml_string + "\norchestrator_configuration:\n"
     for clus in provision_5_0_dict:
@@ -2316,7 +2355,7 @@ def create_yaml_file_for_5_0_provisioning():
 		final_prov_yaml_string = final_prov_yaml_string + "    tp: %s\n" %provision_5_0_dict[clus]["test_config"]["mail_server"]["to"]
 	    if "sender" in provision_5_0_dict[clus]["test_config"]["mail_server"]:
 		final_prov_yaml_string = final_prov_yaml_string + "    sender: %s\n" %provision_5_0_dict[clus]["test_config"]["mail_server"]["sender"]
-    print final_prov_yaml_string 
+    print final_prov_yaml_string
 
 
 if __name__ == '__main__':
