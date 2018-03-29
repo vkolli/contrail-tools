@@ -98,9 +98,9 @@ test_configuration:
         to:
         sender:
 
-bms_reimage_info:
-  server_manager:
-    ip: 10.87.66.242
-    username: root
-    password: c0ntrail123
-    image: centos74
+server_manager:
+  ip: 10.84.5.1
+  username: test
+  password: test123
+  image: centos74
+  client: /cs-shared/server-manager/client/server-manager
