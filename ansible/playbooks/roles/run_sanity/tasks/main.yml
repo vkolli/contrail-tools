@@ -12,16 +12,19 @@
     enabled: yes
     name: docker
     state: restarted
+  when: deployment.type.kolla is defined 
 
 - name: Start all containers that were stopped (pass one - network containers)
   shell: 'docker ps -a  --format "{% raw %}{{.Names}}{% endraw %}" | while read line; do docker start $line; done'
   ignore_errors: true
   become: true
+  when: deployment.type.kolla is defined
 
 - name: Start all containers that were stopped (pass two - all containers)
   shell: 'docker ps -a  --format "{% raw %}{{.Names}}{% endraw %}" | while read line; do docker start $line; done'
   ignore_errors: true
   become: true
+  when: deployment.type.kolla is defined
 
 - name: set contrail version
   set_fact:
@@ -37,6 +40,14 @@
   set_fact:
     contrailregistry: "{{ deployment.type.contrail.registry }}"
   when: deployment.type.contrail is defined and deployment.type.contrail.registry is defined
+
+- name: trim contrailregistry 
+  set_fact:
+    contrailregistry: "{{ contrailregistry | replace('docker.io/', '') }}"
+  when: deployment.type.helm is defined and deployment.type.contrail.registry is defined
+
+- debug:
+   msg: "Contrail Registry : {{ contrailregistry}}" 
 
 - name: Pull docker test image
   docker_image:
@@ -60,6 +71,11 @@
     dest: "{{ tmpdir.path }}/testrunner.sh"
     mode: 0755
 
+- name: running contrail-test on host networking
+  command: >
+    sed -i ‘s/privileged/privileged --network host/g’ “{{ tmpdir.path }}“/testrunner.sh
+  when: deployment.type.helm is defined 
+ 
 - name: set feature to execute
   set_fact:
      feature: "{{ feature_dict[orchestrator] }}"

@@ -2290,6 +2290,8 @@ def create_yaml_file_for_5_0_provisioning():
 	    final_prov_yaml_string = final_prov_yaml_string + "  image_web_server: %s\n" %provision_5_0_dict[clus]["test_config"]["image_web_server"]
 	else:
 	    final_prov_yaml_string = final_prov_yaml_string + "  image_web_server: 10.84.5.120\n"
+        if "auth_url" in provision_5_0_dict[clus]["test_config"]:
+            final_prov_yaml_string = final_prov_yaml_string + "  auth_url: %s\n" %provision_5_0_dict[clus]["test_config"]["auth_url"]
 	#hardcoding
         final_prov_yaml_string = final_prov_yaml_string + "  use_project_scoped_token: True\n"
 	if "web_server" in provision_5_0_dict[clus]["test_config"]:

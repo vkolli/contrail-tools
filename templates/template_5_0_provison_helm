@@ -147,6 +147,7 @@
 					},
 					"test_config": {
 						"image_web_server": "10.84.5.120",
+                                                "auth_url": "http://__CONGIF_NODE_MGMT_IP__:80/v3",
 						"web_server" : {
 							"server": "10.204.216.50",
 							"username": "bhushana",

@@ -143,6 +143,8 @@ then
 	        sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/all.yml root@$config_node_ip:/root/ansible/inventory/group_vars/
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/all.yml'
             elif [[ $OS_INFO == *"Ubuntu"* ]]; then
+                config_node_mgmt_ip=`sshpass -p 'c0ntrail123' ssh -o 'StrictHostKeyChecking no' -o 'UserKnownHostsFile /dev/null' root@$config_node_ip 'ifconfig ens3 2>/dev/null | grep "inet addr" | cut -d ':' -f 2 | cut -d " " -f 1'`
+                sed -i 's/__CONGIF_NODE_MGMT_IP__/'${config_node_mgmt_ip}'/' /root/$1/all.yml
                 sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'echo "127.0.1.1  $(hostname)" >> /etc/hosts'
                 sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'sudo rm -r /var/lib/apt/lists/* -vf && apt-get update && apt-get update && apt-get install -y software-properties-common && apt-add-repository -y ppa:ansible/ansible && apt-get update && apt-get install -y ansible sshpass'
                 sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$config_node_ip 'sudo rm -r /var/lib/apt/lists/* -vf && apt-get update && apt-get update && apt-get install -y software-properties-common && apt-add-repository -y ppa:ansible/ansible &&  apt-get update && apt-get install -y ansible sshpass python-minimal python-apt'
