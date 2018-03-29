@@ -1,0 +1,12 @@
+- name:
+  set_fact:
+    os_image: "{{ lookup('env', 'OS_IMAGE')|default(server_manager.image, true) }}"
+
+- name:
+  set_fact:
+    client: "{{ server_manager.client|default('server-manager', true)}}"
+
+- name: Re-image with server manager
+  shell: "{{ client }} reimage -F --server_id {{item.key}} {{ os_image }}"
+  when: item.value.provider == 'bms'
+  with_dict: "{{ instances }}"
