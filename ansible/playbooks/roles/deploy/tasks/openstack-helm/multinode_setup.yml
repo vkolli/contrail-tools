@@ -230,13 +230,14 @@
    OSH_EXTRA_HELM_ARGS_NEUTRON: "--set images.tags.opencontrail_neutron_init={{ openstackregistry }}/contrail-openstack-neutron-init:{{ version }}"
   ignore_errors: yes
 
-#- name: deploy neutron rbac chart
-#  command: "./tools/deployment/multinode/142-neutron-rbac-opencontrail.sh"
-#  command: "./tools/deployment/developer/nfs/162-neutron-rbac-opencontrail.sh"
-#  args:
-#   chdir: "{{ openstack_helm_dir }}"
-#  environment:
-#   OSH_PATH: "{{ openstack_helm_dir }}"
-#   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
-#   OPENSTACK_VERSION: "{{ sku }}"
-#  when: contrail_configuration.AAA_MODE is defined and contrail_configuration.AAA_MODE == "rbac"
+- name: deploy neutron rbac chart
+  command: "./tools/deployment/multinode/142-neutron-rbac-opencontrail.sh"
+  command: "./tools/deployment/developer/nfs/162-neutron-rbac-opencontrail.sh"
+  args:
+   chdir: "{{ openstack_helm_dir }}"
+  environment:
+   OSH_PATH: "{{ openstack_helm_dir }}"
+   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
+   OPENSTACK_VERSION: "{{ sku }}"
+  when: contrail_configuration.AAA_MODE is defined and contrail_configuration.AAA_MODE == "rbac"
+  ignore_errors: yes

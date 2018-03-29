@@ -102,3 +102,4 @@
     chdir: "/opt/openstack-helm"
   environment:
     OSH_EXTRA_HELM_ARGS_HEAT: "--set images.tags.opencontrail_heat_init={{ contrailregistry }}/contrail-openstack-heat-init:{{ version }}"
+  ignore_errors: yes
