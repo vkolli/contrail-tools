@@ -10,7 +10,7 @@
     name: "{{ item }}"
     state: latest
   with_items:
-    - python-minimal
+#    - python-minimal
     - ntp
     - git
 
