@@ -1,4 +1,10 @@
 
+- name: Remove locks
+  command: "{{item}}"
+  with_items:
+    - rm /var/lib/dpkg/lock
+    - rm -r /var/lib/apt/lists/*
+
 - name: install packages
   apt:
     name: "{{ item }}"
