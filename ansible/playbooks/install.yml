@@ -19,3 +19,6 @@
   environment:
     ANSIBLE_HOST_KEY_CHECKING: 'false'
     ANSIBLE_STDOUT_CALLBACK: debug
+  pre_tasks:
+    - name: install python
+      command: 'apt-get install python-minimal'
