@@ -7,7 +7,7 @@ resources:
     type: OS::ContrailV2::VirtualNetwork
     properties:
       name: final_test_network_4_project_uuid_val
-      project: default-domain:project_name
+      project: project_uuid_val
       network_policy_refs: [{ get_resource: policy_all_everything }]
       network_policy_refs_data:
         [{
@@ -31,7 +31,7 @@ resources:
     type: OS::ContrailV2::VirtualNetwork
     properties:
       name: final_test_network_3_project_uuid_val
-      project: default-domain:project_name
+      project: project_uuid_val
       network_policy_refs: [{ get_resource: policy_all_everything }]
       network_policy_refs_data:
         [{
@@ -55,7 +55,7 @@ resources:
     type: OS::ContrailV2::VirtualNetwork
     properties:
       name: final_test_network_5_project_uuid_val
-      project: default-domain:project_name
+      project: project_uuid_val
       network_policy_refs: [{ get_resource: policy_all_everything }]
       network_policy_refs_data:
         [{
@@ -79,7 +79,7 @@ resources:
     type: OS::ContrailV2::VirtualNetwork
     properties:
       name: final_test_network_7_project_uuid_val
-      project: default-domain:project_name
+      project: project_uuid_val
       network_policy_refs: [{ get_resource: policy_all_everything }]
       network_policy_refs_data:
         [{
@@ -104,7 +104,7 @@ resources:
     type: OS::ContrailV2::VirtualNetwork
     properties:
       name: final_test_network_2_project_uuid_val
-      project: default-domain:project_name
+      project: project_uuid_val
       network_policy_refs: [{ get_resource: policy_all_everything }]
       network_policy_refs_data:
         [{
@@ -128,7 +128,7 @@ resources:
     type: OS::ContrailV2::VirtualNetwork
     properties:
       name: final_test_network_6_project_uuid_val
-      project: default-domain:project_name
+      project: project_uuid_val
       network_policy_refs: [{ get_resource: policy_all_everything }]
       network_policy_refs_data:
         [{
@@ -152,7 +152,7 @@ resources:
     type: OS::ContrailV2::VirtualNetwork
     properties:
       name: final_test_network_8_project_uuid_val
-      project: default-domain:project_name
+      project: project_uuid_val
       network_policy_refs: [{ get_resource: policy_all_everything }]
       network_policy_refs_data:
         [{
@@ -177,7 +177,7 @@ resources:
     type: OS::ContrailV2::VirtualNetwork
     properties:
       name: final_test_network_1_project_uuid_val
-      project: default-domain:project_name
+      project: project_uuid_val
       network_policy_refs: [{ get_resource: policy_all_everything }]
       network_policy_refs_data:
         [{
@@ -201,7 +201,7 @@ resources:
     type: OS::ContrailV2::VirtualNetwork
     properties:
       name: final_test_network_9_project_uuid_val
-      project: default-domain:project_name
+      project: project_uuid_val
       network_policy_refs: [{ get_resource: policy_all_everything }]
       network_policy_refs_data:
         [{

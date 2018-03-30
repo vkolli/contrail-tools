@@ -28,7 +28,7 @@ sed -i 's/fip_uuid/'${fip_uuid}'/' /root/$1/input.json
 sed -i 's/project_uuid_val/'${dashed_project_uuid}'/' /root/$1/Remote_Compute_Temp_Files/network.yaml
 sed -i 's/project_uuid_val/'${dashed_project_uuid}'/' /root/$1/Remote_Compute_Temp_Files/server.yaml
 sed -i 's/fip_uuid_val/'${fip_uuid}'/' /root/$1/Remote_Compute_Temp_Files/server.yaml
-sed -i 's/project_name/'${1}'/' /root/$1/Remote_Compute_Temp_Files/network.yaml
+#sed -i 's/project_name/'${1}'/' /root/$1/Remote_Compute_Temp_Files/network.yaml
 #python inp_to_yaml.py template_Remote_Compute create_network_yaml > network.yaml
 #python inp_to_yaml.py template_Remote_Compute create_server_yaml > server.yaml 
 
