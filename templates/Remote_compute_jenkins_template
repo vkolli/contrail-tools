@@ -215,6 +215,8 @@
                                 		}
                         		}
                 		},
+				"provison_5_0_config": {
+				},
 				"testbed_py_params": {
 					"env_password": "c0ntrail123",
 					"env_ostypes" : "ubuntu",
