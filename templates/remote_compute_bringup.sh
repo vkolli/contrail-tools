@@ -116,6 +116,8 @@ then
 	python /root/$1/inp_to_yaml.py /root/$1/input.json create_static_routes_for_remote_compute_nodes
 	openstack_node_ip="$(cat /root/$1/openstack_node_ip)"
 	sleep 10
+	python /root/$1/inp_to_yaml.py /root/$1/input.json create_static_routes_for_remote_compute_nodes
+	sleep 15
 	echo "The Openstack Node where Contrail-ansible-deployer would run is: \n\n"$openstack_node_ip
 	sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null /root/$1/Remote_Compute_Temp_Files/instances.yaml root@$openstack_node_ip:/root/
 	sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$openstack_node_ip 'yum -y install epel-release; yum -y install git ansible vim; cd; git clone http://github.com/Juniper/contrail-ansible-deployer; rm -f /root/contrail-ansible-deployer/config/instances.yaml; cp /root/instances.yaml /root/contrail-ansible-deployer/config/; cd /root/contrail-ansible-deployer; ansible-playbook -i inventory/ playbooks/configure_instances.yml; ansible-playbook -i inventory/ -e orchestrator=openstack playbooks/install_contrail.yml; yum install -y gcc python-devel; pip install python-openstackclient; pip install python-ironicclient' 		
