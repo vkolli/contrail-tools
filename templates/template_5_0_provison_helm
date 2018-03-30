@@ -110,7 +110,7 @@
 				"provison_5_0_config": {
 					"contrail_config": {
 						"AAA_MODE": "rbac",
-                                                "CONTROL_NODES": "10.10.0.4,
+                                                "CONTROL_NODES": "10.10.0.4",
                                                 "CONTROL_DATA_NET_LIST": "10.10.0.0/24",
                                                 "VROUTER_GATEWAY": "10.10.0.1",
                                                 "PHYSICAL_INTERFACE": "ens4",
