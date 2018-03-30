@@ -112,10 +112,9 @@ then
         done
 	echo "Final Server Stacks are "
 	heat stack-list | grep $dashed_project_uuid
-	python /root/$1/inp_to_yaml.py /root/$1/input.json get_openstack_node_ip > /root/$1/openstack_node_ip
-	python /root/$1/inp_to_yaml.py /root/$1/input.json create_static_routes_for_remote_compute_nodes
-	openstack_node_ip="$(cat /root/$1/openstack_node_ip)"
 	sleep 10
+	python /root/$1/inp_to_yaml.py /root/$1/input.json get_openstack_node_ip > /root/$1/openstack_node_ip
+	openstack_node_ip="$(cat /root/$1/openstack_node_ip)"
 	python /root/$1/inp_to_yaml.py /root/$1/input.json create_static_routes_for_remote_compute_nodes
 	sleep 15
 	echo "The Openstack Node where Contrail-ansible-deployer would run is: \n\n"$openstack_node_ip
