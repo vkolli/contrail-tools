@@ -40,7 +40,7 @@
 						"image" : "image_val",
 						"floating_ip" : "true",
 						"server_manager" : "flase",
-                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui"]
+                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui", "kubemanager"]
 					},
 					"server2":{
                                                 "name":"server2" ,
@@ -49,7 +49,7 @@
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
-                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui"]
+                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui", "kubemanager"]
                                         },
 					"server3":{
                                                 "name":"server3" ,
@@ -58,7 +58,7 @@
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
                                                 "server_manager" : "flase",
-                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui", "k8s_master"]
+                                                "roles" : ["config_database", "config", "control", "analytics_database", "analytics", "webui", "kubemanager", "k8s_master"]
                                         },
 					"server4":{
                                                 "name":"server4" ,

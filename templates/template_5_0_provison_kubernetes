@@ -40,7 +40,7 @@
 						"image" : "image_val",
 						"floating_ip" : "true",
 						"server_manager" : "flase",
-						"roles" : ["k8s_master", "config_database", "config", "control", "analytics_database", "analytics", "webui"]
+						"roles" : ["kubemanager", "k8s_master", "config_database", "config", "control", "analytics_database", "analytics", "webui"]
 					},
 					"server2":{
                                                 "name":"server2" ,
