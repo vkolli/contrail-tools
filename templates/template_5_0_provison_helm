@@ -121,6 +121,7 @@
 					"openstack_config": {
 						"keystone": {
 							"version":"v3",
+                                                        "password": "password",
                                                         "auth_ip":"keystone.openstack.svc.cluster.local"
 						}
 					},
@@ -147,7 +148,8 @@
 					},
 					"test_config": {
 						"image_web_server": "10.84.5.120",
-                                                "auth_url": "http://__CONGIF_NODE_MGMT_IP__:80/v3",
+                                                "auth_url": "http://keystone.openstack.svc.cluster.local:80/v3",
+                                                "auth_port": "80",
 						"web_server" : {
 							"server": "10.204.216.50",
 							"username": "bhushana",
@@ -167,7 +169,7 @@
 				"testbed_py_params": {
 					"env_password": "c0ntrail123",
 					"env_ostypes" : "ubuntu",
-					"openstack_admin_password" : "c0ntrail123",
+					"openstack_admin_password" : "password",
 					"minimum_diskGB" : 32,
 					"env.test_repo_dir": "/home/stack/multi_interface_parallel/ubuntu/icehouse/contrail-test",
 					"env.mail_from": "contrail-build@juniper.net",

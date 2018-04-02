@@ -71,10 +71,11 @@
     dest: "{{ tmpdir.path }}/testrunner.sh"
     mode: 0755
 
-- name: running contrail-test on host networking
-  command: >
-    sed -i ‘s/privileged/privileged --network host/g’ “{{ tmpdir.path }}“/testrunner.sh
-  when: deployment.type.helm is defined 
+- name: write to test_runner.sh
+  replace:
+    path: "{{ tmpdir.path }}/testrunner.sh"
+    regexp: '--privileged'
+    replace: '--privileged --network host'
  
 - name: set feature to execute
   set_fact:
