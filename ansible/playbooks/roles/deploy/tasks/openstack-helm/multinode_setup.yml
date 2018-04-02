@@ -100,16 +100,8 @@
    OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
 
 - name: deploy ingress chart
-#  command: "./tools/deployment/multinode/021-ingress-opencontrail.sh"
-  command: "./tools/deployment/developer/nfs/031-ingress-opencontrail.sh"
-  args:
-   chdir: "{{ openstack_helm_dir }}"
-  environment:
-   OSH_PATH: "{{ openstack_helm_dir }}"
-   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
-
-- name: deploy ceph chart
-  command: "./tools/deployment/developer/nfs/040-nfs-provisioner.sh"
+  command: "./tools/deployment/multinode/021-ingress-opencontrail.sh"
+#  command: "./tools/deployment/developer/nfs/031-ingress-opencontrail.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -117,24 +109,32 @@
    OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
 
 #- name: deploy ceph chart
-#  command: "./tools/deployment/multinode/030-ceph.sh"
-#  args:
-#   chdir: "{{ openstack_helm_dir }}"
-#  environment:
-#   OSH_PATH: "{{ openstack_helm_dir }}"
-#   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
-#
-#- name: deploy ceph-ns chart
-#  command: "./tools/deployment/multinode/040-ceph-ns-activate.sh"
+#  command: "./tools/deployment/developer/nfs/040-nfs-provisioner.sh"
 #  args:
 #   chdir: "{{ openstack_helm_dir }}"
 #  environment:
 #   OSH_PATH: "{{ openstack_helm_dir }}"
 #   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
 
+- name: deploy ceph chart
+  command: "./tools/deployment/multinode/030-ceph.sh"
+  args:
+   chdir: "{{ openstack_helm_dir }}"
+  environment:
+   OSH_PATH: "{{ openstack_helm_dir }}"
+   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
+
+- name: deploy ceph-ns chart
+  command: "./tools/deployment/multinode/040-ceph-ns-activate.sh"
+  args:
+   chdir: "{{ openstack_helm_dir }}"
+  environment:
+   OSH_PATH: "{{ openstack_helm_dir }}"
+   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
+
 - name: deploy mariadb chart
-#  command: "./tools/deployment/multinode/050-mariadb.sh"
-  command: "./tools/deployment/developer/nfs/050-mariadb.sh"
+  command: "./tools/deployment/multinode/050-mariadb.sh"
+#  command: "./tools/deployment/developer/nfs/050-mariadb.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -142,8 +142,8 @@
    OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
 
 - name: deploy rabbitmq chart
-#  command: "./tools/deployment/multinode/060-rabbitmq.sh"
-  command: "./tools/deployment/developer/nfs/060-rabbitmq.sh"
+  command: "./tools/deployment/multinode/060-rabbitmq.sh"
+#  command: "./tools/deployment/developer/nfs/060-rabbitmq.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -151,8 +151,8 @@
    OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
 
 - name: deploy memcached chart
-#  command: "./tools/deployment/multinode/070-memcached.sh"
-  command: "./tools/deployment/developer/nfs/070-memcached.sh"
+  command: "./tools/deployment/multinode/070-memcached.sh"
+#  command: "./tools/deployment/developer/nfs/070-memcached.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -160,8 +160,8 @@
    OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
 
 - name: deploy keystone chart
-#  command: "./tools/deployment/multinode/080-keystone.sh"
-  command: "./tools/deployment/developer/nfs/080-keystone.sh"
+  command: "./tools/deployment/multinode/080-keystone.sh"
+#  command: "./tools/deployment/developer/nfs/080-keystone.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -170,18 +170,18 @@
    OPENSTACK_VERSION: "{{ sku }}"
   ignore_errors: yes
 
-#- name: deploy ceph-radosgateway chart
-#  command: "./tools/deployment/multinode/090-ceph-radosgateway.sh"
-#  args:
-#   chdir: "{{ openstack_helm_dir }}"
-#  environment:
-#   OSH_PATH: "{{ openstack_helm_dir }}"
-#   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
-#   OPENSTACK_VERSION: "{{ sku }}"
+- name: deploy ceph-radosgateway chart
+  command: "./tools/deployment/multinode/090-ceph-radosgateway.sh"
+  args:
+   chdir: "{{ openstack_helm_dir }}"
+  environment:
+   OSH_PATH: "{{ openstack_helm_dir }}"
+   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
+   OPENSTACK_VERSION: "{{ sku }}"
 
 - name: deploy horizon chart
-#  command: "./tools/deployment/developer/ceph/100-horizon.sh"
-  command: "./tools/deployment/developer/nfs/100-horizon.sh"
+  command: "./tools/deployment/developer/ceph/100-horizon.sh"
+#  command: "./tools/deployment/developer/nfs/100-horizon.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -190,8 +190,8 @@
    OPENSTACK_VERSION: "{{ sku }}"
 
 - name: deploy glance chart
-#  command: "./tools/deployment/multinode/100-glance.sh"
-  command: "./tools/deployment/developer/nfs/120-glance.sh"
+  command: "./tools/deployment/multinode/100-glance.sh"
+#  command: "./tools/deployment/developer/nfs/120-glance.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -199,18 +199,18 @@
    OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
    OPENSTACK_VERSION: "{{ sku }}"
 
-#- name: deploy cinder chart
-#  command: "./tools/deployment/multinode/110-cinder.sh"
-#  args:
-#   chdir: "{{ openstack_helm_dir }}"
-#  environment:
-#   OSH_PATH: "{{ openstack_helm_dir }}"
-#   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
-#   OPENSTACK_VERSION: "{{ sku }}"
+- name: deploy cinder chart
+  command: "./tools/deployment/multinode/110-cinder.sh"
+  args:
+   chdir: "{{ openstack_helm_dir }}"
+  environment:
+   OSH_PATH: "{{ openstack_helm_dir }}"
+   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
+   OPENSTACK_VERSION: "{{ sku }}"
 
 - name: deploy libvert chart
-#  command: "./tools/deployment/multinode/131-libvirt-opencontrail.sh"
-  command: "./tools/deployment/developer/nfs/151-libvirt-opencontrail.sh"
+  command: "./tools/deployment/multinode/131-libvirt-opencontrail.sh"
+#  command: "./tools/deployment/developer/nfs/151-libvirt-opencontrail.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -219,8 +219,8 @@
    OPENSTACK_VERSION: "{{ sku }}"
 
 - name: deploy compute-kit chart
-#  command: "./tools/deployment/multinode/141-compute-kit-opencontrail.sh"
-  command: "./tools/deployment/developer/nfs/161-compute-kit-opencontrail.sh" 
+  command: "./tools/deployment/multinode/141-compute-kit-opencontrail.sh"
+#  command: "./tools/deployment/developer/nfs/161-compute-kit-opencontrail.sh" 
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -231,8 +231,8 @@
   ignore_errors: yes
 
 - name: deploy neutron rbac chart
-#  command: "./tools/deployment/multinode/142-neutron-rbac-opencontrail.sh"
-  command: "./tools/deployment/developer/nfs/162-neutron-rbac-opencontrail.sh"
+  command: "./tools/deployment/multinode/142-neutron-rbac-opencontrail.sh"
+#  command: "./tools/deployment/developer/nfs/162-neutron-rbac-opencontrail.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:

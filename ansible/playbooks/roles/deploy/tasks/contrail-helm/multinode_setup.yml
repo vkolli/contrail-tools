@@ -96,8 +96,8 @@
     CHD_PATH: "{{ contrail_helm_provision_dir }}"
 
 - name: deploy heat charts
-#  command: "./tools/deployment/multinode/151-heat-opencontrail.sh"
-  command: "./tools/deployment/developer/nfs/091-heat-opencontrail.sh"
+  command: "./tools/deployment/multinode/151-heat-opencontrail.sh"
+#  command: "./tools/deployment/developer/nfs/091-heat-opencontrail.sh"
   args:
     chdir: "/opt/openstack-helm"
   environment:
