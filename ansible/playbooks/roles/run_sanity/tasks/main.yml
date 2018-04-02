@@ -49,10 +49,15 @@
 - debug:
    msg: "Contrail Registry : {{ contrailregistry}}" 
 
+- name: set api mgmt ip
+  set_fact:
+     api_mgmt_ip: "{{ item.value.ip }}"
+  when: item.value.roles.config is defined
+  with_dict: "{{ instances }}"
+
 - name: Pull docker test image
-  docker_image:
-    name: "{{ contrailregistry }}/contrail-test-test:{{ version }}"
-    state: present
+  command: >
+    docker pull "{{ contrailregistry }}/contrail-test-test:{{ version }}"
 
 - name: create temp directory for test
   tempfile:
