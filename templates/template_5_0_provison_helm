@@ -52,7 +52,7 @@
                                                 "roles" : ["openstack","config_database", "config", "control", "analytics_database", "analytics", "webui"]
                                         },
                                         "server3":{
-                                                "name":"server1" ,
+                                                "name":"server3" ,
                                                 "ip_address" : { "final_test_network_1_Prachi":"10.0.0.6", "final_test_network_2_Prachi":"10.10.0.6"},
                                                 "flavor" : "m1.xxlarge",
                                                 "image" : "image_val",
