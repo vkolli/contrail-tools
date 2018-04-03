@@ -932,6 +932,28 @@ function run_smgr_virtual_task() {
     tb_lock_file=${LOCK_FILE_DIR}/${TBFILE_NAME}
 }
 
+function launch_testbed_hybrid_5_0() {
+  OS_INFO=cat /etc/*elease | grep "PRETTY_NAME"
+  if [[ $OS_INFO = *"CentOS"* ]]; then
+    yum install -y git ansible epel-release vim
+    cp $TOOLS_WS/$CONFIG_LOC/$TESTBED_CONFIG $TOOLS_WS/ansible/inventory/group_vars/
+    cd $TOOLS_WS/ansible/
+    ansible-playbook -i inventory/ playbooks/reimage.yml
+    ansible-playbook -i inventory/ playbooks/configure_vm.yml
+    sleep 300 
+    ansible-playbook -i inventory/ playbooks/configure_ctrldata.yml
+    ansible-playbook -i inventory/ playbooks/all.yml
+  elif [[ $OS_INFO = *"Ubuntu"* ]]; then
+    apt update; apt install -y software-properties-common; apt-add-repository -y ppa:ansible/ansible; apt install -y ansible sshpass
+    cp $TOOLS_WS/templates/testbeds/$TESTBED_CONFIG $TOOLS_WS/ansible/inventory/group_vars/
+    cd $TOOLS_WS/ansible/
+    ansible-playbook -i inventory/ playbooks/reimage.yml
+    ansible-playbook -i inventory/ playbooks/configure_vm.yml
+    sleep 300
+    ansible-playbook -i inventory/ playbooks/install.yml ; ansible-playbook -i inventory/ playbooks/all.yml
+  fi
+
+}
 
 function debug_and_die
 {
