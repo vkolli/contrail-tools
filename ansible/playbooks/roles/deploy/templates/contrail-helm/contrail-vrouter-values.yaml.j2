@@ -15,6 +15,9 @@ global:
   # this section is commonized with other Contrails' services
   contrail_env:
     CONTROLLER_NODES: {{controller_nodes|join(',')}}
+{% if control_nodes is defined %}
+    CONTROL_NODES: {{ control_nodes }}
+{% endif %}
     LOG_LEVEL: SYS_NOTICE
     CLOUD_ORCHESTRATOR: {{ orchestrator }}
     AAA_MODE: {{ aaa_mode | default(rbac) }}
