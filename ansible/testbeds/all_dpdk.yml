@@ -97,7 +97,7 @@ instances:
       vrouter:
         PHYSICAL_INTERFACE: bond0
         network_interface:  bond0
-      CPU_CORE_MASK: "0xf"
+        CPU_CORE_MASK: "0xf"
         DPDK_UIO_DRIVER: uio_pci_generic
         HUGE_PAGES: 32000
         AGENT_MODE: dpdk
