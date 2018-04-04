@@ -113,96 +113,96 @@ vm_info:
     image_source: http://10.84.5.120/images/node_vm_images/centos-7.4-copy.qcow2.gz
   hypervisors:
     kvm_5c3s29_1:
-      username: root
-      ip: 10.87.74.137
-      password: c0ntrail123
+      username: 
+      ip: 
+      password: 
       vm_config:
         host1:
-          name: 5c3s29-1-vm1
-          ram: 65536
-          vcpus: 16
-          server: kvm_5c3s29_1
+          name:
+          ram: 
+          vcpus:
+          server: 
           network:
             interfaces:
               intf1:
-                bridge: br0
-                mac: '62:53:55:02:00:00'
-                model: virtio
+                bridge:
+                mac: 
+                model: 
               intf2:
-                bridge: br1
-                model: virtio
+                bridge:
+                model: 
         host2:
-          name: 5c3s29-1-vm2
-          ram: 4096
-          vcpus: 4
-          server: kvm_5c3s29_1
+          name: 
+          ram: 
+          vcpus:
+          server: 
           network:
             interfaces:
               intf1:
-                bridge: br0
-                mac: '62:53:55:02:00:01'
-                model: virtio
+                bridge:
+                mac: 
+                model: 
               intf2:
-                bridge: br1
-                model: virtio
+                bridge: 
+                model: 
         host3:
-          name: 5c3s29-1-vm3
-          ram: 4096
-          vcpus: 4
-          server: kvm_5c3s29_1
+          name: 
+          ram: 
+          vcpus: 
+          server: 
           network:
             interfaces:
               intf1:
-                bridge: br0
-                mac: '62:53:55:02:00:02'
-                model: virtio
+                bridge: 
+                mac: 
+                model:
 
 control_data:
     host1:
-      ip: 10.87.74.145
-      ctrldata_ip: 172.17.90.1
-      prefix: 24
-      gw: 172.17.90.254
-      device: eth1
+      ip: 
+      ctrldata_ip: 
+      prefix: 
+      gw: 
+      device:
     host2:
-      ip: 10.87.74.146
-      ctrldata_ip: 172.17.90.2
-      prefix: 24
-      gw: 172.17.90.254
-      device: eth1
+      ip: 
+      ctrldata_ip: 
+      prefix: 
+      gw: 
+      device: 
     host3:
-      ip: 10.87.74.147
-      ctrldata_ip: 172.17.90.3
-      prefix: 24
-      gw: 172.17.90.254
-      device: eth1
+      ip:
+      ctrldata_ip: 
+      prefix: 
+      gw: 
+      device:
     host4:
-      ip: 10.87.74.148
-      ctrldata_ip: 172.17.90.4
-      prefix: 24
-      gw: 172.17.90.254
-      device: eth1
+      ip: 
+      ctrldata_ip: 
+      prefix: 
+      gw: 
+      device:
     host5:
-      ip: 10.87.74.149
-      ctrldata_ip: 172.17.90.5
-      prefix: 24
-      gw: 172.17.90.254
-      device: eth1
+      ip: 
+      ctrldata_ip:
+      prefix: 
+      gw: 
+      device:
     host6:
-      ip: 10.87.74.150
-      ctrldata_ip: 172.17.90.6
-      prefix: 24
-      gw: 172.17.90.254
-      device: eth1
+      ip: 
+      ctrldata_ip: 
+      prefix: 
+      gw: 
+      device:
     host7:
-      ip: 10.87.74.151
-      ctrldata_ip: 172.17.90.7
-      prefix: 24
-      gw: 172.17.90.254
-      device: eth1
+      ip: 
+      ctrldata_ip:
+      prefix: 
+      gw: 
+      device:
     host8:
-      ip: 10.87.74.152
-      ctrldata_ip: 172.17.90.8
-      prefix: 24
-      gw: 172.17.90.254
-      device: eth1
+      ip: 
+      ctrldata_ip: 
+      prefix: 
+      gw: 
+      device: 
