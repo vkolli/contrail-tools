@@ -845,6 +845,24 @@ function launch_testbed_virtual_5_0() {
 	  ./build_infra_5_0.sh ${TEMPLATE_DIR} ${OSIMAGE:-centos-7.4} ${BASE_CLUSTER}
 	) "
 }
+
+function launch_remote_compute_setup_5_0() {
+	echo "Launching a Remote Compute Setup on the Virtual Infrastructure"
+	export TEMPLATE_DIR=${BUILD_TAG}
+	sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $BASE_CLUSTER " (
+	  set -e
+	  mkdir /root/${TEMPLATE_DIR}/
+	)"
+	sshpass -p "c0ntrail123" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ${TOOLS_WS}/templates/* root@$BASE_CLUSTER:/root/${TEMPLATE_DIR}/
+	sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $BASE_CLUSTER " (
+	  set -e
+	  cp /root/${TEMPLATE_DIR}/$TEMPLATE /root/${TEMPLATE_DIR}/input.json
+	  cd /root/${TEMPLATE_DIR}/
+	  echo "Using remote_compute_bringup.sh file for launching the tasks"
+	  ./remote_compute_bringup.sh ${TEMPLATE_DIR} ${OSIMAGE:-centos-7.4} ${BASE_CLUSTER}
+	)" 
+}
+
 function delete_stacks() {
     sshpass -p "c0ntrail123" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -l root $BASE_CLUSTER " (
         set -e

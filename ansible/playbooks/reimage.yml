@@ -1,0 +1,13 @@
+- hosts: localhost
+  gather_facts: yes
+  tasks:
+    - add_host:
+        name: "{{ server_manager.ip }}"
+        ansible_ssh_host: "{{ server_manager.ip }}"
+        ansible_ssh_user: "{{ server_manager.username | default('root') }}"
+        ansible_ssh_pass: "{{ server_manager.password | default('c0ntrail123') }}"
+        group: "server_manager"
+
+- hosts: server_manager
+  roles:
+    - reimage

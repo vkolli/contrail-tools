@@ -144,20 +144,20 @@ def get_requested_image():
             print a_tmp	
 	if sys.argv[2] == 'centos-7.4':
 	    a = subprocess.Popen(
-                "wget http://10.84.5.120/images/soumilk/vm_images/centos74_nokey.qcow2",
+                "wget http://10.84.5.120/images/soumilk/vm_images/CentOS-7-x86_64-GenericCloud.qcow2",
                 shell=True,
                 stdout=subprocess.PIPE)
             a_tmp = a.stdout.read()
             a_tmp = str(a_tmp)
             print a_tmp
 	if sys.argv[2] == 'ubuntu-16.04.3':
-	    a = subprocess.Popen(
-	        "wget http://10.84.5.120/images/soumilk/vm_images/ubuntu-16.04.3.qcow2",
-		shell=True,
-		stdout=subprocess.PIPE)
-	    a_tmp = a.stdout.read()
-	    a_tmp = str(a_tmp)
-	    print a_tmp
+            a = subprocess.Popen(
+                "wget http://10.84.5.120/images/soumilk/vm_images/ub-16-04-3.qcow2",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp = str(a_tmp)
+            print a_tmp
 
 # Method for Checking if the requested image is added to the cluster, if
 # not. It will download the image and add it to the cluster.
@@ -549,7 +549,7 @@ def parse_openstack_image_list_command():
                 print "The Requested Image is not present in the cluster, Downloading it ----->>\n"
                 get_requested_image()
                 a = subprocess.Popen(
-                    "openstack image create --disk-format qcow2 --container-format bare --public --file centos74_nokey.qcow2 centos-7.4",
+                    "openstack image create --disk-format qcow2 --container-format bare --public --file CentOS-7-x86_64-GenericCloud.qcow2 centos-7.4",
                     shell=True,
                     stdout=subprocess.PIPE)
                 a_tmp = a.stdout.read()
@@ -565,6 +565,42 @@ def parse_openstack_image_list_command():
                 print "Requested Image already exists in the cluster "
                 a = subprocess.Popen(
                     "openstack image list | grep centos-7.4",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+	
+	elif sys.argv[2] == 'ubuntu-16.04.3':
+            a = subprocess.Popen(
+                "openstack image list -f json",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp_dict = eval(a_tmp)
+            a_tmp = ""
+            for i in a_tmp_dict:
+                if i["Name"] == "ubuntu-16.04.3":
+                    a_tmp = "ubuntu-16.04.3"
+            if len(a_tmp) == 0:
+                print "The Requested Image is not present in the cluster, Downloading it ----->>\n"
+                get_requested_image()
+                a = subprocess.Popen(
+                    "openstack image create --disk-format qcow2 --container-format bare --public --file ub-16-04-3.qcow2 ubuntu-16.04.3",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+                time.sleep(5)
+                a = subprocess.Popen(
+                    "openstack image list | grep ubuntu-16.04.3",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+            else:
+                print "Requested Image already exists in the cluster "
+                a = subprocess.Popen(
+                    "openstack image list | grep ubuntu-16.04.3",
                     shell=True,
                     stdout=subprocess.PIPE)
                 a_tmp = a.stdout.read()
@@ -647,7 +683,6 @@ def get_fip_uuid():
         print "---------"
     else:
         print fip_uuid
-
 
 if __name__ == '__main__':
     if len(sys.argv) == 4:
