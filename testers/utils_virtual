@@ -933,7 +933,7 @@ function run_smgr_virtual_task() {
 }
 
 function launch_testbed_hybrid_5_0() {
-  OS_INFO=cat /etc/*elease | grep "PRETTY_NAME"
+  OS_INFO=`cat /etc/*elease | grep "PRETTY_NAME"`
   if [[ $OS_INFO = *"CentOS"* ]]; then
     yum install -y git ansible epel-release vim
     cp $TOOLS_WS/$CONFIG_LOC/$TESTBED_CONFIG $TOOLS_WS/ansible/inventory/group_vars/
