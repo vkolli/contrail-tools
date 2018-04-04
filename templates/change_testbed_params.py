@@ -159,7 +159,6 @@ def get_requested_image():
             a_tmp = str(a_tmp)
             print a_tmp
 
-
 # Method for Checking if the requested image is added to the cluster, if
 # not. It will download the image and add it to the cluster.
 
@@ -587,6 +586,42 @@ def parse_openstack_image_list_command():
                 get_requested_image()
                 a = subprocess.Popen(
                     "openstack image create --disk-format qcow2 --container-format bare --public --file ub-16-04-3.qcow2 ubuntu-16.04.3",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+                time.sleep(5)
+                a = subprocess.Popen(
+                    "openstack image list | grep ubuntu-16.04.3",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+            else:
+                print "Requested Image already exists in the cluster "
+                a = subprocess.Popen(
+                    "openstack image list | grep ubuntu-16.04.3",
+                    shell=True,
+                    stdout=subprocess.PIPE)
+                a_tmp = a.stdout.read()
+                print a_tmp
+
+	elif sys.argv[2] == 'ubuntu-16.04.3':
+            a = subprocess.Popen(
+                "openstack image list -f json",
+                shell=True,
+                stdout=subprocess.PIPE)
+            a_tmp = a.stdout.read()
+            a_tmp_dict = eval(a_tmp)
+            a_tmp = ""
+            for i in a_tmp_dict:
+                if i["Name"] == "ubuntu-16.04.3":
+                    a_tmp = "ubuntu-16.04.3"
+            if len(a_tmp) == 0:
+                print "The Requested Image is not present in the cluster, Downloading it ----->>\n"
+                get_requested_image()
+                a = subprocess.Popen(
+                    "openstack image create --disk-format qcow2 --container-format bare --public --file ubuntu-16.04.3.qcow2 ubuntu-16.04.3",
                     shell=True,
                     stdout=subprocess.PIPE)
                 a_tmp = a.stdout.read()

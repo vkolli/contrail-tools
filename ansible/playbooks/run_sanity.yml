@@ -19,7 +19,7 @@
     ANSIBLE_STDOUT_CALLBACK: debug
   tasks:
     - name: install tcpdump
-      yum:
+      package:
         name: tcpdump
         state: latest
 

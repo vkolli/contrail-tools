@@ -17,6 +17,9 @@ contrail_configuration:
 {% if orchestrator == 'openstack' %}
   RABBITMQ_NODE_PORT: "{{ contrail_rabbitmq_port }}"
 {% endif %}
+{% if deployment.type.helm is defined %}
+  CONFIG_API_VIP: "{{ api_mgmt_ip }}"
+{% endif %}
 {% endif %}
 
 {% if orchestrator_configuration is defined %}

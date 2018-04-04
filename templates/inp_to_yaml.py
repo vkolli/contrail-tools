@@ -2341,6 +2341,10 @@ def create_yaml_file_for_5_0_provisioning():
 		final_prov_yaml_string = final_prov_yaml_string + "    version: %s\n" %provision_5_0_dict[clus]["openstack_config"]["keystone"]["version"]
 	    else:
 		final_prov_yaml_string = final_prov_yaml_string + "    version: /v3\n"
+            if "password" in provision_5_0_dict[clus]["openstack_config"]["keystone"]:
+                final_prov_yaml_string = final_prov_yaml_string + "    password: %s\n" %provision_5_0_dict[clus]["openstack_config"]["keystone"]["password"]
+            else:
+                final_prov_yaml_string = final_prov_yaml_string + "    password: c0ntrail123\n"
 	if (("two_interface" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["two_interface"] == "true")):
 	    if (("external_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"]) and ("internal_vip" in cluster_dict[clus]["parameters"]["provision"]["openstack"])):
 	        final_prov_yaml_string = final_prov_yaml_string + "  internal_vip: %s\n" % cluster_dict[clus]["parameters"]["provision"]["openstack"]["internal_vip"]
@@ -2353,7 +2357,11 @@ def create_yaml_file_for_5_0_provisioning():
 	    final_prov_yaml_string = final_prov_yaml_string + "  image_web_server: %s\n" %provision_5_0_dict[clus]["test_config"]["image_web_server"]
 	else:
 	    final_prov_yaml_string = final_prov_yaml_string + "  image_web_server: 10.84.5.120\n"
-	#hardcoding
+        if "auth_url" in provision_5_0_dict[clus]["test_config"]:
+            final_prov_yaml_string = final_prov_yaml_string + "  auth_url: %s\n" %provision_5_0_dict[clus]["test_config"]["auth_url"]
+	if "auth_port" in provision_5_0_dict[clus]["test_config"]:
+            final_prov_yaml_string = final_prov_yaml_string + "  auth_port: %s\n" %provision_5_0_dict[clus]["test_config"]["auth_port"]
+        #hardcoding
         final_prov_yaml_string = final_prov_yaml_string + "  use_project_scoped_token: True\n"
 	if "web_server" in provision_5_0_dict[clus]["test_config"]:
 	    final_prov_yaml_string = final_prov_yaml_string + "  web_server:\n"

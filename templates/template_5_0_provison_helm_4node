@@ -1,10 +1,10 @@
 {
 	"inp_params": {
 		"description":{
-			"msg" : "6 node cluster for mainline build with multiple interfaces and Openstack  HA"
+			"msg" : "4 node cluster for mainline build with multiple interfaces and Openstack  HA"
 		},
 		"params":{
-			"no_of_servers" : 6,
+			"no_of_servers" : 4,
 			"no_of_networks" : 2,
 			"network_stack_name" : "test_network_final",
 			"server_stack_name" : "test_server_final",
@@ -42,24 +42,6 @@
 						"server_manager" : "flase",
 						"roles" : ["openstack","config_database", "config", "control", "analytics_database", "analytics", "webui"]
 					},
-                                        "server2":{
-                                                "name":"server2" ,
-                                                "ip_address" : { "final_test_network_1_Helm":"10.0.0.5", "final_test_network_2_Helm":"10.10.0.5"},
-                                                "flavor" : "m1.xxlarge",
-                                                "image" : "image_val",
-                                                "floating_ip" : "true",
-                                                "server_manager" : "flase",
-                                                "roles" : ["openstack","config_database", "config", "control", "analytics_database", "analytics", "webui"]
-                                        },
-                                        "server3":{
-                                                "name":"server3" ,
-                                                "ip_address" : { "final_test_network_1_Helm":"10.0.0.6", "final_test_network_2_Helm":"10.10.0.6"},
-                                                "flavor" : "m1.xxlarge",
-                                                "image" : "image_val",
-                                                "floating_ip" : "true",
-                                                "server_manager" : "flase",
-                                                "roles" : ["openstack","config_database", "config", "control", "analytics_database", "analytics", "webui"]
-                                        },
 					"server4":{
                                                 "name":"server4" ,
                                                 "ip_address" : { "final_test_network_1_Helm":"10.0.0.7", "final_test_network_2_Helm":"10.10.0.7"},
@@ -168,12 +150,12 @@
                                                 "auth_url": "http://keystone.openstack.svc.cluster.local:80/v3",
                                                 "auth_port": "80",
 						"web_server" : {
-                            "server": "zephyrine.englab.juniper.net",
-                            "username": "stack",
-                            "password" : "stack@123",
-                            "report_path": "/var/www/html/sanity/fb-sanity/FB-master-ocata-ubuntu16-ha-helm-sanity",
-                            "log_path": "/var/www/html/Docs/logs", 
-                            "web_root": "/Docs/logs" 
+							"server": "10.204.216.50",
+							"username": "bhushana",
+							"password" : "c0ntrail!23",
+							"report_path": "/home/bhushana/Documents/technical/sanity/SVL_VT_Ubuntu-16.04.3_Ocata_Helm_master_Sanity",
+							"log_path": "/home/bhushana/Documents/technical/sanity/SVL_VT_Ubuntu-16.04.3_Ocata_Helm_master_Sanity",
+							"web_root": "/Docs/"
 						},
 						"mail_server": {
 							"server": "10.84.24.64",

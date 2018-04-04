@@ -1,0 +1,30 @@
+
+- name: install packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - ntp
+    - git
+
+- name: configure ntp server
+  template: 
+    src: ntp.conf.j2
+    dest: "/etc/ntp.conf"
+
+- name: restart ntp
+  service: name=ntp state=restarted
+
+- name: Configure network interface
+  command: dhclient ens4
+
+- name: set mtu
+  command: "{{item}}"
+  with_items:
+    - ip link set dev ens3 mtu 1400
+    - ip link set dev ens4 mtu 1400
+
+- name: Stop service ufw, if running
+  service: name=ufw state=stopped
+
+

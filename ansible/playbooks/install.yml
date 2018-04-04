@@ -19,3 +19,7 @@
   environment:
     ANSIBLE_HOST_KEY_CHECKING: 'false'
     ANSIBLE_STDOUT_CALLBACK: debug
+    ANSIBLE_PYTHON_INTERPRETER: '/usr/bin/python3'
+#  pre_tasks:
+#    - name: install python
+#      command: 'apt-get install python-minimal'
