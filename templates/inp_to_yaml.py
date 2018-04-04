@@ -2251,24 +2251,24 @@ def create_yaml_file_for_5_0_provisioning():
     for clus in provision_5_0_dict:
         for k,v in provision_5_0_dict[clus]["contrail_config"].iteritems():
             final_prov_yaml_string = final_prov_yaml_string + "  %s: %s\n"%(k,v)
-#	if (("two_interface" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["two_interface"] == "true")):
-#	    for j in (server_dict[clus][i]["ip_address"]):
-#		current_network = j
-#		gateway = network_dict[j]["default_gateway"]
-#		ip_block_with_mask = network_dict[j]["ip_block_with_mask"]
-#		if network_dict[j]["role"] == "control-data":
-#		    final_prov_yaml_string = final_prov_yaml_string + "  VROUTER_GATEWAY: %s\n" %gateway
-#		    final_prov_yaml_string = final_prov_yaml_string + "  PHYSICAL_INTERFACE: eth1\n"
-#		    final_prov_yaml_string = final_prov_yaml_string + "  CONTROL_DATA_NET_LIST: %s\n" %ip_block_with_mask
-#	    list_of_control_data_ip_of_control_nodes = []
-#	    for j in server_dict[clus]:
-#		if server_dict[clus][j]["server_manager"] != "true":
-#		    if "control" in server_dict[clus][j]["roles"]:
-#		        for k in server_dict[clus][j]["ip_address"]:
-#			    if network_dict[k]["role"] == "control-data":
-#				list_of_control_data_ip_of_control_nodes.append(server_dict[clus][j]["ip_address"][k])
-#	    tmp_control_data_ip_string = ",".join(list_of_control_data_ip_of_control_nodes)
-#	    final_prov_yaml_string = final_prov_yaml_string + "  CONTROLLER_NODES: %s\n" %tmp_control_data_ip_string	     
+	if (("two_interface" in provision_5_0_dict[clus]["contrail_config"]) and (provision_5_0_dict[clus]["contrail_config"]["two_interface"] == "true")):
+	    for j in (server_dict[clus][i]["ip_address"]):
+		current_network = j
+		gateway = network_dict[j]["default_gateway"]
+		ip_block_with_mask = network_dict[j]["ip_block_with_mask"]
+		if network_dict[j]["role"] == "control-data":
+		    final_prov_yaml_string = final_prov_yaml_string + "  VROUTER_GATEWAY: %s\n" %gateway
+		    final_prov_yaml_string = final_prov_yaml_string + "  PHYSICAL_INTERFACE: eth1\n"
+		    final_prov_yaml_string = final_prov_yaml_string + "  CONTROL_DATA_NET_LIST: %s\n" %ip_block_with_mask
+	    list_of_control_data_ip_of_control_nodes = []
+	    for j in server_dict[clus]:
+		if server_dict[clus][j]["server_manager"] != "true":
+		    if "control" in server_dict[clus][j]["roles"]:
+		        for k in server_dict[clus][j]["ip_address"]:
+			    if network_dict[k]["role"] == "control-data":
+				list_of_control_data_ip_of_control_nodes.append(server_dict[clus][j]["ip_address"][k])
+	    tmp_control_data_ip_string = ",".join(list_of_control_data_ip_of_control_nodes)
+	    final_prov_yaml_string = final_prov_yaml_string + "  CONTROLLER_NODES: %s\n" %tmp_control_data_ip_string	     
     # This part of the code will provide the orchestrator configurations for the yaml file
     final_prov_yaml_string = final_prov_yaml_string + "\norchestrator_configuration:\n"
     for clus in provision_5_0_dict:

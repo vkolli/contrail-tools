@@ -11,14 +11,14 @@
 			"project_uuid" : "project_uuid_val"	
 		},
 		"networks":{
-			"final_test_network_1_Prachi":{
-				"name": "final_test_network_1_Prachi",
+			"final_test_network_1_Helm":{
+				"name": "final_test_network_1_Helm",
 				"ip_block_with_mask" : "10.0.0.0/24",
 				"default_gateway" : "10.0.0.1",
 				"role" : "management"
 			},
-			"final_test_network_2_Prachi":{
-                                "name": "final_test_network_2_Prachi",
+			"final_test_network_2_Helm":{
+                                "name": "final_test_network_2_Helm",
                                 "ip_block_with_mask" : "10.10.0.0/24",
                                 "default_gateway" : "10.10.0.1",
                                 "role" : "control-data"
@@ -35,7 +35,7 @@
 				"servers":{
 					"server1":{
 						"name":"server1" , 
-						"ip_address" : { "final_test_network_1_Prachi":"10.0.0.4", "final_test_network_2_Prachi":"10.10.0.4"},
+						"ip_address" : { "final_test_network_1_Helm":"10.0.0.4", "final_test_network_2_Helm":"10.10.0.4"},
 						"flavor" : "m1.xxlarge",
 						"image" : "image_val",
 						"floating_ip" : "true",
@@ -44,7 +44,7 @@
 					},
                                         "server2":{
                                                 "name":"server2" ,
-                                                "ip_address" : { "final_test_network_1_Prachi":"10.0.0.5", "final_test_network_2_Prachi":"10.10.0.5"},
+                                                "ip_address" : { "final_test_network_1_Helm":"10.0.0.5", "final_test_network_2_Helm":"10.10.0.5"},
                                                 "flavor" : "m1.xxlarge",
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
@@ -53,7 +53,7 @@
                                         },
                                         "server3":{
                                                 "name":"server3" ,
-                                                "ip_address" : { "final_test_network_1_Prachi":"10.0.0.6", "final_test_network_2_Prachi":"10.10.0.6"},
+                                                "ip_address" : { "final_test_network_1_Helm":"10.0.0.6", "final_test_network_2_Helm":"10.10.0.6"},
                                                 "flavor" : "m1.xxlarge",
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
@@ -62,7 +62,7 @@
                                         },
 					"server4":{
                                                 "name":"server4" ,
-                                                "ip_address" : { "final_test_network_1_Prachi":"10.0.0.7", "final_test_network_2_Prachi":"10.10.0.7"},
+                                                "ip_address" : { "final_test_network_1_Helm":"10.0.0.7", "final_test_network_2_Helm":"10.10.0.7"},
                                                 "flavor" : "m1.xxlarge",
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
@@ -71,7 +71,7 @@
                         		},
 					"server5":{
                                                 "name":"server5" ,
-                                                "ip_address" : { "final_test_network_1_Prachi":"10.0.0.8", "final_test_network_2_Prachi":"10.10.0.8"},
+                                                "ip_address" : { "final_test_network_1_Helm":"10.0.0.8", "final_test_network_2_Helm":"10.10.0.8"},
                                                 "flavor" : "m1.xxlarge",
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
@@ -80,7 +80,7 @@
                                         },
 					"server6":{
                                                 "name":"server6" ,
-                                                "ip_address" : { "final_test_network_1_Prachi":"10.0.0.9", "final_test_network_2_Prachi":"10.10.0.9"},
+                                                "ip_address" : { "final_test_network_1_Helm":"10.0.0.9", "final_test_network_2_Helm":"10.10.0.9"},
                                                 "flavor" : "m1.xxlarge",
                                                 "image" : "image_val",
                                                 "floating_ip" : "true",
@@ -133,7 +133,6 @@
                                                 "VROUTER_GATEWAY": "10.10.0.1",
                                                 "PHYSICAL_INTERFACE": "ens4",
                                                 "BGP_PORT": 1179,
-                                                "two_interface": "true",
 						"AGENT_MODE": "nic"
 					},
 					"openstack_config": {
