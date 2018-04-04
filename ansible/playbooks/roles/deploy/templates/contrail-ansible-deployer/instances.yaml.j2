@@ -29,7 +29,7 @@ contrail_configuration:
   KEYSTONE_AUTH_HOST: {{ auth_ip }}
   KEYSTONE_AUTH_URL_VERSION: "/{{ keystone_version }}"
   RABBITMQ_NODE_PORT: {{ contrail_rabbitmq_port }}
-  IPFABRIC_SERVICE_IP: {{ auth_ip }}
+  IPFABRIC_SERVICE_HOST: {{ auth_ip }}
 {% endif %}
   {{ contrail_configuration | to_nice_yaml | indent(2, False) }}
 {% endif %}
