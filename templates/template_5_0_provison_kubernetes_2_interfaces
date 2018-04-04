@@ -148,12 +148,12 @@
 					"test_config": {
 						"image_web_server": "10.84.5.120",
 						"web_server" : {
-                            "server": "zephyrine.englab.juniper.net",
-                            "username": "stack",
-                            "password" : "stack@123",
+                            "server": "10.204.216.50",
+                            "username": "bhushana",
+                            "password" : "c0ntrail!23",
                             "report_path": "/var/www/html/sanity/fb-sanity/FB-master-k8s-centos7-ha-ansible-sanity",
-                            "log_path": "/var/www/html/Docs/logs", 
-                            "web_root": "/Docs/logs"  
+                            "log_path": "/var/www/html/Docs/logs",
+                            "web_root": "/Docs/logs"
 						},
 						"mail_server": {
 							"server": "10.84.24.64",
