@@ -388,6 +388,8 @@ def create_server_yaml():
     final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
     final_server_yaml_string = final_server_yaml_string + "        - protocol: icmp\n"
     final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
+    final_server_yaml_string = final_server_yaml_string + "        - protocol: udp\n"
+    final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
     for clus in server_dict:
 	external_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('external_vip')
 	contrail_external_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('contrail_external_vip')
