@@ -380,16 +380,17 @@ def create_server_yaml():
         final_server_yaml_string = final_server_yaml_string + "      name: %s\n" % name
         final_server_yaml_string = final_server_yaml_string + "      virtual_network: %s\n" %fip_uuid
     ip_port_dict = {}
-    final_server_yaml_string = final_server_yaml_string + "  allow_all_secgroup:\n"
-    final_server_yaml_string = final_server_yaml_string + "    type: OS::Neutron::SecurityGroup\n"
-    final_server_yaml_string = final_server_yaml_string + "    properties:\n"
-    final_server_yaml_string = final_server_yaml_string + "      rules:\n"
-    final_server_yaml_string = final_server_yaml_string + "        - protocol: tcp\n"
-    final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
-    final_server_yaml_string = final_server_yaml_string + "        - protocol: icmp\n"
-    final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
-    final_server_yaml_string = final_server_yaml_string + "        - protocol: udp\n"
-    final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
+    if (("disable_openstack_port_security_on_all_vms" not in general_params_dict)) 
+        final_server_yaml_string = final_server_yaml_string + "  allow_all_secgroup:\n"
+        final_server_yaml_string = final_server_yaml_string + "    type: OS::Neutron::SecurityGroup\n"
+        final_server_yaml_string = final_server_yaml_string + "    properties:\n"
+        final_server_yaml_string = final_server_yaml_string + "      rules:\n"
+        final_server_yaml_string = final_server_yaml_string + "        - protocol: tcp\n"
+        final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
+        final_server_yaml_string = final_server_yaml_string + "        - protocol: icmp\n"
+        final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
+        final_server_yaml_string = final_server_yaml_string + "        - protocol: udp\n"
+        final_server_yaml_string = final_server_yaml_string + "          remote_ip_prefix: 0.0.0.0/0\n"
     for clus in server_dict:
 	external_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('external_vip')
 	contrail_external_vip = cluster_dict[clus]["parameters"]["provision"]["openstack"].get('contrail_external_vip')
@@ -419,26 +420,31 @@ def create_server_yaml():
                 final_server_yaml_string = final_server_yaml_string + "    properties:\n"
                 final_server_yaml_string = final_server_yaml_string + "      network: %s\n" % net_name
                 final_server_yaml_string = final_server_yaml_string + "      name: %s\n" %port_name
-		final_server_yaml_string = final_server_yaml_string + "      security_groups:\n"
-		final_server_yaml_string = final_server_yaml_string + "        - { get_resource: allow_all_secgroup }\n"
+		if (("disable_openstack_port_security_on_all_vms" in general_params_dict) and (general_params_dict["disable_openstack_port_security_on_all_vms"] == "true")):
+		    final_server_yaml_string = final_server_yaml_string + "      port_security_enabled: False\n"
+		if (("disable_openstack_port_security_on_all_vms" not in general_params_dict)):
+		    final_server_yaml_string = final_server_yaml_string + "      security_groups:\n"
+		    final_server_yaml_string = final_server_yaml_string + "        - { get_resource: allow_all_secgroup }\n"
                 if "mac_address" in server_dict[clus][i]:
                     final_server_yaml_string = final_server_yaml_string + "      mac_address: %s\n" %server_dict[clus][i]["mac_address"][net_name]
                 final_server_yaml_string = final_server_yaml_string + "      fixed_ips:\n"
                 final_server_yaml_string = final_server_yaml_string + "      - ip_address: %s\n" %individual_ip_address_dict[net_name]
                 if network_dict[net]["role"] == "management":
-		    if (external_vip and 'openstack' in roles) or (contrail_external_vip and 'config' in roles):
-			final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
-			if 'openstack' in roles and external_vip:
-			    final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %external_vip
-			if 'config' in roles and contrail_external_vip:
-			    final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %contrail_external_vip
+		    if (("disable_openstack_port_security_on_all_vms" not in general_params_dict)):
+		        if (external_vip and 'openstack' in roles) or (contrail_external_vip and 'config' in roles):
+			    final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
+			    if 'openstack' in roles and external_vip:
+			        final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %external_vip
+			    if 'config' in roles and contrail_external_vip:
+			        final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %contrail_external_vip
                 if network_dict[net]["role"] == "control-data":
-		    if (internal_vip and 'openstack' in roles) or (contrail_internal_vip and 'config' in roles):
-			final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
-			if 'openstack' in roles and internal_vip:
-			    final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %internal_vip
-			if 'config' in roles and contrail_internal_vip:
-			    final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %contrail_internal_vip        
+		    if (("disable_openstack_port_security_on_all_vms" not in general_params_dict)):
+		        if (internal_vip and 'openstack' in roles) or (contrail_internal_vip and 'config' in roles):
+			    final_server_yaml_string = final_server_yaml_string + "      allowed_address_pairs:\n"
+			    if 'openstack' in roles and internal_vip:
+			        final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %internal_vip
+			    if 'config' in roles and contrail_internal_vip:
+			        final_server_yaml_string = final_server_yaml_string + "        - ip_address: %s\n" %contrail_internal_vip        
                 ip_port_dict[individual_ip_address_dict[net_name]] = port_name
             # lets create the servers according to the teplate given
             final_server_yaml_string = final_server_yaml_string + "  " + name + ":\n"
