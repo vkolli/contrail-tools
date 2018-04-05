@@ -188,7 +188,7 @@ vm_info:
   default:
     image_dest: /mnt/disk1/images/
     disk_format: qcow2
-    image_source: http://10.84.24.64/cs-shared/images/centos-7.4-copy-cloudinit-diasbled.qcow2.gz
+    image_source: http://10.84.5.120/cs-shared/images/centos-7.4-copy-cloudinit-diasbled.qcow2.gz
   hypervisors:
     kvm_a5b7s11:
       username: root
