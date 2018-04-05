@@ -299,7 +299,7 @@ vm_info:
                 bridge: br1
                 model: virtio
         host8:
-          name: 5b7s11-vm4
+          name: 5b7s12-vm4
           ram: 32768
           vcpus: 4
           server: kvm_a5b7s12

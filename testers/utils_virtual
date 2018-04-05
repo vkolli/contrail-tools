@@ -959,18 +959,18 @@ function launch_testbed_hybrid_5_0() {
 	        sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $TOOLS_WS/$TESTBED_LOC/$TESTBED_CONFIG root@$SRMGR_NODE_IP:/root/ansible/inventory/group_vars/all.yml
                 sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/reimage.yml'
                 sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/configure_vm.yml'
-                sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'sleep 60'
+                sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'sleep 360'
                 sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/configure_ctrldata.yml'
-                sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'sleep 60'
+                sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'sleep 360'
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/all.yml'
             elif [[ $OS_INFO = *"Ubuntu"* ]]; then
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'apt update; apt install -y software-properties-common; apt-add-repository -y ppa:ansible/ansible; apt install -y ansible sshpass'
                 sshpass -p c0ntrail123 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $TOOLS_WS/$TESTBED_LOC/$TESTBED_CONFIG root@$SRMGR_NODE_IP:/root/ansible/inventory/group_vars/all.yml
                 sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/reimage.yml'
                 sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/configure_vm.yml'
-                sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'sleep 60'
+                sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'sleep 360'
                 sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/configure_ctrldata.yml'
-                sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'sleep 60'
+                sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'sleep 360'
 	        sshpass -p c0ntrail123 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$SRMGR_NODE_IP 'cd /root/ansible/ ; ansible-playbook -i inventory/ playbooks/install.yml ; ansible-playbook -i inventory/ playbooks/all.yml'
             fi
     #ansible-playbook -i inventory/ playbooks/reimage.yml
