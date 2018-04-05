@@ -6,13 +6,15 @@ global:
       redis: "redis:4.0.2"
       zookeeper: "{{ contrailregistry }}/contrail-external-zookeeper:{{ version }}"
       nodemgr: "{{ contrailregistry }}/contrail-nodemgr:{{ version }}"
+      contrail_status: "{{ contrailregistry }}/contrail-status:{{ version }}"
+      node_init: "{{ contrailregistry }}/contrail-node-init:{{ version }}"
       dep_check: quay.io/stackanetes/kubernetes-entrypoint:v0.2.1
 
   contrail_env:
     CONTROLLER_NODES: {{controller_nodes|join(',')}}
     LOG_LEVEL: SYS_NOTICE
     CLOUD_ORCHESTRATOR: {{ orchestrator }}
-    AAA_MODE: {{ aaa_mode | default(rbac)}}
+    AAA_MODE: {{ aaa_mode | default("rbac")}}
 
 labels:
   configdb:
