@@ -23,15 +23,15 @@ global:
     AAA_MODE: {{ aaa_mode | default(rbac) }}
     # this value should be the same as nova/conf.nova.neutron.metadata_proxy_shared_secret
     #METADATA_PROXY_SECRET: password
+
+  # section of vrouter template for kernel mode
+  contrail_env_vrouter_kernel:
 {% if contrail_configuration.CONTROL_DATA_NET_LIST is defined %}
     CONTROL_DATA_NET_LIST: {{ contrail_configuration.CONTROL_DATA_NET_LIST }}
 {% endif %}
 {% if contrail_configuration.VROUTER_GATEWAY is defined %}
     VROUTER_GATEWAY: {{ contrail_configuration.VROUTER_GATEWAY }}
 {% endif %}
-
-  # section of vrouter template for kernel mode
-  contrail_env_vrouter_kernel:
 {% if contrail_configuration.AGENT_MODE is defined %}
     AGENT_MODE: {{ contrail_configuration.AGENT_MODE }}
 {% endif %}
