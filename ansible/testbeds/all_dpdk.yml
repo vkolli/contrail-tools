@@ -181,7 +181,6 @@ server_manager:
   username: root
   password: c0ntrail123
   image: centos74
-  client: /cs-shared/server-manager/client/server-manager
 
 
 vm_info:
