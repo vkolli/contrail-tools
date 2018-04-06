@@ -1,0 +1,144 @@
+deployment:
+    type:
+        kolla:
+            #branch: contrail/ocata
+            #registry: 10.204.217.152:5000
+            #registry: opencontrailnightly
+        contrail:
+            branch: master
+            registry: 10.204.217.152:5000
+            #registry: opencontrailnightly
+    sku: ocata
+    os: centos7
+    version: latest
+    orchestrator: openstack
+
+provider_config:
+  bms:
+    ssh_pwd: c0ntrail123
+    ssh_user: root
+    ntpserver: 10.204.217.158
+    domainsuffix: englab.juniper.net
+instances:
+  nodec7:
+    provider: bms
+    ip: 192.168.192.6
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      openstack:
+  nodec8:
+    provider: bms
+    ip: 192.168.192.5
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      openstack:
+  nodec57:
+    provider: bms
+    ip: 192.168.192.7
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      openstack:
+  nodei1:
+    provider: bms
+    ip: 192.168.192.1
+    roles:
+      openstack_compute:
+        network_interface: eno2
+      vrouter:
+        PHYSICAL_INTERFACE: eno2
+  nodei2:
+    provider: bms
+    ip: 192.168.192.2
+    roles:
+      openstack_compute:
+        network_interface: eno2
+      vrouter:
+        PHYSICAL_INTERFACE: eno2
+  nodei3:
+    provider: bms
+    ip: 192.168.192.3
+    roles:
+      openstack_compute:
+        network_interface: eno2
+      vrouter:
+        PHYSICAL_INTERFACE: eno2
+
+REGISTRY_PRIVATE_INSECURE: True
+CONTAINER_REGISTRY: 10.204.217.152:5000
+#CONTAINER_REGISTRY: opencontrailnightly
+
+contrail_configuration:
+  AAA_MODE: rbac
+  CLOUD_ORCHESTRATOR: openstack
+  CONTROLLER_NODES: 192.168.192.6,192.168.192.5,192.168.192.7
+  CONFIG_NODES: 192.168.192.6,192.168.192.5,192.168.192.7
+  ANALYTICS_NODES: 192.168.192.6,192.168.192.5,192.168.192.7
+  CONTAINER_REGISTRY: 10.204.217.152:5000
+  #CONTAINER_REGISTRY: opencontrailnightly
+  REGISTRY_PRIVATE_INSECURE: True
+  CONTRAIL_VERSION: latest
+  RABBITMQ_NODE_PORT: 5673
+  KEYSTONE_AUTH_HOST: 192.168.192.8
+  KEYSTONE_AUTH_ADMIN_PASSWORD: c0ntrail123
+  KEYSTONE_AUTH_URL_VERSION: /v3
+  VROUTER_GATEWAY: 192.168.192.254
+  ENCAP_PRIORITY: VXLAN,MPLSoUDP,MPLSoGRE
+
+orchestrator_configuration:
+  keystone:
+    version: v3
+    password: c0ntrail123
+  external_vip_interface: enp1s0f0
+  internal_vip_interface: enp1s0f1
+  customize_etc_hosts: "no"
+  openstack_release: "4.0.0"
+  internal_vip: 192.168.192.8
+  external_vip: 10.204.216.130
+  contrail_api_interface_address: 192.168.192.6
+  contrail_docker_registry: 10.204.217.152:5000
+  #contrail_docker_registry: opencontrailnightly
+  enable_haproxy: "yes"
+  enable_heat: "no"
+  enable_ironic: "no"
+  enable_swift: "no"
+  network_interface: enp1s0f1
+
+test_configuration:
+    cluster_id: clusterc7c8g36i1i2i3
+    image_web_server: 10.84.5.120
+    use_project_scoped_token: True
+    public_host: 10.84.5.120
+    web_server:
+        server: 10.204.216.50
+        username: bhushana
+        password: c0ntrail!23
+        report_path: /home/bhushana/Documents/technical/sanity
+        log_path: /home/bhushana/Documents/technical/logs
+        web_root: Docs/logs
+    mail_server:
+        server: 10.204.216.49
+        port: 25
+        to: dl-contrail-sw@juniper.net
+        sender: contrailbuild@juniper.net
+
+server_manager:
+  ip: 10.204.217.158
+  username: root
+  password: c0ntrail123
+  image: centos-7.4
+  client: /cs-shared/server-manager/client/server-manager

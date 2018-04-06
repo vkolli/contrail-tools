@@ -8,7 +8,7 @@
 			"no_of_networks" : 2,
 			"network_stack_name" : "test_network_final",
 			"server_stack_name" : "test_server_final",
-                        "disable_openstack_port_security_on_all_vms": "true",
+			"disable_openstack_port_security_on_all_vms": "true",
 			"project_uuid" : "project_uuid_val"	
 		},
 		"networks":{

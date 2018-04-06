@@ -10,7 +10,7 @@
     state: directory
     mode: 0755
 
-- name: create emtpy /etc/docker/daemon.json is it doesn't exis
+- name: create emtpy /etc/docker/daemon.json if it doesn't exist
   copy:
     content: ""
     dest: /etc/docker/daemon.json
@@ -28,12 +28,12 @@
 - name: set contrailregistry if defined
   set_fact:
     contrailregistry: "{{ deployment.type.contrail.registry }}"
-  when: deployment.type is defined and deployment.type.contrail is defined and deployment.type.contrail.registry is defined
+  when: deployment.type.contrail is defined and deployment.type.contrail.registry is defined
 
 - name: set kolla_registry if defined
   set_fact:
     kolla_registry: "{{ deployment.type.kolla.registry }}"
-  when: deployment.type is defined and deployment.type.kolla is defined and deployment.type.kolla.registry is defined
+  when: deployment.type.kolla is defined and deployment.type.kolla.registry is defined
 
 - name: set registry string if it is the first one
   set_fact:
