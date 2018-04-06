@@ -2,12 +2,13 @@ global:
   images:
     tags:
       nodemgr: "{{ contrailregistry }}/contrail-nodemgr:{{ version }}"
+      contrail_status: "{{ contrailregistry }}/contrail-status:{{ version }}"
+      node_init: "{{ contrailregistry }}/contrail-node-init:{{ version }}"
       build_driver_init: "{{ contrailregistry }}/contrail-vrouter-kernel-build-init:{{ version }}"
       vrouter_agent: "{{ contrailregistry }}/contrail-vrouter-agent:{{ version }}"
       vrouter_init_kernel: "{{ contrailregistry }}/contrail-vrouter-kernel-init:{{ version }}"
       vrouter_dpdk: "{{ contrailregistry }}/contrail-vrouter-agent-dpdk:{{ version }}"
       vrouter_init_dpdk: "{{ contrailregistry }}/contrail-vrouter-kernel-init-dpdk:{{ version }}"
-      dpdk_watchdog: "{{ contrailregistry }}/contrail-vrouter-net-watchdog:{{ version }}"
       dep_check: quay.io/stackanetes/kubernetes-entrypoint:v0.2.1
     imagePullPolicy: "IfNotPresent"
 
@@ -20,18 +21,18 @@ global:
 {% endif %}
     LOG_LEVEL: SYS_NOTICE
     CLOUD_ORCHESTRATOR: {{ orchestrator }}
-    AAA_MODE: {{ aaa_mode | default(rbac) }}
+    AAA_MODE: {{ aaa_mode | default("rbac") }}
     # this value should be the same as nova/conf.nova.neutron.metadata_proxy_shared_secret
     #METADATA_PROXY_SECRET: password
+
+  # section of vrouter template for kernel mode
+  contrail_env_vrouter_kernel:
 {% if contrail_configuration.CONTROL_DATA_NET_LIST is defined %}
     CONTROL_DATA_NET_LIST: {{ contrail_configuration.CONTROL_DATA_NET_LIST }}
 {% endif %}
 {% if contrail_configuration.VROUTER_GATEWAY is defined %}
     VROUTER_GATEWAY: {{ contrail_configuration.VROUTER_GATEWAY }}
 {% endif %}
-
-  # section of vrouter template for kernel mode
-  contrail_env_vrouter_kernel:
 {% if contrail_configuration.AGENT_MODE is defined %}
     AGENT_MODE: {{ contrail_configuration.AGENT_MODE }}
 {% endif %}
