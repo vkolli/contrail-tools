@@ -684,6 +684,21 @@ def get_fip_uuid():
     else:
         print fip_uuid
 
+def get_gateway_ip():
+    config_node_ip = sys.argv[2]
+    gateway_ip = ""
+    with open("cluster_details.json") as cd:
+        clus_details_dict = json.load(cd)
+    for i in clus_details_dict["inp_params"]["clusters"]:
+        if clus_details_dict["inp_params"]["clusters"][i]["config_node_ip"] == config_node_ip:
+            gateway_ip = clus_details_dict["inp_params"]["clusters"][i]["gateway_ip"]
+    if gateway_ip == "":
+        print "---------"
+        print "There is no mapping of the Config Node Ip (%s) with a Gateway IP that is mentioned in the cluster_details.json file" % config_node_ip
+        print "---------"
+    else:
+        print gateway_ip
+
 if __name__ == '__main__':
     if len(sys.argv) == 4:
         globals()[sys.argv[3]]()

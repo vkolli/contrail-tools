@@ -12,8 +12,10 @@ cat /root/$1/input.json
 
 sed -i 's/project_uuid_val/'${dashed_project_uuid}'/' /root/$1/input.json
 python /root/$1/change_testbed_params.py /root/$1/input.json $ubuntu_image_name parse_openstack_image_list_command
-python /root/$1/change_testbed_params.py /root/$1/input.json vRE_17 get_vmx_images
-python /root/$1/change_testbed_params.py /root/$1/input.json vPFE_17 get_vmx_images
+#python /root/$1/change_testbed_params.py /root/$1/input.json vRE_17 get_vmx_images
+#python /root/$1/change_testbed_params.py /root/$1/input.json vPFE_17 get_vmx_images
+python /root/$1/change_testbed_params.py /root/$1/input.json vRE_18_1 get_vmx_images
+python /root/$1/change_testbed_params.py /root/$1/input.json vPFE_18_1 get_vmx_images
 sleep 5
 
 sed -i 's/image_val/'${ubuntu_image_name}'/' /root/$1/input.json
@@ -35,7 +37,7 @@ echo "Server Manager OS added"
 python /root/$1/inp_to_yaml.py /root/$1/input.json check_and_create_required_flavor 
 python /root/$1/inp_to_yaml.py /root/$1/input.json create_network_yaml > /root/$1/final_network.yaml
 python /root/$1/inp_to_yaml.py /root/$1/input.json create_server_yaml > /root/$1/final_server.yaml
-python /root/$1/inp_to_yaml.py /root/$1/input.json produce_vmx_env_file > /root/$1/vin17.env
+#python /root/$1/inp_to_yaml.py /root/$1/input.json produce_vmx_env_file > /root/$1/vin17.env
 echo " The Servere and Network YAML files are now created at location '/root/$1'"
 
 project_uuid=$(python -c 'import json; fd=json.loads(open("/root/'$1'/input.json").read()); print fd["inp_params"]["params"]["project_uuid"]')
@@ -121,10 +123,17 @@ then
 	vmx_dec="$(python /root/$1/inp_to_yaml.py /root/$1/input.json is_vmx_true)"
 	if [ "$vmx_dec" == 'true' ]
 	then
-		wget -P /root/$1/ http://10.84.5.120/images/soumilk/vm_images/vmx_files/vmx_compress.tar.gz
-		tar -xvf /root/$1/vmx_compress.tar.gz -C /root/$1
+		sshpass -p "c0ntrail123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r root@10.84.24.64:/cs-shared/soumilk/remote_compute/Remote_compute_Automation/new_topology-try-2017-12-11/New_working_VMX/Tanvir_VMX/VMX_Bundle_Automation .
+		mv VMX_Bundle_Automation /root/$1/
+		sed -i 's/_project_name_/'$1'/' /root/$1/VMX_Bundle_Automation/vmx_contrail.env
+		fixed_n_name='final_test_network_1_'$dashed_project_uuid
+		sed -i 's/fixed_network_name/'${fixed_n_name}'/' /root/$1/VMX_Bundle_Automation/vmx_contrail.env
+		var_n_name='final_test_network_2_'$dashed_project_uuid
+		sed -i 's/variable_network_name/'${var_n_name}'/' /root/$1/VMX_Bundle_Automation/vmx_contrail.env
+		gateway_ip="$(python /root/$1/change_testbed_params.py /root/$1/input.json $selected_config_node_ip get_gateway_ip)"
+		sed -i 's/__gateway_ip__/'${gateway_ip}'/' /root/$1/VMX_Bundle_Automation/vmx_contrail.env	
 		echo "vMX Stack Name: $final_vmx_stack_name"
-		heat stack-create -f /root/$1/vmx_contrail.yaml -e /root/$1/vin17.env $final_vmx_stack_name
+		heat stack-create -f /root/$1/VMX_Bundle_Automation/vmx_contrail.yaml -e /root/$1/VMX_Bundle_Automation/vmx_contrail.env  $final_vmx_stack_name
 		sleep 20
 		while true
 		do

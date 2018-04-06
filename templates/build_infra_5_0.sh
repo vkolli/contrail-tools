@@ -19,7 +19,8 @@ echo "input.json  --- Changed"
 
 python /root/$1/change_testbed_params.py /root/$1/input.json $ubuntu_image_name parse_openstack_image_list_command
 python /root/$1/inp_to_yaml.py /root/$1/input.json check_and_create_required_flavor
-
+python /root/$1/change_testbed_params.py /root/$1/input.json vRE_18_1 get_vmx_images
+python /root/$1/change_testbed_params.py /root/$1/input.json vPFE_18_1 get_vmx_images
 sleep 5
 sed -i 's/image_val/'${ubuntu_image_name}'/' /root/$1/input.json
 fip_uuid="$(python change_testbed_params.py input.json $selected_config_node_ip get_fip_uuid)"
@@ -29,6 +30,7 @@ echo "\n The Input.json looks something like this now"
 cat /root/$1/input.json
 
 #mkdir /root/$dashed_project_uuid
+python /root/$1/inp_to_yaml.py /root/$1/input.json check_and_create_required_flavor
 python /root/$1/inp_to_yaml.py /root/$1/input.json create_network_yaml > /root/$1/final_network.yaml
 python /root/$1/inp_to_yaml.py /root/$1/input.json create_server_yaml > /root/$1/final_server.yaml
 echo " The Servere and Network YAML files are now created at location '/root/$dashed_project_uuid'"
@@ -41,6 +43,10 @@ server_stack_name='test_server_final'
 final_server_stack_name=$server_stack_name$dashed_project_uuid
 echo "Server Stack Name: $final_server_stack_name"
 echo $final_server_stack_name >> /root/$1/info.txt
+vmx_stack_name='test_vmx_final'
+final_vmx_stack_name=$vmx_stack_name$project_uuid
+echo $final_vmx_stack_name
+echo $final_vmx_stack_name >> /root/$1/info.txt
 
 #rm /root/.ssh/known_hosts
 # Lets create the Network Stack
@@ -111,6 +117,51 @@ then
                 break
         fi
         done
+	vmx_dec="$(python /root/$1/inp_to_yaml.py /root/$1/input.json is_vmx_true)"
+	if [ "$vmx_dec" == 'true' ]
+        then
+                sshpass -p "c0ntrail123" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -r root@10.84.24.64:/cs-shared/soumilk/remote_compute/Remote_compute_Automation/new_topology-try-2017-12-11/New_working_VMX/Tanvir_VMX/VMX_Bundle_Automation .
+                mv VMX_Bundle_Automation /root/$1/
+                sed -i 's/_project_name_/'$1'/' /root/$1/VMX_Bundle_Automation/vmx_contrail.env
+                fixed_n_name='final_test_network_1_'$dashed_project_uuid
+                sed -i 's/fixed_network_name/'${fixed_n_name}'/' /root/$1/VMX_Bundle_Automation/vmx_contrail.env
+                var_n_name='final_test_network_2_'$dashed_project_uuid
+                sed -i 's/variable_network_name/'${var_n_name}'/' /root/$1/VMX_Bundle_Automation/vmx_contrail.env
+                gateway_ip="$(python /root/$1/change_testbed_params.py /root/$1/input.json $selected_config_node_ip get_gateway_ip)"
+                sed -i 's/__gateway_ip__/'${gateway_ip}'/' /root/$1/VMX_Bundle_Automation/vmx_contrail.env
+                echo "vMX Stack Name: $final_vmx_stack_name"
+                heat stack-create -f /root/$1/VMX_Bundle_Automation/vmx_contrail.yaml -e /root/$1/VMX_Bundle_Automation/vmx_contrail.env  $final_vmx_stack_name
+                sleep 20
+                while true
+                do
+                        python /root/$1/change_testbed_params.py /root/$1/input.json $final_vmx_stack_name get_stack_status > /root/$1/tmp.txt
+                        chmod 777 /root/$1/tmp.txt
+                        vmx_res="$(cat /root/$1/tmp.txt)"
+                        if [ "$vmx_res" == 'success' ] || [ "$vmx_res" == 'failed' ] || [ "$vmx_res" == 'inprogress' ];
+                        then
+                                if [ "$vmx_res" == 'success' ]
+                                then
+                                        echo "VMX Stack Created Successfully"
+                                        break
+                                fi
+                                if [ "$vmx_res" == 'failed' ]
+                                then
+                                        echo "VMX Stack Creation Failed"
+                                fi
+                                if [ "$vmx_res" == 'inprogress' ]
+                                then
+                                        echo "VMX Stack Creation still in progress. Waiting for 30 more seconds"
+                                        heat stack-list | grep $final_vmx_stack_name
+                                        sleep 30
+                                fi
+                        else
+                                echo "VMX Stack Creation: get_stack_status function in change_testbed_params.py file did not return any thing"
+                                break
+                fi
+                done
+        else
+                echo "Not creating VMX Stack "
+        fi
 	echo " Final List of all Heat Stacks "
         heat stack-list
 	python /root/$1/inp_to_yaml.py /root/$1/input.json create_yaml_file_for_5_0_provisioning  > /root/$1/all.yml
