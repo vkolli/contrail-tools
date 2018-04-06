@@ -6,7 +6,11 @@
   set_fact:
     client: "{{ server_manager.client|default('server-manager', true)}}"
 
-- name: Re-image with server manager
+- name: Re-image with cluster_id using server manager
+  shell: "{{ client }} reimage -F --cluster_id {{test_configuration.cluster_id}} {{ os_image }}"
+  when: test_configuration.cluster_id is defined
+
+- name: Re-image with server_id using server manager if no cluster_id
   shell: "{{ client }} reimage -F --server_id {{item.key}} {{ os_image }}"
-  when: item.value.provider == 'bms'
+  when: item.value.provider == 'bms' and test_configuration.cluster_id is not defined
   with_dict: "{{ instances }}"

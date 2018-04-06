@@ -1,14 +1,5 @@
 ---
 
-- name: check added hosts
-  debug:
-    msg: "Added hosts"
-
-- name: copy deployment to temp variable
-  set_fact:
-     tmp_deployment: "{{ deployment }}"
-  when: deployment is defined
-
 - name: set default deployment
   vars:
     types:
@@ -25,4 +16,3 @@
 - name: set insecure registry
   include: insecure_registry.yaml
   when: deployment.type.kolla is defined
-

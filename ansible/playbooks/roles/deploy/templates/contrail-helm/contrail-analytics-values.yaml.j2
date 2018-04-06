@@ -2,6 +2,8 @@ global:
   images:
     tags:
       nodemgr: "{{ contrailregistry }}/contrail-nodemgr:{{ version }}"
+      contrail_status: "{{ contrailregistry }}/contrail-status:{{ version }}"
+      node_init: "{{ contrailregistry }}/contrail-node-init:{{ version }}"
       analytics_api: "{{ contrailregistry }}/contrail-analytics-api:{{ version }}"
       contrail_collector: "{{ contrailregistry }}/contrail-analytics-collector:{{ version }}"
       analytics_alarm_gen: "{{ contrailregistry }}/contrail-analytics-alarm-gen:{{ version }}"
@@ -15,7 +17,7 @@ global:
     CONTROLLER_NODES: {{controller_nodes|join(',')}}
     LOG_LEVEL: SYS_NOTICE
     CLOUD_ORCHESTRATOR: {{ orchestrator }}
-    AAA_MODE: {{ aaa_mode | default(rbac) }}
+    AAA_MODE: {{ aaa_mode | default("rbac") }}
     
 labels:
   analytics:

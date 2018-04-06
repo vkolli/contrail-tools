@@ -2,6 +2,8 @@ global:
   images:
     tags:
       nodemgr: "{{ contrailregistry }}/contrail-nodemgr:{{ version }}"
+      contrail_status: "{{ contrailregistry }}/contrail-status:{{ version }}"
+      node_init: "{{ contrailregistry }}/contrail-node-init:{{ version }}"      
       contrail_control: "{{ contrailregistry }}/contrail-controller-control-control:{{ version }}"
       control_dns: "{{ contrailregistry }}/contrail-controller-control-dns:{{ version }}"
       control_named: "{{ contrailregistry }}/contrail-controller-control-named:{{ version }}"
@@ -21,8 +23,7 @@ global:
 {% endif %}
     LOG_LEVEL: SYS_NOTICE
     CLOUD_ORCHESTRATOR: {{ orchestrator }}
-    AAA_MODE: {{ aaa_mode | default(rbac) }}
-    BGP_PORT: 1179
+    AAA_MODE: {{ aaa_mode | default("rbac") }}
 
 labels:
   control:

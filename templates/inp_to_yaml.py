@@ -380,7 +380,7 @@ def create_server_yaml():
         final_server_yaml_string = final_server_yaml_string + "      name: %s\n" % name
         final_server_yaml_string = final_server_yaml_string + "      virtual_network: %s\n" %fip_uuid
     ip_port_dict = {}
-    if (("disable_openstack_port_security_on_all_vms" not in general_params_dict)) 
+    if "disable_openstack_port_security_on_all_vms" not in general_params_dict: 
         final_server_yaml_string = final_server_yaml_string + "  allow_all_secgroup:\n"
         final_server_yaml_string = final_server_yaml_string + "    type: OS::Neutron::SecurityGroup\n"
         final_server_yaml_string = final_server_yaml_string + "    properties:\n"
