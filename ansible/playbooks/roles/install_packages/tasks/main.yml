@@ -22,6 +22,10 @@
   include: contrail-helm/main.yml
   when: deployment.type.helm is defined
 
+- name: install packages for openshift ansible deployer
+  include: openshift-ansible/main.yml
+  when: deployment.type.openshift is defined
+
 - name: set insecure registry
   include: insecure_registry.yaml
   when: deployment.type.kolla is defined

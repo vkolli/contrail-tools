@@ -32,6 +32,11 @@
     openstackregistry: "{{ deployment.type.helm.registry }}"
   when: deployment.type.helm.registry is defined
 
+- name: add nameserver to vars.yaml # temp fix
+  copy:
+    src: "openstack_helm/kubeadm-vars.yaml"
+    dest: "{{ openstack_helm_infra_dir }}/tools/images/kubeadm-aio/assets/opt/playbooks/vars.yaml"
+
 # Update local-vars.yaml for different version of kubernetes, cni, calico
 
 - name: Update glance values.yaml
@@ -59,12 +64,6 @@
     src: "openstack-helm/multinode-vars.yaml.j2"
     dest: "{{ openstack_helm_infra_dir }}/tools/gate/devel/multinode-vars.yaml"
 
-#- name: set environment variable
-#  command: export {{ item }}
-#  with_items:
-#    - OSH_PATH="{{ openstack_helm_dir }}"
-#    - OSH_INFRA_PATH="{{ openstack_helm_infra_dir }}"
-
 - name: deploy kubernetes - setup-host
   command: make dev-deploy setup-host multinode
   args:
@@ -82,12 +81,12 @@
    OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
 
 - name: disable openstack compute labels for controller nodes
-  command: kubectl label node "{{ vars['hostvars'][item.value.ip]['ansible_hostname'] }}" --overwrite openstack-compute-node=disabled
+  command: kubectl label node "{{ vars['hostvars'][item.value.ip]['ansible_fqdn'] }}" --overwrite openstack-compute-node=disabled
   when: item.value.roles.vrouter is undefined
   with_dict: "{{ instances }}"
 
 - name: disable openstack control labels for compute nodes
-  command: kubectl label node "{{ vars['hostvars'][item.value.ip]['ansible_hostname'] }}" --overwrite openstack-control-plane=disabled
+  command: kubectl label node "{{ vars['hostvars'][item.value.ip]['ansible_fqdn'] }}" --overwrite openstack-control-plane=disabled
   when: item.value.roles.openstack is undefined
   with_dict: "{{ instances }}"
 
@@ -101,20 +100,11 @@
 
 - name: deploy ingress chart
   command: "./tools/deployment/multinode/021-ingress-opencontrail.sh"
-#  command: "./tools/deployment/developer/nfs/031-ingress-opencontrail.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
    OSH_PATH: "{{ openstack_helm_dir }}"
    OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
-
-#- name: deploy ceph chart
-#  command: "./tools/deployment/developer/nfs/040-nfs-provisioner.sh"
-#  args:
-#   chdir: "{{ openstack_helm_dir }}"
-#  environment:
-#   OSH_PATH: "{{ openstack_helm_dir }}"
-#   OSH_INFRA_PATH: "{{ openstack_helm_infra_dir }}"
 
 - name: deploy ceph chart
   command: "./tools/deployment/multinode/030-ceph.sh"
@@ -134,7 +124,6 @@
 
 - name: deploy mariadb chart
   command: "./tools/deployment/multinode/050-mariadb.sh"
-#  command: "./tools/deployment/developer/nfs/050-mariadb.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -143,7 +132,6 @@
 
 - name: deploy rabbitmq chart
   command: "./tools/deployment/multinode/060-rabbitmq.sh"
-#  command: "./tools/deployment/developer/nfs/060-rabbitmq.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -152,7 +140,6 @@
 
 - name: deploy memcached chart
   command: "./tools/deployment/multinode/070-memcached.sh"
-#  command: "./tools/deployment/developer/nfs/070-memcached.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -161,7 +148,6 @@
 
 - name: deploy keystone chart
   command: "./tools/deployment/multinode/080-keystone.sh"
-#  command: "./tools/deployment/developer/nfs/080-keystone.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -181,7 +167,6 @@
 
 - name: deploy horizon chart
   command: "./tools/deployment/developer/ceph/100-horizon.sh"
-#  command: "./tools/deployment/developer/nfs/100-horizon.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -191,7 +176,6 @@
 
 - name: deploy glance chart
   command: "./tools/deployment/multinode/100-glance.sh"
-#  command: "./tools/deployment/developer/nfs/120-glance.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -210,7 +194,6 @@
 
 - name: deploy libvert chart
   command: "./tools/deployment/multinode/131-libvirt-opencontrail.sh"
-#  command: "./tools/deployment/developer/nfs/151-libvirt-opencontrail.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -220,7 +203,6 @@
 
 - name: deploy compute-kit chart
   command: "./tools/deployment/multinode/141-compute-kit-opencontrail.sh"
-#  command: "./tools/deployment/developer/nfs/161-compute-kit-opencontrail.sh" 
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
@@ -232,7 +214,6 @@
 
 - name: deploy neutron rbac chart
   command: "./tools/deployment/multinode/142-neutron-rbac-opencontrail.sh"
-#  command: "./tools/deployment/developer/nfs/162-neutron-rbac-opencontrail.sh"
   args:
    chdir: "{{ openstack_helm_dir }}"
   environment:
