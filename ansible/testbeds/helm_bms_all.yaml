@@ -107,3 +107,9 @@ test_configuration:
         port: 4000
         tp: dl-contrail-sw@juniper.net
         sender: contrail-build@juniper.net
+        
+server_manager:
+  ip: 10.84.5.100
+  username: root
+  password: contrail123
+  image: ubuntu-16.04.3
