@@ -1,0 +1,109 @@
+deployment:
+    type:
+        contrail:
+            branch: master
+            registry: docker.io/opencontrailnightly
+        helm:
+            branch: master
+            registry: docker.io/opencontrailnightly
+    sku: ocata
+    os: ubuntu
+    version: master-51
+    orchestrator: openstack
+
+provider_config:
+  bms:
+    ssh_pwd: c0ntrail123
+    ssh_user: root
+    ntpserver: 10.84.5.100
+    domainsuffix: local
+
+instances:
+  bms1:
+    provider: bms
+    ip: 10.84.29.31
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      openstack:
+
+  bms2:
+    provider: bms
+    ip: 10.84.29.32
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      openstack:
+
+
+  bms3:
+    provider: bms
+    ip: 10.84.29.34
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      openstack:
+
+  bms4:
+    provider: bms
+    ip: 10.84.29.35
+    roles:
+      vrouter:
+
+  bms5:
+    provider: bms
+    ip: 10.84.29.36
+    roles:
+      vrouter:
+
+  bms6:
+    provider: bms
+    ip: 10.84.29.33
+    roles:
+      vrouter:
+
+contrail_configuration:
+  AAA_MODE: cloud-admin
+  CONTROL_NODES: 172.16.80.1,172.16.80.2,172.16.80.4
+  CONTROL_DATA_NET_LIST: 172.16.80.0/24
+  PHYSICAL_INTERFACE: bond0
+  BGP_PORT: 1179
+  AGENT_MODE: nic
+  VROUTER_GATEWAY: 172.16.80.1
+  RABBITMQ_NODE_PORT: 5673
+  orchestrator_configuration:
+  keystone:
+    version: v3
+    password: password
+    auth_port: 80
+
+test_configuration:
+    image_web_server: 10.84.5.120
+    use_project_scoped_token: True
+    auth_url: http://keystone.openstack.svc.cluster.local:80/v3
+    auth_port: 80
+    public_host: 10.84.5.120
+    web_server:
+        server: zephyrine.englab.juniper.net
+        username: stack
+        password: stack@123
+        report_path: /var/www/html/sanity/fb-sanity/SVL_master_ocata_ubuntu16_bms_helm_sanity
+        log_path: /var/www/html/Docs/logs
+        web_root: /Docs/logs
+    mail_server:
+        server: 10.84.24.64
+        port: 4000
+        tp: dl-contrail-sw@juniper.net
+        sender: contrail-build@juniper.net
